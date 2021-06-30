@@ -7,13 +7,15 @@
 
 import SwiftUI
 
+/// The View that is a screen.
 public struct ScreenView<Content, RouteType>: View
 where Content: View, RouteType: Route {
     
     @Environment(\.presentationMode) private var presentationMode
     
-    public let router: Router<RouteType>
+    private let router: Router<RouteType>
     
+    /// Content View
     @ViewBuilder
     public let content: Content
     

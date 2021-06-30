@@ -7,26 +7,36 @@
 
 import SwiftUI
 
+/// The hidden view that handle the navigation of a screen.
 struct NavigatorView<RouteType>: View
 where RouteType: Route {
     
     typealias VoidAction = () -> Void
     
+    /// A  screen's ``Router``
     @ObservedObject
     private var router: Router<RouteType>
 
+    /// A `EnvironmentObject` ``RootRouter``
     @EnvironmentObject
     private var rootRouter: RootRouter
     
     @Environment(\.scenePhase) private var scenePhase
     
+    /// Active state of a `NavigationLink`
     @State private var isActivePush: Bool = false
+    /// Active state of a full screen presentation
     @State private var isActivePresent: Bool = false
+    /// Active state of a sheet presentation
     @State private var isActiveSheet: Bool = false
+    /// Active state of a alert
     @State private var isActiveAlert: Bool = false
 
+    /// Dismiss action of presentationMode from @Enviroment
     private let dismissAction: VoidAction
+    /// The destination screen from transition
     private let destinationView: RouteType.ViewType?
+    /// The alert from transition
     private let alertView: Alert?
     
     init(router: Router<RouteType>,
@@ -74,6 +84,7 @@ where RouteType: Route {
 
 extension NavigatorView {
     
+    /// reset all active state to false
     private func resetActiveState() {
         guard scenePhase == .active else { return }
         isActivePush = false
@@ -83,12 +94,18 @@ extension NavigatorView {
         router.resetTransition(scenePhase: scenePhase)
     }
     
+    /// Observe the active state change
+    /// - Parameter isActive: active state of a navigation
+    ///
+    /// The transition should be reset to `.none` if the active state change to false
     private func onChangeActiveState(_ isActive: Bool) {
         if !isActive {
             router.resetTransition(scenePhase: scenePhase)
         }
     }
     
+    /// Observe the transition change from router
+    /// - Parameter transition: ``Transiton``
     private func updateActiveState(from transition: Transition<RouteType>) {
         switch transition.type {
         case .push:
