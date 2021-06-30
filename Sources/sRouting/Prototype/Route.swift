@@ -17,7 +17,6 @@ public protocol Route {
     var screen: ViewType { get }
     
     /// Alert builder
-    @ViewBuilder
     var alert: Alert? { get }
 }
 
