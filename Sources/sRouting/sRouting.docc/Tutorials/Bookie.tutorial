@@ -11,27 +11,27 @@
             @Image(source: bookie_section1_intro.png, alt: "add sRouting into Bookie")
         }
         
-<!--        @Steps {-->
-<!--            @Step {-->
-<!--                Create a new project using the iOS App template.-->
-<!--                @Image(source: <#file#>, alt: "<#accessible description#>")-->
-<!--            }-->
-<!--            -->
-<!--            @Step {-->
-<!--                Enter "Bookie" as the Product Name.-->
-<!--                @Image(source: <#file#>, alt: "<#accessible description#>")-->
-<!--            }-->
-<!--            -->
-<!--            @Step {-->
-<!--                Select "SwiftUI" from the Interface pop-up menu and "SwiftUI App" from the Life Cycle pop-up menu, then click Next. Choose a location to save the Bookie project on your Mac.-->
-<!--                @Image(source: <#file#>, alt: "<#accessible description#>")-->
-<!--            }-->
-<!--            -->
-<!--            @Step {-->
-<!--                Add `sRouting` as a dependency to the project.-->
-<!--                -->
-<!--                @Image(source: placeholder-image.png, alt:"A screenshot shows the SlothCreator package in Xcode's navigator.")-->
-<!--            }-->
-<!--        }-->
+        @Steps {
+            @Step {
+                Create a new project using the iOS App template.
+                @Image(source: bookie_create.png, alt: "A screenshot shows xCode's create navigator")
+            }
+            
+            @Step {
+                Enter "Bookie" as the Product Name.
+                @Image(source: bookie_enter_product_name.png, alt: "A screenshot shows xCode's setup product navigator")
+            }
+            
+            @Step {
+                Select "SwiftUI" from the Interface pop-up menu and "SwiftUI App" from the Life Cycle pop-up menu, then click Next. Choose a location to save the Bookie project on your Mac.
+                @Image(source: bookie_save_place.png, alt: "A screenshot shows xCode's save product navigator")
+            }
+            
+            @Step {
+                Add `sRouting` as a dependency to the project.
+                
+                @Image(source: bookie_add_srouting.png, alt:"A screenshot shows the Bookie package in Xcode's navigator.")
+            }
+        }
     }
 }
