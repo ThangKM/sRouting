@@ -1,6 +1,6 @@
 //
 //  TransitionType.swift
-//  Sequence
+//  sRouting
 //
 //  Created by ThangKieu on 2/10/21.
 //
@@ -18,7 +18,6 @@ public enum TransitionType: String, CaseIterable {
     case dismissAll
 }
 
-@available(iOS 15.0, *)
 struct Transition<RouteType> where RouteType: Route {
     
     let type: TransitionType
@@ -63,14 +62,12 @@ struct Transition<RouteType> where RouteType: Route {
     }
 }
 
-@available(iOS 15.0, *)
 extension Transition {
     static var none: Transition {
         Transition(with: .none)
     }
 }
 
-@available(iOS 15.0, *)
 extension Transition: Equatable {
     /// Conform Equatable
     /// - Parameters:

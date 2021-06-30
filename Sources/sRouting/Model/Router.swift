@@ -1,13 +1,12 @@
 //
-//  ScreenObservable.swift
-//  Sequence
+//  Router.swift
+//  sRouting
 //
 //  Created by ThangKieu on 2/19/21.
 //
 
 import SwiftUI
 
-@available(iOS 15.0, *)
 @MainActor
 open class Router<RouteType>: ObservableObject
 where RouteType: Route {

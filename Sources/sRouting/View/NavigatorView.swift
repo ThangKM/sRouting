@@ -1,13 +1,12 @@
 //
 //  NavigatorView.swift
-//  Sequence
+//  sRouting
 //
 //  Created by ThangKieu on 2/19/21.
 //
 
 import SwiftUI
 
-@available(iOS 15.0, *)
 struct NavigatorView<RouteType>: View
 where RouteType: Route {
     
@@ -73,7 +72,6 @@ where RouteType: Route {
     }
 }
 
-@available(iOS 15.0, *)
 extension NavigatorView {
     
     private func resetActiveState() {

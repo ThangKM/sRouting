@@ -1,13 +1,12 @@
 //
 //  Route.swift
-//  Sequence
+//  sRouting
 //
 //  Created by ThangKieu on 2/10/21.
 //
 
 import SwiftUI
 
-@available(iOS 13.0, *)
 public protocol Route {
     
     associatedtype ViewType: View
@@ -18,7 +17,6 @@ public protocol Route {
     var alert: Alert? { get }
 }
 
-@available(iOS 13.0, *)
 extension Route {
     public var alert: Alert? { return nil }
 }

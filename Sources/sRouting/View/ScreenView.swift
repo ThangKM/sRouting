@@ -1,13 +1,12 @@
 //
-//  BaseView.swift
-//  Sequence
+//  ScreenView.swift
+//  sRouting
 //
 //  Created by ThangKieu on 08/02/2021.
 //
 
 import SwiftUI
 
-@available(iOS 15.0, *)
 public struct ScreenView<Content, RouteType>: View
 where Content: View, RouteType: Route {
     

@@ -1,13 +1,13 @@
 //
 //  RootRouter.swift
-//  sequence
+//  sRouting
 //
 //  Created by ThangKieu on 6/28/21.
 //
 
 import SwiftUI
 
-@available(iOS 15.0, *)
+/// Manage  actions on `Root`
 @MainActor
 open class RootRouter: ObservableObject {
     
