@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-/// A screen's router that can navigate to other screens of route.
+/// A screen's router that can navigate to other screen of route.
 ///
 /// The router can trigger a transition from inside(view) or outside(view model) the view.
 /// Required perfrom actions on the `MainThread`  for iOS 14 and below
@@ -26,7 +26,7 @@ where RouteType: Route {
     /// Required oberve selection of `TabView` from ``RootRouter``
     /// - Parameter index: Index of tabbar item
     ///
-    ///
+    /// ### Example
     /// ```swift
     /// router.selectTabbar(at: 0)
     /// ```
@@ -40,6 +40,7 @@ where RouteType: Route {
     ///   - route: Type of ``Route``
     ///   - action: ``TriggerType``
     ///
+    /// ### Example
     /// ```swift
     /// router.trigger(to: .detailScreen, with: .push)
     /// ```
@@ -52,6 +53,8 @@ where RouteType: Route {
     /// - Parameters:
     ///   - error: Type of `Error`
     ///   - title: The error's title
+    ///
+    /// ### Example
     /// ```swift
     /// router.show(NetworkingError.notFound)
     /// ```
@@ -61,6 +64,8 @@ where RouteType: Route {
     }
     
     /// Dismiss or pop current screen
+    ///
+    /// ### Example
     /// ```swift
     /// router.dismiss()
     /// ```
@@ -70,6 +75,8 @@ where RouteType: Route {
     }
     
     /// Dismiss to root view
+    ///
+    /// ### Example
     /// ```swift
     /// router.dismissAll()
     /// ```

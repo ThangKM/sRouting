@@ -8,22 +8,20 @@
 import SwiftUI
 
 /// Manage  states and actions on `Root`.
-/// Required inject into EnviromentObject on root view.
 ///
-/// Provide selection state of  root tabbar view.
-///  ```swift
-/// TabView(selection: $rootRouter.tabbarSelection) {
-///     ...
-/// }
-///  ```
-///  Provide `dismiss` to root action.
-///  ```swift
-///  screenRouter.dismissAll()
-///  ```
+/// Inject into EnvironmentObject into ``RootView`` automatically.
+/// Can be overridden to provide more states or actions that you need.
 @MainActor
 open class RootRouter: ObservableObject {
     
     /// `TabView` selection state
+    ///
+    /// ### Example
+    /// ```swift
+    /// TabView(selection: $rootRouter.tabbarSelection) {
+    ///     ...
+    /// }
+    ///  ```
     @Published
     public var tabbarSelection: Int = 0
     

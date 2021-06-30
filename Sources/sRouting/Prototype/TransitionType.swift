@@ -8,7 +8,7 @@
 import SwiftUI
 
 /// Transition type of navigation for the trigger action.
-public enum TriggerType {
+public enum TriggerType: String, CaseIterable {
     /// Push a screen
     case push
     /// Present full screen

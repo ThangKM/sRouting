@@ -1,0 +1,37 @@
+@Tutorial(time: 30) {
+    @Intro(title: "Creating Book App") {
+        This tutorial guides you through building _Bookie_ — an app for using the sRouting.
+        
+        @Image(source: bookie_banner.png, alt: "user interface of the demo application")
+    }
+    
+    @Section(title: "Create the Bookie") {
+        @ContentAndMedia(layout: horizontal) {
+            Create and configure an Xcode project that uses sRouting.
+            @Image(source: bookie_section1_intro.png, alt: "add sRouting into Bookie")
+        }
+        
+<!--        @Steps {-->
+<!--            @Step {-->
+<!--                Create a new project using the iOS App template.-->
+<!--                @Image(source: <#file#>, alt: "<#accessible description#>")-->
+<!--            }-->
+<!--            -->
+<!--            @Step {-->
+<!--                Enter "Bookie" as the Product Name.-->
+<!--                @Image(source: <#file#>, alt: "<#accessible description#>")-->
+<!--            }-->
+<!--            -->
+<!--            @Step {-->
+<!--                Select "SwiftUI" from the Interface pop-up menu and "SwiftUI App" from the Life Cycle pop-up menu, then click Next. Choose a location to save the Bookie project on your Mac.-->
+<!--                @Image(source: <#file#>, alt: "<#accessible description#>")-->
+<!--            }-->
+<!--            -->
+<!--            @Step {-->
+<!--                Add `sRouting` as a dependency to the project.-->
+<!--                -->
+<!--                @Image(source: placeholder-image.png, alt:"A screenshot shows the SlothCreator package in Xcode's navigator.")-->
+<!--            }-->
+<!--        }-->
+    }
+}

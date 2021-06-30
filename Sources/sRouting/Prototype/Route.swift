@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-/// Protocol to define ``ScreenView`` in the route.
+/// Protocol to build ``ScreenView`` in the route.
 public protocol Route {
     
     associatedtype ViewType: View
