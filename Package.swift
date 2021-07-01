@@ -7,8 +7,7 @@ let package = Package(
     name: "sRouting",
     
     platforms: [
-        .iOS(.v14),
-        .macOS(.v11)
+        .iOS(.v14), .macOS(.v11)
     ],
     
     products: [

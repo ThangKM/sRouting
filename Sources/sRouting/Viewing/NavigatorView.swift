@@ -56,11 +56,13 @@ where RouteType: Route {
                     EmptyView()
                 })
         }
+        #if !os(macOS)
         .fullScreenCover(isPresented: $isActivePresent.willSet(execute: onChangeActiveState(_:))) {
             NavigationView {
                 destinationView
             }
         }
+        #endif
         .sheet(isPresented: $isActiveSheet.willSet(execute: onChangeActiveState(_:)),
             content: {
             NavigationView {
