@@ -37,7 +37,7 @@ struct SequenceApp: App {
     @SceneBuilder
     var body: some Scene { 
         WindowGroup {
-            RootView {
+            RootView(rootRouter: .init()) {
                 NavigationView {
                     AppRoute.home.screen
                 }
@@ -82,6 +82,13 @@ Sheet:
 ```swift
 router.trigger(to: .loginScreen, with: .sheet)
 ```
+To show an alert we use the ``Router/show(alert:)`` function.
+
+```swift
+ router.show(alert:  Alert.init(title: Text("Alert"),
+                                message: Text("Message"),
+                                dismissButton: .cancel(Text("OK")))
+```
 
 To show an error message we use the ``Router/show(error:and:)`` function.
 
@@ -100,6 +107,12 @@ Required the root view is a ``RootView``
 
 ```swift
 router.dismissAll()
+```
+To seclect the Tabbar item we use the ``Router/selectTabbar(at:)`` function.
+Required the TabView selection binding from ``RootRouter``.
+
+```swift
+router.selectTabbar(at:0)
 ```
 
 ### Using Router in a ViewModel
@@ -132,4 +145,4 @@ Make sure the transition is performed on MainThread.
 
 ### Conclusion
 sRouting is a lightweight framework and flexiable, so you can handle the
-navigations by the way you want to.
+navigations by whatever you want.

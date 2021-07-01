@@ -10,7 +10,7 @@ import SwiftUI
 /// Manage  states and actions on `Root`.
 ///
 /// Inject into EnvironmentObject into ``RootView`` automatically.
-/// Can be overridden to provide more states or actions that you need.
+/// Can be inherited to provide more states or actions that you need.
 @MainActor
 open class RootRouter: ObservableObject {
     

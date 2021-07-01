@@ -49,7 +49,7 @@ where RouteType: Route {
         objectWillChange.send()
     }
     
-    /// Show a error alert
+    /// Show an alert
     /// - Parameters:
     ///   - error: Type of `Error`
     ///   - title: The error's title
@@ -60,6 +60,20 @@ where RouteType: Route {
     /// ```
     open func show(error: Error, and title: String? = nil) {
         transition = .init(with: error, and: title)
+        objectWillChange.send()
+    }
+    
+    /// Show an alert
+    /// - Parameter alert: Alert
+    ///
+    /// ### Example
+    /// ```swift
+    /// router.show(alert:  Alert.init(title: Text("Alert"),
+    ///                                message: Text("Message"),
+    ///                                dismissButton: .cancel(Text("OK")))
+    /// ```
+    open func show(alert: Alert) {
+        transition = .init(with: alert)
         objectWillChange.send()
     }
     

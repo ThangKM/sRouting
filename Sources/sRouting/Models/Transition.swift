@@ -28,6 +28,13 @@ struct Transition<RouteType> where RouteType: Route {
         alert = nil
     }
     
+    init(with alert: Alert) {
+        self.type = .alert
+        screenView = nil
+        tabIndex = nil
+        self.alert = alert
+    }
+    
     init(with error: Error, and alertTitle: String? = nil) {
         self.type = .alert
         screenView = nil
