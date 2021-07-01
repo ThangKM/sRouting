@@ -22,11 +22,9 @@ class TestInitializers: XCTestCase {
     }
     
     func testInitScreenView() throws {
-        DispatchQueue.main.async {
-            let view = NavigationView {  BlueScreen() }
-            let text = try view.inspect().find(text: "TextInBlueScreen").string()
-            XCTAssertEqual(text, "TextInBlueScreen")
-        }
+        let view = NavigationView {  BlueScreen() }
+        let text = try view.inspect().find(text: "TextInBlueScreen").string()
+        XCTAssertEqual(text, "TextInBlueScreen")
     }
 }
 
