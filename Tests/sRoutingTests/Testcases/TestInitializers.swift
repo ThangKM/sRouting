@@ -11,7 +11,6 @@ import SwiftUI
 
 @testable import sRouting
 
-@MainActor
 class TestInitializers: XCTestCase {
 
     override class func setUp() {
@@ -23,9 +22,11 @@ class TestInitializers: XCTestCase {
     }
     
     func testInitScreenView() throws {
-        let view = NavigationView {  BlueScreen() }
-        let text = try view.inspect().find(text: "TextInBlueScreen").string()
-        XCTAssertEqual(text, "TextInBlueScreen")
+        DispatchQueue.main.async {
+            let view = NavigationView {  BlueScreen() }
+            let text = try view.inspect().find(text: "TextInBlueScreen").string()
+            XCTAssertEqual(text, "TextInBlueScreen")
+        }
     }
 }
 

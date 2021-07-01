@@ -11,7 +11,6 @@ import SwiftUI
 ///
 /// Inject into EnvironmentObject into ``RootView`` automatically.
 /// Can be inherited to provide more states or actions that you need.
-@MainActor
 open class RootRouter: ObservableObject {
     
     /// `TabView` selection state

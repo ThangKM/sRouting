@@ -11,7 +11,6 @@ import SwiftUI
 ///
 /// The router can trigger a transition from inside(view) or outside(view model) the view.
 /// Required perfrom actions on the `MainThread`  for iOS 14 and below
-@MainActor
 open class Router<RouteType>: ObservableObject
 where RouteType: Route {
     
