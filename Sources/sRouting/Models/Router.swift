@@ -15,10 +15,9 @@ import SwiftUI
 open class Router<RouteType>: ObservableObject
 where RouteType: Route {
     
-    private(set) var transition: Transition<RouteType> = .none
+    private(set) var transition: Transition<RouteType>
     
-    internal func resetTransition(scenePhase: ScenePhase) {
-        guard scenePhase == .active else { return }
+    public init() {
         transition = .none
     }
     
@@ -98,4 +97,13 @@ where RouteType: Route {
         transition = .init(with: .dismissAll)
         objectWillChange.send()
     }
+}
+
+//MARK:- Internal Methods
+extension Router {
+    
+    func resetTransition(scenePhase: ScenePhase) {
+       guard scenePhase == .active else { return }
+       transition = .none
+   }
 }

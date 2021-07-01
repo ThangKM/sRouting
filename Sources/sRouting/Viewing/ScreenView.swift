@@ -13,11 +13,20 @@ where Content: View, RouteType: Route {
     
     @Environment(\.presentationMode) private var presentationMode
     
-    public let router: Router<RouteType>
+    private let router: Router<RouteType>
     
-    /// Content View
-    @ViewBuilder
-    public let content: Content
+    /// Content view builder
+    private let content: () -> Content
+    
+    /// Initalizer of ``ScreenView``
+    ///  - Parameters:
+    ///   - rootRouter: Type of ``Router``
+    ///   - content: Content view builder
+    public init(router: Router<RouteType>,
+                @ViewBuilder content: @escaping () -> Content) {
+        self.router = router
+        self.content = content
+    }
     
     public var body: some View {
         return ZStack {
@@ -25,7 +34,7 @@ where Content: View, RouteType: Route {
                 presentationMode.wrappedValue.dismiss()
             }
             
-            content
+            content()
         }
     }
 }

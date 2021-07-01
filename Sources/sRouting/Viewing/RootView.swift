@@ -21,7 +21,7 @@ where Content: View, RootRouterType: RootRouter {
     
     private let content: () -> Content
 
-    /// initalizer of ``RootView``
+    /// Initalizer of ``RootView``
     ///  - Parameters:
     ///   - rootRouter: Type of ``RootRouter``
     ///   - content: Content view builder
