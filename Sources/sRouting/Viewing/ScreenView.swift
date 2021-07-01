@@ -13,7 +13,7 @@ where Content: View, RouteType: Route {
     
     @Environment(\.presentationMode) private var presentationMode
     
-    private let router: Router<RouteType>
+    public let router: Router<RouteType>
     
     /// Content View
     @ViewBuilder

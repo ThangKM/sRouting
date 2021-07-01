@@ -23,11 +23,17 @@ open class RootRouter: ObservableObject {
     /// }
     ///  ```
     @Published
-    public var tabbarSelection: Int = 0
+    public var tabbarSelection: Int
     
     ///  Dismiss to root `Published`
     @Published
-    private(set) var dismissAll: UInt = 0
+    private(set) var dismissAll: UInt
+    
+    /// Initializer
+    public init() {
+        tabbarSelection = 0
+        dismissAll = 0
+    }
     
     internal func dismissToRoot() {
         dismissAll += 1
