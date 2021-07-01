@@ -17,6 +17,9 @@ The ``Router`` can trigger a transition from inside(view) or outside(view model)
 
 ## 📚 Documentation
 Explore DocC to find the rich tutorials and getting started with sRouting.
+See [this WWDC presentation](https://developer.apple.com/videos/play/wwdc2021/10166/) about more information.
+
+From xCode select Product -> Build Doccumentation -> Explore.
 
 
 ## 🛠 Installation
