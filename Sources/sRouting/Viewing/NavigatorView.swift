@@ -56,7 +56,7 @@ where RouteType: Route {
                     EmptyView()
                 })
         }
-        #if !os(macOS)
+        #if os(iOS)
         .fullScreenCover(isPresented: $isActivePresent.willSet(execute: onChangeActiveState(_:))) {
             NavigationView {
                 destinationView
