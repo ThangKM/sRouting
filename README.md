@@ -13,7 +13,7 @@ The ``Router`` can trigger a transition from inside(view) or outside(view model)
 ## Requirements
 
 - iOS 14 or above
-- Xcode 12.4 or above
+- Xcode 13 or above
 
 ## 📚 Documentation
 Explore DocC to find the rich tutorials and getting started with sRouting.
