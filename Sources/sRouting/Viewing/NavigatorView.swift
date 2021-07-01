@@ -56,13 +56,11 @@ where RouteType: Route {
                     EmptyView()
                 })
         }
-//        #if os(iOS)
-//        .fullScreenCover(isPresented: $isActivePresent.willSet(execute: onChangeActiveState(_:))) {
-//            NavigationView {
-//                destinationView
-//            }
-//        }
-//        #endif
+        .fullScreenCover(isPresented: $isActivePresent.willSet(execute: onChangeActiveState(_:))) {
+            NavigationView {
+                destinationView
+            }
+        }
         .sheet(isPresented: $isActiveSheet.willSet(execute: onChangeActiveState(_:)),
             content: {
             NavigationView {
@@ -129,3 +127,12 @@ extension NavigatorView {
         }
     }
 }
+
+
+#if os(macOS)
+extension View {
+    func fullScreenCover<Content>(isPresented: Binding<Bool>, @ViewBuilder content: @escaping () -> Content) -> some View where Content: View {
+        return self
+    }
+}
+#endif
