@@ -8,7 +8,7 @@ sRouting using the native navigation mechanism in SwiftUI.
 It's easy to handle navigation between screens by sRouting.
 The ``Router`` can trigger a transition from inside(view) or outside(view model) the view.
 
-![A sRouting banner.](srouting_banner.png)
+![A sRouting banner.](https://github.com/ThangKM/sRouting/blob/main/Sources/sRouting/DocsRouting.docc/Resources/sRouting/srouting_banner.png)
 
 ## Requirements
 
@@ -25,7 +25,7 @@ Add `sRouting` as a dependency to the project.
 See [this WWDC presentation](https://developer.apple.com/videos/play/wwdc2019/408/) about more information how to adopt Swift packages in your app.
 Specify `https://github.com/ThangKM/sRouting.git` as the `sRouting` package link.
 
-![](bookie_add_srouting.png)
+![](https://github.com/ThangKM/sRouting/blob/main/Sources/sRouting/DocsRouting.docc/Resources/Bookie/SectionOne/bookie_add_srouting.png)
 
 ## 🏃‍♂️ Getting Started with sRouting
 
