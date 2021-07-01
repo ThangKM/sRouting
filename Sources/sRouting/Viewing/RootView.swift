@@ -21,8 +21,11 @@ where Content: View, RootRouterType: RootRouter {
     
     private let content: () -> Content
 
-    
-    init(rootRouter: RootRouterType,
+    /// initalizer of ``RootView``
+    ///  - Parameters:
+    ///   - rootRouter: Type of ``RootRouter``
+    ///   - content: Content view builder
+    public init(rootRouter: RootRouterType,
          @ViewBuilder content: @escaping () -> Content) {
         self.rootRouter = rootRouter
         self.baseRootRouter = rootRouter
