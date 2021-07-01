@@ -21,7 +21,7 @@ See [this WWDC presentation](https://developer.apple.com/videos/play/wwdc2021/10
 
 From xCode select Product -> Build Doccumentation -> Explore.
 
-
+Or downloads the doccument archive from [release](https://github.com/ThangKM/sRouting/releases) 
 ## 🛠 Installation
 
 Add `sRouting` as a dependency to the project.
