@@ -16,9 +16,9 @@ jobs:
     runs-on: macOS-latest
     steps:
     - uses: actions/checkout@v2
-#    - name: Run macOS tests
-#      run: swift test -v
     - name: Generate xcodeproj
       run: swift package generate-xcodeproj
     - name: Run iOS tests
       run: xcodebuild test -destination 'name=iPhone 11' -scheme 'sRouting-Package'
+    - name: Run macOS tests
+      run: swift test -v
