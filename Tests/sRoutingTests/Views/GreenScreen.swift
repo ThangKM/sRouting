@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import ViewInspector
 @testable import sRouting
 
 struct GreenScreen: View {
@@ -14,10 +15,12 @@ struct GreenScreen: View {
     
     var body: some View {
         ScreenView(router: router) {
-            Text("GreenScreen")
+            Text("GreenScreenText")
                 .onTapGesture {
                     router.trigger(to: .redScreen, with: .present)
             }
         }
     }
 }
+
+extension GreenScreen: Inspectable { }

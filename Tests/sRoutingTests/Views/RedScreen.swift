@@ -14,7 +14,7 @@ struct RedScreen: View {
     
     var body: some View {
         ScreenView(router: router) {
-            Text("RedScreen")
+            Text("RedScreenText")
                 .onTapGesture {
                     router.trigger(to: .blueScreen, with: .sheet)
             }
