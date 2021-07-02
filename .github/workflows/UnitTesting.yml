@@ -19,4 +19,6 @@ jobs:
     - name: Generate xcodeproj
       run: swift package generate-xcodeproj
     - name: Run iOS tests
-      run: xcodebuild test -destination 'name=iPhone 11' -scheme 'sRouting-Package'
+      run: xcodebuild test -destination 'name=iPhone 11' -scheme 'sRouting-Package' -enableCodeCoverage YES build test
+    - name: Upload coverage to Codecov
+      uses: codecov/codecov-action@v1.2.1
