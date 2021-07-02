@@ -11,11 +11,11 @@ import ViewInspector
 
 struct BlueScreen: View {
     @StateObject
-    private var router = Router<ColorScreenRoute>()
+    var router = Router<ColorScreenRoute>()
     
     var body: some View {
         ScreenView(router: router) {
-            Text("TextInBlueScreen")
+            Text("BlueScreenText")
                 .onTapGesture {
                     router.trigger(to: .greenScreen, with: .push)
             }
