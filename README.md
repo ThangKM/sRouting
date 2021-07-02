@@ -1,6 +1,7 @@
 
 # sRouting
 
+![Building workflow](https://github.com/github/docs/actions/workflows/Building.yml/badge.svg)
 [![codecov.io](https://codecov.io/gh/ThangKM/sRouting/branch/main/graphs/badge.svg?branch=main)](https://codecov.io/github/ThangKM/sRouting?branch=main)
 [![Swift Package Manager compatible](https://img.shields.io/badge/Swift%20Package%20Manager-compatible-brightgreen.svg)](https://github.com/apple/swift-package-manager)
 
