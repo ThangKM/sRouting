@@ -8,6 +8,10 @@
 import SwiftUI
 
 extension Binding {
+    
+    /// WillSet action
+    /// - Parameter execute: the action that will be called before binding set new value
+    /// - Returns: `Binding`
     internal func willSet(execute: @escaping (Value) -> Void) -> Binding {
         return Binding(
             get: {
