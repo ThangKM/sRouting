@@ -15,6 +15,10 @@ public enum TriggerType: String, CaseIterable {
     case present
     /// Present a  screen
     case sheet
+    
+    public var description: String {
+        "TriggerType - \(self)"
+    }
 }
 
 /// Transition type of navigation that using internal.
@@ -41,5 +45,9 @@ enum TransitionType: String, CaseIterable {
         case .present: self = .present
         case .sheet: self = .sheet
         }
+    }
+    
+    public var description: String {
+        "TransitionType - \(self)"
     }
 }
