@@ -8,17 +8,11 @@
 import SwiftUI
 @testable import sRouting
 
-enum ColorScreenRoute: Route {
+enum EmptypeRoute: Route {
     
-    case blueScreen
-    case redScreen
-    case greenScreen
+    case emptyScreen
     
     var screen: some View {
-        switch self {
-        case .blueScreen: BlueScreen()
-        case .redScreen: RedScreen()
-        case .greenScreen: GreenScreen()
-        }
+        EmptyView()
     }
 }

@@ -22,9 +22,12 @@ class TestInitializers: XCTestCase {
     }
     
     func testInitScreenView() throws {
-        let view = BlueScreen()
-        let sut = try view.inspect().find(text: "BlueScreenText").string()
-        XCTAssertEqual(sut, "BlueScreenText")
+        let router = Router<EmptypeRoute>()
+        let view = ScreenView(router: router) {
+            Text("TextInScreenView")
+        }
+        let sut = try view.inspect().find(text: "TextInScreenView").string()
+        XCTAssertEqual(sut, "TextInScreenView")
     }
     
     func testInitRootView() throws {
@@ -37,11 +40,11 @@ class TestInitializers: XCTestCase {
     }
     
     func testInitNavigatorView() throws {
-        let sut = NavigatorView(router: Router<ColorScreenRoute>()) {
+        let sut = NavigatorView(router: Router<EmptypeRoute>()) {
             // dismiss callback
         }.environmentObject(RootRouter())
         
-        let isHidden = try sut.inspect().view(NavigatorView<ColorScreenRoute>.self).group().isHidden()
+        let isHidden = try sut.inspect().view(NavigatorView<EmptypeRoute>.self).group().isHidden()
         XCTAssertTrue(isHidden)
     }
     
@@ -56,7 +59,7 @@ class TestInitializers: XCTestCase {
     }
     
     func testInitialTransitionWithSelectTab() throws {
-        let sut = Transition<ColorScreenRoute>(selectTab: 0)
+        let sut = Transition<EmptypeRoute>(selectTab: 0)
         XCTAssertNil(sut.alert)
         XCTAssertNil(sut.screenView)
         XCTAssertEqual(sut.tabIndex, 0)
@@ -64,7 +67,7 @@ class TestInitializers: XCTestCase {
     }
     
     func testInitalTrasitionWithType() throws {
-        let sut = Transition<ColorScreenRoute>(with: .dismissAll)
+        let sut = Transition<EmptypeRoute>(with: .dismissAll)
         XCTAssertNil(sut.alert)
         XCTAssertNil(sut.screenView)
         XCTAssertNil(sut.tabIndex)
@@ -72,7 +75,7 @@ class TestInitializers: XCTestCase {
     }
     
     func testInitTransitionWithAlert() throws {
-        let sut = Transition<ColorScreenRoute>(with: Alert(title: Text(""), message: Text("message"), dismissButton: nil))
+        let sut = Transition<EmptypeRoute>(with: Alert(title: Text(""), message: Text("message"), dismissButton: nil))
         XCTAssertNotNil(sut.alert)
         XCTAssertNil(sut.screenView)
         XCTAssertNil(sut.tabIndex)
@@ -80,7 +83,7 @@ class TestInitializers: XCTestCase {
     }
     
     func testInitTransitionWithError() throws {
-        let sut = Transition<ColorScreenRoute>(with: NSError(domain: "", code: 1, userInfo: [:]), and: nil)
+        let sut = Transition<EmptypeRoute>(with: NSError(domain: "", code: 1, userInfo: [:]), and: nil)
         XCTAssertNotNil(sut.alert)
         XCTAssertNil(sut.screenView)
         XCTAssertNil(sut.tabIndex)
@@ -88,7 +91,7 @@ class TestInitializers: XCTestCase {
     }
     
     func testInitTransitionWithRoute() throws {
-        let sut = Transition<ColorScreenRoute>(with: ColorScreenRoute.blueScreen, and: .sheet)
+        let sut = Transition<EmptypeRoute>(with: .emptyScreen, and: .sheet)
         XCTAssertNotNil(sut.screenView)
         XCTAssertNil(sut.alert)
         XCTAssertNil(sut.tabIndex)
@@ -96,12 +99,19 @@ class TestInitializers: XCTestCase {
     }
     
     func testInitTransitionNoneType() throws {
-        let sut = Transition<ColorScreenRoute>(with: .none)
+        let sut = Transition<EmptypeRoute>(with: .none)
         XCTAssertNil(sut.alert)
         XCTAssertNil(sut.screenView)
         XCTAssertNil(sut.tabIndex)
         XCTAssertEqual(sut.type, .none)
         XCTAssertEqual(sut, Transition.none)
+    }
+    
+    func testInitTransitionType() throws {
+        TriggerType.allCases.forEach { triggerType in
+            let transitionType = TransitionType(with: triggerType)
+            XCTAssertEqual(transitionType.rawValue, triggerType.rawValue)
+        }
     }
     
     func testTransitionType() {
@@ -114,6 +124,14 @@ class TestInitializers: XCTestCase {
         TriggerType.allCases.forEach { type in
             XCTAssertEqual(type.description, "TriggerType - \(type)")
         }
+    }
+    
+    func testRootRouterInit() throws {
+        let router = RootRouter()
+        XCTAssertEqual(router.tabbarSelection, 0)
+        XCTAssertEqual(router.dismissAll, 0)
+        router.dismissToRoot()
+        XCTAssertEqual(router.dismissAll, 1)
     }
 }
 
