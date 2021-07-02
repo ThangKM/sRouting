@@ -13,8 +13,7 @@ import XCTest
 class NavigatorViewTests: XCTestCase {
     
     func testPush() throws {
-        @ObservedObject
-        var router = Router<EmptypeRoute>()
+        let router = Router<EmptypeRoute>()
         let _ = NavigatorView(router: router) { type in
             XCTAssertTrue(type == .push)
         }
