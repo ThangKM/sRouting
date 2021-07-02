@@ -4,7 +4,7 @@
 
 # sRouting
 
-[![codecov.io](https://codecov.io/gh/ThangKM/sRouting/branch/develop/graphs/badge.svg?branch=develop)](https://codecov.io/github/ThangKM/sRouting?branch=master)
+[![codecov.io](https://codecov.io/gh/ThangKM/sRouting/branch/main/graphs/badge.svg?branch=main)](https://codecov.io/github/ThangKM/sRouting?branch=main)
 [![Swift Package Manager compatible](https://img.shields.io/badge/Swift%20Package%20Manager-compatible-brightgreen.svg)](https://github.com/apple/swift-package-manager)
 
 The lightweight navigation framework for SwiftUI.
