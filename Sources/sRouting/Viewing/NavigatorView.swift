@@ -127,3 +127,12 @@ extension NavigatorView {
         }
     }
 }
+
+
+#if os(macOS)
+extension View {
+    func fullScreenCover<Content>(isPresented: Binding<Bool>, @ViewBuilder content: @escaping () -> Content) -> some View where Content: View {
+        return self
+    }
+}
+#endif
