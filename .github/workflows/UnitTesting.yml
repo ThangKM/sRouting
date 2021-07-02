@@ -20,5 +20,3 @@ jobs:
       run: swift package generate-xcodeproj
     - name: Run iOS tests
       run: xcodebuild test -destination 'name=iPhone 11' -scheme 'sRouting-Package'
-    - name: Run macOS tests
-      run: swift test -v
