@@ -18,5 +18,7 @@ jobs:
     - uses: actions/checkout@v2
 #    - name: Run macOS tests
 #      run: swift test -v
+    - name: Generate xcodeproj
+      run: swift package generate-xcodeproj
     - name: Run iOS tests
-      run: set -o pipefail && env NSUnbufferedIO=YES xcodebuild test-without-building -scheme IndexedDataStore -destination "platform=iOS Simulator,OS=latest,name=iPhone 12" | xcpretty
+      run: xcodebuild test -destination 'name=iPhone 11' -scheme 'sRouting-Package'
