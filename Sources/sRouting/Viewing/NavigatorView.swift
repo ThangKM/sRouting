@@ -24,7 +24,7 @@ where RouteType: Route {
     @Environment(\.scenePhase) private var scenePhase
     
     /// Active state of a `NavigationLink`
-    @State private var isActivePush: Bool = false
+    @State private(set) var isActivePush: Bool = false
     /// Active state of a full screen presentation
     @State private var isActivePresent: Bool = false
     /// Active state of a sheet presentation
@@ -39,10 +39,23 @@ where RouteType: Route {
     /// The alert from transition
     private let alertView: Alert?
     
+    private let onChangeState: ((TransitionType) -> Void)?
+    
     init(router: Router<RouteType>,
          onDismiss: @escaping VoidAction) {
         self.router = router
         self.dismissAction = onDismiss
+        self.destinationView = router.transition.screenView
+        self.alertView = router.transition.alert
+        onChangeState = nil
+    }
+    
+    /// Initializer for Testing
+    init(router: Router<RouteType>,
+         onStateChange: @escaping (TransitionType) -> Void) {
+        self.router = router
+        self.dismissAction = { }
+        self.onChangeState = onStateChange
         self.destinationView = router.transition.screenView
         self.alertView = router.transition.alert
     }
@@ -125,6 +138,7 @@ extension NavigatorView {
             rootRouter.dismissToRoot()
         case .none: break
         }
+        onChangeState?(transition.type)
     }
 }
 
