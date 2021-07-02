@@ -7,10 +7,8 @@ on:
     branches: [ main, develop ]
 
 jobs:
-  build:
-
+  Building_The_Package:
     runs-on: macos-latest
-
     steps:
     - uses: actions/checkout@v2
     - name: Build
