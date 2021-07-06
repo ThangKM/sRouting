@@ -32,6 +32,8 @@ enum TransitionType: String, CaseIterable {
     case selectTab
     /// Show alert
     case alert
+    /// Show actions sheet on iOS & iPad
+    case actionSheet
     /// Present a  screen
     case sheet
     /// Dismiss(pop) screen

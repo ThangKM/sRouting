@@ -14,7 +14,7 @@ import Combine
 class RouterTests: XCTestCase {
     
     func testSelectTabbarItem() {
-        let router: Router<EmptypeRoute> = .init()
+        let router: Router<EmptyRoute> = .init()
         var bag = [AnyCancellable]()
         let exp = XCTestExpectation()
         
@@ -30,7 +30,7 @@ class RouterTests: XCTestCase {
     }
     
     func testTrigger() {
-        let router: Router<EmptypeRoute> = .init()
+        let router: Router<EmptyRoute> = .init()
         var bag = [AnyCancellable]()
         let exp = XCTestExpectation()
         
@@ -46,7 +46,7 @@ class RouterTests: XCTestCase {
     }
     
     func testShowError() {
-        let router: Router<EmptypeRoute> = .init()
+        let router: Router<EmptyRoute> = .init()
         var bag = [AnyCancellable]()
         let exp = XCTestExpectation()
         
@@ -63,7 +63,7 @@ class RouterTests: XCTestCase {
     }
     
     func testShowAlert() {
-        let router: Router<EmptypeRoute> = .init()
+        let router: Router<EmptyRoute> = .init()
         var bag = [AnyCancellable]()
         let exp = XCTestExpectation()
         
@@ -79,7 +79,7 @@ class RouterTests: XCTestCase {
     }
     
     func testDismiss() {
-        let router: Router<EmptypeRoute> = .init()
+        let router: Router<EmptyRoute> = .init()
         var bag = [AnyCancellable]()
         let exp = XCTestExpectation()
         
@@ -94,7 +94,7 @@ class RouterTests: XCTestCase {
     }
     
     func testDismissAll() {
-        let router: Router<EmptypeRoute> = .init()
+        let router: Router<EmptyRoute> = .init()
         var bag = [AnyCancellable]()
         let exp = XCTestExpectation()
         
@@ -109,7 +109,7 @@ class RouterTests: XCTestCase {
     }
     
     func testResetTransition() {
-        let router: Router<EmptypeRoute> = .init()
+        let router: Router<EmptyRoute> = .init()
         var bag = [AnyCancellable]()
         let exp = XCTestExpectation()
         router.objectWillChange

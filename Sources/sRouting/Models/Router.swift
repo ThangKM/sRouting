@@ -75,6 +75,13 @@ where RouteType: Route {
         objectWillChange.send()
     }
     
+    #if os(iOS) && os(macOS)
+    open func show(actionSheet: ActionSheet) {
+        transition = .init(with: actionSheet)
+        objectWillChange.send()
+    }
+    #endif
+    
     /// Dismiss or pop current screen
     ///
     /// ### Example

@@ -22,7 +22,7 @@ class TestInitializers: XCTestCase {
     }
     
     func testInitScreenView() throws {
-        let router = Router<EmptypeRoute>()
+        let router = Router<EmptyRoute>()
         let view = ScreenView(router: router) {
             Text("TextInScreenView")
         }
@@ -40,11 +40,11 @@ class TestInitializers: XCTestCase {
     }
     
     func testInitNavigatorView() throws {
-        let sut = NavigatorView(router: Router<EmptypeRoute>()) {
+        let sut = NavigatorView(router: Router<EmptyRoute>()) {
             // dismiss callback
         }.environmentObject(RootRouter())
         
-        let isHidden = try sut.inspect().view(NavigatorView<EmptypeRoute>.self).group().isHidden()
+        let isHidden = try sut.inspect().view(NavigatorView<EmptyRoute>.self).group().isHidden()
         XCTAssertTrue(isHidden)
     }
     
@@ -59,7 +59,7 @@ class TestInitializers: XCTestCase {
     }
     
     func testInitialTransitionWithSelectTab() throws {
-        let sut = Transition<EmptypeRoute>(selectTab: 0)
+        let sut = Transition<EmptyRoute>(selectTab: 0)
         XCTAssertNil(sut.alert)
         XCTAssertNil(sut.screenView)
         XCTAssertEqual(sut.tabIndex, 0)
@@ -67,7 +67,7 @@ class TestInitializers: XCTestCase {
     }
     
     func testInitalTrasitionWithType() throws {
-        let sut = Transition<EmptypeRoute>(with: .dismissAll)
+        let sut = Transition<EmptyRoute>(with: .dismissAll)
         XCTAssertNil(sut.alert)
         XCTAssertNil(sut.screenView)
         XCTAssertNil(sut.tabIndex)
@@ -75,7 +75,7 @@ class TestInitializers: XCTestCase {
     }
     
     func testInitTransitionWithAlert() throws {
-        let sut = Transition<EmptypeRoute>(with: Alert(title: Text(""), message: Text("message"), dismissButton: nil))
+        let sut = Transition<EmptyRoute>(with: Alert(title: Text(""), message: Text("message"), dismissButton: nil))
         XCTAssertNotNil(sut.alert)
         XCTAssertNil(sut.screenView)
         XCTAssertNil(sut.tabIndex)
@@ -83,7 +83,7 @@ class TestInitializers: XCTestCase {
     }
     
     func testInitTransitionWithError() throws {
-        let sut = Transition<EmptypeRoute>(with: NSError(domain: "", code: 1, userInfo: [:]), and: nil)
+        let sut = Transition<EmptyRoute>(with: NSError(domain: "", code: 1, userInfo: [:]), and: nil)
         XCTAssertNotNil(sut.alert)
         XCTAssertNil(sut.screenView)
         XCTAssertNil(sut.tabIndex)
@@ -91,7 +91,7 @@ class TestInitializers: XCTestCase {
     }
     
     func testInitTransitionWithRoute() throws {
-        let sut = Transition<EmptypeRoute>(with: .emptyScreen, and: .sheet)
+        let sut = Transition<EmptyRoute>(with: .emptyScreen, and: .sheet)
         XCTAssertNotNil(sut.screenView)
         XCTAssertNil(sut.alert)
         XCTAssertNil(sut.tabIndex)
@@ -99,7 +99,7 @@ class TestInitializers: XCTestCase {
     }
     
     func testInitTransitionNoneType() throws {
-        let sut = Transition<EmptypeRoute>(with: .none)
+        let sut = Transition<EmptyRoute>(with: .none)
         XCTAssertNil(sut.alert)
         XCTAssertNil(sut.screenView)
         XCTAssertNil(sut.tabIndex)

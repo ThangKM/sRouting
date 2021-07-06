@@ -1,5 +1,5 @@
 //
-//  ColorScreenRoute.swift
+//  EmptyRoute.swift
 //  
 //
 //  Created by ThangKieu on 7/1/21.
@@ -8,7 +8,7 @@
 import SwiftUI
 @testable import sRouting
 
-enum EmptypeRoute: Route {
+enum EmptyRoute: Route {
     
     case emptyScreen
     
