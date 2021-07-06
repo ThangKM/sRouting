@@ -58,7 +58,7 @@ struct Transition<RouteType> where RouteType: Route {
     }
     
     init(with route: RouteType, and action: TransitionType) {
-        precondition(OSEnvironment.current != .macOS && action != .present, "macOS didn't support fullScreenCover & actionSheet")
+        precondition(OSEnvironment.current != .macOS || action != .present, "macOS didn't support fullScreenCover & actionSheet")
         self.type = action
         self.screenView = route.screen
         self.alert = route.alert
