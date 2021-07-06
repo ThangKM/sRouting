@@ -11,5 +11,11 @@ jobs:
     runs-on: macos-latest
     steps:
     - uses: actions/checkout@v2
-    - name: Build
+    - name: Build macOS
       run: swift build -v
+    - name: Generate xcodeproj
+      run: swift package generate-xcodeproj
+    - name: Build iOS
+      run: xcodebuild build -destination 'platform=iOS Simulator, name=iPhone 11' -scheme 'sRouting-Package'
+    - name: Build tvOS
+      run: xcodebuild build -destination 'platform=tvOS Simulator, name=Apple TV' -scheme 'sRouting-Package'

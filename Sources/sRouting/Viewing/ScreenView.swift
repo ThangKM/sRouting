@@ -14,7 +14,7 @@ where Content: View, RouteType: Route {
     @Environment(\.presentationMode) private var presentationMode
     
     @ObservedObject
-    var router: Router<RouteType>
+    private var router: Router<RouteType>
     
     /// Content view builder
     private let content: () -> Content
