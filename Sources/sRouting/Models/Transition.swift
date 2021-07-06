@@ -62,7 +62,7 @@ struct Transition<RouteType> where RouteType: Route {
         precondition(OSEnvironment.current != .macOS || action != .actionSheet, "macOS didn't support actionSheet")
         self.type = action
         self.route = route
-        self.alert = route.alert
+        self.alert = nil
         tabIndex = nil
     }
     

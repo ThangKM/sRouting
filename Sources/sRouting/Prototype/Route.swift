@@ -15,11 +15,4 @@ public protocol Route {
     /// Screen builder
     @ViewBuilder
     var screen: ViewType { get }
-    
-    /// Alert builder
-    var alert: Alert? { get }
-}
-
-extension Route {
-    public var alert: Alert? { return nil }
 }
