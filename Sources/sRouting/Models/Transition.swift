@@ -14,6 +14,10 @@ struct Transition<RouteType> where RouteType: Route {
     let alert: Alert?
     let tabIndex: Int?
     
+    #if os(iOS) && os(tvOS)
+    let actionSheet: ActionSheet?
+    #endif
+    
     init(with type: TransitionType) {
         self.type = type
         screenView = nil
@@ -27,6 +31,17 @@ struct Transition<RouteType> where RouteType: Route {
         screenView = nil
         alert = nil
     }
+    
+    
+    #if os(iOS) && os(tvOS)
+    init(with actionSheet: ActionSheet) {
+        self.type = .actionSheet
+        screenView = nil
+        tabIndex = nil
+        alert = nil
+        self.actionSheet = actionSheet
+    }
+    #endif
     
     init(with alert: Alert) {
         self.type = .alert
@@ -43,6 +58,7 @@ struct Transition<RouteType> where RouteType: Route {
     }
     
     init(with route: RouteType, and action: TransitionType) {
+        precondition(OSEnvironment.current != .macOS && action != .present, "macOS didn't support fullScreenCover & actionSheet")
         self.type = action
         self.screenView = route.screen
         self.alert = route.alert

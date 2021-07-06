@@ -13,7 +13,8 @@ where Content: View, RouteType: Route {
     
     @Environment(\.presentationMode) private var presentationMode
     
-    private let router: Router<RouteType>
+    @ObservedObject
+    var router: Router<RouteType>
     
     /// Content view builder
     private let content: () -> Content
