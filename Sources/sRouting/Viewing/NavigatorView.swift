@@ -39,7 +39,7 @@ where RouteType: Route {
     /// The destination screen from transition
     @ViewBuilder
     private var destinationView: some View {
-        router.transition.screenView
+        router.transition.route?.screen
     }
     /// The alert from transition
     private let alertView: Alert?

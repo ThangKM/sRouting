@@ -61,7 +61,7 @@ class TestInitializers: XCTestCase {
     func testInitialTransitionWithSelectTab() throws {
         let sut = Transition<EmptyRoute>(selectTab: 0)
         XCTAssertNil(sut.alert)
-        XCTAssertNil(sut.screenView)
+        XCTAssertNil(sut.route)
         XCTAssertEqual(sut.tabIndex, 0)
         XCTAssertEqual(sut.type, .selectTab)
     }
@@ -69,7 +69,7 @@ class TestInitializers: XCTestCase {
     func testInitalTrasitionWithType() throws {
         let sut = Transition<EmptyRoute>(with: .dismissAll)
         XCTAssertNil(sut.alert)
-        XCTAssertNil(sut.screenView)
+        XCTAssertNil(sut.route)
         XCTAssertNil(sut.tabIndex)
         XCTAssertEqual(sut.type, .dismissAll)
     }
@@ -77,7 +77,7 @@ class TestInitializers: XCTestCase {
     func testInitTransitionWithAlert() throws {
         let sut = Transition<EmptyRoute>(with: Alert(title: Text(""), message: Text("message"), dismissButton: nil))
         XCTAssertNotNil(sut.alert)
-        XCTAssertNil(sut.screenView)
+        XCTAssertNil(sut.route)
         XCTAssertNil(sut.tabIndex)
         XCTAssertEqual(sut.type, .alert)
     }
@@ -85,14 +85,14 @@ class TestInitializers: XCTestCase {
     func testInitTransitionWithError() throws {
         let sut = Transition<EmptyRoute>(with: NSError(domain: "", code: 1, userInfo: [:]), and: nil)
         XCTAssertNotNil(sut.alert)
-        XCTAssertNil(sut.screenView)
+        XCTAssertNil(sut.route)
         XCTAssertNil(sut.tabIndex)
         XCTAssertEqual(sut.type, .alert)
     }
     
     func testInitTransitionWithRoute() throws {
         let sut = Transition<EmptyRoute>(with: .emptyScreen, and: .sheet)
-        XCTAssertNotNil(sut.screenView)
+        XCTAssertNotNil(sut.route)
         XCTAssertNil(sut.alert)
         XCTAssertNil(sut.tabIndex)
         XCTAssertEqual(sut.type, .sheet)
@@ -101,7 +101,7 @@ class TestInitializers: XCTestCase {
     func testInitTransitionNoneType() throws {
         let sut = Transition<EmptyRoute>(with: .none)
         XCTAssertNil(sut.alert)
-        XCTAssertNil(sut.screenView)
+        XCTAssertNil(sut.route)
         XCTAssertNil(sut.tabIndex)
         XCTAssertEqual(sut.type, .none)
         XCTAssertEqual(sut, Transition.none)

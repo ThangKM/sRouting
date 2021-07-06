@@ -10,7 +10,7 @@ import SwiftUI
 struct Transition<RouteType> where RouteType: Route {
     
     let type: TransitionType
-    let screenView: RouteType.ViewType?
+    let route: RouteType?
     let alert: Alert?
     let tabIndex: Int?
     
@@ -20,7 +20,7 @@ struct Transition<RouteType> where RouteType: Route {
     
     init(with type: TransitionType) {
         self.type = type
-        screenView = nil
+        route = nil
         alert = nil
         tabIndex = nil
     }
@@ -28,7 +28,7 @@ struct Transition<RouteType> where RouteType: Route {
     init(selectTab index: Int) {
         type = .selectTab
         tabIndex = index
-        screenView = nil
+        route = nil
         alert = nil
     }
     
@@ -36,7 +36,7 @@ struct Transition<RouteType> where RouteType: Route {
     #if os(iOS) && os(tvOS)
     init(with actionSheet: ActionSheet) {
         self.type = .actionSheet
-        screenView = nil
+        route = nil
         tabIndex = nil
         alert = nil
         self.actionSheet = actionSheet
@@ -45,14 +45,14 @@ struct Transition<RouteType> where RouteType: Route {
     
     init(with alert: Alert) {
         self.type = .alert
-        screenView = nil
+        route = nil
         tabIndex = nil
         self.alert = alert
     }
     
     init(with error: Error, and alertTitle: String? = nil) {
         self.type = .alert
-        screenView = nil
+        route = nil
         tabIndex = nil
         alert = Transition.alert(from: error, with: alertTitle)
     }
@@ -61,7 +61,7 @@ struct Transition<RouteType> where RouteType: Route {
         precondition(OSEnvironment.current != .macOS || action != .present, "macOS didn't support fullScreenCover")
         precondition(OSEnvironment.current != .macOS || action != .actionSheet, "macOS didn't support actionSheet")
         self.type = action
-        self.screenView = route.screen
+        self.route = route
         self.alert = route.alert
         tabIndex = nil
     }

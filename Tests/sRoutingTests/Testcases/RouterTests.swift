@@ -37,7 +37,7 @@ class RouterTests: XCTestCase {
         router.objectWillChange
             .sink { _ in
                 XCTAssertEqual(router.transition.type, .push)
-                XCTAssertNotNil(router.transition.screenView)
+                XCTAssertNotNil(router.transition.route)
                 exp.fulfill()
             }
             .store(in: &bag)
