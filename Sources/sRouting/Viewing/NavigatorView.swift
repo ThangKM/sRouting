@@ -77,9 +77,8 @@ where RouteType: Route {
         }
         .sheet(isPresented: $isActiveSheet.willSet(execute: onChangeActiveState(_:)),
             content: {
-            NavigationView {
-                destinationView
-            }
+            destinationView
+                .environmentObject(rootRouter)
         })
         .alert(isPresented: $isActiveAlert.willSet(execute: onChangeActiveState(_:))) {
             guard let alert = alertView
@@ -105,14 +104,28 @@ where RouteType: Route {
                 })
         }
         .fullScreenCover(isPresented: $isActivePresent.willSet(execute: onChangeActiveState(_:))) {
-            NavigationView {
-                destinationView
+            if #available(iOS 15, tvOS 15, *) {
+                NavigationView {
+                    destinationView
+                }
+            } else {
+                NavigationView {
+                    destinationView
+                }
+                .environmentObject(rootRouter)
             }
         }
         .sheet(isPresented: $isActiveSheet.willSet(execute: onChangeActiveState(_:)),
             content: {
-            NavigationView {
-                destinationView
+            if #available(iOS 15, tvOS 15, *) {
+                NavigationView {
+                    destinationView
+                }
+            } else {
+                NavigationView {
+                    destinationView
+                }
+                .environmentObject(rootRouter)
             }
         })
         .alert(isPresented: $isActiveAlert.willSet(execute: onChangeActiveState(_:))) {

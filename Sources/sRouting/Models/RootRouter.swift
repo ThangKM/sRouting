@@ -35,6 +35,7 @@ open class RootRouter: ObservableObject {
     }
     
     internal func dismissToRoot() {
+        guard dismissAll < UInt.max else { return }
         dismissAll += 1
     }
 }
