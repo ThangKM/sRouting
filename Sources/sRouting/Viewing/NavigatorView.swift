@@ -7,6 +7,16 @@
 
 import SwiftUI
 
+/// The test callbacks action of navigator views
+struct NavigatorActionTest<RouteType: Route> {
+    
+    typealias ViewReturnAction = (NavigatorView<RouteType>) -> Void
+    
+    var didChangeTransition: ViewReturnAction?
+    var didAppear: ViewReturnAction?
+    var resetActiveState: ViewReturnAction?
+}
+
 /// The hidden view that handle the navigation of a screen.
 struct NavigatorView<RouteType>: View
 where RouteType: Route {
@@ -26,13 +36,13 @@ where RouteType: Route {
     /// Active state of a `NavigationLink`
     @State private(set) var isActivePush: Bool = false
     /// Active state of a full screen presentation
-    @State private var isActivePresent: Bool = false
+    @State private(set) var isActivePresent: Bool = false
     /// Active state of a sheet presentation
-    @State private var isActiveSheet: Bool = false
+    @State private(set) var isActiveSheet: Bool = false
     /// Active state of a alert
-    @State private var isActiveAlert: Bool = false
+    @State private(set) var isActiveAlert: Bool = false
     /// Active state of action sheet
-    @State private var isActiveActionSheet: Bool = false
+    @State private(set) var isActiveActionSheet: Bool = false
 
     /// Dismiss action of presentationMode from @Enviroment
     private let dismissAction: VoidAction
@@ -44,24 +54,35 @@ where RouteType: Route {
     /// The alert from transition
     private let alertView: Alert?
     
+    ///Action test holder
+    private let tests: NavigatorActionTest<RouteType>?
+    
     #if os(iOS) && os(tvOS)
     /// The ActionSheet from transaction
     private var actionSheet: ActionSheet?
     
     init(router: Router<RouteType>,
-         onDismiss: @escaping VoidAction) {
+         onDismiss: @escaping VoidAction,
+         testsActions: NavigatorActionTest<RouteType>? = nil) {
         self.router = router
         self.dismissAction = onDismiss
         self.alertView = router.transition.alert
         self.actionSheet = router.transition.actionSheet
+        // test action holder
+        self.tests = testsActions
+        //
     }
     
     #else
     init(router: Router<RouteType>,
-         onDismiss: @escaping VoidAction) {
+         onDismiss: @escaping VoidAction,
+         testsActions: NavigatorActionTest<RouteType>? = nil) {
         self.router = router
         self.dismissAction = onDismiss
         self.alertView = router.transition.alert
+        // test action holder
+        self.tests = testsActions
+        //
     }
     #endif
     
@@ -91,6 +112,11 @@ where RouteType: Route {
         .onChange(of: router.transition, perform: { (transition) in
             updateActiveState(from: transition)
         })
+        .onAppear {
+            // test - action
+            tests?.didAppear?(self)
+            //
+        }
         .hidden()
     }
     #else
@@ -142,6 +168,11 @@ where RouteType: Route {
         .onChange(of: router.transition, perform: { (transition) in
             updateActiveState(from: transition)
         })
+        .onAppear {
+            //test - action
+            tests?.didAppear?(self)
+            //
+        }
         .hidden()
     }
     #endif
@@ -151,13 +182,16 @@ extension NavigatorView {
     
     /// reset all active state to false
     private func resetActiveState() {
-        guard scenePhase == .active else { return }
+        guard scenePhase == .active || tests != nil else { return }
         isActivePush = false
         isActivePresent = false
         isActiveAlert = false
         isActiveSheet = false
         isActiveActionSheet = false
         router.resetTransition(scenePhase: scenePhase)
+        // test - action
+        tests?.resetActiveState?(self)
+        //
     }
     
     /// Observe the active state change
@@ -193,5 +227,8 @@ extension NavigatorView {
             rootRouter.dismissToRoot()
         case .none: break
         }
+        // test - action
+        tests?.didChangeTransition?(self)
+        //
     }
 }
