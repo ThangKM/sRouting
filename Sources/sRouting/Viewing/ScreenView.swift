@@ -11,7 +11,8 @@ import SwiftUI
 public struct ScreenView<Content, RouteType>: View
 where Content: View, RouteType: Route {
     
-    @Environment(\.presentationMode) private var presentationMode
+    @Binding
+    private var presentationMode: PresentationMode
     
     @ObservedObject
     private var router: Router<RouteType>
@@ -24,15 +25,17 @@ where Content: View, RouteType: Route {
     ///   - rootRouter: Type of ``Router``
     ///   - content: Content view builder
     public init(router: Router<RouteType>,
+                presentationMode: Binding<PresentationMode>,
                 @ViewBuilder content: @escaping () -> Content) {
         self.router = router
+        self._presentationMode = presentationMode
         self.content = content
     }
     
     public var body: some View {
         return ZStack {
             NavigatorView(router: router) {
-                presentationMode.wrappedValue.dismiss()
+                presentationMode.dismiss()
             }
             
             content()

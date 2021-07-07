@@ -11,23 +11,26 @@ import SwiftUI
 
 @testable import sRouting
 
+struct TestScreen: View, Inspectable {
+    
+    @Environment(\.presentationMode)
+    private var presentationMode
+    
+    var body: some View {
+        let router = Router<EmptyRoute>()
+        ScreenView(router: router, presentationMode: presentationMode) {
+            Text("TestScreen.ScreenView.Text")
+        }
+        environmentObject(RootRouter())
+    }
+}
+
 class TestInitializers: XCTestCase {
 
-    override class func setUp() {
-        super.setUp()
-    }
-    
-    override class func tearDown() {
-        super.tearDown()
-    }
-    
     func testInitScreenView() throws {
-        let router = Router<EmptyRoute>()
-        let view = ScreenView(router: router) {
-            Text("TextInScreenView")
-        }
-        let sut = try view.inspect().find(text: "TextInScreenView").string()
-        XCTAssertEqual(sut, "TextInScreenView")
+        let view = TestScreen()
+        let sut = try view.inspect().find(text: "TestScreen.ScreenView.Text").string()
+        XCTAssertEqual(sut, "TestScreen.ScreenView.Text")
     }
     
     func testInitRootView() throws {
@@ -37,15 +40,6 @@ class TestInitializers: XCTestCase {
 
         let sut = try view.inspect().find(text: "This is content in RootView").string()
         XCTAssertEqual(sut, "This is content in RootView")
-    }
-    
-    func testInitNavigatorView() throws {
-        let sut = NavigatorView(router: Router<EmptyRoute>()) {
-            // dismiss callback
-        }.environmentObject(RootRouter())
-        
-        let isHidden = try sut.inspect().view(NavigatorView<EmptyRoute>.self).group().isHidden()
-        XCTAssertTrue(isHidden)
     }
     
     func testBindingWillSetExtension() {
