@@ -173,7 +173,6 @@ extension NavigatorView {
     /// Observe the transition change from router
     /// - Parameter transition: ``Transiton``
     private func updateActiveState(from transition: Transition<RouteType>) {
-        print("onChangeState")
         switch transition.type {
         case .push:
             isActivePush = true
