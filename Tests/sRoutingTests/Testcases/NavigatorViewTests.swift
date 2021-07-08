@@ -7,8 +7,8 @@
 
 import SwiftUI
 import ViewInspector
-@testable import sRouting
 import XCTest
+@testable import sRouting
 
 class NavigatorViewTests: XCTestCase {
     
