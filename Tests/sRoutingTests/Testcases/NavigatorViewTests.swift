@@ -132,7 +132,7 @@ class NavigatorViewTests: XCTestCase {
         }.environmentObject(RootRouter())
         
         ViewHosting.host(view: sut)
-        router.show(actionSheet: .init(title: Text("test"), message: nil, dismissButton: nil))
+        router.show(actionSheet: .init(title: Text("test"), message: nil))
         wait(for: [exp], timeout: 0.2)
     }
     

@@ -29,7 +29,7 @@ struct TestScreen: View, Inspectable {
 
 class TestInitializers: XCTestCase {
 
-    func testInitScreenView() throws {
+    func testInitScreenViewWithDimissAction() {
         let exp = XCTestExpectation()
         let router = Router<EmptyRoute>()
         let view = TestScreen(router: router, tests: .init(
@@ -37,8 +37,6 @@ class TestInitializers: XCTestCase {
             XCTAssertTrue(true)
             exp.fulfill()
         }))
-        let sut = try view.inspect().find(text: "TestScreen.ScreenView.Text").string()
-        XCTAssertEqual(sut, "TestScreen.ScreenView.Text")
         ViewHosting.host(view: view)
         router.dismiss()
         wait(for: [exp], timeout: 0.2)

@@ -24,8 +24,47 @@ struct Transition<RouteType> where RouteType: Route {
         alert = nil
         self.actionSheet = actionSheet
     }
-    #endif
+  
+    init(with type: TransitionType) {
+        self.type = type
+        route = nil
+        alert = nil
+        tabIndex = nil
+        actionSheet = nil
+    }
     
+    init(selectTab index: Int) {
+        type = .selectTab
+        tabIndex = index
+        route = nil
+        alert = nil
+        actionSheet = nil
+    }
+
+    init(with alert: Alert) {
+        self.type = .alert
+        route = nil
+        tabIndex = nil
+        self.alert = alert
+        actionSheet = nil
+    }
+    
+    init(with error: Error, and alertTitle: String? = nil) {
+        self.type = .alert
+        route = nil
+        tabIndex = nil
+        alert = Transition.alert(from: error, with: alertTitle)
+        actionSheet = nil
+    }
+    
+    init(with route: RouteType, and action: TransitionType) {
+        self.type = action
+        self.route = route
+        self.alert = nil
+        tabIndex = nil
+        actionSheet = nil
+    }
+    #else
     init(with type: TransitionType) {
         self.type = type
         route = nil
@@ -55,13 +94,14 @@ struct Transition<RouteType> where RouteType: Route {
     }
     
     init(with route: RouteType, and action: TransitionType) {
-        precondition(OSEnvironment.current != .macOS || action != .present, "macOS didn't support fullScreenCover")
-        precondition(OSEnvironment.current != .macOS || action != .actionSheet, "macOS didn't support actionSheet")
+        precondition(action != .present, "macOS didn't support fullScreenCover")
+        precondition(action != .actionSheet, "macOS didn't support actionSheet")
         self.type = action
         self.route = route
         self.alert = nil
         tabIndex = nil
     }
+    #endif
     
     private static func alert(from error: Error,
                        with title: String?) -> Alert {

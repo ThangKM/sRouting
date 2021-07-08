@@ -53,7 +53,7 @@ where RouteType: Route {
     
     init(router: Router<RouteType>,
          onDismiss: @escaping VoidAction,
-         testsActions: UnitTestActions<RouteType>? = nil) {
+         testsActions: UnitTestActions<Self, RouteType>? = nil) {
         self.router = router
         self.dismissAction = onDismiss
         self.alertView = router.transition.alert
