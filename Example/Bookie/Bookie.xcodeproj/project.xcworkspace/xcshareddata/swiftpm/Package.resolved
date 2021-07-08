@@ -1,0 +1,16 @@
+{
+  "object": {
+    "pins": [
+      {
+        "package": "sRouting",
+        "repositoryURL": "https://github.com/ThangKM/sRouting.git",
+        "state": {
+          "branch": null,
+          "revision": "1507f0c90b8851d99cccf1d4bd4c0e74b4ab431f",
+          "version": "1.0.0"
+        }
+      }
+    ]
+  },
+  "version": 1
+}

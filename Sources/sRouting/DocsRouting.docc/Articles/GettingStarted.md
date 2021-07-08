@@ -32,7 +32,7 @@ Setup the ``RootView`` for your app
 
 ```swift
 @main
-struct SequenceApp: App { 
+struct BookieApp: App { 
     ...
     @SceneBuilder
     var body: some Scene { 
@@ -56,14 +56,17 @@ The NavigatorView will handle transactions that are emited by ``Router``
 ```swift
 struct HomeScreen: View {
 
-@StateObject
-private var router: Router<AppRoute> = .init()
+    @Environment(\.presentationMode)
+    private var presentationMode
 
-var body: some View {
-    ScreenView(router: router) {
-    ...
+    @StateObject
+    private var router: Router<AppRoute> = .init()
+
+    var body: some View {
+        ScreenView(router: router, presentationMode: presentationMode) {
+        ...
+        }
     }
-}
 ```
 
 
@@ -129,14 +132,17 @@ class HomeViewModel: Router<AppRoute> {
 ```swift
 struct HomeScreen: View {
 
-@StateObject
-private var viewModel: HomeViewModel = .init()
+    @Environment(\.presentationMode)
+    private var presentationMode
 
-var body: some View {
-    ScreenView(router: viewModel) {
-    ...
+    @StateObject
+    private var viewModel: HomeViewModel = .init()
+
+    var body: some View {
+        ScreenView(router: viewModel, presentationMode: presentationMode) {
+        ...
+        }
     }
-}
 ```
 Now you can navigate to new screen in HomeViewModel, that's cool right?
 
