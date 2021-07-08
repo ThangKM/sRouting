@@ -7,16 +7,6 @@
 
 import SwiftUI
 
-/// The test callbacks action of navigator views
-struct NavigatorActionTest<RouteType: Route> {
-    
-    typealias ViewReturnAction = (NavigatorView<RouteType>) -> Void
-    
-    var didChangeTransition: ViewReturnAction?
-    var didAppear: ViewReturnAction?
-    var resetActiveState: ViewReturnAction?
-}
-
 /// The hidden view that handle the navigation of a screen.
 struct NavigatorView<RouteType>: View
 where RouteType: Route {
@@ -55,15 +45,15 @@ where RouteType: Route {
     private let alertView: Alert?
     
     ///Action test holder
-    private let tests: NavigatorActionTest<RouteType>?
+    private let tests: UnitTestActions<Self, RouteType>?
     
-    #if os(iOS) && os(tvOS)
+    #if os(iOS) || os(tvOS)
     /// The ActionSheet from transaction
     private var actionSheet: ActionSheet?
     
     init(router: Router<RouteType>,
          onDismiss: @escaping VoidAction,
-         testsActions: NavigatorActionTest<RouteType>? = nil) {
+         testsActions: UnitTestActions<Self, RouteType>? = nil) {
         self.router = router
         self.dismissAction = onDismiss
         self.alertView = router.transition.alert
@@ -76,7 +66,7 @@ where RouteType: Route {
     #else
     init(router: Router<RouteType>,
          onDismiss: @escaping VoidAction,
-         testsActions: NavigatorActionTest<RouteType>? = nil) {
+         testsActions: UnitTestActions<Self, RouteType>? = nil) {
         self.router = router
         self.dismissAction = onDismiss
         self.alertView = router.transition.alert

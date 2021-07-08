@@ -11,26 +11,13 @@ import SwiftUI
 
 @testable import sRouting
 
-struct TestScreen: View, Inspectable {
-    
-    @Environment(\.presentationMode)
-    private var presentationMode
-    
-    var body: some View {
-        let router = Router<EmptyRoute>()
-        ScreenView(router: router, presentationMode: presentationMode) {
-            Text("TestScreen.ScreenView.Text")
-        }
-        environmentObject(RootRouter())
-    }
-}
 
 class TestInitializers: XCTestCase {
 
     func testInitScreenView() throws {
-        let view = TestScreen()
-        let sut = try view.inspect().find(text: "TestScreen.ScreenView.Text").string()
-        XCTAssertEqual(sut, "TestScreen.ScreenView.Text")
+        let sut = InitScreenView()
+        let text = try sut.inspect().navigationView().find(text: "InitScreenView.ScreenView.Text").string()
+        XCTAssertEqual(text, "InitScreenView.ScreenView.Text")
     }
     
     func testInitRootView() throws {
