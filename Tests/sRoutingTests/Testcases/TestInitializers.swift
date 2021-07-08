@@ -16,21 +16,32 @@ struct TestScreen: View, Inspectable {
     @Environment(\.presentationMode)
     private var presentationMode
     
+    let router: Router<EmptyRoute>
+    let tests: UnitTestActions<ScreenView<Text,EmptyRoute>,EmptyRoute>
+    
     var body: some View {
-        let router = Router<EmptyRoute>()
-        ScreenView(router: router, presentationMode: presentationMode) {
+        ScreenView(router: router, presentationMode: presentationMode, tests: tests) {
             Text("TestScreen.ScreenView.Text")
         }
-        environmentObject(RootRouter())
+        .environmentObject(RootRouter())
     }
 }
 
 class TestInitializers: XCTestCase {
 
     func testInitScreenView() throws {
-        let view = TestScreen()
+        let exp = XCTestExpectation()
+        let router = Router<EmptyRoute>()
+        let view = TestScreen(router: router, tests: .init(
+            dismissAction: {
+            XCTAssertTrue(true)
+            exp.fulfill()
+        }))
         let sut = try view.inspect().find(text: "TestScreen.ScreenView.Text").string()
         XCTAssertEqual(sut, "TestScreen.ScreenView.Text")
+        ViewHosting.host(view: view)
+        router.dismiss()
+        wait(for: [exp], timeout: 0.2)
     }
     
     func testInitRootView() throws {

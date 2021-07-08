@@ -75,7 +75,7 @@ where RouteType: Route {
         objectWillChange.send()
     }
     
-    #if os(iOS) && os(tvOS)
+    #if os(iOS) || os(tvOS)
     open func show(actionSheet: ActionSheet) {
         transition = .init(with: actionSheet)
         objectWillChange.send()

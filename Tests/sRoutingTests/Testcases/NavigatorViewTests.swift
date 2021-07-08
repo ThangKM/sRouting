@@ -97,8 +97,27 @@ class NavigatorViewTests: XCTestCase {
         router.trigger(to: .emptyScreen, with: .push)
         wait(for: [exppush,exp], timeout: 0.2)
     }
+    
+    func testDismiss() {
+        let router = Router<EmptyRoute>()
+        let exp = XCTestExpectation(description: "wait.dismiss")
         
-    #if os(iOS) && os(tvOS)
+        let sut = NavigationView {
+            NavigatorView(router: router,
+                          onDismiss: {
+                XCTAssertTrue(true)
+                exp.fulfill()
+            })
+            
+        }.environmentObject(RootRouter())
+        
+        ViewHosting.host(view: sut)
+        
+        router.dismiss()
+        wait(for: [exp], timeout: 0.2)
+    }
+    
+    #if os(iOS) || os(tvOS)
     func testActiveActionSheet() {
         let router = Router<EmptyRoute>()
         let exp = XCTestExpectation()

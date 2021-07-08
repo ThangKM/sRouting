@@ -20,6 +20,8 @@ where Content: View, RouteType: Route {
     /// Content view builder
     private let content: () -> Content
     
+    private let tests: UnitTestActions<Self,RouteType>?
+    
     /// Initalizer of ``ScreenView``
     ///  - Parameters:
     ///   - rootRouter: Type of ``Router``
@@ -30,15 +32,30 @@ where Content: View, RouteType: Route {
         self.router = router
         self._presentationMode = presentationMode
         self.content = content
+        self.tests = nil
+    }
+    
+    internal init(router: Router<RouteType>,
+                presentationMode: Binding<PresentationMode>,
+                  tests: UnitTestActions<Self,RouteType>,
+                @ViewBuilder content: @escaping () -> Content) {
+        self.router = router
+        self._presentationMode = presentationMode
+        self.content = content
+        self.tests = tests
     }
     
     public var body: some View {
-        return ZStack {
+        ZStack {
             NavigatorView(router: router) {
                 presentationMode.dismiss()
+                tests?.dismissAction?()
             }
             
             content()
+        }
+        .onAppear {
+            tests?.didAppear?(self)
         }
     }
 }

@@ -14,8 +14,16 @@ struct Transition<RouteType> where RouteType: Route {
     let alert: Alert?
     let tabIndex: Int?
     
-    #if os(iOS) && os(tvOS)
+    #if os(iOS) || os(tvOS)
     let actionSheet: ActionSheet?
+    
+    init(with actionSheet: ActionSheet) {
+        self.type = .actionSheet
+        route = nil
+        tabIndex = nil
+        alert = nil
+        self.actionSheet = actionSheet
+    }
     #endif
     
     init(with type: TransitionType) {
@@ -31,18 +39,7 @@ struct Transition<RouteType> where RouteType: Route {
         route = nil
         alert = nil
     }
-    
-    
-    #if os(iOS) && os(tvOS)
-    init(with actionSheet: ActionSheet) {
-        self.type = .actionSheet
-        route = nil
-        tabIndex = nil
-        alert = nil
-        self.actionSheet = actionSheet
-    }
-    #endif
-    
+
     init(with alert: Alert) {
         self.type = .alert
         route = nil
