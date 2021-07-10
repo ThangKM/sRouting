@@ -1,4 +1,0 @@
-# ``sRouting/RootView``
-
-## Topics
-

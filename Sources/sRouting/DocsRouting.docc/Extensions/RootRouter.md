@@ -1,3 +1,0 @@
-# ``sRouting/RootRouter``
-
-## Topics
