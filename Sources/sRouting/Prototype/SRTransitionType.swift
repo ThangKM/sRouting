@@ -1,5 +1,5 @@
 //
-//  TransitionType.swift
+//  SRTransitionType.swift
 //  sRouting
 //
 //  Created by ThangKieu on 6/30/21.
@@ -8,7 +8,7 @@
 import SwiftUI
 
 /// Transition type of navigation for the trigger action.
-public enum TriggerType: String, CaseIterable {
+public enum SRTriggerType: String, CaseIterable {
     /// Push a screen
     case push
     /// Present full screen
@@ -41,7 +41,7 @@ enum TransitionType: String, CaseIterable {
     /// Dismiss to root screen
     case dismissAll
     
-    init(with triggerType: TriggerType) {
+    init(with triggerType: SRTriggerType) {
         switch triggerType {
         case .push: self = .push
         case .present: self = .present

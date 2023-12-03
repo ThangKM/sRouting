@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct Transition<RouteType> where RouteType: Route {
+struct SRTransition<RouteType> where RouteType: Route {
     
     let type: TransitionType
     let route: RouteType?
@@ -53,7 +53,7 @@ struct Transition<RouteType> where RouteType: Route {
         self.type = .alert
         route = nil
         tabIndex = nil
-        alert = Transition.alert(from: error, with: alertTitle)
+        alert = SRTransition.alert(from: error, with: alertTitle)
         actionSheet = nil
     }
     
@@ -90,7 +90,7 @@ struct Transition<RouteType> where RouteType: Route {
         self.type = .alert
         route = nil
         tabIndex = nil
-        alert = Transition.alert(from: error, with: alertTitle)
+        alert = SRTransition.alert(from: error, with: alertTitle)
     }
     
     init(with route: RouteType, and action: TransitionType) {
@@ -112,13 +112,13 @@ struct Transition<RouteType> where RouteType: Route {
     }
 }
 
-extension Transition {
-    static var none: Transition {
-        Transition(with: .none)
+extension SRTransition {
+    static var none: SRTransition {
+        SRTransition(with: .none)
     }
 }
 
-extension Transition: Equatable {
+extension SRTransition: Equatable {
     /// Conform Equatable
     /// - Parameters:
     ///   - lhs: left value
