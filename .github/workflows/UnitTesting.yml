@@ -21,6 +21,6 @@ jobs:
     - name: Run macOS tests
       run: xcodebuild test -scheme 'sRouting' -destination 'platform=macOS'
     - name: Run tvOS tests
-      run: xcodebuild test -scheme 'sRouting' -destination 'platform:tvOS Simulator, id:E90D8F72-0283-435D-B8D6-70E1160A9756, OS:16.0, name:Apple TV'
+      run: xcodebuild test -scheme 'sRouting' -destination 'platform:tvOS Simulator'
     - name: Upload coverage to Codecov
       uses: codecov/codecov-action@v1.2.1
