@@ -19,8 +19,8 @@ jobs:
     - name: Run iOS tests
       run: xcodebuild test -destination 'name=iPhone 14' -scheme 'sRouting' -enableCodeCoverage YES build test
     - name: Run macOS tests
-      run: xcodebuild test -scheme sRouting -destination 'platform=macOS'
+      run: xcodebuild test -scheme 'sRouting' -destination 'platform=macOS'
     - name: Run tvOS tests
-      run: xcodebuild test -scheme Earendil -destination 'platform=tvOS'
+      run: xcodebuild test -scheme 'sRouting' -destination 'platform=tvOS'
     - name: Upload coverage to Codecov
       uses: codecov/codecov-action@v1.2.1
