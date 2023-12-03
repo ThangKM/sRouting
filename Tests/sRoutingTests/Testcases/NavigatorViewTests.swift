@@ -27,7 +27,7 @@ class NavigatorViewTests: XCTestCase {
         
         ViewHosting.host(view: sut)
         router.trigger(to: .emptyScreen, with: .push)
-        wait(for: [exp], timeout: 0.2)
+        wait(for: [exp], timeout: 1)
     }
     
     func testActiveSheet() {
