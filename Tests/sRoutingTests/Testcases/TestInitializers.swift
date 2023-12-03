@@ -40,7 +40,7 @@ class TestInitializers: XCTestCase {
     }
     
     func testInitialTransitionWithSelectTab() throws {
-        let sut = Transition<EmptyRoute>(selectTab: 0)
+        let sut = SRTransition<EmptyRoute>(selectTab: 0)
         XCTAssertNil(sut.alert)
         XCTAssertNil(sut.route)
         XCTAssertEqual(sut.tabIndex, 0)
@@ -48,7 +48,7 @@ class TestInitializers: XCTestCase {
     }
     
     func testInitalTrasitionWithType() throws {
-        let sut = Transition<EmptyRoute>(with: .dismissAll)
+        let sut = SRTransition<EmptyRoute>(with: .dismissAll)
         XCTAssertNil(sut.alert)
         XCTAssertNil(sut.route)
         XCTAssertNil(sut.tabIndex)
@@ -56,7 +56,7 @@ class TestInitializers: XCTestCase {
     }
     
     func testInitTransitionWithAlert() throws {
-        let sut = Transition<EmptyRoute>(with: Alert(title: Text(""), message: Text("message"), dismissButton: nil))
+        let sut = SRTransition<EmptyRoute>(with: Alert(title: Text(""), message: Text("message"), dismissButton: nil))
         XCTAssertNotNil(sut.alert)
         XCTAssertNil(sut.route)
         XCTAssertNil(sut.tabIndex)
@@ -64,7 +64,7 @@ class TestInitializers: XCTestCase {
     }
     
     func testInitTransitionWithError() throws {
-        let sut = Transition<EmptyRoute>(with: NSError(domain: "", code: 1, userInfo: [:]), and: nil)
+        let sut = SRTransition<EmptyRoute>(with: NSError(domain: "", code: 1, userInfo: [:]), and: nil)
         XCTAssertNotNil(sut.alert)
         XCTAssertNil(sut.route)
         XCTAssertNil(sut.tabIndex)
@@ -72,7 +72,7 @@ class TestInitializers: XCTestCase {
     }
     
     func testInitTransitionWithRoute() throws {
-        let sut = Transition<EmptyRoute>(with: .emptyScreen, and: .sheet)
+        let sut = SRTransition<EmptyRoute>(with: .emptyScreen, and: .sheet)
         XCTAssertNotNil(sut.route)
         XCTAssertNil(sut.alert)
         XCTAssertNil(sut.tabIndex)
@@ -80,29 +80,29 @@ class TestInitializers: XCTestCase {
     }
     
     func testInitTransitionNoneType() throws {
-        let sut = Transition<EmptyRoute>(with: .none)
+        let sut = SRTransition<EmptyRoute>(with: .none)
         XCTAssertNil(sut.alert)
         XCTAssertNil(sut.route)
         XCTAssertNil(sut.tabIndex)
         XCTAssertEqual(sut.type, .none)
-        XCTAssertEqual(sut, Transition.none)
+        XCTAssertEqual(sut, SRTransition.none)
     }
     
     func testInitTransitionType() throws {
-        TriggerType.allCases.forEach { triggerType in
-            let transitionType = TransitionType(with: triggerType)
+        SRTriggerType.allCases.forEach { triggerType in
+            let transitionType = SRTransitionType(with: triggerType)
             XCTAssertEqual(transitionType.rawValue, triggerType.rawValue)
         }
     }
     
     func testTransitionType() {
-        TransitionType.allCases.forEach { type in
+        SRTransitionType.allCases.forEach { type in
             XCTAssertEqual(type.description, "TransitionType - \(type)")
         }
     }
     
     func testTriggerType() {
-        TriggerType.allCases.forEach { type in
+        SRTriggerType.allCases.forEach { type in
             XCTAssertEqual(type.description, "TriggerType - \(type)")
         }
     }
@@ -115,9 +115,3 @@ class TestInitializers: XCTestCase {
         XCTAssertEqual(router.dismissAll, 1)
     }
 }
-
-extension ScreenView : Inspectable { }
-
-extension RootView: Inspectable { }
-
-extension NavigatorView: Inspectable { }

@@ -20,7 +20,7 @@ let package = Package(
     ],
     dependencies: [
         // Dependencies declare other packages that this package depends on.
-        .package(name: "ViewInspector", url: "https://github.com/nalexn/ViewInspector", from: .init(0, 8, 1))
+        .package(name: "ViewInspector", url: "https://github.com/nalexn/ViewInspector", from: .init(0, 9, 9))
     ],
     targets: [
         // Targets are the basic building blocks of a package. A target can define a module or a test suite.

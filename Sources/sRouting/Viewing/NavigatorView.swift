@@ -196,7 +196,7 @@ extension NavigatorView {
     
     /// Observe the transition change from router
     /// - Parameter transition: ``Transiton``
-    private func updateActiveState(from transition: Transition<RouteType>) {
+    private func updateActiveState(from transition: SRTransition<RouteType>) {
         switch transition.type {
         case .push:
             isActivePush = true

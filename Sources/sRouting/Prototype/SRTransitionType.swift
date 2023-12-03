@@ -22,7 +22,7 @@ public enum SRTriggerType: String, CaseIterable {
 }
 
 /// Transition type of navigation that using internal.
-enum TransitionType: String, CaseIterable {
+enum SRTransitionType: String, CaseIterable {
     case none
     /// Push a screen
     case push

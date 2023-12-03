@@ -1,6 +1,6 @@
 //
-//  Transition.swift
-//  
+//  SRTransition.swift
+//
 //
 //  Created by ThangKieu on 6/30/21.
 //
@@ -9,7 +9,7 @@ import SwiftUI
 
 struct SRTransition<RouteType> where RouteType: Route {
     
-    let type: TransitionType
+    let type: SRTransitionType
     let route: RouteType?
     let alert: Alert?
     let tabIndex: Int?
@@ -25,7 +25,7 @@ struct SRTransition<RouteType> where RouteType: Route {
         self.actionSheet = actionSheet
     }
   
-    init(with type: TransitionType) {
+    init(with type: SRTransitionType) {
         self.type = type
         route = nil
         alert = nil
@@ -57,7 +57,7 @@ struct SRTransition<RouteType> where RouteType: Route {
         actionSheet = nil
     }
     
-    init(with route: RouteType, and action: TransitionType) {
+    init(with route: RouteType, and action: SRTransitionType) {
         self.type = action
         self.route = route
         self.alert = nil
@@ -65,7 +65,7 @@ struct SRTransition<RouteType> where RouteType: Route {
         actionSheet = nil
     }
     #else
-    init(with type: TransitionType) {
+    init(with type: SRTransitionType) {
         self.type = type
         route = nil
         alert = nil
@@ -93,7 +93,7 @@ struct SRTransition<RouteType> where RouteType: Route {
         alert = SRTransition.alert(from: error, with: alertTitle)
     }
     
-    init(with route: RouteType, and action: TransitionType) {
+    init(with route: RouteType, and action: SRTransitionType) {
         precondition(action != .present, "macOS didn't support fullScreenCover")
         precondition(action != .actionSheet, "macOS didn't support actionSheet")
         self.type = action

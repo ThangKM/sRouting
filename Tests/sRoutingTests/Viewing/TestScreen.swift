@@ -9,7 +9,7 @@ import SwiftUI
 import ViewInspector
 @testable import sRouting
 
-struct TestScreen: View, Inspectable {
+struct TestScreen: View {
     
     @Environment(\.presentationMode)
     private var presentationMode

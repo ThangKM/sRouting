@@ -14,7 +14,7 @@ import SwiftUI
 open class Router<RouteType>: ObservableObject
 where RouteType: Route {
     
-    private(set) var transition: Transition<RouteType>
+    private(set) var transition: SRTransition<RouteType>
     
     public init() {
         transition = .none
@@ -36,13 +36,13 @@ where RouteType: Route {
     /// Trigger to new screen
     /// - Parameters:
     ///   - route: Type of ``Route``
-    ///   - action: ``TriggerType``
+    ///   - action: ``SRTriggerType``
     ///
     /// ### Example
     /// ```swift
     /// router.trigger(to: .detailScreen, with: .push)
     /// ```
-    open func trigger(to route: RouteType, with action: TriggerType) {
+    open func trigger(to route: RouteType, with action: SRTriggerType) {
         transition = .init(with: route, and: .init(with: action))
         objectWillChange.send()
     }
