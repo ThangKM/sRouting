@@ -6,7 +6,7 @@
     }
     
     @Section(title: "Create the Bookie") {
-        @ContentAndMedia(layout: horizontal) {
+        @ContentAndMedia {
             Create and configure an Xcode project that uses sRouting.
             @Image(source: bookie_section1_intro.png, alt: "add sRouting into Bookie")
         }
@@ -36,7 +36,7 @@
     }
     
     @Section(title: "Prepare Views, Model and Data") {
-        @ContentAndMedia(layout: horizontal) {
+        @ContentAndMedia {
             Create common Views and a book model
             @Image(source: section2icon.png, alt: "all bookie screens")
         }
@@ -71,7 +71,7 @@
     }
     
     @Section(title: "Working with Route") {
-        @ContentAndMedia(layout: horizontal) {
+        @ContentAndMedia {
             Define Routes in Bookie app.
         }
         
@@ -98,7 +98,7 @@
     }
     
     @Section(title: "Layout the Screens") {
-        @ContentAndMedia(layout: horizontal) {
+        @ContentAndMedia {
             Layout the screens and handle actions
             @Image(source: bookie_meet_banner.png, alt: "banner")
         }

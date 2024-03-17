@@ -1,4 +1,4 @@
-# ``sRouting/TriggerType``
+# ``sRouting/SRTriggerType``
 
 ## Topics
 

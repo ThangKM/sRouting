@@ -21,7 +21,7 @@ The ``Router`` can trigger a transition from inside(view) or outside(view model)
 
 - ``RootRouter``
 - ``Router``
-- ``TriggerType``
+- ``SRTriggerType``
 
 ### Viewing
 
