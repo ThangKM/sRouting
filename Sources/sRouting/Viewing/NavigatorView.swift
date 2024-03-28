@@ -8,23 +8,26 @@
 import SwiftUI
 
 /// The hidden view that handle the navigation of a screen.
-struct NavigatorView<RouteType>: View
-where RouteType: Route {
+@MainActor
+struct NavigatorView<RouterType>: View where RouterType: SRRouterType  {
     
     typealias VoidAction = () -> Void
+    typealias RouteType = RouterType.RouteType
     
     /// A  screen's ``Router``
-    @ObservedObject
-    private var router: Router<RouteType>
+    private var router: RouterType
 
-    /// A `EnvironmentObject` ``RootRouter``
-    @EnvironmentObject
-    private var rootRouter: RootRouter
+    @Environment(SRTabarSelection.self)
+    private var tabarSelection: SRTabarSelection?
+    
+    @Environment(SRNavigationPath.self)
+    private var navigationPath: SRNavigationPath?
+    
+    @Environment(SRDismisAllEmitter.self)
+    private var dismissAllEmitter: SRDismisAllEmitter?
     
     @Environment(\.scenePhase) private var scenePhase
     
-    /// Active state of a `NavigationLink`
-    @State private(set) var isActivePush: Bool = false
     /// Active state of a full screen presentation
     @State private(set) var isActivePresent: Bool = false
     /// Active state of a sheet presentation
@@ -36,8 +39,9 @@ where RouteType: Route {
 
     /// Dismiss action of presentationMode from @Enviroment
     private let dismissAction: VoidAction
+    
     /// The destination screen from transition
-    @ViewBuilder
+    @ViewBuilder @MainActor
     private var destinationView: some View {
         router.transition.route?.screen
     }
@@ -45,15 +49,15 @@ where RouteType: Route {
     private let alertView: Alert?
     
     ///Action test holder
-    private let tests: UnitTestActions<Self, RouteType>?
+    private let tests: UnitTestActions<Self>?
     
     #if os(iOS) || os(tvOS)
     /// The ActionSheet from transaction
     private var actionSheet: ActionSheet?
     
-    init(router: Router<RouteType>,
+    init(router: RouterType,
          onDismiss: @escaping VoidAction,
-         testsActions: UnitTestActions<Self, RouteType>? = nil) {
+         testsActions: UnitTestActions<Self>? = nil) {
         self.router = router
         self.dismissAction = onDismiss
         self.alertView = router.transition.alert
@@ -64,9 +68,9 @@ where RouteType: Route {
     }
     
     #else
-    init(router: Router<RouteType>,
+    init(router: RouterType,
          onDismiss: @escaping VoidAction,
-         testsActions: UnitTestActions<Self, RouteType>? = nil) {
+         testsActions: UnitTestActions<Self>? = nil) {
         self.router = router
         self.dismissAction = onDismiss
         self.alertView = router.transition.alert
@@ -78,29 +82,22 @@ where RouteType: Route {
     
     #if os(macOS)
     var body: some View {
-        Group {
-            NavigationLink(
-                destination: destinationView,
-                isActive: $isActivePush.willSet(execute: onChangeActiveState(_:)),
-                label: {
-                    EmptyView()
-                })
-        }
-        .sheet(isPresented: $isActiveSheet.willSet(execute: onChangeActiveState(_:)),
-            content: {
+        Text("Navigator View")
+        .sheet(isPresented: $isActiveSheet,
+               content: {
             destinationView
-                .environmentObject(rootRouter)
+                .environment(tabarSelection)
         })
-        .alert(isPresented: $isActiveAlert.willSet(execute: onChangeActiveState(_:))) {
+        .alert(isPresented: $isActiveAlert) {
             guard let alert = alertView
             else { return Alert(title: Text("Something went wrong!")) }
             return alert
         }
-        .onChange(of: rootRouter.dismissAll, perform: { _ in
+        .onChange(of: dismissAllEmitter?.dismissAllSignal, { oldValue, newValue in
             resetActiveState()
         })
-        .onChange(of: router.transition, perform: { (transition) in
-            updateActiveState(from: transition)
+        .onChange(of: router.transition, { oldValue, newValue in
+            updateActiveState(from: newValue)
         })
         .onAppear {
             // test - action
@@ -111,52 +108,35 @@ where RouteType: Route {
     }
     #else
     var body: some View {
-        Group {
-            NavigationLink(
-                destination: destinationView,
-                isActive: $isActivePush.willSet(execute: onChangeActiveState(_:)),
-                label: {
-                    EmptyView()
-                })
-        }
-        .fullScreenCover(isPresented: $isActivePresent.willSet(execute: onChangeActiveState(_:))) {
-            if #available(iOS 15, tvOS 15, *) {
-                NavigationView {
-                    destinationView
-                }
-            } else {
-                NavigationView {
-                    destinationView
-                }
-                .environmentObject(rootRouter)
+        Text("Navigator View")
+        .fullScreenCover(isPresented: $isActivePresent) {
+            SRNavigationStack {
+                destinationView
             }
+            .environment(dismissAllEmitter)
+            .environment(tabarSelection)
         }
-        .sheet(isPresented: $isActiveSheet.willSet(execute: onChangeActiveState(_:)),
+        .sheet(isPresented: $isActiveSheet,
             content: {
-            if #available(iOS 15, tvOS 15, *) {
-                NavigationView {
-                    destinationView
-                }
-            } else {
-                NavigationView {
-                    destinationView
-                }
-                .environmentObject(rootRouter)
+            SRNavigationStack {
+                destinationView
             }
+            .environment(dismissAllEmitter)
+            .environment(tabarSelection)
         })
-        .alert(isPresented: $isActiveAlert.willSet(execute: onChangeActiveState(_:))) {
+        .alert(isPresented: $isActiveAlert) {
             guard let alert = alertView
             else { return Alert(title: Text("Something went wrong!")) }
             return alert
         }
-        .actionSheet(isPresented: $isActiveActionSheet.willSet(execute: onChangeActiveState(_:)), content: {
+        .actionSheet(isPresented: $isActiveActionSheet, content: {
             ActionSheet(title: Text(""))
         })
-        .onChange(of: rootRouter.dismissAll, perform: { _ in
+        .onChange(of: dismissAllEmitter?.dismissAllSignal, { oldValue, newValue in
             resetActiveState()
         })
-        .onChange(of: router.transition, perform: { (transition) in
-            updateActiveState(from: transition)
+        .onChange(of: router.transition, { oldValue, newValue in
+            updateActiveState(from: newValue)
         })
         .onAppear {
             //test - action
@@ -170,36 +150,27 @@ where RouteType: Route {
 
 extension NavigatorView {
     
-    /// reset all active state to false
+    /// Reset all active state to false
+    @MainActor
     private func resetActiveState() {
         guard scenePhase == .active || tests != nil else { return }
-        isActivePush = false
         isActivePresent = false
         isActiveAlert = false
         isActiveSheet = false
         isActiveActionSheet = false
-        router.resetTransition(scenePhase: scenePhase)
         // test - action
         tests?.resetActiveState?(self)
         //
     }
     
-    /// Observe the active state change
-    /// - Parameter isActive: active state of a navigation
-    ///
-    /// The transition should be reset to `.none` if the active state change to false
-    private func onChangeActiveState(_ isActive: Bool) {
-        if !isActive {
-            router.resetTransition(scenePhase: scenePhase)
-        }
-    }
-    
     /// Observe the transition change from router
     /// - Parameter transition: ``Transiton``
+    @MainActor
     private func updateActiveState(from transition: SRTransition<RouteType>) {
         switch transition.type {
         case .push:
-            isActivePush = true
+            guard let route = transition.route else { return }
+            navigationPath?.push(to: route)
         case .present:
             isActivePresent = true
         case .sheet:
@@ -211,10 +182,16 @@ extension NavigatorView {
         case .dismiss:
             dismissAction()
         case .selectTab:
-            rootRouter.tabbarSelection = transition.tabIndex ?? 0
-            router.resetTransition(scenePhase: scenePhase)
+            tabarSelection?.tabSelection = transition.tabIndex ?? 0
         case .dismissAll:
-            rootRouter.dismissToRoot()
+            dismissAllEmitter?.dismissAll()
+        case .pop:
+            navigationPath?.pop()
+        case .popToRoot:
+            navigationPath?.popToRoot()
+        case .popToRoute:
+            guard let route = transition.popToRoute else { return }
+            navigationPath?.pop(to: route)
         case .none: break
         }
         // test - action

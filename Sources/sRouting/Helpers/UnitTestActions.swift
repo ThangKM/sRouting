@@ -8,8 +8,8 @@
 import SwiftUI
 
 /// The test callbacks action of navigator views
-struct UnitTestActions<TargetView, RouteType>
-where TargetView: View, RouteType: Route {
+struct UnitTestActions<TargetView>
+where TargetView: View {
     
     typealias ViewReturnAction = (TargetView) -> Void
     typealias VoidAction = () -> Void

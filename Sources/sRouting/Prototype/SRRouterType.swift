@@ -1,5 +1,5 @@
 //
-//  Router.swift
+//  SRRouterType.swift
 //  sRouting
 //
 //  Created by ThangKieu on 6/30/21.
@@ -10,15 +10,11 @@ import SwiftUI
 /// A screen's router that can navigate to other screen of route.
 ///
 /// The router can trigger a transition from inside(view) or outside(view model) the view.
-/// Required perfrom actions on the `MainThread`  for iOS 14 and below
-open class Router<RouteType>: ObservableObject
-where RouteType: Route {
+public protocol SRRouterType<RouteType> where RouteType: SRRoute {
+
+    associatedtype RouteType: SRRoute
     
-    private(set) var transition: SRTransition<RouteType>
-    
-    public init() {
-        transition = .none
-    }
+    var transition: SRTransition<RouteType> { get }
     
     /// Select tabbar item at index
     /// Required oberve selection of `TabView` from ``RootRouter``
@@ -28,10 +24,7 @@ where RouteType: Route {
     /// ```swift
     /// router.selectTabbar(at: 0)
     /// ```
-    open func selectTabbar(at index: Int) {
-        transition = .init(selectTab: index)
-        objectWillChange.send()
-    }
+    func selectTabbar(at index: Int)
     
     /// Trigger to new screen
     /// - Parameters:
@@ -42,10 +35,7 @@ where RouteType: Route {
     /// ```swift
     /// router.trigger(to: .detailScreen, with: .push)
     /// ```
-    open func trigger(to route: RouteType, with action: SRTriggerType) {
-        transition = .init(with: route, and: .init(with: action))
-        objectWillChange.send()
-    }
+    func trigger(to route: RouteType, with action: SRTriggerType)
     
     /// Show an alert
     /// - Parameters:
@@ -56,10 +46,7 @@ where RouteType: Route {
     /// ```swift
     /// router.show(NetworkingError.notFound)
     /// ```
-    open func show(error: Error, and title: String? = nil) {
-        transition = .init(with: error, and: title)
-        objectWillChange.send()
-    }
+    func show(error: Error, and title: String?)
     
     /// Show an alert
     /// - Parameter alert: Alert
@@ -70,16 +57,10 @@ where RouteType: Route {
     ///                                message: Text("Message"),
     ///                                dismissButton: .cancel(Text("OK")))
     /// ```
-    open func show(alert: Alert) {
-        transition = .init(with: alert)
-        objectWillChange.send()
-    }
+    func show(alert: Alert)
     
     #if os(iOS) || os(tvOS)
-    open func show(actionSheet: ActionSheet) {
-        transition = .init(with: actionSheet)
-        objectWillChange.send()
-    }
+    func show(actionSheet: ActionSheet)
     #endif
     
     /// Dismiss or pop current screen
@@ -88,10 +69,7 @@ where RouteType: Route {
     /// ```swift
     /// router.dismiss()
     /// ```
-    open func dismiss() {
-        transition = .init(with: .dismiss)
-        objectWillChange.send()
-    }
+    func dismiss()
     
     /// Dismiss to root view
     ///
@@ -99,17 +77,15 @@ where RouteType: Route {
     /// ```swift
     /// router.dismissAll()
     /// ```
-    open func dismissAll() {
-        transition = .init(with: .dismissAll)
-        objectWillChange.send()
-    }
-}
-
-//MARK:- Internal Methods
-extension Router {
+    func dismissAll()
     
-    func resetTransition(scenePhase: ScenePhase) {
-       guard scenePhase == .active else { return }
-       transition = .none
-   }
+    /// Navigation pop
+    func pop()
+    
+    /// Navigation pop to root
+    func popToRoot()
+    
+    /// Navigation pop to route
+    /// - Parameter route: some``SRRoute``
+    func pop(to route: some SRRoute)
 }

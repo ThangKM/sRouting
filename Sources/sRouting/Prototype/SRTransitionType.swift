@@ -13,7 +13,7 @@ public enum SRTriggerType: String, CaseIterable {
     case push
     /// Present full screen
     case present
-    /// Present a  screen
+    /// Present a screen
     case sheet
     
     public var description: String {
@@ -22,7 +22,7 @@ public enum SRTriggerType: String, CaseIterable {
 }
 
 /// Transition type of navigation that using internal.
-enum SRTransitionType: String, CaseIterable {
+public enum SRTransitionType: String, CaseIterable {
     case none
     /// Push a screen
     case push
@@ -40,8 +40,14 @@ enum SRTransitionType: String, CaseIterable {
     case dismiss
     /// Dismiss to root screen
     case dismissAll
+    /// Naivation pop action
+    case pop
+    /// Navigation pop to screen action
+    case popToRoute
+    /// Navigation pop to root action
+    case popToRoot
     
-    init(with triggerType: SRTriggerType) {
+    public init(with triggerType: SRTriggerType) {
         switch triggerType {
         case .push: self = .push
         case .present: self = .present

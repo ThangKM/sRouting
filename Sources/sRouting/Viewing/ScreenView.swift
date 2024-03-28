@@ -8,39 +8,37 @@
 import SwiftUI
 
 /// The View that is a screen.
-public struct ScreenView<Content, RouteType>: View
-where Content: View, RouteType: Route {
+@MainActor
+public struct ScreenView<Content, RouterType>: View
+where Content: View, RouterType: SRRouterType {
     
-    @Binding
-    private var presentationMode: PresentationMode
-    
-    @ObservedObject
-    private var router: Router<RouteType>
+    private let dismissAction: DismissAction
+    private var router: RouterType
     
     /// Content view builder
     private let content: () -> Content
-    
-    private let tests: UnitTestActions<Self,RouteType>?
+    private let tests: UnitTestActions<Self>?
     
     /// Initalizer of ``ScreenView``
     ///  - Parameters:
-    ///   - rootRouter: Type of ``Router``
+    ///   - router: Type of ``Router``
+    ///   - dismissAction: `DismissAction`
     ///   - content: Content view builder
-    public init(router: Router<RouteType>,
-                presentationMode: Binding<PresentationMode>,
+    public init(router: RouterType,
+                dismissAction:DismissAction,
                 @ViewBuilder content: @escaping () -> Content) {
         self.router = router
-        self._presentationMode = presentationMode
+        self.dismissAction = dismissAction
         self.content = content
         self.tests = nil
     }
     
-    internal init(router: Router<RouteType>,
-                presentationMode: Binding<PresentationMode>,
-                  tests: UnitTestActions<Self,RouteType>,
+    internal init(router: RouterType,
+                  dismissAction: DismissAction,
+                  tests: UnitTestActions<Self>,
                 @ViewBuilder content: @escaping () -> Content) {
         self.router = router
-        self._presentationMode = presentationMode
+        self.dismissAction = dismissAction
         self.content = content
         self.tests = tests
     }
@@ -48,10 +46,9 @@ where Content: View, RouteType: Route {
     public var body: some View {
         ZStack {
             NavigatorView(router: router) {
-                presentationMode.dismiss()
+                dismissAction()
                 tests?.dismissAction?()
             }
-            
             content()
         }
         .onAppear {

@@ -8,7 +8,11 @@
 import SwiftUI
 @testable import sRouting
 
-enum EmptyRoute: Route {
+
+@sRouter(EmptyRoute.self) @Observable
+class TestRouter { }
+
+enum EmptyRoute: SRRoute {
     
     case emptyScreen
     
@@ -16,3 +20,4 @@ enum EmptyRoute: Route {
         EmptyView()
     }
 }
+

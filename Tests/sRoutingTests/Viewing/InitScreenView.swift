@@ -10,10 +10,12 @@ import ViewInspector
 import SwiftUI
 @testable import sRouting
 
+
+
 struct InitScreenView: View {
     
     @Environment(\.presentationMode) private var presentationMode
-    let router = Router<EmptyRoute>()
+    let router = TestRouter()
     
     var body: some View {
         NavigationView {

@@ -15,7 +15,7 @@ class ScreenViewTests: XCTestCase {
     
     func testDismissAction() {
         let exp = XCTestExpectation()
-        let router = Router<EmptyRoute>()
+        let router = TestRouter()
         let view = TestScreen(router: router, tests: .init(
             dismissAction: {
             XCTAssertTrue(true)

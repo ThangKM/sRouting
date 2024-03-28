@@ -14,8 +14,8 @@ struct TestScreen: View {
     @Environment(\.presentationMode)
     private var presentationMode
     
-    let router: Router<EmptyRoute>
-    let tests: UnitTestActions<ScreenView<Text,EmptyRoute>,EmptyRoute>
+    let router: TestRouter
+    let tests: UnitTestActions<ScreenView<Text,TestRouter>>
     
     var body: some View {
         ScreenView(router: router, presentationMode: presentationMode, tests: tests) {

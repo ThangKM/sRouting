@@ -1,16 +1,24 @@
 {
-  "object": {
-    "pins": [
-      {
-        "package": "ViewInspector",
-        "repositoryURL": "https://github.com/nalexn/ViewInspector",
-        "state": {
-          "branch": null,
-          "revision": "a1422d4749ccf7f32b1d14a9ec19ec9a0b0fd337",
-          "version": "0.9.9"
-        }
+  "originHash" : "0f5ee5ee2750b6dfdea78cf4e546c879805aa257ad049ff030a682999f2ef3b0",
+  "pins" : [
+    {
+      "identity" : "swift-syntax",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/apple/swift-syntax.git",
+      "state" : {
+        "revision" : "64889f0c732f210a935a0ad7cda38f77f876262d",
+        "version" : "509.1.1"
       }
-    ]
-  },
-  "version": 1
+    },
+    {
+      "identity" : "viewinspector",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/nalexn/ViewInspector",
+      "state" : {
+        "revision" : "a1422d4749ccf7f32b1d14a9ec19ec9a0b0fd337",
+        "version" : "0.9.9"
+      }
+    }
+  ],
+  "version" : 3
 }

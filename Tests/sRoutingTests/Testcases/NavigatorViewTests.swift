@@ -13,7 +13,7 @@ import XCTest
 class NavigatorViewTests: XCTestCase {
     
     func testActivePush() {
-        let router = Router<EmptyRoute>()
+        let router = TestRouter()
         let exp = XCTestExpectation()
         let sut = NavigationView {
             NavigatorView(router: router,
@@ -31,7 +31,7 @@ class NavigatorViewTests: XCTestCase {
     }
     
     func testActiveSheet() {
-        let router = Router<EmptyRoute>()
+        let router = TestRouter()
         let exp = XCTestExpectation()
         let sut = NavigationView {
             NavigatorView(router: router,
@@ -49,7 +49,7 @@ class NavigatorViewTests: XCTestCase {
     }
     
     func testActiveAlert() {
-        let router = Router<EmptyRoute>()
+        let router = TestRouter()
         let exp = XCTestExpectation()
         let sut = NavigationView {
             NavigatorView(router: router,
@@ -68,7 +68,7 @@ class NavigatorViewTests: XCTestCase {
     }
     
     func testResetActiveState() {
-        let router = Router<EmptyRoute>()
+        let router = TestRouter()
         let exppush = XCTestExpectation(description: "wait.push")
         let exp = XCTestExpectation(description: "wait.dismissAll")
         
@@ -99,7 +99,7 @@ class NavigatorViewTests: XCTestCase {
     }
     
     func testDismiss() {
-        let router = Router<EmptyRoute>()
+        let router = TestRouter()
         let exp = XCTestExpectation(description: "wait.dismiss")
         
         let sut = NavigationView {
@@ -119,7 +119,7 @@ class NavigatorViewTests: XCTestCase {
     
     #if os(iOS) || os(tvOS)
     func testActiveActionSheet() {
-        let router = Router<EmptyRoute>()
+        let router = TestRouter()
         let exp = XCTestExpectation()
         let sut = NavigationView {
             NavigatorView(router: router,
@@ -137,7 +137,7 @@ class NavigatorViewTests: XCTestCase {
     }
     
     func testActivePresent()  {
-        let router = Router<EmptyRoute>()
+        let router = TestRouter()
         let exp = XCTestExpectation()
         let sut = NavigationView {
             NavigatorView(router: router,
