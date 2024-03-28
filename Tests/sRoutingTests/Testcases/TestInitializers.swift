@@ -14,31 +14,28 @@ import SwiftUI
 
 class TestInitializers: XCTestCase {
 
+    @MainActor
     func testInitScreenView() throws {
-        let sut = InitScreenView()
-        let text = try sut.inspect().navigationView().find(text: "InitScreenView.ScreenView.Text").string()
-        XCTAssertEqual(text, "InitScreenView.ScreenView.Text")
+        let sut = ScreenView(router: TestRouter(), 
+                             dismissAction: .none, tests: .none) {
+            Text("ScreenView.Text")
+        }
+        ViewHosting.host(view: sut)
+        let text = try sut.inspect().find(text: "ScreenView.Text").string()
+        XCTAssertEqual(text, "ScreenView.Text")
     }
     
+    @MainActor
     func testInitRootView() throws {
-        let view = RootView(rootRouter: .init()) {
+        let view = SRRootView {
             Text("This is content in RootView")
         }
-
+        ViewHosting.host(view: view)
         let sut = try view.inspect().find(text: "This is content in RootView").string()
         XCTAssertEqual(sut, "This is content in RootView")
     }
     
-    func testBindingWillSetExtension() {
-        let exp = XCTestExpectation(description: "bindingset")
-        let sut = Binding(wrappedValue: false).willSet { value in
-            XCTAssertTrue(value)
-            exp.fulfill()
-        }
-        sut.wrappedValue = true
-        wait(for: [exp], timeout: 0.2)
-    }
-    
+    @MainActor
     func testInitialTransitionWithSelectTab() throws {
         let sut = SRTransition<EmptyRoute>(selectTab: 0)
         XCTAssertNil(sut.alert)
@@ -47,6 +44,7 @@ class TestInitializers: XCTestCase {
         XCTAssertEqual(sut.type, .selectTab)
     }
     
+    @MainActor
     func testInitalTrasitionWithType() throws {
         let sut = SRTransition<EmptyRoute>(with: .dismissAll)
         XCTAssertNil(sut.alert)
@@ -55,6 +53,7 @@ class TestInitializers: XCTestCase {
         XCTAssertEqual(sut.type, .dismissAll)
     }
     
+    @MainActor
     func testInitTransitionWithAlert() throws {
         let sut = SRTransition<EmptyRoute>(with: Alert(title: Text(""), message: Text("message"), dismissButton: nil))
         XCTAssertNotNil(sut.alert)
@@ -63,6 +62,7 @@ class TestInitializers: XCTestCase {
         XCTAssertEqual(sut.type, .alert)
     }
     
+    @MainActor
     func testInitTransitionWithError() throws {
         let sut = SRTransition<EmptyRoute>(with: NSError(domain: "", code: 1, userInfo: [:]), and: nil)
         XCTAssertNotNil(sut.alert)
@@ -71,6 +71,7 @@ class TestInitializers: XCTestCase {
         XCTAssertEqual(sut.type, .alert)
     }
     
+    @MainActor
     func testInitTransitionWithRoute() throws {
         let sut = SRTransition<EmptyRoute>(with: .emptyScreen, and: .sheet)
         XCTAssertNotNil(sut.route)
@@ -79,6 +80,7 @@ class TestInitializers: XCTestCase {
         XCTAssertEqual(sut.type, .sheet)
     }
     
+    @MainActor
     func testInitTransitionNoneType() throws {
         let sut = SRTransition<EmptyRoute>(with: .none)
         XCTAssertNil(sut.alert)
@@ -88,6 +90,7 @@ class TestInitializers: XCTestCase {
         XCTAssertEqual(sut, SRTransition.none)
     }
     
+    @MainActor
     func testInitTransitionType() throws {
         SRTriggerType.allCases.forEach { triggerType in
             let transitionType = SRTransitionType(with: triggerType)
@@ -95,23 +98,31 @@ class TestInitializers: XCTestCase {
         }
     }
     
+    @MainActor
     func testTransitionType() {
         SRTransitionType.allCases.forEach { type in
             XCTAssertEqual(type.description, "TransitionType - \(type)")
         }
     }
     
+    @MainActor
     func testTriggerType() {
         SRTriggerType.allCases.forEach { type in
             XCTAssertEqual(type.description, "TriggerType - \(type)")
         }
     }
     
-    func testRootRouterInit() throws {
-        let router = RootRouter()
-        XCTAssertEqual(router.tabbarSelection, 0)
-        XCTAssertEqual(router.dismissAll, 0)
-        router.dismissToRoot()
-        XCTAssertEqual(router.dismissAll, 1)
+    @MainActor
+    func testRootRouterInit() async {
+        let exp = XCTestExpectation()
+        let router = TestRouter()
+        let sut = SRRootView {
+            TestScreen(router: router, tests: .none).onDismissAllChange {
+                exp.fulfill()
+            }
+        }
+        ViewHosting.host(view: sut)
+        router.dismissAll()
+        await fulfillment(of: [exp], timeout: 0.2)
     }
 }

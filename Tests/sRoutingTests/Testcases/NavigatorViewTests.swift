@@ -12,109 +12,66 @@ import XCTest
 
 class NavigatorViewTests: XCTestCase {
     
-    func testActivePush() {
+    @MainActor
+    func testActivePush() async {
         let router = TestRouter()
         let exp = XCTestExpectation()
-        let sut = NavigationView {
-            NavigatorView(router: router,
-                          onDismiss: {},
-                          testsActions:.init(didChangeTransition: { view in
-                XCTAssertTrue(view.isActivePush)
+        let sut = SRNavigationStack {
+            TestScreen(router: router, tests: .none).onNaviStackChange { oldPaths, newPaths in
+                XCTAssertTrue(oldPaths.isEmpty)
+                XCTAssertTrue(newPaths.count == 1)
                 exp.fulfill()
-            }))
-            
-        }.environmentObject(RootRouter())
-        
+            }
+        }
         ViewHosting.host(view: sut)
         router.trigger(to: .emptyScreen, with: .push)
-        wait(for: [exp], timeout: 1)
+        await fulfillment(of: [exp], timeout: 0.2)
     }
     
-    func testActiveSheet() {
+    @MainActor
+    func testActiveSheet() async {
         let router = TestRouter()
         let exp = XCTestExpectation()
-        let sut = NavigationView {
-            NavigatorView(router: router,
-                          onDismiss: {},
-                          testsActions:.init(didChangeTransition: { view in
+        let sut = SRNavigationStack {
+            NavigatorView(router: router, onDismiss: {}, testsActions: .init(didChangeTransition: { view in
                 XCTAssertTrue(view.isActiveSheet)
                 exp.fulfill()
             }))
-            
-        }.environmentObject(RootRouter())
-        
+        }
         ViewHosting.host(view: sut)
         router.trigger(to: .emptyScreen, with: .sheet)
-        wait(for: [exp], timeout: 0.2)
+        await fulfillment(of: [exp], timeout: 0.2)
     }
     
-    func testActiveAlert() {
+    @MainActor
+    func testActiveAlert() async {
         let router = TestRouter()
         let exp = XCTestExpectation()
-        let sut = NavigationView {
-            NavigatorView(router: router,
-                          onDismiss: {},
-                          testsActions:.init(didChangeTransition: { view in
+        let sut = SRNavigationStack {
+            NavigatorView(router: router, onDismiss: {}, testsActions: .init(didChangeTransition: { view in
                 XCTAssertTrue(view.isActiveAlert)
                 exp.fulfill()
             }))
-            
-        }.environmentObject(RootRouter())
+        }
         
         ViewHosting.host(view: sut)
-        
         router.show(error: NSError(domain: "unittest.navigator", code: -1, userInfo: [:]), and: nil)
-        wait(for: [exp], timeout: 0.2)
+        await fulfillment(of: [exp], timeout: 0.2)
     }
     
-    func testResetActiveState() {
-        let router = TestRouter()
-        let exppush = XCTestExpectation(description: "wait.push")
-        let exp = XCTestExpectation(description: "wait.dismissAll")
-        
-        let sut = NavigationView {
-            NavigatorView(router: router,
-                          onDismiss: {},
-                          testsActions:.init(
-            didChangeTransition: { view in
-                XCTAssertTrue(view.isActivePush)
-                router.dismissAll()
-                exppush.fulfill()
-            },
-            resetActiveState: { view in
-                XCTAssertFalse(view.isActivePush)
-                XCTAssertFalse(view.isActivePresent)
-                XCTAssertFalse(view.isActiveSheet)
-                XCTAssertFalse(view.isActiveAlert)
-                XCTAssertFalse(view.isActiveActionSheet)
-                exp.fulfill()
-            }))
-            
-        }.environmentObject(RootRouter())
-        
-        ViewHosting.host(view: sut)
-        
-        router.trigger(to: .emptyScreen, with: .push)
-        wait(for: [exppush,exp], timeout: 0.2)
-    }
-    
-    func testDismiss() {
+    @MainActor
+    func testDismiss() async {
         let router = TestRouter()
         let exp = XCTestExpectation(description: "wait.dismiss")
         
-        let sut = NavigationView {
-            NavigatorView(router: router,
-                          onDismiss: {
-                XCTAssertTrue(true)
-                exp.fulfill()
-            })
-            
-        }.environmentObject(RootRouter())
+        let sut = TestScreen(router: router, tests: .init(dismissAction:{
+            exp.fulfill()
+        }))
         
         ViewHosting.host(view: sut)
         
         router.dismiss()
-        wait(for: [exp], timeout: 0.2)
+        await fulfillment(of: [exp], timeout: 0.2)
     }
     
     #if os(iOS) || os(tvOS)

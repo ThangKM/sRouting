@@ -13,16 +13,16 @@ import ViewInspector
 class ScreenViewTests: XCTestCase {
     
     
-    func testDismissAction() {
+    @MainActor
+    func testDismissAction() async {
         let exp = XCTestExpectation()
         let router = TestRouter()
         let view = TestScreen(router: router, tests: .init(
             dismissAction: {
-            XCTAssertTrue(true)
             exp.fulfill()
         }))
         ViewHosting.host(view: view)
         router.dismiss()
-        wait(for: [exp], timeout: 0.2)
+        await fulfillment(of: [exp], timeout: 0.2)
     }
 }

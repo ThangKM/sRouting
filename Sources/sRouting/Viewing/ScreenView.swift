@@ -12,7 +12,7 @@ import SwiftUI
 public struct ScreenView<Content, RouterType>: View
 where Content: View, RouterType: SRRouterType {
     
-    private let dismissAction: DismissAction
+    private let dismissAction: DismissAction?
     private var router: RouterType
     
     /// Content view builder
@@ -34,8 +34,8 @@ where Content: View, RouterType: SRRouterType {
     }
     
     internal init(router: RouterType,
-                  dismissAction: DismissAction,
-                  tests: UnitTestActions<Self>,
+                  dismissAction: DismissAction?,
+                  tests: UnitTestActions<Self>?,
                 @ViewBuilder content: @escaping () -> Content) {
         self.router = router
         self.dismissAction = dismissAction
@@ -46,7 +46,7 @@ where Content: View, RouterType: SRRouterType {
     public var body: some View {
         ZStack {
             NavigatorView(router: router) {
-                dismissAction()
+                dismissAction?()
                 tests?.dismissAction?()
             }
             content()
