@@ -75,40 +75,36 @@ class NavigatorViewTests: XCTestCase {
     }
     
     #if os(iOS) || os(tvOS)
-    func testActiveActionSheet() {
+    @MainActor
+    func testActiveActionSheet() async {
         let router = TestRouter()
         let exp = XCTestExpectation()
-        let sut = NavigationView {
-            NavigatorView(router: router,
-                          onDismiss: {},
-                          testsActions:.init(didChangeTransition: { view in
-                XCTAssertTrue(view.isActiveActionSheet)
+        let sut = SRNavigationStack {
+            NavigatorView(router: router, onDismiss: {}, testsActions: .init(didChangeTransition: { view in
+                XCTAssertTrue(view.isActiveSheet)
                 exp.fulfill()
             }))
-            
-        }.environmentObject(RootRouter())
+        }
         
         ViewHosting.host(view: sut)
-        router.show(actionSheet: .init(title: Text("test"), message: nil))
-        wait(for: [exp], timeout: 0.2)
+        router.trigger(to: .emptyScreen, with: .sheet)
+        await fulfillment(of: [exp], timeout: 0.2)
     }
     
-    func testActivePresent()  {
+    @MainActor
+    func testActivePresent() async {
         let router = TestRouter()
         let exp = XCTestExpectation()
-        let sut = NavigationView {
-            NavigatorView(router: router,
-                          onDismiss: {},
-                          testsActions:.init(didChangeTransition: { view in
+        let sut = SRNavigationStack {
+            NavigatorView(router: router, onDismiss: {}, testsActions: .init(didChangeTransition: { view in
                 XCTAssertTrue(view.isActivePresent)
                 exp.fulfill()
             }))
-            
-        }.environmentObject(RootRouter())
+        }
         
         ViewHosting.host(view: sut)
         router.trigger(to: .emptyScreen, with: .present)
-        wait(for: [exp], timeout: 0.2)
+        await fulfillment(of: [exp], timeout: 0.2)
     }
     
     #endif

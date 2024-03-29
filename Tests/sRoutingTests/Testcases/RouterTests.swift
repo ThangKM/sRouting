@@ -8,122 +8,148 @@
 import SwiftUI
 import XCTest
 import Combine
+import ViewInspector
 @testable import sRouting
 
 
 class RouterTests: XCTestCase {
     
-//    func testSelectTabbarItem() {
-//        let router = TestRouter()
-//        var bag = [AnyCancellable]()
-//        let exp = XCTestExpectation()
-//        
-//        router.objectWillChange
-//            .sink { _ in
-//                XCTAssertEqual(router.transition.type, .selectTab)
-//                XCTAssertEqual(router.transition.tabIndex, 3)
-//                exp.fulfill()
-//            }
-//            .store(in: &bag)
-//        router.selectTabbar(at: 3)
-//        wait(for: [exp], timeout: 0.2)
-//    }
-//    
-//    func testTrigger() {
-//        let router = TestRouter()
-//        var bag = [AnyCancellable]()
-//        let exp = XCTestExpectation()
-//        
-//        router.objectWillChange
-//            .sink { _ in
-//                XCTAssertEqual(router.transition.type, .push)
-//                XCTAssertNotNil(router.transition.route)
-//                exp.fulfill()
-//            }
-//            .store(in: &bag)
-//        router.trigger(to: .emptyScreen, with: .push)
-//        wait(for: [exp], timeout: 0.2)
-//    }
-//    
-//    func testShowError() {
-//        let router: Router<EmptyRoute> = .init()
-//        var bag = [AnyCancellable]()
-//        let exp = XCTestExpectation()
-//        
-//        router.objectWillChange
-//            .sink { _ in
-//                XCTAssertEqual(router.transition.type, .alert)
-//                XCTAssertNotNil(router.transition.alert)
-//                exp.fulfill()
-//            }
-//            .store(in: &bag)
-//        router.show(error: NSError(domain: "", code: 11, userInfo: nil), and: nil)
-//        wait(for: [exp], timeout: 0.2)
-//      
-//    }
-//    
-//    func testShowAlert() {
-//        let router: Router<EmptyRoute> = .init()
-//        var bag = [AnyCancellable]()
-//        let exp = XCTestExpectation()
-//        
-//        router.objectWillChange
-//            .sink { _ in
-//                XCTAssertEqual(router.transition.type, .alert)
-//                XCTAssertNotNil(router.transition.alert)
-//                exp.fulfill()
-//            }
-//            .store(in: &bag)
-//        router.show(alert: .init(title: Text(""), message: Text("message"), dismissButton: nil))
-//        wait(for: [exp], timeout: 0.2)
-//    }
-//    
-//    func testDismiss() {
-//        let router: Router<EmptyRoute> = .init()
-//        var bag = [AnyCancellable]()
-//        let exp = XCTestExpectation()
-//        
-//        router.objectWillChange
-//            .sink { _ in
-//                XCTAssertEqual(router.transition.type, .dismiss)
-//                exp.fulfill()
-//            }
-//            .store(in: &bag)
-//        router.dismiss()
-//        wait(for: [exp], timeout: 0.2)
-//    }
-//    
-//    func testDismissAll() {
-//        let router: Router<EmptyRoute> = .init()
-//        var bag = [AnyCancellable]()
-//        let exp = XCTestExpectation()
-//        
-//        router.objectWillChange
-//            .sink { _ in
-//                XCTAssertEqual(router.transition.type, .dismissAll)
-//                exp.fulfill()
-//            }
-//            .store(in: &bag)
-//        router.dismissAll()
-//        wait(for: [exp], timeout: 0.2)
-//    }
-//    
-//    func testResetTransition() {
-//        let router: Router<EmptyRoute> = .init()
-//        var bag = [AnyCancellable]()
-//        let exp = XCTestExpectation()
-//        router.objectWillChange
-//            .sink { _ in
-//                XCTAssertTrue(false)
-//                exp.fulfill()
-//            }
-//            .store(in: &bag)
-//        router.resetTransition(scenePhase: .active)
-//        let result = XCTWaiter.wait(for: [exp], timeout: 0.2)
-//        if result == .timedOut {
-//            XCTAssertEqual(router.transition.type, .none)
-//        } else {
-//            XCTAssertTrue(false)
-//        }
-//    }
+    @MainActor
+    func testSelectTabbarItem() async {
+        let router = TestRouter()
+        let exp = XCTestExpectation()
+        let sut = SRRootView {
+            TestScreen(router: router, tests: .none).onChange(of: router.transition) { oldValue, newValue in
+                XCTAssertEqual(newValue.tabIndex, 3)
+                exp.fulfill()
+            }
+        }
+        ViewHosting.host(view: sut)
+        router.selectTabbar(at: 3)
+        await fulfillment(of: [exp], timeout: 0.2)
+    }
+    
+    @MainActor
+    func testTrigger() async {
+        let router = TestRouter()
+        let exp = XCTestExpectation()
+        let sut = SRRootView {
+            TestScreen(router: router, tests: .none).onChange(of: router.transition) { oldValue, newValue in
+                XCTAssertEqual(newValue.type, .push)
+                XCTAssertNotNil(newValue.route)
+                exp.fulfill()
+            }
+        }
+        ViewHosting.host(view: sut)
+        router.trigger(to: .emptyScreen, with: .push)
+        await fulfillment(of: [exp], timeout: 0.2)
+    }
+    
+    @MainActor
+    func testShowError() async {
+        let router = TestRouter()
+        let exp = XCTestExpectation()
+        let sut = SRRootView {
+            TestScreen(router: router, tests: .none).onChange(of: router.transition) { oldValue, newValue in
+                XCTAssertEqual(newValue.type, .alert)
+                XCTAssertNotNil(newValue.alert)
+                exp.fulfill()
+            }
+        }
+        ViewHosting.host(view: sut)
+        router.show(error: NSError(domain: "", code: 11, userInfo: nil), and: nil)
+        await fulfillment(of: [exp], timeout: 0.2)
+    }
+    
+    @MainActor
+    func testShowAlert() async {
+        let router = TestRouter()
+        let exp = XCTestExpectation()
+        let sut = SRRootView {
+            TestScreen(router: router, tests: .none).onChange(of: router.transition) { oldValue, newValue in
+                XCTAssertEqual(newValue.type, .alert)
+                XCTAssertNotNil(newValue.alert)
+                exp.fulfill()
+            }
+        }
+        ViewHosting.host(view: sut)
+        router.show(alert: .init(title: Text(""), message: Text("message"), dismissButton: nil))
+        await fulfillment(of: [exp], timeout: 0.2)
+    }
+    
+    @MainActor
+    func testDismiss() async {
+        let router = TestRouter()
+        let exp = XCTestExpectation()
+        let sut = SRRootView {
+            TestScreen(router: router, tests: .none).onChange(of: router.transition) { oldValue, newValue in
+                XCTAssertEqual(newValue.type, .dismiss)
+                exp.fulfill()
+            }
+        }
+        ViewHosting.host(view: sut)
+        router.dismiss()
+        await fulfillment(of: [exp], timeout: 0.2)
+    }
+    
+    @MainActor
+    func testDismissAll() async {
+        let router = TestRouter()
+        let exp = XCTestExpectation()
+        let sut = SRRootView {
+            TestScreen(router: router, tests: .none).onChange(of: router.transition) { oldValue, newValue in
+                XCTAssertEqual(newValue.type, .dismissAll)
+                exp.fulfill()
+            }
+        }
+        ViewHosting.host(view: sut)
+        router.dismissAll()
+        await fulfillment(of: [exp], timeout: 0.2)
+    }
+    
+    @MainActor
+    func testPop() async {
+        let router = TestRouter()
+        let exp = XCTestExpectation()
+        let sut = SRRootView {
+            TestScreen(router: router, tests: .none).onChange(of: router.transition) { oldValue, newValue in
+                XCTAssertEqual(newValue.type, .pop)
+                exp.fulfill()
+            }
+        }
+        ViewHosting.host(view: sut)
+        router.pop()
+        await fulfillment(of: [exp], timeout: 0.2)
+    }
+    
+    @MainActor
+    func testPopToRoot() async {
+        let router = TestRouter()
+        let exp = XCTestExpectation()
+        let sut = SRRootView {
+            TestScreen(router: router, tests: .none).onChange(of: router.transition) { oldValue, newValue in
+                XCTAssertEqual(newValue.type, .popToRoot)
+                exp.fulfill()
+            }
+        }
+        ViewHosting.host(view: sut)
+        router.popToRoot()
+        await fulfillment(of: [exp], timeout: 0.2)
+    }
+    
+    @MainActor
+    func testPopToRoute() async {
+        let router = TestRouter()
+        let exp = XCTestExpectation()
+        let sut = SRRootView {
+            TestScreen(router: router, tests: .none).onChange(of: router.transition) { oldValue, newValue in
+                XCTAssertEqual(newValue.type, .popToRoute)
+                XCTAssertNotNil(newValue.popToRoute)
+                exp.fulfill()
+            }
+        }
+        ViewHosting.host(view: sut)
+        router.pop(to: EmptyRoute.emptyScreen)
+        await fulfillment(of: [exp], timeout: 0.2)
+    }
 }

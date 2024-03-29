@@ -111,18 +111,4 @@ class TestInitializers: XCTestCase {
             XCTAssertEqual(type.description, "TriggerType - \(type)")
         }
     }
-    
-    @MainActor
-    func testRootRouterInit() async {
-        let exp = XCTestExpectation()
-        let router = TestRouter()
-        let sut = SRRootView {
-            TestScreen(router: router, tests: .none).onDismissAllChange {
-                exp.fulfill()
-            }
-        }
-        ViewHosting.host(view: sut)
-        router.dismissAll()
-        await fulfillment(of: [exp], timeout: 0.2)
-    }
 }

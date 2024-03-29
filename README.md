@@ -184,12 +184,8 @@ struct HomeScreen: View {
 ```
 Now you can navigate to new screen in HomeViewModel, that's cool right?
 
-### Note
-Make sure the transition is performed on MainThread.
-
 ### Conclusion
-sRouting is a lightweight framework and flexiable, so you can handle the
-navigations by whatever you want.
+sRouting is a lightweight framework and flexiable.
 
 ## 📃 License
 
