@@ -12,6 +12,9 @@ import SwiftUI
 /// The router can trigger a transition from inside(view) or outside(view model) the view.
 public protocol SRRouterType<RouteType> where RouteType: SRRoute {
 
+    typealias AcceptionCallback = (_ accepted: Bool) -> Void
+    typealias ErrorHandler = (_ error: Error?) -> Void
+    
     associatedtype RouteType: SRRoute
     
     var transition: SRTransition<RouteType> { get }
@@ -88,4 +91,49 @@ public protocol SRRouterType<RouteType> where RouteType: SRRoute {
     /// Navigation pop to route
     /// - Parameter route: some``SRRoute``
     func pop(to route: some SRRoute)
+    
+    /// Opens a window that's associated with the specified identifier.
+    /// - Parameter id: window's id
+    ///
+    /// ### Example
+    /// ```swif
+    /// openWindow(id: "message")
+    /// ```
+    func openWindow(id: String)
+    
+    /// Opens a window defined by a window group that presents the type of
+    /// the specified value.
+    /// - Parameter value: Codable & Hashable
+    ///
+    /// ### Example
+    /// ```swif
+    /// openWindow(value: message.id)
+    /// ```
+    func openWindow<C>(value: C) where C: Codable, C: Hashable
+    
+    /// Opens a window defined by the window group that presents the specified
+    /// value type and that's associated with the specified identifier.
+    /// - Parameters:
+    ///   - id: window's id
+    ///   - value: Codable & Hashable
+    ///
+    /// ### Example
+    /// ```swif
+    /// openWindow(id: "message", value: message.id)
+    /// ```
+    func openWindow<C>(id: String, value: C) where C: Codable, C: Hashable
+    
+    /// Opens a URL, following system conventions.
+    /// - Parameters:
+    ///   - url: `URL`
+    ///   - completion: `AcceptionCallback`
+    func openURL(at url: URL, completion: AcceptionCallback?)
+    
+    #if os(macOS) || os(visionOS)
+    /// Opens the document at the specified file URL.
+    /// - Parameters:
+    ///   - url: file URL
+    ///   - completion: `ErrorHandler`
+    func openDocument(at url: URL, completion: ErrorHandler?)
+    #endif
 }

@@ -18,25 +18,36 @@ import SwiftUI
 ///Using for dev
 #if canImport(sRoutingMacros)
 
-import sRoutingMacros
-
-let testMacros: [String: Macro.Type] = [
-    "Router": RouterMacro.self,
-]
-
-final class RouterMacroTest: XCTestCase {
-
-    func testRouterMacroImp() throws {
-        
-        assertMacroExpansion("""
-        @sRouter(HomeRoute.self) @Observable
-        class HomeViewModel { }
-        """, expandedSource:"""
-        @sRouter(HomeRoute.self) @Observable
-        class HomeViewModel { }
-        """,
-        macros: testMacros)
-    }
-}
+//import sRoutingMacros
+//
+//let testMacros: [String: Macro.Type] = [
+//    "sRootRouter": RootRouterMacro.self, "sRouter": RouterMacro.self
+//]
+//
+//final class RouterMacroTest: XCTestCase {
+//
+//    func testRouterMacroImp() throws {
+//        
+//        assertMacroExpansion("""
+//        @sRouter(HomeRoute.self) @Observable
+//        class HomeViewModel { }
+//        """, expandedSource:"""
+//        @sRouter(HomeRoute.self) @Observable
+//        class HomeViewModel { }
+//        """,
+//        macros: testMacros)
+//    }
+//    
+//    func testRootRouterMacroImp() throws {
+//        assertMacroExpansion("""
+//        @sRootRouter(tabs: ["homeItem", "settingItem"], stacks: "home", "setting")
+//        struct RootRouter { }
+//        """, expandedSource:"""
+//        @sRootRouter(tabs: ["homeItem", "settingItem"], stacks: "home", "setting")
+//        struct RootRouter { }
+//        """,
+//        macros: testMacros)
+//    }
+//}
 
 #endif

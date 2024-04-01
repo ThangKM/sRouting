@@ -21,7 +21,7 @@ private struct TabarModifier: ViewModifier {
     }
     
     func body(content: Content) -> some View {
-        content.onChange(of: tabSelection?.tabSelection) { oldValue, newValue in
+        content.onChange(of: tabSelection?.selection) { oldValue, newValue in
             guard let newValue else { return }
             onChange(newValue)
         }

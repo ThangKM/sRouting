@@ -26,3 +26,14 @@ enum HomeRoute: SRRoute {
 
 @sRouter(HomeRoute.self) @Observable
 class HomeViewModel { }
+
+
+@sRootRouter(stacks: "home", "setting")
+struct RootRouter { }
+
+
+@MainActor
+func testing() {
+    let rootRouter = RootRouter()
+    rootRouter.routing(.push(route: HomeRoute.home, into: .home))
+}

@@ -7,124 +7,97 @@
 
 import SwiftUI
 
-@MainActor
-public struct SRTransition<RouteType: SRRoute> {
+public struct SRTransition<RouteType>
+where RouteType: SRRoute {
     
     let contextId: String
     let type: SRTransitionType
-    let route: RouteType?
-    let alert: Alert?
-    let tabIndex: Int?
-    let popToRoute: (any SRRoute)?
-    
+    private(set) var route: RouteType?
+    private(set) var alert: Alert?
+    private(set) var tabIndex: Int?
+    private(set) var popToRoute: (any SRRoute)?
+    private(set) var windowTransition: SRWindowTransition?
+
     #if os(iOS) || os(tvOS)
-    let actionSheet: ActionSheet?
+    private(set) var actionSheet: ActionSheet?
     
     public init(with actionSheet: ActionSheet) {
         self.type = .actionSheet
-        route = nil
-        tabIndex = nil
-        alert = nil
+        self.contextId = SRContext.newContextId()
         self.actionSheet = actionSheet
-        popToRoute = nil
-        contextId = Self._contextId()
     }
   
     public init(with type: SRTransitionType) {
         self.type = type
-        route = nil
-        alert = nil
-        tabIndex = nil
-        actionSheet = nil
-        popToRoute = nil
-        contextId = Self._contextId()
+        self.contextId = SRContext.newContextId()
     }
     
     public init(selectTab index: Int) {
-        type = .selectTab
-        tabIndex = index
-        route = nil
-        alert = nil
-        actionSheet = nil
-        popToRoute = nil
-        contextId = Self._contextId()
+        self.type = .selectTab
+        self.contextId = SRContext.newContextId()
+        self.tabIndex = index
     }
 
     public init(with alert: Alert) {
         self.type = .alert
-        route = nil
-        tabIndex = nil
+        self.contextId = SRContext.newContextId()
         self.alert = alert
-        actionSheet = nil
-        popToRoute = nil
-        contextId = Self._contextId()
     }
     
     public init(with error: Error, and alertTitle: String? = nil) {
         self.type = .alert
-        route = nil
-        tabIndex = nil
-        alert = SRTransition.alert(from: error, with: alertTitle)
-        actionSheet = nil
-        popToRoute = nil
-        contextId = Self._contextId()
+        self.contextId = SRContext.newContextId()
+        self.alert = SRTransition.alert(from: error, with: alertTitle)
     }
     
     public init(with route: RouteType, and action: SRTransitionType) {
         self.type = action
         self.route = route
+        self.contextId = SRContext.newContextId()
         self.alert = nil
-        tabIndex = nil
-        actionSheet = nil
-        popToRoute = nil
-        contextId = Self._contextId()
     }
     
     public init(popTo route: some SRRoute) {
         self.type = .popToRoute
-        self.route = nil
-        self.alert = nil
-        tabIndex = nil
-        actionSheet = nil
-        popToRoute = route
-        contextId = Self._contextId()
+        self.popToRoute = route
+        self.contextId = SRContext.newContextId()
     }
     
+    public init(with type: SRTransitionType,
+                windowTransition: SRWindowTransition) {
+        self.contextId = SRContext.newContextId()
+        self.type = type
+        self.windowTransition = windowTransition
+    }
     #else
+    public init(with type: SRTransitionType,
+                windowTransition: SRWindowTransition) {
+        self.contextId = SRContext.newContextId()
+        self.type = type
+        self.windowTransition = windowTransition
+    }
+    
     public init(with type: SRTransitionType) {
         self.type = type
-        route = nil
-        alert = nil
-        tabIndex = nil
-        popToRoute = nil
-        contextId = Self._contextId()
+        self.contextId = SRContext.newContextId()
     }
     
     public init(selectTab index: Int) {
-        type = .selectTab
-        tabIndex = index
-        route = nil
-        alert = nil
-        popToRoute = nil
-        contextId = Self._contextId()
+        self.type = .selectTab
+        self.tabIndex = index
+        self.contextId = SRContext.newContextId()
     }
 
     public init(with alert: Alert) {
         self.type = .alert
-        route = nil
-        tabIndex = nil
         self.alert = alert
-        popToRoute = nil
-        contextId = Self._contextId()
+        self.contextId = SRContext.newContextId()
     }
     
     public init(with error: Error, and alertTitle: String? = nil) {
         self.type = .alert
-        route = nil
-        tabIndex = nil
-        alert = SRTransition.alert(from: error, with: alertTitle)
-        popToRoute = nil
-        contextId = Self._contextId()
+        self.alert = SRTransition.alert(from: error, with: alertTitle)
+        self.contextId = SRContext.newContextId()
     }
     
     public init(with route: RouteType, and action: SRTransitionType) {
@@ -132,19 +105,13 @@ public struct SRTransition<RouteType: SRRoute> {
         precondition(action != .actionSheet, "macOS didn't support actionSheet")
         self.type = action
         self.route = route
-        self.alert = nil
-        tabIndex = nil
-        popToRoute = nil
-        contextId = Self._contextId()
+        self.contextId = SRContext.newContextId()
     }
     
     public init(popTo route: some SRRoute) {
         self.type = .popToRoute
-        self.route = nil
-        self.alert = nil
-        tabIndex = nil
-        popToRoute = route
-        contextId = Self._contextId()
+        self.popToRoute = route
+        self.contextId = SRContext.newContextId()
     }
     #endif
     
@@ -154,17 +121,6 @@ public struct SRTransition<RouteType: SRRoute> {
         Alert.init(title: Text(title ?? ""),
                    message: Text(error.localizedDescription),
                    dismissButton: .cancel(Text("OK")))
-    }
-    
-    /// Generate context id for a transition
-    ///
-    /// - Returns: time context id
-    private static func _contextId() -> String {
-        let formater = DateFormatter()
-        formater.dateStyle = .short
-        formater.timeStyle = .medium
-        let timeId = formater.string(from: Date())
-        return timeId
     }
 }
 

@@ -11,8 +11,8 @@ private typealias OnChangeBlock = @MainActor () -> Void
 
 private struct RootModifier: ViewModifier {
     
-    @Environment(SRDismisAllEmitter.self)
-    private var emitter: SRDismisAllEmitter?
+    @Environment(SRDismissAllEmitter.self)
+    private var emitter: SRDismissAllEmitter?
     
     private let onChange: OnChangeBlock
     

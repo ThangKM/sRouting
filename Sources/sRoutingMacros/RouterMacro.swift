@@ -178,6 +178,66 @@ public struct RouterMacro: MemberMacro {
         func pop(to route: some SRRoute) {
             transition = .init(popTo: route)
         }
+        
+        /// Opens a window that's associated with the specified identifier.
+        /// - Parameter id: window's id
+        ///
+        /// ### Example
+        /// ```swif
+        /// openWindow(id: "message")
+        /// ```
+        @MainActor
+        func openWindow(id: String) {
+            transition = .init(with: .openWindow, windowTransition: .init(windowId: id))
+        }
+        
+        /// Opens a window defined by a window group that presents the type of
+        /// the specified value.
+        /// - Parameter value: Codable & Hashable
+        ///
+        /// ### Example
+        /// ```swif
+        /// openWindow(value: message.id)
+        /// ```
+        @MainActor
+        func openWindow<C>(value: C) where C: Codable, C: Hashable {
+            transition = .init(with: .openWindow, windowTransition: .init(value: value))
+        }
+        
+        /// Opens a window defined by the window group that presents the specified
+        /// value type and that's associated with the specified identifier.
+        /// - Parameters:
+        ///   - id: window's id
+        ///   - value: Codable & Hashable
+        ///
+        /// ### Example
+        /// ```swif
+        /// openWindow(id: "message", value: message.id)
+        /// ```
+        @MainActor
+        func openWindow<C>(id: String, value: C) where C: Codable, C: Hashable {
+            transition = .init(with: .openWindow, windowTransition: .init(windowId: id, value: value))
+        }
+        
+        /// Opens a URL, following system conventions.
+        /// - Parameters:
+        ///   - url: `URL`
+        ///   - completion: `AcceptionCallback`
+        @MainActor
+        func openURL(at url: URL, completion: AcceptionCallback?) {
+            transition = .init(with: .openURL, windowTransition: .init(url: url, acceoption: completion))
+        }
+        
+        #if os(macOS) || os(visionOS)
+        /// Opens the document at the specified file URL.
+        /// - Parameters:
+        ///   - url: file URL
+        ///   - completion: `ErrorHandler`
+        @MainActor
+        func openDocument(at url: URL, completion: ErrorHandler?) {
+            transition = .init(with: .openDocument, windowTransition: .init(url: url, errorHandler: completion))
+        }
+        #endif
         """]
     }
 }

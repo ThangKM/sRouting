@@ -8,7 +8,6 @@
 import SwiftUI
 
 /// The View that is a screen.
-@MainActor
 public struct ScreenView<Content, RouterType>: View
 where Content: View, RouterType: SRRouterType {
     

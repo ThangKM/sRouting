@@ -12,7 +12,6 @@ import ViewInspector
 
 class ScreenViewTests: XCTestCase {
     
-    
     @MainActor
     func testDismissAction() async {
         let exp = XCTestExpectation()

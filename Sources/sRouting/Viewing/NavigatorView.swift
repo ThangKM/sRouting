@@ -8,7 +8,6 @@
 import SwiftUI
 
 /// The hidden view that handle the navigation of a screen.
-@MainActor
 struct NavigatorView<RouterType>: View where RouterType: SRRouterType  {
     
     typealias VoidAction = () -> Void
@@ -23,10 +22,18 @@ struct NavigatorView<RouterType>: View where RouterType: SRRouterType  {
     @Environment(SRNavigationPath.self)
     private var navigationPath: SRNavigationPath?
     
-    @Environment(SRDismisAllEmitter.self)
-    private var dismissAllEmitter: SRDismisAllEmitter?
+    @Environment(SRDismissAllEmitter.self)
+    private var dismissAllEmitter: SRDismissAllEmitter?
+    
+    @Environment(\.openWindow) private var openWindow
+    
+    @Environment(\.openURL) private var openURL
     
     @Environment(\.scenePhase) private var scenePhase
+    
+    #if os(macOS) || os(visionOS)
+    @Environment(\.openDocument) private var openDocument
+    #endif
     
     /// Active state of a full screen presentation
     @State private(set) var isActivePresent: Bool = false
@@ -80,13 +87,12 @@ struct NavigatorView<RouterType>: View where RouterType: SRRouterType  {
     }
     #endif
     
-    #if os(macOS)
+    #if os(macOS) || os(visionOS)
     var body: some View {
         Text("Navigator View")
         .sheet(isPresented: $isActiveSheet,
                content: {
             destinationView
-                .environment(tabarSelection)
         })
         .alert(isPresented: $isActiveAlert) {
             guard let alert = alertView
@@ -182,7 +188,7 @@ extension NavigatorView {
         case .dismiss:
             dismissAction()
         case .selectTab:
-            tabarSelection?.tabSelection = transition.tabIndex ?? 0
+            tabarSelection?.select(tag: transition.tabIndex ?? .zero)
         case .dismissAll:
             dismissAllEmitter?.dismissAll()
         case .pop:
@@ -190,12 +196,62 @@ extension NavigatorView {
         case .popToRoot:
             navigationPath?.popToRoot()
         case .popToRoute:
-            guard let route = transition.popToRoute else { return }
+            guard let route = transition.popToRoute else { break }
             navigationPath?.pop(to: route)
+        case .openWindow:
+            openWindow(transition: transition.windowTransition)
+        case .openURL:
+            guard let windowTransition = transition.windowTransition,
+                  let url = windowTransition.url
+            else { break }
+            if let acception = windowTransition.acception {
+                openURL(url, completion: acception)
+            } else {
+                openURL(url)
+            }
+        #if os(macOS) || os(visionOS)
+        case .openDocument:
+            guard let windowTransition = transition.windowTransition,
+                  let url = windowTransition.url
+            else { break }
+            Task {
+                await openDoc(at:url, errorHandler:windowTransition.errorHandler)
+            }
+        #endif
+                    
         case .none: break
         }
         // test - action
         tests?.didChangeTransition?(self)
         //
     }
+    
+    #if os(macOS) || os(visionOS)
+    @MainActor 
+    private func openDoc(at url: URL, errorHandler: ((Error?) -> Void)?) async {
+        do {
+            try await openDocument(at: url)
+            errorHandler?(.none)
+        } catch {
+            errorHandler?(error)
+        }
+    }
+    #endif
+    
+    @MainActor
+    private func openWindow(transition: SRWindowTransition?) {
+        guard let transition else { return }
+        switch (transition.windowId, transition.windowValue) {
+        case (.some(let id), .none):
+            openWindow(id: id)
+        case (.none, .some(let value)):
+            openWindow(value: value)
+        case (.some(let id), .some(let value)):
+            openWindow(id: id, value: value)
+        case (.none, .none):
+            break
+        }
+    }
 }
+
+extension OpenDocumentAction: @unchecked Sendable { }

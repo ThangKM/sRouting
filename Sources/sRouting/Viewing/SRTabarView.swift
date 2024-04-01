@@ -7,27 +7,21 @@
 
 import SwiftUI
 
-/// Tabar's selection Observation
-@Observable @MainActor
-internal final class SRTabarSelection {
-    var tabSelection: Int = 0
-}
-
 /// The root view of the application
-@MainActor
 public struct SRTabarView<Content>: View where Content: View {
     
-    @State private var selection: SRTabarSelection = .init()
+    @Bindable private var selection: SRTabarSelection
     private let content: () -> Content
 
     /// Creates an instance of `TabView` that selects from content associated with
     /// `Selection` values.
-    public init(@ViewBuilder content: @escaping () -> Content) {
+    public init(selection: SRTabarSelection, @ViewBuilder content: @escaping () -> Content) {
         self.content = content
+        self.selection = selection
     }
     
     public var body: some View {
-        TabView(selection: $selection.tabSelection) {
+        TabView(selection: $selection.selection) {
             content()
         }.environment(selection)
     }

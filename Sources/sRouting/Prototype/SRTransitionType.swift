@@ -46,7 +46,14 @@ public enum SRTransitionType: String, CaseIterable {
     case popToRoute
     /// Navigation pop to root action
     case popToRoot
-    
+    /// Open window
+    case openWindow
+    /// Open URL
+    case openURL
+    #if os(macOS) || os(visionOS)
+    /// Open file
+    case openDocument
+    #endif
     public init(with triggerType: SRTriggerType) {
         switch triggerType {
         case .push: self = .push

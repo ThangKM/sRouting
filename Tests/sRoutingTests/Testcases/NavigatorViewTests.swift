@@ -16,7 +16,7 @@ class NavigatorViewTests: XCTestCase {
     func testActivePush() async {
         let router = TestRouter()
         let exp = XCTestExpectation()
-        let sut = SRNavigationStack {
+        let sut = SRNavigationStack(path: .init()) {
             TestScreen(router: router, tests: .none).onNaviStackChange { oldPaths, newPaths in
                 XCTAssertTrue(oldPaths.isEmpty)
                 XCTAssertTrue(newPaths.count == 1)
@@ -32,7 +32,7 @@ class NavigatorViewTests: XCTestCase {
     func testActiveSheet() async {
         let router = TestRouter()
         let exp = XCTestExpectation()
-        let sut = SRNavigationStack {
+        let sut = SRNavigationStack(path: .init()) {
             NavigatorView(router: router, onDismiss: {}, testsActions: .init(didChangeTransition: { view in
                 XCTAssertTrue(view.isActiveSheet)
                 exp.fulfill()
@@ -47,7 +47,7 @@ class NavigatorViewTests: XCTestCase {
     func testActiveAlert() async {
         let router = TestRouter()
         let exp = XCTestExpectation()
-        let sut = SRNavigationStack {
+        let sut = SRNavigationStack(path: .init()) {
             NavigatorView(router: router, onDismiss: {}, testsActions: .init(didChangeTransition: { view in
                 XCTAssertTrue(view.isActiveAlert)
                 exp.fulfill()

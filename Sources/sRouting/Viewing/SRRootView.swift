@@ -7,24 +7,15 @@
 
 import SwiftUI
 
-@Observable @MainActor
-internal final class SRDismisAllEmitter {
-    
-    var dismissAllSignal: Int = .zero
-    
-    func dismissAll() {
-        dismissAllSignal = if dismissAllSignal == .zero { 1 } else { .zero }
-    }
-}
-
-@MainActor
 public struct SRRootView<Content>: View where Content: View {
     
-    @State private var dismissAllEmitter: SRDismisAllEmitter = .init()
+    @Bindable private var dismissAllEmitter: SRDismissAllEmitter
     private let content: () -> Content
     
-    public init(@ViewBuilder content: @escaping () -> Content) {
+    public init(dsaEmitter: SRDismissAllEmitter,
+                @ViewBuilder content: @escaping () -> Content) {
         self.content = content
+        self.dismissAllEmitter = dsaEmitter
     }
     
     public var body: some View {
