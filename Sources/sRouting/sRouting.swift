@@ -10,5 +10,6 @@ public macro sRouter<T: SRRoute>(_ route: T.Type) = #externalMacro(module: "sRou
 
 
 @attached(member, names: arbitrary)
-@attached(peer, names: named(SRRootRoute), named(SRNavStacks), named(SRTabItems))
-public macro sRootRouter(tabs: [String] = [], stacks: String...) = #externalMacro(module: "sRoutingMacros", type: "RootRouterMacro")
+@attached(peer, names: named(SRRootRoute), named(SRNavStacks), named(SRTabItems), named(SRRootRouter))
+@attached(extension, conformances: SRContextType)
+public macro sRContext(tabs: [String] = [], stacks: String...) = #externalMacro(module: "sRoutingMacros", type: "ContextMacro")

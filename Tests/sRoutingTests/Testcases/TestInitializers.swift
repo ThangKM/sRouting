@@ -27,7 +27,7 @@ class TestInitializers: XCTestCase {
     
     @MainActor
     func testInitRootView() throws {
-        let view = SRRootView(dsaEmitter: .init()) {
+        let view = SRRootView(context: SRContext()) {
             Text("This is content in RootView")
         }
         ViewHosting.host(view: view)

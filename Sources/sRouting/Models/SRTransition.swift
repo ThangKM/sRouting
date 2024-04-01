@@ -23,81 +23,81 @@ where RouteType: SRRoute {
     
     public init(with actionSheet: ActionSheet) {
         self.type = .actionSheet
-        self.contextId = SRContext.newContextId()
+        self.contextId = TimeIdentifier.newId()
         self.actionSheet = actionSheet
     }
   
     public init(with type: SRTransitionType) {
         self.type = type
-        self.contextId = SRContext.newContextId()
+        self.contextId = TimeIdentifier.newId()
     }
     
     public init(selectTab index: Int) {
         self.type = .selectTab
-        self.contextId = SRContext.newContextId()
+        self.contextId = TimeIdentifier.newId()
         self.tabIndex = index
     }
 
     public init(with alert: Alert) {
         self.type = .alert
-        self.contextId = SRContext.newContextId()
+        self.contextId = TimeIdentifier.newId()
         self.alert = alert
     }
     
     public init(with error: Error, and alertTitle: String? = nil) {
         self.type = .alert
-        self.contextId = SRContext.newContextId()
+        self.contextId = TimeIdentifier.newId()
         self.alert = SRTransition.alert(from: error, with: alertTitle)
     }
     
     public init(with route: RouteType, and action: SRTransitionType) {
         self.type = action
         self.route = route
-        self.contextId = SRContext.newContextId()
+        self.contextId = TimeIdentifier.newId()
         self.alert = nil
     }
     
     public init(popTo route: some SRRoute) {
         self.type = .popToRoute
         self.popToRoute = route
-        self.contextId = SRContext.newContextId()
+        self.contextId = TimeIdentifier.newId()
     }
     
     public init(with type: SRTransitionType,
                 windowTransition: SRWindowTransition) {
-        self.contextId = SRContext.newContextId()
+        self.contextId = TimeIdentifier.newId()
         self.type = type
         self.windowTransition = windowTransition
     }
     #else
     public init(with type: SRTransitionType,
                 windowTransition: SRWindowTransition) {
-        self.contextId = SRContext.newContextId()
+        self.contextId = TimeIdentifier.newId()
         self.type = type
         self.windowTransition = windowTransition
     }
     
     public init(with type: SRTransitionType) {
         self.type = type
-        self.contextId = SRContext.newContextId()
+        self.contextId = TimeIdentifier.newId()
     }
     
     public init(selectTab index: Int) {
         self.type = .selectTab
         self.tabIndex = index
-        self.contextId = SRContext.newContextId()
+        self.contextId = TimeIdentifier.newId()
     }
 
     public init(with alert: Alert) {
         self.type = .alert
         self.alert = alert
-        self.contextId = SRContext.newContextId()
+        self.contextId = TimeIdentifier.newId()
     }
     
     public init(with error: Error, and alertTitle: String? = nil) {
         self.type = .alert
         self.alert = SRTransition.alert(from: error, with: alertTitle)
-        self.contextId = SRContext.newContextId()
+        self.contextId = TimeIdentifier.newId()
     }
     
     public init(with route: RouteType, and action: SRTransitionType) {
@@ -105,13 +105,13 @@ where RouteType: SRRoute {
         precondition(action != .actionSheet, "macOS didn't support actionSheet")
         self.type = action
         self.route = route
-        self.contextId = SRContext.newContextId()
+        self.contextId = TimeIdentifier.newId()
     }
     
     public init(popTo route: some SRRoute) {
         self.type = .popToRoute
         self.popToRoute = route
-        self.contextId = SRContext.newContextId()
+        self.contextId = TimeIdentifier.newId()
     }
     #endif
     

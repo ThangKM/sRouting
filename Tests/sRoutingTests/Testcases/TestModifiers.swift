@@ -19,7 +19,7 @@ class TestModifiers: XCTestCase {
     func testOnDismissAll() async {
         let exp = XCTestExpectation()
         let router = TestRouter()
-        let sut = SRRootView(dsaEmitter: .init()) {
+        let sut = SRRootView(context: SRContext()) {
             TestScreen(router: router, tests: .none).onDismissAllChange {
                 exp.fulfill()
             }
@@ -33,7 +33,7 @@ class TestModifiers: XCTestCase {
     func testOnNavigationStackChange() async {
         let exp = XCTestExpectation()
         let router = TestRouter()
-        let sut = SRRootView(dsaEmitter: .init()) {
+        let sut = SRRootView(context: SRContext()) {
             SRNavigationStack(path: .init()) {
                 TestScreen(router: router, tests: .none).onNaviStackChange { oldPaths, newPaths in
                     XCTAssertTrue(oldPaths.isEmpty)

@@ -6,19 +6,26 @@
 //
 
 import SwiftUI
+import Observation
 
-public struct SRRootView<Content>: View where Content: View {
-    
-    @Bindable private var dismissAllEmitter: SRDismissAllEmitter
+public struct SRRootView<Content, ContextType>: View
+where Content: View, ContextType: SRContextType {
+
+    @Environment(\.dismiss)
+    private var dismiss
+    private var context: ContextType
     private let content: () -> Content
     
-    public init(dsaEmitter: SRDismissAllEmitter,
+    public init(context: ContextType,
                 @ViewBuilder content: @escaping () -> Content) {
         self.content = content
-        self.dismissAllEmitter = dsaEmitter
+        self.context = context
     }
     
     public var body: some View {
-        content().environment(dismissAllEmitter)
+        ScreenView(router: context.rootRouter, dismissAction: dismiss) {
+            content()
+        }
+        .environment(context.dismissAllEmitter)
     }
 }

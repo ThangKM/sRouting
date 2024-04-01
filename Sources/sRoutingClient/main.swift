@@ -28,12 +28,12 @@ enum HomeRoute: SRRoute {
 class HomeViewModel { }
 
 
-@sRootRouter(stacks: "home", "setting")
-struct RootRouter { }
+@sRContext(stacks: "home", "setting")
+struct SRContext { }
 
 
 @MainActor
 func testing() {
-    let rootRouter = RootRouter()
-    rootRouter.routing(.push(route: HomeRoute.home, into: .home))
+    let context = SRContext()
+    context.routing(.push(route: HomeRoute.home, into: .home))
 }

@@ -1,5 +1,5 @@
 //
-//  RootRouterMacro.swift
+//  ContextMacro.swift
 //
 //
 //  Created by Thang Kieu on 31/03/2024.
@@ -15,7 +15,7 @@ import Foundation
 private let tabsParam = "tabs"
 private let stacksParam = "stacks"
 
-public enum RootRouterMacroError: Error, CustomStringConvertible {
+public enum ContextMacroError: Error, CustomStringConvertible {
     
     case unsupported
     case missingArguments
@@ -30,7 +30,7 @@ public enum RootRouterMacroError: Error, CustomStringConvertible {
     }
 }
 
-public struct RootRouterMacro: MemberMacro {
+public struct ContextMacro: MemberMacro {
     
     public static func expansion(of node: AttributeSyntax,
                                  providingMembersOf declaration: some DeclGroupSyntax,
@@ -42,6 +42,9 @@ public struct RootRouterMacro: MemberMacro {
         let arguments = try Self._arguments(of: node)
         
         var result: [DeclSyntax] = []
+        
+        let rootRouter: DeclSyntax = "let rootRouter = SRRootRouter()"
+        result.append(rootRouter)
         
         let dsaEmiiter: DeclSyntax = "let dismissAllEmitter = SRDismissAllEmitter()"
         result.append(dsaEmiiter)
@@ -95,7 +98,7 @@ public struct RootRouterMacro: MemberMacro {
     }
 }
 
-extension RootRouterMacro: PeerMacro {
+extension ContextMacro: PeerMacro {
     public static func expansion(of node: SwiftSyntax.AttributeSyntax,
                                  providingPeersOf declaration: some SwiftSyntax.DeclSyntaxProtocol,
                                  in context: some SwiftSyntaxMacros.MacroExpansionContext) throws -> [SwiftSyntax.DeclSyntax] {
@@ -107,6 +110,11 @@ extension RootRouterMacro: PeerMacro {
         let arguments = try Self._arguments(of: node)
         
         var result: [DeclSyntax] = []
+        let rootRouter: DeclSyntax = """
+        @sRouter(AnyRoute.self) @Observable
+        class SRRootRouter { }
+        """
+        result.append(rootRouter)
         let rootRoute: DeclSyntax =  """
             enum SRRootRoute: SRRoute {
                 case resetAll
@@ -179,7 +187,7 @@ extension RootRouterMacro: PeerMacro {
     }
 }
 
-extension RootRouterMacro {
+extension ContextMacro {
     
     private static func _arguments(of node: AttributeSyntax) throws -> (tabs: [String], stacks: [String]) {
         
@@ -201,7 +209,7 @@ extension RootRouterMacro {
             switch currentLabel {
             case tabsParam:
                 guard let exp = labeled.expression.as(ArrayExprSyntax.self)
-                else { throw RootRouterMacroError.missingArguments }
+                else { throw ContextMacroError.missingArguments }
                 let elements = exp.elements.map(\.expression).compactMap({ $0.as(StringLiteralExprSyntax.self) })
                 let contents = elements.compactMap(\.segments.first).compactMap({ $0.as(StringSegmentSyntax.self)})
                 let items = contents.map(\.content.text)
@@ -209,7 +217,7 @@ extension RootRouterMacro {
             case stacksParam:
                 guard let exp = labeled.expression.as(StringLiteralExprSyntax.self),
                       let segment = exp.segments.first?.as(StringSegmentSyntax.self)
-                else { throw RootRouterMacroError.missingArguments }
+                else { throw ContextMacroError.missingArguments }
                 
                 let input = segment.content.text
                 stacks.append(input)
@@ -217,7 +225,26 @@ extension RootRouterMacro {
             }
         }
         
-        guard !tabs.isEmpty || !stacks.isEmpty else { throw RootRouterMacroError.missingArguments }
+        guard !tabs.isEmpty || !stacks.isEmpty else { throw ContextMacroError.missingArguments }
         return (tabs,stacks)
+    }
+}
+
+extension ContextMacro: ExtensionMacro {
+    
+    public static func expansion(
+        of node: AttributeSyntax,
+        attachedTo declaration: some DeclGroupSyntax,
+        providingExtensionsOf type: some TypeSyntaxProtocol,
+        conformingTo protocols: [TypeSyntax],
+        in context: some MacroExpansionContext
+    ) throws -> [ExtensionDeclSyntax] {
+        
+        let decl: DeclSyntax = """
+            extension \(raw: type.trimmedDescription): sRouting.SRContextType {}
+            """
+        let ext = decl.cast(ExtensionDeclSyntax.self)
+        
+        return [ext]
     }
 }

@@ -22,3 +22,6 @@ enum EmptyRoute: SRRoute {
 
 @sRouter(EmptyRoute.self) @Observable
 class TestRouter { }
+
+@sRContext(stacks: "home")
+struct SRContext { }
