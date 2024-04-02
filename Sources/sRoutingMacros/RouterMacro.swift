@@ -179,44 +179,16 @@ public struct RouterMacro: MemberMacro {
             transition = .init(popTo: route)
         }
         
-        /// Opens a window that's associated with the specified identifier.
-        /// - Parameter id: window's id
+        /// Opens a window that's associated with the specified transition.
+        /// - Parameter windowTrans: ``SRWindowTransition``
         ///
         /// ### Example
         /// ```swif
-        /// openWindow(id: "message")
+        /// openWindow(windowTrans: windowTrans)
         /// ```
         @MainActor
-        func openWindow(id: String) {
-            transition = .init(with: .openWindow, windowTransition: .init(windowId: id))
-        }
-        
-        /// Opens a window defined by a window group that presents the type of
-        /// the specified value.
-        /// - Parameter value: Codable & Hashable
-        ///
-        /// ### Example
-        /// ```swif
-        /// openWindow(value: message.id)
-        /// ```
-        @MainActor
-        func openWindow<C>(value: C) where C: Codable, C: Hashable {
-            transition = .init(with: .openWindow, windowTransition: .init(value: value))
-        }
-        
-        /// Opens a window defined by the window group that presents the specified
-        /// value type and that's associated with the specified identifier.
-        /// - Parameters:
-        ///   - id: window's id
-        ///   - value: Codable & Hashable
-        ///
-        /// ### Example
-        /// ```swif
-        /// openWindow(id: "message", value: message.id)
-        /// ```
-        @MainActor
-        func openWindow<C>(id: String, value: C) where C: Codable, C: Hashable {
-            transition = .init(with: .openWindow, windowTransition: .init(windowId: id, value: value))
+        func openWindow(windowTrans: SRWindowTransition) {
+            transition = .init(with: .openWindow, windowTransition: windowTrans)
         }
         
         /// Opens a URL, following system conventions.

@@ -101,6 +101,7 @@ struct NavigatorView<RouterType>: View where RouterType: SRRouterType  {
         }
         .onChange(of: dismissAllEmitter?.dismissAllSignal, { oldValue, newValue in
             resetActiveState()
+            dismissAction()
         })
         .onChange(of: router.transition, { oldValue, newValue in
             updateActiveState(from: newValue)
@@ -116,7 +117,7 @@ struct NavigatorView<RouterType>: View where RouterType: SRRouterType  {
     var body: some View {
         Text("Navigator View")
         .fullScreenCover(isPresented: $isActivePresent) {
-            SRNavigationStack {
+            SRNavigationStack(path: .init()) {
                 destinationView
             }
             .environment(dismissAllEmitter)
@@ -124,7 +125,7 @@ struct NavigatorView<RouterType>: View where RouterType: SRRouterType  {
         }
         .sheet(isPresented: $isActiveSheet,
             content: {
-            SRNavigationStack {
+            SRNavigationStack(path: .init()) {
                 destinationView
             }
             .environment(dismissAllEmitter)
@@ -140,6 +141,7 @@ struct NavigatorView<RouterType>: View where RouterType: SRRouterType  {
         })
         .onChange(of: dismissAllEmitter?.dismissAllSignal, { oldValue, newValue in
             resetActiveState()
+            dismissAction()
         })
         .onChange(of: router.transition, { oldValue, newValue in
             updateActiveState(from: newValue)
@@ -254,4 +256,6 @@ extension NavigatorView {
     }
 }
 
+#if os(macOS) || os(visionOS)
 extension OpenDocumentAction: @unchecked Sendable { }
+#endif

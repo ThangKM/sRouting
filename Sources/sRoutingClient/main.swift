@@ -28,7 +28,7 @@ enum HomeRoute: SRRoute {
 class HomeViewModel { }
 
 
-@sRContext(stacks: "home", "setting")
+@sRContext(tabs: ["homeItem", "settingItem"],stacks: "home", "setting")
 struct SRContext { }
 
 

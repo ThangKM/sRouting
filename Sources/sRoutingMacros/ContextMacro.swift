@@ -83,12 +83,25 @@ public struct ContextMacro: MemberMacro {
                 switch route {
                 case .resetAll:
                     dismissAllEmitter.dismissAll()
+                    navStacks.values.forEach({ $0.popToRoot() })
                     tabSelection.select(tag: .zero)
-                case .select(let item):
-                    tabSelection.select(tag: item.rawValue)
-                case .push(let route, let stack):
-                    navigationPath(of: stack).push(to: route)
-                default: break
+                case .dismissAll:
+                    dismissAllEmitter.dismissAll()
+                case .popToRoot(of: let stack):
+                    navigationPath(of: stack).popToRoot()
+                case .select(tabItem: let tabItem):
+                    tabSelection.select(tag: tabItem.rawValue)
+                case .push(route: let route, into: let into):
+                    navigationPath(of: into).push(to: route)
+                case .sheet(let route):
+                    let nayRoute = AnyRoute(route: route, path: route.path)
+                    rootRouter.trigger(to: nayRoute, with: .sheet)
+                case .window(let windowTrans):
+                    rootRouter.openWindow(windowTrans: windowTrans)
+                #if os(iOS)
+                case .present(let route):
+                    rootRouter.trigger(to: .init(route: route, path: route.path), with: .present)
+                #endif
                 }
             }
         }
@@ -119,7 +132,7 @@ extension ContextMacro: PeerMacro {
             enum SRRootRoute: SRRoute {
                 case resetAll
                 case dismissAll
-                case popToRoot
+                case popToRoot(of: SRNavStacks)
                 case select(tabItem: SRTabItems)
                 case push(route: any SRRoute, into: SRNavStacks)
                 case sheet(any SRRoute)
@@ -198,13 +211,12 @@ extension ContextMacro {
         var stacks  = [String]()
         var currentLabel = tabsParam
         for labeled in arguments {
+            
             if labeled.label?.trimmedDescription == tabsParam {
                 currentLabel = tabsParam
             } else if labeled.label?.trimmedDescription == stacksParam {
                 currentLabel = stacksParam
             }
-            
-           
             
             switch currentLabel {
             case tabsParam:
