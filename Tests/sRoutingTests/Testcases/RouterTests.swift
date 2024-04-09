@@ -166,7 +166,7 @@ class RouterTests: XCTestCase {
             }
         }
         ViewHosting.host(view: sut)
-        router.openWindow(id: "window_id")
+        router.openWindow(windowTrans: .init(windowId: "window_id"))
         await fulfillment(of: [exp], timeout: 0.2)
     }
     
@@ -183,7 +183,7 @@ class RouterTests: XCTestCase {
             }
         }
         ViewHosting.host(view: sut)
-        router.openWindow(value: 123)
+        router.openWindow(windowTrans: .init(value: 123))
         await fulfillment(of: [exp], timeout: 0.2)
     }
     
@@ -200,7 +200,7 @@ class RouterTests: XCTestCase {
             }
         }
         ViewHosting.host(view: sut)
-        router.openWindow(id: "window_id", value: 123)
+        router.openWindow(windowTrans: .init(windowId: "window_id", value: 123))
         await fulfillment(of: [exp], timeout: 0.2)
     }
     

@@ -51,19 +51,22 @@ class TestModifiers: XCTestCase {
     func testOnTabSelectionChange() async {
         let exp = XCTestExpectation()
         let router = TestRouter()
-        let sut =  SRTabbarView(selection: .init()) {
-            TestScreen(router: router, tests: .none)
-                .tabItem {
-                    Label("Home", systemImage: "house")
-                }.tag(0)
-                .onTabSelectionChange { value in
-                    XCTAssertEqual(value, 1)
-                    exp.fulfill()
-                }
-            
-            TestScreen(router: router, tests: .none).tabItem {
-                Label("Setting", systemImage: "gear")
-            }.tag(1)
+        let context = SRContext()
+        let sut =  SRRootView(context: context) {
+            SRTabbarView {
+                TestScreen(router: router, tests: .none)
+                    .tabItem {
+                        Label("Home", systemImage: "house")
+                    }.tag(0)
+                    .onTabSelectionChange { value in
+                        XCTAssertEqual(value, 1)
+                        exp.fulfill()
+                    }
+                
+                TestScreen(router: router, tests: .none).tabItem {
+                    Label("Setting", systemImage: "gear")
+                }.tag(1)
+            }
         }
         ViewHosting.host(view: sut)
         router.selectTabbar(at: 1)
