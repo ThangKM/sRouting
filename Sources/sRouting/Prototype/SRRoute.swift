@@ -20,11 +20,6 @@ public protocol SRRoute: Equatable {
 }
 
 extension SRRoute {
-    
-    public var title: String { "" }
-}
-
-extension SRRoute {
     public static func == (lhs: Self, rhs: Self) -> Bool {
         return lhs.path == rhs.path
     }

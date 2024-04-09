@@ -27,11 +27,7 @@ public struct SRNavigationStack<Content>: View where Content: View {
         NavigationStack(path: $path.stack) {
             content()
             .navigationDestination(for: AnyRoute.self) { route in
-                #if os(iOS)
-                route.screen
-                #else
                 route.screen.environment(path)
-                #endif
             }
         }.environment(path)
     }

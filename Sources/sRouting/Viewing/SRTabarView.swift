@@ -1,5 +1,5 @@
 //
-//  SRTabarView.swift
+//  SRTabbarView.swift
 //  sRouting
 //
 //  Created by ThangKieu on 6/28/21.
@@ -8,14 +8,14 @@
 import SwiftUI
 
 /// The root view of the application
-public struct SRTabarView<Content>: View where Content: View {
+public struct SRTabbarView<Content>: View where Content: View {
     
-    @Bindable private var selection: SRTabarSelection
+    @Bindable private var selection: SRTabbarSelection
     private let content: () -> Content
 
     /// Creates an instance of `TabView` that selects from content associated with
     /// `Selection` values.
-    public init(selection: SRTabarSelection, @ViewBuilder content: @escaping () -> Content) {
+    public init(selection: SRTabbarSelection, @ViewBuilder content: @escaping () -> Content) {
         self.content = content
         self.selection = selection
     }
@@ -26,3 +26,4 @@ public struct SRTabarView<Content>: View where Content: View {
         }.environment(selection)
     }
 }
+ 

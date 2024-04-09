@@ -9,10 +9,10 @@ import SwiftUI
 
 private typealias OnChangeBlock = @MainActor (Int) -> Void
 
-private struct TabarModifier: ViewModifier {
+private struct TabbarModifier: ViewModifier {
     
-    @Environment(SRTabarSelection.self)
-    private var tabSelection: SRTabarSelection?
+    @Environment(SRTabbarSelection.self)
+    private var tabSelection: SRTabbarSelection?
     
     private let onChange: OnChangeBlock
     
@@ -34,6 +34,6 @@ extension View {
     /// - Parameter onChange: action
     /// - Returns: some `View`
     public func onTabSelectionChange(_ onChange: @escaping @MainActor (Int) -> Void) -> some View {
-        self.modifier(TabarModifier(onChange))
+        self.modifier(TabbarModifier(onChange))
     }
 }

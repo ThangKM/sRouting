@@ -51,7 +51,7 @@ class TestModifiers: XCTestCase {
     func testOnTabSelectionChange() async {
         let exp = XCTestExpectation()
         let router = TestRouter()
-        let sut =  SRTabarView(selection: .init()) {
+        let sut =  SRTabbarView(selection: .init()) {
             TestScreen(router: router, tests: .none)
                 .tabItem {
                     Label("Home", systemImage: "house")

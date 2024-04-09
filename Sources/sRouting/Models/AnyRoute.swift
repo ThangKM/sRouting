@@ -8,7 +8,7 @@
 import SwiftUI
 import Foundation
 
-/// A type-erased any SRRoute.
+/// A type-erased SRRoute.
 public struct AnyRoute: SRRoute {
     
     public let path: String
@@ -32,4 +32,3 @@ extension AnyRoute: Hashable {
         hasher.combine(path)
     }
 }
-

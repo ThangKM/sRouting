@@ -1,5 +1,5 @@
 //
-//  SRTabarSelection.swift
+//  SRTabbarSelection.swift
 //
 //
 //  Created by Thang Kieu on 31/03/2024.
@@ -7,9 +7,9 @@
 
 import Foundation
 
-/// Tabar's selection Observation
+/// Tabbar's selection Observation
 @Observable
-public final class SRTabarSelection {
+public final class SRTabbarSelection {
     
     @MainActor
     internal var selection: Int = 0

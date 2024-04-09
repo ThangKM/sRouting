@@ -49,8 +49,8 @@ public struct ContextMacro: MemberMacro {
         let dsaEmiiter: DeclSyntax = "let dismissAllEmitter = SRDismissAllEmitter()"
         result.append(dsaEmiiter)
         
-        let haveTabar = !arguments.tabs.isEmpty
-        let tabSelection: DeclSyntax = "\(raw: haveTabar ? "" : "private") let tabSelection = SRTabarSelection()"
+        let haveTabbar = !arguments.tabs.isEmpty
+        let tabSelection: DeclSyntax = "\(raw: haveTabbar ? "" : "private") let tabSelection = SRTabbarSelection()"
         result.append(tabSelection)
         
         let indexLastStack = arguments.stacks.count - 1

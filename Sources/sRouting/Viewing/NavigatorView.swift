@@ -16,8 +16,8 @@ struct NavigatorView<RouterType>: View where RouterType: SRRouterType  {
     /// A  screen's ``Router``
     private var router: RouterType
 
-    @Environment(SRTabarSelection.self)
-    private var tabarSelection: SRTabarSelection?
+    @Environment(SRTabbarSelection.self)
+    private var tabbarSelection: SRTabbarSelection?
     
     @Environment(SRNavigationPath.self)
     private var navigationPath: SRNavigationPath?
@@ -121,7 +121,7 @@ struct NavigatorView<RouterType>: View where RouterType: SRRouterType  {
                 destinationView
             }
             .environment(dismissAllEmitter)
-            .environment(tabarSelection)
+            .environment(tabbarSelection)
         }
         .sheet(isPresented: $isActiveSheet,
             content: {
@@ -129,7 +129,7 @@ struct NavigatorView<RouterType>: View where RouterType: SRRouterType  {
                 destinationView
             }
             .environment(dismissAllEmitter)
-            .environment(tabarSelection)
+            .environment(tabbarSelection)
         })
         .alert(isPresented: $isActiveAlert) {
             guard let alert = alertView
@@ -190,7 +190,7 @@ extension NavigatorView {
         case .dismiss:
             dismissAction()
         case .selectTab:
-            tabarSelection?.select(tag: transition.tabIndex ?? .zero)
+            tabbarSelection?.select(tag: transition.tabIndex ?? .zero)
         case .dismissAll:
             dismissAllEmitter?.dismissAll()
         case .pop:
