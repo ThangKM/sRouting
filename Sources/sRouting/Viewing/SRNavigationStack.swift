@@ -37,3 +37,9 @@ public struct SRNavigationStack<Content>: View where Content: View {
     }
 }
 
+extension NavigationLink where Destination == Never {
+
+    public init<R>(route: R, @ViewBuilder content: () -> Label) where R: SRRoute {
+        self.init(value: AnyRoute(route: route), label: content)
+    }
+}

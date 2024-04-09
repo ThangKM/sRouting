@@ -81,7 +81,9 @@ public struct ContextMacro: MemberMacro {
             switch route {
             case .resetAll:
                 dismissAllEmitter.dismissAll()
-                navStacks.values.forEach({ $0.popToRoot() })
+                navStacks.values.forEach({ 
+                    $0.popToRoot()
+                })
             case .dismissAll:
                 dismissAllEmitter.dismissAll()
             case .popToRoot(of: let stack):
@@ -101,15 +103,14 @@ public struct ContextMacro: MemberMacro {
                 }
                 navigation.push(to: route)
             case .sheet(let route):
-                let nayRoute = AnyRoute(route: route, path: route.path)
-                rootRouter.trigger(to: nayRoute, with: .sheet)
+                rootRouter.trigger(to: AnyRoute(route: route), with: .sheet)
             case .window(let windowTrans):
                 rootRouter.openWindow(windowTrans: windowTrans)
             case .open(let url):
                 rootRouter.openURL(at: url, completion: nil)
             #if os(iOS)
             case .present(let route):
-                rootRouter.trigger(to: .init(route: route, path: route.path), with: .present)
+                rootRouter.trigger(to: .init(route: route), with: .present)
             #endif
             }
         }

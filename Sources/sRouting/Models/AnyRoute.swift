@@ -19,8 +19,8 @@ public struct AnyRoute: SRRoute {
         viewBuilder().id(path)
     }
     
-    public init(route: some SRRoute, path: String) {
-        self.path = path
+    public init(route: some SRRoute) {
+        self.path = route.path + "_" + TimeIdentifier.newId()
         self.viewBuilder = {
             AnyView(route.screen)
         }

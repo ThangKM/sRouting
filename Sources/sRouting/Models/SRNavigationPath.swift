@@ -42,19 +42,12 @@ public final class SRNavigationPath {
     
     @MainActor
     public func push(to route: some SRRoute) {
-        let index = stack.count
-        let path = Self._anyPath(index: index, path: route.path)
-        let anyRoute = AnyRoute(route: route, path: path)
-        stack.append(anyRoute)
+        stack.append(AnyRoute(route: route))
     }
     
     @MainActor
     internal func stackDidAppear() {
         guard !didAppear else { return }
         didAppear = true
-    }
-    
-    private static func _anyPath(index: Int, path: String) -> String {
-        "\(index):\(path)"
     }
 }
