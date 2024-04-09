@@ -200,7 +200,7 @@ public struct RouterMacro: MemberMacro {
             transition = .init(with: .openURL, windowTransition: .init(url: url, acceoption: completion))
         }
         
-        #if os(macOS) || os(visionOS)
+        #if os(macOS)
         /// Opens the document at the specified file URL.
         /// - Parameters:
         ///   - url: file URL

@@ -107,7 +107,7 @@ public protocol SRRouterType<RouteType> where RouteType: SRRoute {
     ///   - completion: `AcceptionCallback`
     func openURL(at url: URL, completion: AcceptionCallback?)
     
-    #if os(macOS) || os(visionOS)
+    #if os(macOS)
     /// Opens the document at the specified file URL.
     /// - Parameters:
     ///   - url: file URL

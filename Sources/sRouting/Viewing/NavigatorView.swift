@@ -31,7 +31,7 @@ struct NavigatorView<RouterType>: View where RouterType: SRRouterType  {
     
     @Environment(\.scenePhase) private var scenePhase
     
-    #if os(macOS) || os(visionOS)
+    #if os(macOS)
     @Environment(\.openDocument) private var openDocument
     #endif
     
@@ -87,7 +87,7 @@ struct NavigatorView<RouterType>: View where RouterType: SRRouterType  {
     }
     #endif
     
-    #if os(macOS) || os(visionOS)
+    #if os(macOS)
     var body: some View {
         Text("Navigator View")
         .sheet(isPresented: $isActiveSheet,
@@ -211,7 +211,7 @@ extension NavigatorView {
             } else {
                 openURL(url)
             }
-        #if os(macOS) || os(visionOS)
+        #if os(macOS)
         case .openDocument:
             guard let windowTransition = transition.windowTransition,
                   let url = windowTransition.url
@@ -228,7 +228,7 @@ extension NavigatorView {
         //
     }
     
-    #if os(macOS) || os(visionOS)
+    #if os(macOS)
     @MainActor 
     private func openDoc(at url: URL, errorHandler: ((Error?) -> Void)?) async {
         do {
@@ -256,6 +256,6 @@ extension NavigatorView {
     }
 }
 
-#if os(macOS) || os(visionOS)
+#if os(macOS)
 extension OpenDocumentAction: @unchecked Sendable { }
 #endif

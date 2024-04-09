@@ -45,7 +45,7 @@ extension SRTabbarSelection {
     
     private func _observeTapCountStream() {
         Task {
-            for await doubleTap in tapCountStream.stream.filter({ $0 == 2 }) {
+            for await _ in tapCountStream.stream.filter({ $0 == 2 }) {
                 await _emmitDoubleTap()
                 tapCountStream.resetCount()
                 cancelBag.cancelAll()

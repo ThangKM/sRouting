@@ -50,7 +50,7 @@ public enum SRTransitionType: String, CaseIterable {
     case openWindow
     /// Open URL
     case openURL
-    #if os(macOS) || os(visionOS)
+    #if os(macOS)
     /// Open file
     case openDocument
     #endif
