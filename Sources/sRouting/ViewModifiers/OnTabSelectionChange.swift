@@ -33,7 +33,7 @@ extension View {
     /// Observe `TabView`'s selection
     /// - Parameter onChange: action
     /// - Returns: some `View`
-    public func onTabSelectionChange(_ onChange: @escaping @MainActor (Int) -> Void) -> some View {
+    public func onTabSelectionChange(_ onChange: @escaping @MainActor (_ selection: Int) -> Void) -> some View {
         self.modifier(TabbarModifier(onChange))
     }
 }

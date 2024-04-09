@@ -29,7 +29,11 @@ public struct SRNavigationStack<Content>: View where Content: View {
             .navigationDestination(for: AnyRoute.self) { route in
                 route.screen.environment(path)
             }
-        }.environment(path)
+        }
+        .environment(path)
+        .onAppear(perform: {
+            path.stackDidAppear()
+        })
     }
 }
 

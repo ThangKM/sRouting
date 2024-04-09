@@ -49,17 +49,16 @@ public struct ContextMacro: MemberMacro {
         let dsaEmiiter: DeclSyntax = "let dismissAllEmitter = SRDismissAllEmitter()"
         result.append(dsaEmiiter)
         
-        let haveTabbar = !arguments.tabs.isEmpty
-        let tabSelection: DeclSyntax = "\(raw: haveTabbar ? "" : "private") let tabSelection = SRTabbarSelection()"
+        let tabSelection: DeclSyntax = "let tabSelection = SRTabbarSelection()"
         result.append(tabSelection)
         
         let indexLastStack = arguments.stacks.count - 1
         var initStacks = "["
         for (index,stack) in arguments.stacks.enumerated() {
             if index == indexLastStack {
-                initStacks += "SRNavStacks.\(stack):SRNavigationPath()"
+                initStacks += "SRNavStack.\(stack):SRNavigationPath()"
             } else {
-                initStacks += "SRNavStacks.\(stack):SRNavigationPath(), "
+                initStacks += "SRNavStack.\(stack):SRNavigationPath(), "
             }
             
         }
@@ -70,39 +69,64 @@ public struct ContextMacro: MemberMacro {
         
         let navPathFunc: DeclSyntax = """
         @MainActor
-        func navigationPath(of stackItem: SRNavStacks) -> SRNavigationPath {
+        func navigationPath(of stackItem: SRNavStack) -> SRNavigationPath {
             navStacks[stackItem]!
         }
         """
         result.append(navPathFunc)
         
-        let routingFunc: DeclSyntax = """
+        let singleRoutingFunc: DeclSyntax = """
         @MainActor
-        func routing(_ routes: SRRootRoute...) {
-            for route in routes {
-                switch route {
-                case .resetAll:
-                    dismissAllEmitter.dismissAll()
-                    navStacks.values.forEach({ $0.popToRoot() })
-                    tabSelection.select(tag: .zero)
-                case .dismissAll:
-                    dismissAllEmitter.dismissAll()
-                case .popToRoot(of: let stack):
-                    navigationPath(of: stack).popToRoot()
-                case .select(tabItem: let tabItem):
-                    tabSelection.select(tag: tabItem.rawValue)
-                case .push(route: let route, into: let into):
-                    navigationPath(of: into).push(to: route)
-                case .sheet(let route):
-                    let nayRoute = AnyRoute(route: route, path: route.path)
-                    rootRouter.trigger(to: nayRoute, with: .sheet)
-                case .window(let windowTrans):
-                    rootRouter.openWindow(windowTrans: windowTrans)
-                #if os(iOS)
-                case .present(let route):
-                    rootRouter.trigger(to: .init(route: route, path: route.path), with: .present)
-                #endif
+        private func _routing(for route: SRRootRoute) async {
+            switch route {
+            case .resetAll:
+                dismissAllEmitter.dismissAll()
+                navStacks.values.forEach({ $0.popToRoot() })
+            case .dismissAll:
+                dismissAllEmitter.dismissAll()
+            case .popToRoot(of: let stack):
+                navigationPath(of: stack).popToRoot()
+            case .select(tabItem: let tabItem):
+                tabSelection.select(tag: tabItem.rawValue)
+            case .push(route: let route, into: let stack):
+                let navigation = navigationPath(of: stack)
+                guard navigation.didAppear else {
+                   do {
+                    try await Task.sleep(for: .milliseconds(200))
+                   } catch {
+                    print("sRouting.\\(error)")
+                   }
+                   navigation.push(to: route)
+                   return
                 }
+                navigation.push(to: route)
+            case .sheet(let route):
+                let nayRoute = AnyRoute(route: route, path: route.path)
+                rootRouter.trigger(to: nayRoute, with: .sheet)
+            case .window(let windowTrans):
+                rootRouter.openWindow(windowTrans: windowTrans)
+            case .open(let url):
+                rootRouter.openURL(at: url, completion: nil)
+            #if os(iOS)
+            case .present(let route):
+                rootRouter.trigger(to: .init(route: route, path: route.path), with: .present)
+            #endif
+            }
+        }
+        """
+        result.append(singleRoutingFunc)
+        
+        let routingFunc: DeclSyntax = """
+        func routing(_ routes: SRRootRoute...) async {
+            let routeStream = AsyncStream { continuation in
+                for route in routes {
+                    continuation.yield(route)
+                }
+                continuation.finish()
+            }
+
+            for await route in routeStream {
+                await _routing(for: route)
             }
         }
         """
@@ -128,53 +152,63 @@ extension ContextMacro: PeerMacro {
         class SRRootRouter { }
         """
         result.append(rootRouter)
+        
         let rootRoute: DeclSyntax =  """
-            enum SRRootRoute: SRRoute {
-                case resetAll
-                case dismissAll
-                case popToRoot(of: SRNavStacks)
-                case select(tabItem: SRTabItems)
-                case push(route: any SRRoute, into: SRNavStacks)
-                case sheet(any SRRoute)
-                case window(SRWindowTransition)
-                #if os(iOS)
-                case present(any SRRoute)
-                #endif
-                
-                var path: String {
-                    switch self {
-                    case .resetAll: return "srcontext.resetall"
-                    case .dismissAll: return "srcontext.dismissall"
-                    case .select: return "srcontext.selecttab"
-                    case .push(let route,_): return "srcontext.push.\\(route.path)"
-                    case .sheet(let route): return "srcontext.sheet.\\(route.path)"
-                    case .window(let transition):
-                        if let id = transition.windowId {
-                            return "srcontext.window.\\(id)"
-                        } else if let value = transition.windowValue {
-                            return "srcontext.window.\\(value.hashValue)"
-                        } else {
-                            return "srcontext.window"
-                        }
-                    case .popToRoot: return "srcontext.popToRoot"
-                    #if os(iOS)
-                    case .present(let route): return "srcontext.present.\\(route.path)"
-                    #endif
+        enum SRRootRoute: SRRoute {
+            case resetAll
+            case dismissAll
+            case popToRoot(of: SRNavStack)
+            case select(tabItem: SRTabItem)
+            case push(route: any SRRoute, into: SRNavStack)
+            case sheet(any SRRoute)
+            case window(SRWindowTransition)
+            case open(url: URL)
+            #if os(iOS)
+            case present(any SRRoute)
+            #endif
+        
+            var screen: some View {
+               fatalError("sRouting.SRContextRoute doesn't have screen")
+            }
+        
+            var path: String {
+                switch self {
+                case .resetAll:
+                    return "srcontext.resetall"
+                case .dismissAll:
+                    return "srcontext.dismissall"
+                case .select:
+                    return "srcontext.selecttab"
+                case .push(let route,_):
+                    return "srcontext.push.\\(route.path)"
+                case .sheet(let route): return "srcontext.sheet.\\(route.path)"
+                case .window(let transition):
+                    if let id = transition.windowId {
+                        return "srcontext.window.\\(id)"
+                    } else if let value = transition.windowValue {
+                        return "srcontext.window.\\(value.hashValue)"
+                    } else {
+                        return "srcontext.window"
                     }
-                }
-                
-                var screen: some View {
-                   fatalError("sRouting.SRContextRoute doesn't have screen")
+                case .open(let url):
+                    return "srcontext.openurl.\\(url.absoluteString)"
+                case .popToRoot:
+                    return "srcontext.popToRoot"
+                #if os(iOS)
+                case .present(let route):
+                    return "srcontext.present.\\(route.path)"
+                #endif
                 }
             }
-            """
+        }
+        """
         result.append(rootRoute)
         
         let iheritanceClause: InheritanceClauseSyntax = .init(inheritedTypes:
                 .init(arrayLiteral: InheritedTypeSyntax(type: TypeSyntax(stringLiteral: "Int"))))
         
         let tabItem = DeclSyntax(
-            EnumDeclSyntax(name: "SRTabItems", inheritanceClause:iheritanceClause) {
+            EnumDeclSyntax(name: "SRTabItem", inheritanceClause:iheritanceClause) {
                 if arguments.tabs.isEmpty {
                     "case none"
                 } else {
@@ -189,7 +223,7 @@ extension ContextMacro: PeerMacro {
         let navIheritanceClause: InheritanceClauseSyntax = .init(inheritedTypes:
                 .init(arrayLiteral: InheritedTypeSyntax(type: TypeSyntax(stringLiteral: "String"))))
         let navStack = DeclSyntax(
-            EnumDeclSyntax(name: "SRNavStacks", inheritanceClause:navIheritanceClause) {
+            EnumDeclSyntax(name: "SRNavStack", inheritanceClause:navIheritanceClause) {
                 for stack in arguments.stacks {
                     "case \(raw: stack)"
                 }

@@ -8,6 +8,7 @@
 import Foundation
 import Observation
 
+/// `Dismiss all` signal emitter
 @Observable
 public final class SRDismissAllEmitter {
     

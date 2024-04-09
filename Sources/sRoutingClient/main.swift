@@ -35,6 +35,10 @@ struct SRContext { }
 @MainActor
 func testing() {
     let context = SRContext()
-    context.routing(.push(route: HomeRoute.home, into: .home))
+    Task {
+        await context.routing(.resetAll, .select(tabItem: .homeItem),
+                              .push(route: HomeRoute.deatail("detail"), into: .home))
+    }
 }
 
+ 

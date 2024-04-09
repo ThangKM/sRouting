@@ -12,4 +12,5 @@ public protocol SRContextType {
     
     var rootRouter: RouterType { get }
     var dismissAllEmitter: SRDismissAllEmitter { get }
+    var tabSelection: SRTabbarSelection { get }
 }

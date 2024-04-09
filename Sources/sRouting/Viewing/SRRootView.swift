@@ -27,5 +27,6 @@ where Content: View, ContextType: SRContextType {
             content()
         }
         .environment(context.dismissAllEmitter)
+        .environment(context.tabSelection)
     }
 }

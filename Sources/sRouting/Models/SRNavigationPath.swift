@@ -7,12 +7,14 @@
 
 import Foundation
 
-
+/// NavigationStack's path
 @Observable
 public final class SRNavigationPath {
     
     @MainActor
     internal var stack: [AnyRoute] = []
+    
+    public private(set) var didAppear: Bool = false
     
     public init() { }
     
@@ -44,6 +46,12 @@ public final class SRNavigationPath {
         let path = Self._anyPath(index: index, path: route.path)
         let anyRoute = AnyRoute(route: route, path: path)
         stack.append(anyRoute)
+    }
+    
+    @MainActor
+    internal func stackDidAppear() {
+        guard !didAppear else { return }
+        didAppear = true
     }
     
     private static func _anyPath(index: Int, path: String) -> String {
