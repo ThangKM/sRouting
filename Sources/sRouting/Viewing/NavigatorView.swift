@@ -101,7 +101,6 @@ struct NavigatorView<RouterType>: View where RouterType: SRRouterType  {
         }
         .onChange(of: dismissAllEmitter?.dismissAllSignal, { oldValue, newValue in
             resetActiveState()
-            dismissAction()
         })
         .onChange(of: router.transition, { oldValue, newValue in
             updateActiveState(from: newValue)
@@ -141,7 +140,6 @@ struct NavigatorView<RouterType>: View where RouterType: SRRouterType  {
         })
         .onChange(of: dismissAllEmitter?.dismissAllSignal, { oldValue, newValue in
             resetActiveState()
-            dismissAction()
         })
         .onChange(of: router.transition, { oldValue, newValue in
             updateActiveState(from: newValue)
