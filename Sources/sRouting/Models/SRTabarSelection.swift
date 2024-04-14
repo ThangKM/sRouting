@@ -12,11 +12,7 @@ import Foundation
 public final class SRTabbarSelection {
     
     @MainActor
-    internal var selection: Int = .zero {
-        @storageRestrictions(initializes: _selection)
-        init(initialValue) {
-          _selection = initialValue
-        }
+    internal var selection: Int {
         get {
             access(keyPath: \.selection)
             return _selection

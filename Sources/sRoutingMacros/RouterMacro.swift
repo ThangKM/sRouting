@@ -62,10 +62,6 @@ public struct RouterMacro: MemberMacro {
         
         @MainActor
         private(set) var transition: SRTransition<\(raw: routeType)> {
-            @storageRestrictions(initializes: _transition)
-            init(initialValue) {
-                _transition  = initialValue
-            }
             get {
               access(keyPath: \\.transition)
               return _transition
