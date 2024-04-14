@@ -9,7 +9,7 @@ import Foundation
 
 /// Tabbar's selection Observation
 @Observable
-public final class SRTabbarSelection {
+public final class SRTabbarSelection: Sendable {
     
     @MainActor
     internal var selection: Int{

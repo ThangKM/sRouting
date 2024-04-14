@@ -9,7 +9,7 @@ import Foundation
 
 /// NavigationStack's path
 @Observable
-public final class SRNavigationPath {
+public final class SRNavigationPath: Sendable {
     
     @MainActor
     internal var stack: [AnyRoute] = []

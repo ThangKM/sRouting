@@ -10,7 +10,7 @@ import Observation
 
 /// `Dismiss all` signal emitter
 @Observable
-public final class SRDismissAllEmitter {
+public final class SRDismissAllEmitter: Sendable {
     
     @MainActor
     internal var dismissAllSignal: Int = .zero
