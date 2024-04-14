@@ -14,7 +14,7 @@ struct TimeIdentifier {
     /// - Returns: time id
     static func newId() -> String {
         let formater = DateFormatter()
-        formater.dateFormat = "HH:mm:ss.S"
+        formater.dateFormat = "yyyy-MM-dd, HH:mm:ss.S"
         let timeId = formater.string(from: Date())
         return timeId
     }
