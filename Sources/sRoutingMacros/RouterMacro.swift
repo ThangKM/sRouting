@@ -77,7 +77,7 @@ public struct RouterMacro: MemberMacro {
             }
         }
         
-        @MainActor
+        @MainActor @ObservationIgnored
         private var _transition: SRTransition<\(raw: routeType)> = .none
         
         /// Select tabbar item at index

@@ -9,25 +9,36 @@ import Foundation
 
 /// Tabbar's selection Observation
 @Observable
-public final class SRTabbarSelection: Sendable {
+public final class SRTabbarSelection {
     
     @MainActor
-    internal var selection: Int{
-        get { _selection }
+    internal var selection: Int = .zero {
+        @storageRestrictions(initializes: _selection)
+        init(initialValue) {
+          _selection = initialValue
+        }
+        get {
+            access(keyPath: \.selection)
+            return _selection
+        }
         set {
             if newValue == _selection {
                 tapCountStream.increase()
                 _autoCancelTapCount()
             } else {
-                _selection = newValue
                 tapCountStream.resetCount()
+            }
+            withMutation(keyPath: \.selection) {
+                _selection = newValue
             }
         }
     }
     
     internal var doubleTapEmmiter: Int = .zero
     
+    @ObservationIgnored
     private var _selection: Int = .zero
+    
     private let tapCountStream = IncreaseCountStream()
     private let cancelBag = CancelBag()
     
