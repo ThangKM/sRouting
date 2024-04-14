@@ -23,9 +23,3 @@ struct RatingView: View {
         .foregroundColor(Color.yellow)
     }
 }
-
-struct RatingView_Previews: PreviewProvider {
-    static var previews: some View {
-        RatingView(rating: .constant(6))
-    }
-}

@@ -77,9 +77,3 @@ struct StartScreen: View {
         .navigationBarHidden(true)
     }
 }
-
-struct StartScreen_Previews: PreviewProvider {
-    static var previews: some View {
-        StartScreen()
-    }
-}

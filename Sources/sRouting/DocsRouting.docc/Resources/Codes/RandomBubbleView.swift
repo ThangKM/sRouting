@@ -26,14 +26,3 @@ struct RandomBubbleView: View {
         }
     }
 }
-
-struct RandomBubbleView_Previews: PreviewProvider {
-    static var previews: some View {
-        RandomBubbleView(bubbles: [[Color("orgrian.FEB665"), Color("purple.F66EB4")],
-                                   [Color("cyan.2DEEF9"), Color("purple.F66EB4")],
-                                   [Color("orgrian.FEB665"), Color("purple.F66EB4")],
-                                   [Color("cyan.2DEEF9"), Color("purple.F66EB4")]
-                                  ], minWidth: 40, maxWidth: 120)
-    }
-    
-}

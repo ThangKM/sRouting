@@ -1,26 +1,33 @@
 # Getting Started with sRouting
 
-Set up ``RootView`` and working with ``Router``
+Set up ``SRRootView`` and working with ``sRouter(_:)``
 
 ## Overview
 
-Create your root view with ``RootView``.
-Declares your ``Route``.
-Working with ``ScreenView`` and ``Router``.
+Create your root view with ``SRRootView``.
+Declares your ``SRRoute``.
+Working with ``sRContext(tabs:stacks:)``, ``ScreenView`` and ``sRouter(_:)`` macro.
 
 ### Create a Route
 
-To create a ``Route`` we have to conform the ``Route`` Protocol.
+To create a route we have to conform to the ``SRRoute`` Protocol.
 
 ```swift
-enum AppRoute: Route {
+enum AppRoute: SRRoute {
     case login
-    case home
+    case tabbar
+    
+    var path: String { 
+        swich self {
+            case .login: return "login"
+            case .tabbar: return "tabbar"
+        }
+    }
 
     var screen: some View {
         switch self {
             case .login: LoginScreen()
-            case .home: HomeScreen()
+            case .tabbar: TabbarScreen()
         }
     }
 }
@@ -28,20 +35,33 @@ enum AppRoute: Route {
 
 ### Make your Root View
 
-Setup the ``RootView`` for your app
+Setup a context and ``SRRootView`` for your app
 
 ```swift
+@sRContext(tabs: ["home", "setting"], stacks: "home", "setting")
+struct SRContext { }
+
 @main
 struct BookieApp: App { 
+    let context = SRContext()
     ...
-    @SceneBuilder
-    var body: some Scene { 
+    var body: some Scene {
+
         WindowGroup {
-            RootView(rootRouter: .init()) {
-                NavigationView {
-                    AppRoute.home.screen
+            SRRootView(context: context) {
+                SRTabbarView {
+                    SRNavigationStack(path: context.navigationPath(of: .home)) {
+                        AppRoute.home.screen
+                    }.tabItem {
+                        Label("Home", systemImage: "house")
+                    }.tag(SRTabItem.home.rawValue)
+                    
+                    SRNavigationStack(path: context.navigationPath(of: .setting)) {
+                        AppRoute.setting.screen
+                    }.tabItem {
+                        Label("Setting", systemImage: "gear")
+                    }.tag(SRTabItem.setting.rawValue)
                 }
-                .navigationViewStyle(.stack)
             }
         }
     }
@@ -51,41 +71,47 @@ struct BookieApp: App {
 
 Build a screen with ``ScreenView``, ``ScreenView`` will create a hidden NavigatorView at below content view
 in a ZStack.
-The NavigatorView will handle transactions that are emited by ``Router``
+The NavigatorView will handle transactions that are emited by `Router`
 
 ```swift
+enum HomeRoute: SRRoute {
+    case detail
+    ...
+}
+
+@sRouter(HomeRoute.self)
+class HomeViewModel { ... }
+
 struct HomeScreen: View {
 
-    @Environment(\.presentationMode)
-    private var presentationMode
+    @Environment(\.dismiss)
+    private var dismissAction
 
-    @StateObject
-    private var router: Router<AppRoute> = .init()
+    @State let viewModel = HomeViewModel()
 
     var body: some View {
-        ScreenView(router: router, presentationMode: presentationMode) {
+        ScreenView(router: viewModel, dismissAction: dismissAction) {
         ...
         }
     }
 ```
 
-
-To navigate to a screen that must be in AppRoute 
-we use the ``Router/trigger(to:with:)`` function in the ``Router``
+To navigate to a screen that must be in HomeRoute 
+we use the `trigger(to:with:)` function in the `Router`
 
 Push:
 ```swift
-router.trigger(to: .loginScreen, with: .push)
+router.trigger(to: .detail, with: .push)
 ```
 Present full screen:
 ```swift
-router.trigger(to: .loginScreen, with: .present)
+router.trigger(to: .detail, with: .present)
 ```
 Sheet:
 ```swift
-router.trigger(to: .loginScreen, with: .sheet)
+router.trigger(to: .detail, with: .sheet)
 ```
-To show an alert we use the ``Router/show(alert:)`` function.
+To show an alert we use the `show(alert:)` function.
 
 ```swift
  router.show(alert:  Alert.init(title: Text("Alert"),
@@ -93,62 +119,36 @@ To show an alert we use the ``Router/show(alert:)`` function.
                                 dismissButton: .cancel(Text("OK")))
 ```
 
-To show an error message we use the ``Router/show(error:and:)`` function.
+To show an error message we use the `show(error:and:)` function.
 
 ```swift
 router.show(error:NetworkingError.lossConnection)
 ```
 
-To dismiss or pop screen we use the ``Router/dismiss()`` function.
+To dismiss a screen we use the `dismiss()` function.
 
 ```swift
 router.dismiss()
 ```
 
-To dismiss to root view we use the ``Router/dismissAll()`` function.
-Required the root view is a ``RootView``
+To dismiss to root view we use the `dismissAll()` function.
+Required the root view is a ``SRRootView``
 
 ```swift
 router.dismissAll()
 ```
-To seclect the Tabbar item we use the ``Router/selectTabbar(at:)`` function.
-Required the TabView selection binding from ``RootRouter``.
+To seclect the Tabbar item we use the `selectTabbar(at:)` function.
 
 ```swift
 router.selectTabbar(at:0)
 ```
 
-### Using Router in a ViewModel
-
-Also the router can be used in a ViewModel.
+sRouting also supported pop, pop to root and pop to a target function for the NavigationView
 
 ```swift
-class HomeViewModel: Router<AppRoute> {
-...
-}
+router.pop()
 
+router.popToRoot()
+
+router.pop(to: HomeRoute.detail)
 ```
-
-```swift
-struct HomeScreen: View {
-
-    @Environment(\.presentationMode)
-    private var presentationMode
-
-    @StateObject
-    private var viewModel: HomeViewModel = .init()
-
-    var body: some View {
-        ScreenView(router: viewModel, presentationMode: presentationMode) {
-        ...
-        }
-    }
-```
-Now you can navigate to new screen in HomeViewModel, that's cool right?
-
-### Note
-Make sure the transition is performed on MainThread.
-
-### Conclusion
-sRouting is a lightweight framework and flexiable, so you can handle the
-navigations by whatever you want.

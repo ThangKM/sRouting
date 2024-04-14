@@ -85,7 +85,7 @@ public struct RouterMacro: MemberMacro {
         /// router.selectTabbar(at: 0)
         /// ```
         @MainActor
-        open func selectTabbar(at index: Int) {
+        func selectTabbar(at index: Int) {
             transition = .init(selectTab: index)
         }
         
@@ -99,7 +99,7 @@ public struct RouterMacro: MemberMacro {
         /// router.trigger(to: .detailScreen, with: .push)
         /// ```
         @MainActor
-        open func trigger(to route: \(raw: routeType), with action: SRTriggerType) {
+        func trigger(to route: \(raw: routeType), with action: SRTriggerType) {
             transition = .init(with: route, and: .init(with: action))
         }
         
@@ -113,7 +113,7 @@ public struct RouterMacro: MemberMacro {
         /// router.show(NetworkingError.notFound)
         /// ```
         @MainActor
-        open func show(error: Error, and title: String? = nil) {
+        func show(error: Error, and title: String? = nil) {
             transition = .init(with: error, and: title)
         }
         
@@ -127,13 +127,13 @@ public struct RouterMacro: MemberMacro {
         ///                                dismissButton: .cancel(Text("OK")))
         /// ```
         @MainActor
-        open func show(alert: Alert) {
+        func show(alert: Alert) {
             transition = .init(with: alert)
         }
         
         #if os(iOS) || os(tvOS)
         @MainActor
-        open func show(actionSheet: ActionSheet) {
+        func show(actionSheet: ActionSheet) {
             transition = .init(with: actionSheet)
         }
         #endif
@@ -145,7 +145,7 @@ public struct RouterMacro: MemberMacro {
         /// router.dismiss()
         /// ```
         @MainActor
-        open func dismiss() {
+        func dismiss() {
             transition = .init(with: .dismiss)
         }
         
@@ -156,7 +156,7 @@ public struct RouterMacro: MemberMacro {
         /// router.dismissAll()
         /// ```
         @MainActor
-        open func dismissAll() {
+        func dismissAll() {
             transition = .init(with: .dismissAll)
         }
         

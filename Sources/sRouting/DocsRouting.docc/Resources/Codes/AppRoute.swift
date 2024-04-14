@@ -9,10 +9,17 @@ import SwiftUI
 import sRouting
 
 
-enum AppRoute: Route {
+enum AppRoute: SRRoute {
     
     case startScreen
     case homeScreen
+    
+    var path: String {
+        switch self {
+        case .startScreen: return "startscreen"
+        case .homeScreen: return "homescreen"
+        }
+    }
     
     var screen: some View {
         switch self {

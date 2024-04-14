@@ -1,4 +1,4 @@
-# ``sRouting/Router``
+# ``sRouting/SRRouterType``
 
 ## Topics
 

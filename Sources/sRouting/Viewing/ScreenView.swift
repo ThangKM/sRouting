@@ -24,7 +24,7 @@ where Content: View, RouterType: SRRouterType {
     ///   - dismissAction: `DismissAction`
     ///   - content: Content view builder
     public init(router: RouterType,
-                dismissAction:DismissAction,
+                dismissAction:DismissAction? = .none,
                 @ViewBuilder content: @escaping () -> Content) {
         self.router = router
         self.dismissAction = dismissAction

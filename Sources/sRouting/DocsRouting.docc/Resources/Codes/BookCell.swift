@@ -33,16 +33,3 @@ struct BookCell: View {
         .clipShape(RoundedRectangle(cornerRadius: 12))
     }
 }
-
-
-struct BookCell_Previews: PreviewProvider {
-    static var previews: some View {
-        BookCell(book: .init(id: 1,
-                             name: "Book Title",
-                             imageName: "",
-                             author: "Developer",
-                             description: "testing"
-                             , rating: 3))
-    }
-}
-
