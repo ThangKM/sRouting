@@ -80,7 +80,7 @@ class NavigatorViewTests: XCTestCase {
         let router = TestRouter()
         let exp = XCTestExpectation()
         let context = SRContext()
-        let sut = SRNavigationStack(path: context.navigationPath(of: .home)) {
+        let sut = SRNavigationStack(path: context.homePath) {
             NavigatorView(router: router, onDismiss: {}, testsActions: .init(didChangeTransition: { view in
                 XCTAssertTrue(view.isActiveSheet)
                 exp.fulfill()
@@ -97,7 +97,7 @@ class NavigatorViewTests: XCTestCase {
         let router = TestRouter()
         let exp = XCTestExpectation()
         let context = SRContext()
-        let sut = SRNavigationStack(path: context.navigationPath(of: .home)) {
+        let sut = SRNavigationStack(path: context.homePath) {
             NavigatorView(router: router, onDismiss: {}, testsActions: .init(didChangeTransition: { view in
                 XCTAssertTrue(view.isActivePresent)
                 exp.fulfill()

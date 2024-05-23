@@ -67,9 +67,19 @@ public struct ContextMacro: MemberMacro {
         let navStacks: DeclSyntax = "private let navStacks = \(raw: initStacks)"
         result.append(navStacks)
         
+        for stack in arguments.stacks {
+            let shortPath: DeclSyntax = """
+            @MainActor
+            var \(raw: stack)Path: SRNavigationPath {
+                navStacks[SRNavStack.\(raw:stack)]!
+            }
+            """
+            result.append(shortPath)
+        }
+        
         let navPathFunc: DeclSyntax = """
         @MainActor
-        func navigationPath(of stackItem: SRNavStack) -> SRNavigationPath {
+        private func navigationPath(of stackItem: SRNavStack) -> SRNavigationPath {
             navStacks[stackItem]!
         }
         """
