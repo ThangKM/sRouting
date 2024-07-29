@@ -14,4 +14,4 @@ jobs:
     - name: Build macOS
       run: swift build -v
     - name: Build iOS
-      run: xcodebuild build -sdk 'iphonesimulator'  -scheme 'sRouting' -destination 'platform=iOS Simulator'
+      run: xcodebuild build -scheme 'sRouting' -destination 'platform=iOS Simulator'
