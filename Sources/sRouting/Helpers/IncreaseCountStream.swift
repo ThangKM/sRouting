@@ -30,6 +30,7 @@ class IncreaseCountStream: @unchecked Sendable {
     func resetCount() {
         Task { await island.resetCount() }
     }
+    
     func increase() {
         Task { await island.increase() }
     }

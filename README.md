@@ -88,17 +88,26 @@ struct BookieApp: App {
         WindowGroup {
             SRRootView(context: context) {
                 SRTabbarView {
-                    SRNavigationStack(path: context.navigationPath(of: .home)) {
+                    SRNavigationStack(path: context.homePath) {
                         AppRoute.home.screen
                     }.tabItem {
                         Label("Home", systemImage: "house")
                     }.tag(SRTabItem.home.rawValue)
                     
-                    SRNavigationStack(path: context.navigationPath(of: .setting)) {
+                    SRNavigationStack(path: context.settingPath) {
                         AppRoute.setting.screen
                     }.tabItem {
                         Label("Setting", systemImage: "gear")
                     }.tag(SRTabItem.setting.rawValue)
+                }
+                .onDoubleTapTabItem { ... }
+                .onTabSelectionChange { ... }
+            }
+            .onOpenURL { url in
+                Task {
+                    ...
+                    await context.routing(.resetAll,.select(tabItem: .setting),
+                                          .push(route: SettingRoute.detail, into: .setting))
                 }
             }
         }
@@ -140,6 +149,12 @@ we use the `trigger(to:with:)` function in the `Router`
 Push:
 ```swift
 router.trigger(to: .detail, with: .push)
+```
+NavigationLink:
+```swift
+NavigationLink(route: HomeRoute.detail("\(value)")) {
+   ...
+}
 ```
 Present full screen:
 ```swift

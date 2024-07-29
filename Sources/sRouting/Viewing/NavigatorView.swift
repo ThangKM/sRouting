@@ -154,6 +154,7 @@ struct NavigatorView<RouterType>: View where RouterType: SRRouterType  {
     #endif
 }
 
+//MARK: Extension NavigatorView
 extension NavigatorView {
     
     /// Reset all active state to false

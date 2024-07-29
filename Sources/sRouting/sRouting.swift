@@ -1,6 +1,5 @@
 
 
-
 /// A screen's router that can navigate to other screen of route.
 ///
 /// The router can trigger a transition from anywhere.

@@ -70,9 +70,8 @@ private struct Canceller: Identifiable {
 
 extension Task {
     
-    private var canceller: Canceller { .init(self) }
-    
     func store(in bag: CancelBag) {
+        let canceller = Canceller(self)
         bag.append(canceller: canceller)
     }
     
