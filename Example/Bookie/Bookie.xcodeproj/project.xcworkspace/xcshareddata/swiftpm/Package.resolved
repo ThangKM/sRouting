@@ -1,16 +1,24 @@
 {
-  "object": {
-    "pins": [
-      {
-        "package": "sRouting",
-        "repositoryURL": "https://github.com/ThangKM/sRouting.git",
-        "state": {
-          "branch": null,
-          "revision": "1507f0c90b8851d99cccf1d4bd4c0e74b4ab431f",
-          "version": "1.0.0"
-        }
+  "originHash" : "dc47595be41bc4fd7fe009da5aa93e08af474798ad3627aeb251f865041e907f",
+  "pins" : [
+    {
+      "identity" : "srouting",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/ThangKM/sRouting.git",
+      "state" : {
+        "revision" : "a78d838f45786f72919c204e724f0458a2c30406",
+        "version" : "1.1.0"
       }
-    ]
-  },
-  "version": 1
+    },
+    {
+      "identity" : "swift-syntax",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/apple/swift-syntax.git",
+      "state" : {
+        "revision" : "64889f0c732f210a935a0ad7cda38f77f876262d",
+        "version" : "509.1.1"
+      }
+    }
+  ],
+  "version" : 3
 }

@@ -8,21 +8,24 @@
 import SwiftUI
 import sRouting
 
+@sRContext(stacks: "rootStack")
+struct SRContext { }
+
 @main
 struct BookieApp: App {
 
-    @StateObject
-    private var rootRouter = AppRouter()
+    let srcontext = SRContext()
+    @State var appRouter = AppRouter()
 
     var body: some Scene {
         WindowGroup {
-            RootView(rootRouter: rootRouter) {
-                NavigationView {
-                    rootRouter.rootRoute.screen
+            SRRootView(context: srcontext) {
+                SRNavigationStack(path: srcontext.rootStackPath) {
+                    appRouter.rootRoute.screen
                 }
             }
-            .navigationViewStyle(.stack)
-            .environmentObject(MockBookData())
+            .environment(MockBookData())
+            .environment(appRouter)
         }
     }
 }

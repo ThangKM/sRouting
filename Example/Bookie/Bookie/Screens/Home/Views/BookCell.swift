@@ -18,6 +18,9 @@ struct BookCell: View {
                 .aspectRatio(contentMode: .fit)
                 .frame(width: 109, alignment: .leading)
                 .clipped()
+                .onTapGesture {
+                    print("abc")
+                }
             
             VStack(alignment: .leading) {
                 Text(book.name)
@@ -35,18 +38,13 @@ struct BookCell: View {
 }
 
 
-struct BookCell_Previews: PreviewProvider {
-    static var previews: some View {
-        List {
-            BookCell(book: .init(id: 1,
-                                 name: "Book Title",
-                                 imageName: "",
-                                 author: "Developer",
-                                 description: "testing"
-                                 , rating: 3))
-                .listRowInsets(.init())
-        }
-        .listStyle(.plain)
+#Preview {
+    List {
+        BookCell(book: .init(id: 1,
+                             name: "Book Title",
+                             imageName: "",
+                             author: "Developer",
+                             description: "testing",
+                             rating: 3))
     }
 }
-

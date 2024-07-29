@@ -10,17 +10,20 @@ import sRouting
 
 struct StartScreen: View {
     
-    @Environment(\.presentationMode)
-    private var presentationMode
+    @AppStorage("didTutorial")
+    private var didTutorial: Bool = false
     
-    @StateObject
+    @Environment(\.dismiss)
+    private var dismissAction
+    
+    @State
     private var viewModel: StartViewModel = .init()
     
-    @EnvironmentObject
-    private var appRouter: AppRouter
+    @Environment(AppRouter.self)
+    private var appRouter
     
     var body: some View {
-        ScreenView(router: viewModel, presentationMode: presentationMode) {
+        ScreenView(router: viewModel, dismissAction: dismissAction) {
             ZStack {
         
                 GeometryReader { geo in
@@ -64,6 +67,7 @@ struct StartScreen: View {
                     
                     Button {
                         appRouter.rootRoute = .homeScreen
+                        didTutorial = true
                     } label: {
                         Text("Start")
                             .foregroundColor(.accentColor)
@@ -78,8 +82,6 @@ struct StartScreen: View {
     }
 }
 
-struct StartScreen_Previews: PreviewProvider {
-    static var previews: some View {
-        StartScreen()
-    }
+#Preview {
+    StartScreen()
 }

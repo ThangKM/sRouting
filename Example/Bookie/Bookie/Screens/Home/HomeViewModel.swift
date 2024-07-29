@@ -5,18 +5,16 @@
 //  Created by ThangKieu on 7/6/21.
 //
 
-import Foundation
+import SwiftUI
 import sRouting
-import Combine
 
-@MainActor
-class HomeViewModel: Router<HomeRoute> {
+@sRouter(HomeRoute.self) @Observable
+final class HomeViewModel {
     
-    @Published var textInSearch: String = "" {
+    var textInSearch: String = "" {
         didSet { findBooks(withText: textInSearch) }
     }
     
-    @Published
     private(set) var books: [BookModel] = []
     
     private var allBooks: [BookModel] = [] {
@@ -29,6 +27,7 @@ class HomeViewModel: Router<HomeRoute> {
         allBooks = books
     }
     
+    @MainActor 
     func pushDetail(of book: BookModel) {
         trigger(to: .bookDetailScreen(book: book), with: .allCases.randomElement() ?? .push)
     }
@@ -38,6 +37,6 @@ extension HomeViewModel {
     
     private func findBooks(withText text: String) {
         guard !text.isEmpty else { books = allBooks; return }
-        books =  allBooks.filter { $0.name.contains(text) || $0.author.contains(text) }
+        books =  allBooks.filter { $0.name.lowercased().contains(text.lowercased()) || $0.author.lowercased().contains(text.lowercased()) }
     }
 }

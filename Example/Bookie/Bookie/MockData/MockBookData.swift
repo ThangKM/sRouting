@@ -6,11 +6,11 @@
 //
 
 import Foundation
+import Observation
 
-@MainActor
-final class MockBookData: ObservableObject {
+@MainActor @Observable
+final class MockBookData {
     
-    @Published
     private(set) var books: [BookModel] = [
         .init(id: 1,
               name: "The Fountainhead",

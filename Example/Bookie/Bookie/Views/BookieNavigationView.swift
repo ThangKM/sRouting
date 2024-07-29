@@ -8,18 +8,15 @@
 import SwiftUI
 import sRouting
 
-struct BookieNavigationView<Content, RouteType>: View where Content: View, RouteType: Route {
+struct BookieNavigationView<Content, RouterType>: View where Content: View, RouterType: SRRouterType {
     
-    @Environment(\.presentationMode)
-    private var presentationMode
+    @Environment(\.dismiss)
+    private var dismissAction
     
     let title: String
-    
-    @ObservedObject
-    var router: Router<RouteType>
-    
+    let router: RouterType
     let isBackType: Bool
-    
+   
     @ViewBuilder
     let content: Content
     
@@ -50,7 +47,7 @@ struct BookieNavigationView<Content, RouteType>: View where Content: View, Route
                     .fixedSize(horizontal: false, vertical: true)
                     .padding(.horizontal)
                     
-                ScreenView(router: router, presentationMode: presentationMode) {
+                ScreenView(router: router, dismissAction: dismissAction) {
                     content
                 }
                 Spacer()
