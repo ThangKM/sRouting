@@ -7,9 +7,26 @@
 
 import SwiftUI
 import sRouting
+import Observation
 
-@MainActor
-class AppRouter: RootRouter {
-
-    @Published var rootRoute: AppRoute = .startScreen
+@Observable
+final class AppRouter {
+    
+    @ObservationIgnored @AppStorage("didTutorial")
+    private var didTutorial: Bool = false
+    
+    var rootRoute: AppRoute {
+        get {
+            access(keyPath: \.rootRoute)
+            return _rootRoute
+        }
+        
+        set {
+            withMutation(keyPath: \.rootRoute) {
+                _rootRoute = newValue
+            }
+        }
+    }
+    
+    @ObservationIgnored private lazy var _rootRoute: AppRoute = didTutorial ? .homeScreen : .startScreen
 }

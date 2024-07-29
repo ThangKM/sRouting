@@ -8,18 +8,15 @@
 import SwiftUI
 import sRouting
 
-struct BookieNavigationView<Content, RouteType>: View where Content: View, RouteType: Route {
+struct BookieNavigationView<Content, RouterType>: View where Content: View, RouterType: SRRouterType {
     
-    @Environment(\.presentationMode)
-    private var presentationMode
+    @Environment(\.dismiss)
+    private var dismissAction
     
     let title: String
-    
-    @ObservedObject
-    var router: Router<RouteType>
-    
+    let router: RouterType
     let isBackType: Bool
-    
+   
     @ViewBuilder
     let content: Content
     
@@ -27,8 +24,8 @@ struct BookieNavigationView<Content, RouteType>: View where Content: View, Route
         ZStack {
             GeometryReader { geo in
                 LinearGradient(colors: [Color("purple.F66EB4"), Color("orgrian.FEB665")], startPoint: .leading, endPoint: .trailing)
-                    .frame(height: 152)
-                    .clipShape(Ellipse().path(in: .init(x:-((787 - geo.size.width)/2), y: -210/2, width: 787, height: 239)))
+                .frame(height: 152)
+                .clipShape(Ellipse().path(in: .init(x:-((787 - geo.size.width)/2), y: -210/2, width: 787, height: 239)))
             }
             .clipped()
             .edgesIgnoringSafeArea(.top)
@@ -44,13 +41,13 @@ struct BookieNavigationView<Content, RouteType>: View where Content: View, Route
                             .frame(width: 24)
                             .opacity( isBackType ? 1 : 0)
                             .onTapGesture {
-                        router.dismiss()
-                    },
+                                router.dismiss()
+                            },
                         alignment: .leading)
                     .fixedSize(horizontal: false, vertical: true)
                     .padding(.horizontal)
-                
-                ScreenView(router: router, presentationMode: presentationMode) {
+                    
+                ScreenView(router: router, dismissAction: dismissAction) {
                     content
                 }
                 Spacer()
@@ -59,13 +56,5 @@ struct BookieNavigationView<Content, RouteType>: View where Content: View, Route
         .background(Color("backgournd.EEECFF"))
         .edgesIgnoringSafeArea(.bottom)
         .navigationBarHidden(true)
-    }
-}
-
-struct BookieNavigationView_Previews: PreviewProvider {
-    static var previews: some View {
-        BookieNavigationView<Text, HomeRoute>(title: "Navigation Title", router: .init(), isBackType: true) {
-            Text("")
-        }.environmentObject(RootRouter())
     }
 }

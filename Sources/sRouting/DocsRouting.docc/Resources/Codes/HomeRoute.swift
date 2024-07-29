@@ -8,9 +8,11 @@
 import SwiftUI
 import sRouting
 
-enum HomeRoute: Route {
+enum HomeRoute: SRRoute {
     
     case bookDetailScreen(book: BookModel)
+    
+    var path: String { "detailScreen" }
     
     var screen: some View {
         switch self {

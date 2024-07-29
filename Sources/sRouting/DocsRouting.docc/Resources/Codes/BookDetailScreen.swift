@@ -9,11 +9,11 @@ import SwiftUI
 
 struct BookDetailScreen: View {
     
-    @StateObject
+    @State
     private var viewModel: BookDetailViewModel = .init()
     
-    @EnvironmentObject
-    private var mockData: MockBookData
+    @Environment(MockBookData.self)
+    private var mockData
     
     let book: BookModel
     
@@ -57,6 +57,7 @@ struct BookDetailScreen: View {
                         VStack(spacing: 8) {
                             Text("TAP TO ADD RATING")
                             RatingView(rating: $viewModel.book.rating)
+                            
                         }
                         .frame(maxWidth: .infinity)
                         .abeeFont(size: 20, style: .italic)

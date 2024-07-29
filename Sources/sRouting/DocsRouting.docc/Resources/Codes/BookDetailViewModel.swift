@@ -5,13 +5,13 @@
 //  Created by ThangKieu on 7/7/21.
 //
 
-import Foundation
+import SwiftUI
 import sRouting
 
-@MainActor
-final class BookDetailViewModel: Router<HomeRoute> {
+@sRouter(HomeRoute.self) @Observable
+final class BookDetailViewModel {
     
-    @Published var book: BookModel = .empty
+     var book: BookModel = .empty
     
     func updateBook(_ book: BookModel, isForceUpdate: Bool = false) {
         guard self.book.isEmptyObject || isForceUpdate else { return }

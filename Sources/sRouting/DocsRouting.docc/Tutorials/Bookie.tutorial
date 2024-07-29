@@ -59,7 +59,7 @@
             }
             
             @Step {
-                Create a `ObservableObject` to handle mockup data and named `MockBookData` then add your books data.
+                Create a `Observable` to handle mockup data and named `MockBookData` then add your books data.
                 @Code(name: "MockBookData.swift", file: MockBookData.swift)
             }
             
