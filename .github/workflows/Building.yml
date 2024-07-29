@@ -13,7 +13,5 @@ jobs:
     - uses: actions/checkout@v4
     - name: Build macOS
       run: swift build -v
-    - name: Generate xcodeproj
-      run: swift package generate-xcodeproj
     - name: Build iOS
-      run: xcodebuild build -sdk 'iphonesimulator'  -scheme 'sRouting'
+      run: xcodebuild build -sdk 'iphonesimulator'  -scheme 'sRouting' -destination 'platform=iOS Simulator'
