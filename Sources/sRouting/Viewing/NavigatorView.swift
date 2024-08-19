@@ -116,17 +116,13 @@ struct NavigatorView<RouterType>: View where RouterType: SRRouterType  {
     var body: some View {
         Text("Navigator View")
         .fullScreenCover(isPresented: $isActivePresent) {
-            SRNavigationStack(path: .init()) {
-                destinationView
-            }
+            destinationView
             .environment(dismissAllEmitter)
             .environment(tabbarSelection)
         }
         .sheet(isPresented: $isActiveSheet,
             content: {
-            SRNavigationStack(path: .init()) {
-                destinationView
-            }
+            destinationView
             .environment(dismissAllEmitter)
             .environment(tabbarSelection)
         })

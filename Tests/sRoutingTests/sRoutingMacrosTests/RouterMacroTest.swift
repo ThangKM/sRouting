@@ -15,13 +15,13 @@ import Observation
 import SwiftUI
 
 
-///Using for dev
-#if canImport(sRoutingMacros)
-
+/////Using for dev
+//#if canImport(sRoutingMacros) && os(macOS)
+//
 //import sRoutingMacros
 //
 //let testMacros: [String: Macro.Type] = [
-//    "sRootRouter": RootRouterMacro.self, "sRouter": RouterMacro.self
+//    "sRContext": ContextMacro.self, "sRouter": RouterMacro.self, "sRouteObserve": RouteObserveMacro.self
 //]
 //
 //final class RouterMacroTest: XCTestCase {
@@ -48,6 +48,17 @@ import SwiftUI
 //        """,
 //        macros: testMacros)
 //    }
+//    
+//    func testRouteObserveMacroImp() throws {
+//        assertMacroExpansion("""
+//        @sRouteObserve(HomeRoute.self)
+//        struct ObserveView<Content>: View where Content: View { }
+//        """, expandedSource:"""
+//        @sRouteObserve(HomeRoute.self)
+//        struct ObserveView<Content>: View where Content: View { }
+//        """,
+//        macros: testMacros)
+//    }
 //}
-
-#endif
+//
+//#endif

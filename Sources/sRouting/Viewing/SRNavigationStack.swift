@@ -8,7 +8,8 @@
 import SwiftUI
 import Observation
 
-public struct SRNavigationStack<Content>: View where Content: View {
+public struct SRNavigationStack<ObserveView, Content>: View
+where ObserveView: (View & SRObserveViewType), Content: View, ObserveView.ObserveContent == Content {
     
     @Bindable private var path: SRNavigationPath
     
@@ -18,16 +19,18 @@ public struct SRNavigationStack<Content>: View where Content: View {
     ///  - Parameters:
     ///   - path: ``SRNavigationPath``
     ///   - content: Content view builder
-    public init(path: SRNavigationPath, @ViewBuilder content: @escaping () -> Content) {
+    ///   - observeView: ``SRObserveViewType``
+    public init(path: SRNavigationPath,
+                observeView: ObserveView.Type,
+                @ViewBuilder content: @escaping () -> Content) {
         self.content = content
         self.path = path
     }
     
     public var body: some View {
-        NavigationStack(path: $path.stack) {
-            content()
-            .navigationDestination(for: AnyRoute.self) { route in
-                route.screen.environment(path)
+        NavigationStack(path: $path.navPath) {
+            ObserveView(path: path) {
+                content()
             }
         }
         .environment(path)
@@ -40,6 +43,6 @@ public struct SRNavigationStack<Content>: View where Content: View {
 extension NavigationLink where Destination == Never {
 
     public init<R>(route: R, @ViewBuilder content: () -> Label) where R: SRRoute {
-        self.init(value: AnyRoute(route: route), label: content)
+        self.init(value: route, label: content)
     }
 }

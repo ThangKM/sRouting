@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import SwiftUI
 
 /// NavigationStack's path
 @Observable
@@ -14,14 +15,17 @@ public final class SRNavigationPath {
     @MainActor
     internal var stack: [AnyRoute] = []
     
+    @MainActor
+    internal var navPath: NavigationPath = .init()
+    
     public private(set) var didAppear: Bool = false
     
     public init() { }
     
     @MainActor
     public func pop() {
-        guard !stack.isEmpty else { return }
-        stack.removeLast()
+        guard !navPath.isEmpty else { return }
+        navPath.removeLast()
     }
     
     @MainActor
@@ -36,13 +40,14 @@ public final class SRNavigationPath {
     
     @MainActor
     public func popToRoot() {
-        guard !stack.isEmpty else { return }
-        stack.removeAll()
+        guard !navPath.isEmpty else { return }
+        let count = navPath.count
+        navPath.removeLast(count)
     }
     
     @MainActor
     public func push(to route: some SRRoute) {
-        stack.append(AnyRoute(route: route))
+        navPath.append(route)
     }
     
     @MainActor

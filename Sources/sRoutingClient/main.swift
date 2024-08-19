@@ -24,6 +24,14 @@ enum HomeRoute: SRRoute {
     }
 }
 
+enum SettingRoute: SRRoute {
+    case setting
+    
+    var path: String { "setting" }
+    
+    var screen: some View { Text("Setting") }
+}
+
 @sRouter(HomeRoute.self) @Observable
 class HomeViewModel { }
 
@@ -42,3 +50,5 @@ func testing() {
 }
 
  
+@sRouteObserve(HomeRoute.self, SettingRoute.self)
+struct ObserveView<Content>: View where Content: View { }
