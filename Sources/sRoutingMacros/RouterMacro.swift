@@ -55,7 +55,6 @@ public struct RouterMacro: MemberMacro {
         private var _transition: SRTransition<\(raw: routeType)> = .none
         
         /// Select tabbar item at index
-        /// Required oberve selection of `TabView` from ``RootRouter``
         /// - Parameter index: Index of tabbar item
         ///
         /// ### Example
@@ -69,7 +68,7 @@ public struct RouterMacro: MemberMacro {
         
         /// Trigger to new screen
         /// - Parameters:
-        ///   - route: Type of ``Route``
+        ///   - route: Type of ``SRRoute``
         ///   - action: ``SRTriggerType``
         ///
         /// ### Example

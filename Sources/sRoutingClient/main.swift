@@ -34,21 +34,18 @@ enum SettingRoute: SRRoute {
 
 @sRouter(HomeRoute.self) @Observable
 class HomeViewModel { }
-
+ 
+@sRouteObserve(HomeRoute.self, SettingRoute.self)
+struct ObserveView<Content>: View where Content: View { }
 
 @sRContext(tabs: ["homeItem", "settingItem"], stacks: "home", "setting")
 struct SRContext { }
 
 
-@MainActor
-func testing() {
+func routingDeeplink() {
     let context = SRContext()
     Task {
         await context.routing(.resetAll, .select(tabItem: .homeItem),
                               .push(route: HomeRoute.deatail("detail"), into: .home))
     }
 }
-
- 
-@sRouteObserve(HomeRoute.self, SettingRoute.self)
-struct ObserveView<Content>: View where Content: View { }

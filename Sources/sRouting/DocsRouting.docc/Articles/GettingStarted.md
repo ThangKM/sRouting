@@ -13,21 +13,21 @@ Working with ``sRContext(tabs:stacks:)``, ``ScreenView`` and ``sRouter(_:)`` mac
 To create a route we have to conform to the ``SRRoute`` Protocol.
 
 ```swift
-enum AppRoute: SRRoute {
-    case login
-    case tabbar
+enum HomeRoute: SRRoute {
+    case pastry
+    case cake
     
     var path: String { 
         swich self {
-            case .login: return "login"
-            case .tabbar: return "tabbar"
+            case .pastry: return "pastry"
+            case .cake: return "cake"
         }
     }
 
     var screen: some View {
         switch self {
-            case .login: LoginScreen()
-            case .tabbar: TabbarScreen()
+            case .pastry: PastryScreen()
+            case .cake: CakeScreen()
         }
     }
 }
@@ -37,10 +37,23 @@ enum AppRoute: SRRoute {
 
 Setup a context and ``SRRootView`` for your app
 
+Declaring Context: 
+
 ```swift
 @sRContext(tabs: ["home", "setting"], stacks: "home", "setting")
 struct SRContext { }
+```
 
+Declaring View of navigation destination:
+
+```swift
+@sRouteObserve(HomeRoute.self, SettingRoute.self)
+struct ObserveView<Content>: View where Content: View { }
+```
+
+Setup Your App:
+
+```swift
 @main
 struct BookieApp: App { 
     let context = SRContext()
@@ -50,13 +63,13 @@ struct BookieApp: App {
         WindowGroup {
             SRRootView(context: context) {
                 SRTabbarView {
-                    SRNavigationStack(path: context.homePath) {
+                    SRNavigationStack(path: context.homePath, observeView: ObserveView.self) {
                         AppRoute.home.screen
                     }.tabItem {
                         Label("Home", systemImage: "house")
                     }.tag(SRTabItem.home.rawValue)
                     
-                    SRNavigationStack(path: context.settingPath) {
+                    SRNavigationStack(path: context.settingPath, observeView: ObserveView.self) {
                         AppRoute.setting.screen
                     }.tabItem {
                         Label("Setting", systemImage: "gear")
@@ -64,12 +77,13 @@ struct BookieApp: App {
                 }
                 .onDoubleTapTabItem { ... }
                 .onTabSelectionChange { ... }
+                .onNaviStackChange { ... }
             }
             .onOpenURL { url in
                 Task {
                     ...
-                    await context.routing(.resetAll,.select(tabItem: .setting),
-                                          .push(route: SettingRoute.detail, into: .setting))
+                    await context.routing(.resetAll,.select(tabItem: .home),
+                                          .push(route: HomeRoute.cake, into: .home))
                 }
             }
         }
@@ -108,23 +122,35 @@ struct HomeScreen: View {
 To navigate to a screen that must be in HomeRoute 
 we use the `trigger(to:with:)` function in the `Router`
 
+DeepLink:
+```swift
+...
+.onOpenURL { url in
+    Task {
+        ...
+        await context.routing(.resetAll,.select(tabItem: .home),
+                              .push(route: HomeRoute.cake, into: .home))
+    }
+}
+```
+
 Push:
 ```swift
-router.trigger(to: .detail, with: .push)
+router.trigger(to: .cake, with: .push)
 ```
 NavigationLink:
 ```swift
-NavigationLink(route: HomeRoute.detail("\(value)")) {
+NavigationLink(route: HomeRoute.pastry) {
    ...
 }
 ```
 Present full screen:
 ```swift
-router.trigger(to: .detail, with: .present)
+router.trigger(to: .cake, with: .present)
 ```
 Sheet:
 ```swift
-router.trigger(to: .detail, with: .sheet)
+router.trigger(to: .cake, with: .sheet)
 ```
 To show an alert we use the `show(alert:)` function.
 
@@ -165,5 +191,5 @@ router.pop()
 
 router.popToRoot()
 
-router.pop(to: HomeRoute.detail)
+router.pop(to: HomeRoute.cake)
 ```

@@ -20,7 +20,6 @@ public protocol SRRouterType<RouteType> where RouteType: SRRoute {
     var transition: SRTransition<RouteType> { get }
     
     /// Select tabbar item at index
-    /// Required oberve selection of `TabView` from ``RootRouter``
     /// - Parameter index: Index of tabbar item
     ///
     /// ### Example
@@ -31,7 +30,7 @@ public protocol SRRouterType<RouteType> where RouteType: SRRoute {
     
     /// Trigger to new screen
     /// - Parameters:
-    ///   - route: Type of ``Route``
+    ///   - route: Type of ``SRRouterType``
     ///   - action: ``SRTriggerType``
     ///
     /// ### Example

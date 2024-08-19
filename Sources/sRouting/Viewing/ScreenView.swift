@@ -20,7 +20,7 @@ where Content: View, RouterType: SRRouterType {
     
     /// Initalizer of ``ScreenView``
     ///  - Parameters:
-    ///   - router: Type of ``Router``
+    ///   - router: Type of ``SRRouterType``
     ///   - dismissAction: `DismissAction`
     ///   - content: Content view builder
     public init(router: RouterType,
