@@ -8,7 +8,7 @@
 import SwiftUI
 
 /// Protocol to build ``ScreenView`` in the route.
-public protocol SRRoute: Hashable {
+public protocol SRRoute: Hashable, Codable {
     
     associatedtype ViewType: View
     
@@ -20,11 +20,25 @@ public protocol SRRoute: Hashable {
 }
 
 extension SRRoute {
+    
     public static func == (lhs: Self, rhs: Self) -> Bool {
         return lhs.path == rhs.path
     }
     
     public func hash(into hasher: inout Hasher) {
         hasher.combine(path)
+    }
+}
+
+extension SRRoute {
+    
+    public init(from decoder: any Decoder) throws {
+        throw SRRoutingError.unsupportedDecodable
+    }
+    
+    public func encode(to encoder: any Encoder) throws {
+        var container = encoder.singleValueContainer()
+        try container.encode(path)
+        
     }
 }

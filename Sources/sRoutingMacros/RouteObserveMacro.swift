@@ -11,30 +11,6 @@ import SwiftSyntax
 import SwiftSyntaxMacros
 import Foundation
 
-public enum RouteObserveMacroError: Error, CustomStringConvertible {
-    
-    case unsupported
-    case missingArguments
-    case invalidGenericFormat(String)
-    case haveToUsingMemberAccess
-    case duplication
-    
-    public var description: String {
-        switch self {
-        case .unsupported:
-            return "Only support for struct!"
-        case .missingArguments:
-            return "Missing arguments!"
-        case .invalidGenericFormat(let name):
-            return "Using 'struct \(name)<Content>: View where Content: View' instead of!"
-        case .haveToUsingMemberAccess:
-            return "Using `YourRoute.self` instead of!"
-        case .duplication:
-            return "Duplication!"
-        }
-    }
-}
-
 private var genericContent = "Content"
 
 public struct RouteObserveMacro: MemberMacro {
@@ -97,26 +73,26 @@ extension RouteObserveMacro {
     private static func _arguments(of node: AttributeSyntax) throws -> Set<String> {
         
         guard case let .argumentList(arguments) = node.arguments, !arguments.isEmpty
-        else { throw RouteObserveMacroError.missingArguments }
+        else { throw SRMacroError.missingArguments }
         
         var routes = [String]()
         for labeled in arguments {
             guard let exp = labeled.expression.as(MemberAccessExprSyntax.self),
                   let base = exp.base?.as(DeclReferenceExprSyntax.self)
-            else { throw RouteObserveMacroError.haveToUsingMemberAccess }
+            else { throw SRMacroError.haveToUsingMemberAccess }
             
             let declName = exp.declName.baseName
             guard declName.text == "self"
-            else { throw RouteObserveMacroError.haveToUsingMemberAccess }
+            else { throw SRMacroError.haveToUsingMemberAccess }
             
             let input = base.baseName.text
             routes.append(input)
         }
         
-        guard !routes.isEmpty else { throw RouteObserveMacroError.missingArguments }
+        guard !routes.isEmpty else { throw SRMacroError.missingArguments }
         let setRoutes = Set(routes)
         guard setRoutes.count == routes.count
-        else { throw RouteObserveMacroError.duplication }
+        else { throw SRMacroError.duplication }
         return setRoutes
     }
     
@@ -124,19 +100,19 @@ extension RouteObserveMacro {
         
         guard let structDecl = declaration.as(StructDeclSyntax.self),
               declaration.kind == SwiftSyntax.SyntaxKind.structDecl
-        else { throw RouteObserveMacroError.unsupported }
+        else { throw SRMacroError.onlyStruct }
         
         let structName = structDecl.name.text
         
         guard let genericParam = structDecl.genericParameterClause?.as(GenericParameterClauseSyntax.self)?.parameters.as(GenericParameterListSyntax.self),
               let genericName = genericParam.first?.as(GenericParameterSyntax.self)?.name.text,
               genericParam.count == 1, genericName == genericContent
-        else { throw RouteObserveMacroError.invalidGenericFormat(structName) }
+        else { throw SRMacroError.invalidGenericFormat(structName) }
         
         guard let inheritanceClause = structDecl.inheritanceClause?.as(InheritanceClauseSyntax.self)?.inheritedTypes.as(InheritedTypeListSyntax.self),
               let inheriName = inheritanceClause.first?.as(InheritedTypeSyntax.self)?.type.as(IdentifierTypeSyntax.self)?.name.text,
               inheriName == "View"
-        else { throw RouteObserveMacroError.invalidGenericFormat(structName) }
+        else { throw SRMacroError.invalidGenericFormat(structName) }
         
         
         if let genericInheri = genericParam.first?.inheritedType?.as(IdentifierTypeSyntax.self),
@@ -150,7 +126,7 @@ extension RouteObserveMacro {
               let leftTypeName = conformance.leftType.as(IdentifierTypeSyntax.self)?.name.text,
               let rightTypeName = conformance.rightType.as(IdentifierTypeSyntax.self)?.name.text,
               leftTypeName == genericContent && rightTypeName == "View"
-        else { throw RouteObserveMacroError.invalidGenericFormat(structName) }
+        else { throw SRMacroError.invalidGenericFormat(structName) }
         
     }
 }

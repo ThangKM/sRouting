@@ -26,3 +26,5 @@ class TestRouter { }
 @sRContext(stacks: "home")
 struct SRContext { }
 
+@sRouteObserve(EmptyRoute.self)
+struct ObserveView<Content>: View where Content: View { }

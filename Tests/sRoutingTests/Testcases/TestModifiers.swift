@@ -34,7 +34,7 @@ class TestModifiers: XCTestCase {
         let exp = XCTestExpectation()
         let router = TestRouter()
         let sut = SRRootView(context: SRContext()) {
-            SRNavigationStack(path: .init()) {
+            SRNavigationStack(path: .init(), observeView: ObserveView.self) {
                 TestScreen(router: router, tests: .none).onNaviStackChange { oldPaths, newPaths in
                     XCTAssertTrue(oldPaths.isEmpty)
                     XCTAssertFalse(newPaths.isEmpty)

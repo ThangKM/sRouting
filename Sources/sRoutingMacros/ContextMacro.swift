@@ -15,21 +15,6 @@ import Foundation
 private let tabsParam = "tabs"
 private let stacksParam = "stacks"
 
-public enum ContextMacroError: Error, CustomStringConvertible {
-    
-    case unsupported
-    case missingArguments
-    
-    public var description: String {
-        switch self {
-        case .unsupported:
-            return "Support for class or struct!"
-        case .missingArguments:
-            return "Missing arguments!"
-        }
-    }
-}
-
 public struct ContextMacro: MemberMacro {
     
     public static func expansion(of node: AttributeSyntax,
@@ -38,7 +23,7 @@ public struct ContextMacro: MemberMacro {
         
         guard declaration.kind == SwiftSyntax.SyntaxKind.classDecl
                 || declaration.kind == SwiftSyntax.SyntaxKind.structDecl
-        else { throw RouterMacroError.unsupported }
+        else { throw SRMacroError.structOrClass }
         let arguments = try Self._arguments(of: node)
         
         var result: [DeclSyntax] = []
@@ -153,7 +138,7 @@ extension ContextMacro: PeerMacro {
         
         guard declaration.kind == SwiftSyntax.SyntaxKind.classDecl
                 || declaration.kind == SwiftSyntax.SyntaxKind.structDecl
-        else { throw RouterMacroError.unsupported }
+        else { throw SRMacroError.structOrClass }
         
         let arguments = try Self._arguments(of: node)
         
@@ -250,7 +235,7 @@ extension ContextMacro {
     private static func _arguments(of node: AttributeSyntax) throws -> (tabs: [String], stacks: [String]) {
         
         guard case let .argumentList(arguments) = node.arguments, !arguments.isEmpty
-        else { throw RouterMacroError.missingArguments }
+        else { throw SRMacroError.missingArguments }
 
         var tabs = [String]()
         var stacks  = [String]()
@@ -266,7 +251,7 @@ extension ContextMacro {
             switch currentLabel {
             case tabsParam:
                 guard let exp = labeled.expression.as(ArrayExprSyntax.self)
-                else { throw ContextMacroError.missingArguments }
+                else { throw SRMacroError.missingArguments }
                 let elements = exp.elements.map(\.expression).compactMap({ $0.as(StringLiteralExprSyntax.self) })
                 let contents = elements.compactMap(\.segments.first).compactMap({ $0.as(StringSegmentSyntax.self)})
                 let items = contents.map(\.content.text)
@@ -274,7 +259,7 @@ extension ContextMacro {
             case stacksParam:
                 guard let exp = labeled.expression.as(StringLiteralExprSyntax.self),
                       let segment = exp.segments.first?.as(StringSegmentSyntax.self)
-                else { throw ContextMacroError.missingArguments }
+                else { throw SRMacroError.missingArguments }
                 
                 let input = segment.content.text
                 stacks.append(input)
@@ -282,7 +267,7 @@ extension ContextMacro {
             }
         }
         
-        guard !tabs.isEmpty || !stacks.isEmpty else { throw ContextMacroError.missingArguments }
+        guard !tabs.isEmpty || !stacks.isEmpty else { throw SRMacroError.missingArguments }
         return (tabs,stacks)
     }
 }
