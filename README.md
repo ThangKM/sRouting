@@ -115,7 +115,6 @@ struct BookieApp: App {
                 }
                 .onDoubleTapTabItem { ... }
                 .onTabSelectionChange { ... }
-                .onNaviStackChange { ... }
             }
             .onOpenURL { url in
                 Task {
