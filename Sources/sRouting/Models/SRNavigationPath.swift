@@ -45,12 +45,11 @@ public final class SRNavigationPath {
     @MainActor
     public func pop(to route: some SRRoute) {
         guard navPath.count == stack.count else { return }
-        let path = String(describing: type(of: route)) + "." + route.path
+        let path = Helpers.navigationStoredPath(for: route)
         guard let index = stack.lastIndex(where: {$0.contains(path)})
         else { return }
         let dropCount = (stack.count - 1) - index
         guard dropCount > 0 && stack.count >= dropCount && navPath.count >= dropCount else { return }
-        stack.removeLast(dropCount)
         navPath.removeLast(dropCount)
     }
     

@@ -21,7 +21,7 @@ import sRoutingMacros
 
 final class RouterMacroTest: XCTestCase {
 
-    func testRouterMacroImp() throws {
+    func testRouterMacroImp() async throws {
         
         assertMacroExpansion("""
         @sRouter(HomeRoute.self) @Observable
@@ -184,7 +184,7 @@ final class RouterMacroTest: XCTestCase {
         macros: testMacros)
     }
     
-    func testNoneClassImp() throws {
+    func testNoneClassImp() async throws {
         assertMacroExpansion("""
         @sRouter(HomeRoute.self) @Observable
         struct HomeViewModel {
@@ -200,7 +200,7 @@ final class RouterMacroTest: XCTestCase {
             macros: testMacros)
     }
     
-    func testMissingArgs() throws {
+    func testMissingArgs() async throws {
         assertMacroExpansion("""
         @sRouter() @Observable
         class HomeViewModel {
@@ -216,7 +216,7 @@ final class RouterMacroTest: XCTestCase {
             macros: testMacros)
     }
     
-    func testInvalidArgs() throws {
+    func testInvalidArgs() async throws {
         assertMacroExpansion("""
         @sRouter("string") @Observable
         class HomeViewModel {
@@ -232,7 +232,7 @@ final class RouterMacroTest: XCTestCase {
             macros: testMacros)
     }
     
-    func testMissingObservation() throws {
+    func testMissingObservation() async throws {
         assertMacroExpansion("""
         @sRouter(HomeRoute.self)
         class HomeViewModel {

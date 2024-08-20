@@ -20,7 +20,7 @@ import sRoutingMacros
 
 final class ContextMacroTest: XCTestCase {
     
-    func testContextMacroImp() throws {
+    func testContextMacroImp() async throws {
         assertMacroExpansion("""
         @sRContext(tabs: ["homeItem", "settingItem"], stacks: "home", "setting")
         struct SRContext {
@@ -320,7 +320,7 @@ final class ContextMacroTest: XCTestCase {
         macros: testMacros)
     }
     
-    func testNoneStructOrClassImp() throws {
+    func testNoneStructOrClassImp() async throws {
         
         let dianosSpec = DiagnosticSpec(message: SRMacroError.structOrClass.description, line: 1, column: 1,severity: .error)
         
@@ -339,7 +339,7 @@ final class ContextMacroTest: XCTestCase {
         macros: testMacros)
     }
     
-    func testMissingArgsImp() throws {
+    func testMissingArgsImp() async throws {
         
         let dianosSpec = DiagnosticSpec(message: SRMacroError.missingArguments.description, line: 1, column: 1,severity: .error)
         
@@ -358,7 +358,7 @@ final class ContextMacroTest: XCTestCase {
         macros: testMacros)
     }
     
-    func testTabItemDuplicationArgsImp() throws {
+    func testTabItemDuplicationArgsImp() async throws {
         
         let dianosSpec = DiagnosticSpec(message: SRMacroError.duplication.description, line: 1, column: 1,severity: .error)
         
@@ -377,7 +377,7 @@ final class ContextMacroTest: XCTestCase {
         macros: testMacros)
     }
     
-    func testStackDuplicationArgsImp() throws {
+    func testStackDuplicationArgsImp() async throws {
         
         let dianosSpec = DiagnosticSpec(message: SRMacroError.duplication.description, line: 1, column: 1,severity: .error)
         

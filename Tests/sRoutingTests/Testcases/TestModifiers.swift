@@ -72,4 +72,49 @@ class TestModifiers: XCTestCase {
         router.selectTabbar(at: 1)
         await fulfillment(of: [exp], timeout: 0.2)
     }
+    
+    @MainActor
+    func testOnDoubleTapTabItemChange() async throws {
+        let exp = XCTestExpectation()
+        let router = TestRouter()
+        let context = SRContext()
+        let sut =  SRRootView(context: context) {
+            SRTabbarView {
+                TestScreen(router: router, tests: .none)
+                    .tabItem {
+                        Label("Home", systemImage: "house")
+                    }.tag(0)
+            }
+            .onDoubleTapTabItem { selection in
+                XCTAssertEqual(selection, .zero)
+                exp.fulfill()
+            }
+        }
+        ViewHosting.host(view: sut)
+        router.selectTabbar(at: 0)
+        try await Task.sleep(for: .milliseconds(300))
+        router.selectTabbar(at: 0)
+        await fulfillment(of: [exp], timeout: 1)
+    }
+    
+    @MainActor
+    func testNoneDoubleTapTabItemChange() async throws {
+        let router = TestRouter()
+        let context = SRContext()
+        let sut =  SRRootView(context: context) {
+            SRTabbarView {
+                TestScreen(router: router, tests: .none)
+                    .tabItem {
+                        Label("Home", systemImage: "house")
+                    }.tag(0)
+            }
+            .onDoubleTapTabItem { selection in
+                XCTFail()
+            }
+        }
+        ViewHosting.host(view: sut)
+        router.selectTabbar(at: 0)
+        try await Task.sleep(for: .milliseconds(500))
+        router.selectTabbar(at: 0)
+    }
 }

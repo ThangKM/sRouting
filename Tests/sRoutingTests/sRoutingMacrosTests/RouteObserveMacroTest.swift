@@ -19,7 +19,7 @@ import sRoutingMacros
 
 final class RouteObserveMacroTest: XCTestCase {
     
-    func testRouteObserveMacroImp() throws {
+    func testRouteObserveMacroImp() async throws {
         assertMacroExpansion("""
         @sRouteObserve(HomeRoute.self, SettingRoute.self)
         struct ObserveView<Content: View>: View {
@@ -49,7 +49,7 @@ final class RouteObserveMacroTest: XCTestCase {
         macros: testMacros)
     }
     
-    func testRouteObserveMacroWhereImp() throws {
+    func testRouteObserveMacroWhereImp() async throws {
         assertMacroExpansion("""
         @sRouteObserve(HomeRoute.self, SettingRoute.self)
         struct ObserveView<Content>: View where Content: View {
@@ -79,7 +79,7 @@ final class RouteObserveMacroTest: XCTestCase {
         macros: testMacros)
     }
     
-    func testNoneStructImp() throws {
+    func testNoneStructImp() async throws {
         assertMacroExpansion("""
         @sRouteObserve(HomeRoute.self, SettingRoute.self)
         class ObserveView<Content>: View where Content: View {
@@ -95,7 +95,7 @@ final class RouteObserveMacroTest: XCTestCase {
         macros: testMacros)
     }
     
-    func testNoneConentGenericName() throws {
+    func testNoneConentGenericName() async throws {
         assertMacroExpansion("""
         @sRouteObserve(HomeRoute.self, SettingRoute.self)
         struct ObserveView<V>: View where V: View {
@@ -111,7 +111,7 @@ final class RouteObserveMacroTest: XCTestCase {
         macros: testMacros)
     }
     
-    func testContentIsNotViewImp() throws {
+    func testContentIsNotViewImp() async throws {
         assertMacroExpansion("""
         @sRouteObserve(HomeRoute.self, SettingRoute.self)
         struct ObserveView<Content>: View where Content: Codable {
@@ -127,7 +127,7 @@ final class RouteObserveMacroTest: XCTestCase {
         macros: testMacros)
     }
     
-    func testRouteDuplication() throws {
+    func testRouteDuplication() async throws {
         assertMacroExpansion("""
         @sRouteObserve(HomeRoute.self, SettingRoute.self, HomeRoute.self)
         struct ObserveView<Content>: View where Content: View {
