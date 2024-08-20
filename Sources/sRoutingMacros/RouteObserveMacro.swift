@@ -30,15 +30,14 @@ public struct RouteObserveMacro: MemberMacro {
         }
         
         let decl: DeclSyntax = """
-        
         let content: () -> Content
         let path: SRNavigationPath
-                
+
         init(path: SRNavigationPath, content: @escaping () -> Content) {
             self.path = path
             self.content = content
         }
-        
+
         var body: some View {
             content()
             \(raw: destinationObserve)
@@ -70,7 +69,7 @@ extension RouteObserveMacro: ExtensionMacro {
 
 extension RouteObserveMacro {
     
-    private static func _arguments(of node: AttributeSyntax) throws -> Set<String> {
+    private static func _arguments(of node: AttributeSyntax) throws -> [String] {
         
         guard case let .argumentList(arguments) = node.arguments, !arguments.isEmpty
         else { throw SRMacroError.missingArguments }
@@ -90,10 +89,9 @@ extension RouteObserveMacro {
         }
         
         guard !routes.isEmpty else { throw SRMacroError.missingArguments }
-        let setRoutes = Set(routes)
-        guard setRoutes.count == routes.count
-        else { throw SRMacroError.duplication }
-        return setRoutes
+        guard Set(routes).count == routes.count else { throw SRMacroError.duplication }
+        
+        return routes
     }
     
     private static func _validateDeclaration(_ declaration: DeclGroupSyntax) throws {

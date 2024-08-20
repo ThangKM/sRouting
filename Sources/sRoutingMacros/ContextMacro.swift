@@ -145,7 +145,8 @@ extension ContextMacro: PeerMacro {
         var result: [DeclSyntax] = []
         let rootRouter: DeclSyntax = """
         @sRouter(AnyRoute.self) @Observable
-        class SRRootRouter { }
+        class SRRootRouter {
+        }
         """
         result.append(rootRouter)
         
@@ -255,6 +256,8 @@ extension ContextMacro {
                 let elements = exp.elements.map(\.expression).compactMap({ $0.as(StringLiteralExprSyntax.self) })
                 let contents = elements.compactMap(\.segments.first).compactMap({ $0.as(StringSegmentSyntax.self)})
                 let items = contents.map(\.content.text)
+                let tabItems = items.filter({ !$0.isEmpty })
+                guard !tabItems.isEmpty else { continue }
                 tabs.append(contentsOf: items)
             case stacksParam:
                 guard let exp = labeled.expression.as(StringLiteralExprSyntax.self),
@@ -262,12 +265,18 @@ extension ContextMacro {
                 else { throw SRMacroError.missingArguments }
                 
                 let input = segment.content.text
+                guard !input.isEmpty else { continue }
                 stacks.append(input)
             default: continue
             }
         }
         
-        guard !tabs.isEmpty || !stacks.isEmpty else { throw SRMacroError.missingArguments }
+        guard !stacks.isEmpty else { throw SRMacroError.missingArguments }
+        if !tabs.isEmpty && tabs.count != Set(tabs).count {
+            throw SRMacroError.duplication
+        }
+        guard stacks.count == Set(stacks).count else { throw SRMacroError.duplication }
+        
         return (tabs,stacks)
     }
 }

@@ -27,7 +27,7 @@ public struct RouterMacro: MemberMacro {
         else { throw SRMacroError.missingArguments }
         
         guard let memberAccess = firstElement.as(MemberAccessExprSyntax.self)
-        else { throw SRMacroError.missingArguments }
+        else { throw SRMacroError.invalidRouteType }
         
         guard let routeType = memberAccess.base?.as(DeclReferenceExprSyntax.self)?.baseName.trimmedDescription
         else { throw SRMacroError.invalidRouteType }
