@@ -11,28 +11,6 @@ import SwiftSyntax
 import SwiftSyntaxMacros
 import Foundation
 
-public enum RouterMacroError: Error, CustomStringConvertible {
-    
-    case unsupported
-    case missingArguments
-    case invalidRouteType
-    case missingObservable
-    
-    public var description: String {
-        switch self {
-        case .unsupported:
-            return "Only support for class!"
-        case .missingArguments:
-            return "Missing arguments!"
-        case .invalidRouteType:
-            return "Requires route type conform to SRRoute!"
-        case .missingObservable:
-            return "Missing @Observable marco!"
-        }
-    }
-}
-
-
 public struct RouterMacro: MemberMacro {
     
     
@@ -42,21 +20,21 @@ public struct RouterMacro: MemberMacro {
         
         guard let classDecl = declaration.as(ClassDeclSyntax.self),
               declaration.kind == SwiftSyntax.SyntaxKind.classDecl
-        else { throw RouterMacroError.unsupported }
+        else { throw SRMacroError.onlyClass }
         
         guard case let .argumentList(arguments) = node.arguments,
               let firstElement = arguments.first?.expression
-        else { throw RouterMacroError.missingArguments }
+        else { throw SRMacroError.missingArguments }
         
         guard let memberAccess = firstElement.as(MemberAccessExprSyntax.self)
-        else { throw RouterMacroError.missingArguments }
+        else { throw SRMacroError.invalidRouteType }
         
         guard let routeType = memberAccess.base?.as(DeclReferenceExprSyntax.self)?.baseName.trimmedDescription
-        else { throw RouterMacroError.invalidRouteType }
+        else { throw SRMacroError.invalidRouteType }
         
         let attributes = classDecl.attributes.compactMap({ $0.as(AttributeSyntax.self) })
         guard attributes.first(where: { $0.attributeName.trimmedDescription == "Observable" }) != .none
-        else { throw RouterMacroError.missingObservable }
+        else { throw SRMacroError.missingObservable }
         
         return ["""
         
@@ -77,7 +55,6 @@ public struct RouterMacro: MemberMacro {
         private var _transition: SRTransition<\(raw: routeType)> = .none
         
         /// Select tabbar item at index
-        /// Required oberve selection of `TabView` from ``RootRouter``
         /// - Parameter index: Index of tabbar item
         ///
         /// ### Example
@@ -91,7 +68,7 @@ public struct RouterMacro: MemberMacro {
         
         /// Trigger to new screen
         /// - Parameters:
-        ///   - route: Type of ``Route``
+        ///   - route: Type of ``SRRoute``
         ///   - action: ``SRTriggerType``
         ///
         /// ### Example

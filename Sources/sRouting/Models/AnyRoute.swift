@@ -12,9 +12,8 @@ import Foundation
 public struct AnyRoute: SRRoute {
     
     public let path: String
-    private let viewBuilder: () -> AnyView
+    private let viewBuilder:  @MainActor () -> AnyView
     
-    @ViewBuilder @MainActor
     public var screen: some View {
         viewBuilder().id(path)
     }
@@ -24,11 +23,5 @@ public struct AnyRoute: SRRoute {
         self.viewBuilder = {
             AnyView(route.screen)
         }
-    }
-}
-
-extension AnyRoute: Hashable {
-    public func hash(into hasher: inout Hasher) {
-        hasher.combine(path)
     }
 }

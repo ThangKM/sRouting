@@ -34,7 +34,7 @@ class TestModifiers: XCTestCase {
         let exp = XCTestExpectation()
         let router = TestRouter()
         let sut = SRRootView(context: SRContext()) {
-            SRNavigationStack(path: .init()) {
+            SRNavigationStack(path: .init(), observeView: ObserveView.self) {
                 TestScreen(router: router, tests: .none).onNaviStackChange { oldPaths, newPaths in
                     XCTAssertTrue(oldPaths.isEmpty)
                     XCTAssertFalse(newPaths.isEmpty)
@@ -71,5 +71,51 @@ class TestModifiers: XCTestCase {
         ViewHosting.host(view: sut)
         router.selectTabbar(at: 1)
         await fulfillment(of: [exp], timeout: 0.2)
+    }
+    
+    @MainActor
+    func testOnDoubleTapTabItemChange() async throws {
+        let exp = XCTestExpectation()
+        let router = TestRouter()
+        let context = SRContext()
+        let sut =  SRRootView(context: context) {
+            SRTabbarView {
+                TestScreen(router: router, tests: .none)
+                    .tabItem {
+                        Label("Home", systemImage: "house")
+                    }.tag(0)
+            }
+            .onDoubleTapTabItem { selection in
+                XCTAssertEqual(selection, .zero)
+                exp.fulfill()
+            }
+        }
+        ViewHosting.host(view: sut)
+        router.selectTabbar(at: 0)
+        try await Task.sleep(for: .milliseconds(200))
+        router.selectTabbar(at: 0)
+        await fulfillment(of: [exp], timeout: 1)
+    }
+    
+    @MainActor
+    func testNoneDoubleTapTabItemChange() async throws {
+        let router = TestRouter()
+        let context = SRContext()
+        let sut =  SRRootView(context: context) {
+            SRTabbarView {
+                TestScreen(router: router, tests: .none)
+                    .tabItem {
+                        Label("Home", systemImage: "house")
+                    }.tag(0)
+            }
+            .onDoubleTapTabItem { selection in
+                XCTFail()
+            }
+        }
+        ViewHosting.host(view: sut)
+        router.selectTabbar(at: 0)
+        try await Task.sleep(for: .milliseconds(600))
+        router.selectTabbar(at: 0)
+        XCTAssertTrue(true)
     }
 }

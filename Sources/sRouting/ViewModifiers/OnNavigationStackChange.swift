@@ -23,8 +23,8 @@ private struct NavigationModifier: ViewModifier {
     
     func body(content: Content) -> some View {
         content.onChange(of: navigationPath?.stack) { oldValue, newValue in
-            let oldPaths = (oldValue ?? []).map(\.path)
-            let newPahts = (newValue ?? []).map(\.path)
+            let oldPaths = (oldValue ?? [])
+            let newPahts = (newValue ?? [])
             onChange(oldPaths, newPahts)
         }
     }

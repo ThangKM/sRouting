@@ -11,6 +11,9 @@ import sRouting
 @sRContext(stacks: "rootStack")
 struct SRContext { }
 
+@sRouteObserve(HomeRoute.self)
+struct ObserveView { }
+
 @main
 struct BookieApp: App {
 
@@ -20,7 +23,7 @@ struct BookieApp: App {
     var body: some Scene {
         WindowGroup {
             SRRootView(context: srcontext) {
-                SRNavigationStack(path: srcontext.rootStackPath) {
+                SRNavigationStack(path: srcontext.rootStackPath, observeView: ObserveView.self) {
                     appRouter.rootRoute.screen
                 }
             }
