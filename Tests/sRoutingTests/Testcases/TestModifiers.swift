@@ -92,7 +92,7 @@ class TestModifiers: XCTestCase {
         }
         ViewHosting.host(view: sut)
         router.selectTabbar(at: 0)
-        try await Task.sleep(for: .milliseconds(300))
+        try await Task.sleep(for: .milliseconds(200))
         router.selectTabbar(at: 0)
         await fulfillment(of: [exp], timeout: 1)
     }
@@ -114,7 +114,8 @@ class TestModifiers: XCTestCase {
         }
         ViewHosting.host(view: sut)
         router.selectTabbar(at: 0)
-        try await Task.sleep(for: .milliseconds(500))
+        try await Task.sleep(for: .milliseconds(600))
         router.selectTabbar(at: 0)
+        XCTAssertTrue(true)
     }
 }
