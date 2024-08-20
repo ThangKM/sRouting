@@ -8,8 +8,15 @@
 import Foundation
 import Observation
 
-@MainActor @Observable
+@Observable
 final class MockBookData {
+    
+    init() {
+        var a = books
+        for i in 0..<10000 {
+            books.append(contentsOf: a)
+        }
+    }
     
     private(set) var books: [BookModel] = [
         .init(id: 1,

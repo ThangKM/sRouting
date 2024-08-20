@@ -43,10 +43,8 @@ struct HomeScreen: View {
                 
                 List(viewModel.books, id: \.id) { book in
                     BookCell(book: book)
-                        .overlay {
-                            NavigationLink(route: HomeRoute.bookDetailScreen(book: book)) {
-                               EmptyView()
-                            }.opacity(0)
+                        .onTapGesture {
+                            viewModel.trigger(to: .bookDetailScreen(book: book), with: .push)
                         }
                         
                 }
