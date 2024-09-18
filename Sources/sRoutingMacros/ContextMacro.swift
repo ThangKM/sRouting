@@ -147,9 +147,7 @@ extension ContextMacro: PeerMacro {
         let rootRouter: DeclSyntax = """
         @sRouter(AnyRoute.self) @Observable
         final class SRRootRouter {
-            init() {
         
-            }
         }
         """
         result.append(rootRouter)
