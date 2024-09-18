@@ -7,15 +7,29 @@
 
 import Foundation
 
-struct TimeIdentifier {
+struct TimeIdentifier: Sendable, Hashable, CustomStringConvertible, Identifiable {
+
+    let id: String
     
-    /// Generate context id for a transition
-    ///
-    /// - Returns: time id
-    static func newId() -> String {
+    var description: String {
+        id
+    }
+    
+    private static var formatter: DateFormatter {
         let formater = DateFormatter()
         formater.dateFormat = "yyyy-MM-dd, HH:mm:ss.S"
-        let timeId = formater.string(from: Date())
-        return timeId
+        return formater
+    }
+    
+    init() {
+        self.id = Self.formatter.string(from: .now)
+    }
+    
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(id)
+    }
+    
+    static func == (lhs: TimeIdentifier, rhs: TimeIdentifier) -> Bool {
+        lhs.id == rhs.id
     }
 }

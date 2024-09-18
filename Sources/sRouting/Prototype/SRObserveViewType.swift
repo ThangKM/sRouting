@@ -8,6 +8,7 @@
 import Foundation
 import SwiftUI
 
+@MainActor
 public protocol SRObserveViewType {
     associatedtype ObserveContent: View
     

@@ -9,7 +9,9 @@ import Foundation
 
 /// Tabbar's selection Observation
 @Observable
-public final class SRTabbarSelection {
+public final class SRTabbarSelection: Sendable {
+    
+    typealias SignalChange = Bool
     
     @MainActor
     public var selection: Int {
@@ -19,8 +21,13 @@ public final class SRTabbarSelection {
         }
         set {
             if newValue == _selection {
+                
                 tapCountStream.increase()
                 _autoCancelTapCount()
+                
+                #if canImport(UIKit)
+                _emitPopToRootIfNeeded()
+                #endif
             } else {
                 tapCountStream.resetCount()
             }
@@ -30,9 +37,12 @@ public final class SRTabbarSelection {
         }
     }
     
-    internal var doubleTapEmmiter: Int = .zero
+    @MainActor
+    internal var doubleTapEmmiter: SignalChange = false
     
-    @ObservationIgnored
+    @MainActor var popToRoot: SignalChange = false
+    
+    @ObservationIgnored @MainActor
     private var _selection: Int = .zero
     
     private let tapCountStream = IncreaseCountStream()
@@ -62,8 +72,16 @@ extension SRTabbarSelection {
     
     @MainActor
     private func _emmitDoubleTap() {
-        doubleTapEmmiter = if doubleTapEmmiter == .zero { 1 } else { .zero }
+        doubleTapEmmiter = !doubleTapEmmiter
     }
+    
+    #if canImport(UIKit)
+    @MainActor
+    private func _emitPopToRootIfNeeded() {
+        guard #available(iOS 18.0, *) else { return }
+        popToRoot = !popToRoot
+    }
+    #endif
     
     private func _autoCancelTapCount() {
         cancelBag.cancelAll()

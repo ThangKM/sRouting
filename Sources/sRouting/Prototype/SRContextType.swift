@@ -7,6 +7,7 @@
 
 import Foundation
 
+@MainActor
 public protocol SRContextType {
     associatedtype RouterType: SRRouterType
     

@@ -39,7 +39,7 @@ public struct RouterMacro: MemberMacro {
         return ["""
         
         @MainActor
-        private(set) var transition: SRTransition<\(raw: routeType)> {
+        var transition: SRTransition<\(raw: routeType)> {
             get {
               access(keyPath: \\.transition)
               return _transition

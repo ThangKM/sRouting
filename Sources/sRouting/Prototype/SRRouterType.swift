@@ -12,11 +12,12 @@ import SwiftUI
 /// The router can trigger a transition from inside(view) or outside(view model) the view.
 public protocol SRRouterType<RouteType> where RouteType: SRRoute {
 
-    typealias AcceptionCallback = (_ accepted: Bool) -> Void
-    typealias ErrorHandler = (_ error: Error?) -> Void
+    typealias AcceptionCallback = @Sendable (_ accepted: Bool) -> Void
+    typealias ErrorHandler = @Sendable (_ error: Error?) -> Void
     
     associatedtype RouteType: SRRoute
     
+    @MainActor
     var transition: SRTransition<RouteType> { get }
     
     /// Select tabbar item at index
@@ -26,6 +27,7 @@ public protocol SRRouterType<RouteType> where RouteType: SRRoute {
     /// ```swift
     /// router.selectTabbar(at: 0)
     /// ```
+    @MainActor
     func selectTabbar(at index: Int)
     
     /// Trigger to new screen
@@ -37,6 +39,7 @@ public protocol SRRouterType<RouteType> where RouteType: SRRoute {
     /// ```swift
     /// router.trigger(to: .detailScreen, with: .push)
     /// ```
+    @MainActor
     func trigger(to route: RouteType, with action: SRTriggerType)
     
     /// Show an alert
@@ -48,6 +51,7 @@ public protocol SRRouterType<RouteType> where RouteType: SRRoute {
     /// ```swift
     /// router.show(NetworkingError.notFound)
     /// ```
+    @MainActor
     func show(error: Error, and title: String?)
     
     /// Show an alert
@@ -59,9 +63,11 @@ public protocol SRRouterType<RouteType> where RouteType: SRRoute {
     ///                                message: Text("Message"),
     ///                                dismissButton: .cancel(Text("OK")))
     /// ```
+    @MainActor
     func show(alert: Alert)
     
     #if os(iOS) || os(tvOS)
+    @MainActor
     func show(actionSheet: ActionSheet)
     #endif
     
@@ -71,6 +77,7 @@ public protocol SRRouterType<RouteType> where RouteType: SRRoute {
     /// ```swift
     /// router.dismiss()
     /// ```
+    @MainActor
     func dismiss()
     
     /// Dismiss to root view
@@ -79,16 +86,20 @@ public protocol SRRouterType<RouteType> where RouteType: SRRoute {
     /// ```swift
     /// router.dismissAll()
     /// ```
+    @MainActor
     func dismissAll()
     
     /// Navigation pop
+    @MainActor
     func pop()
     
     /// Navigation pop to root
+    @MainActor
     func popToRoot()
     
     /// Navigation pop to route
     /// - Parameter route: some``SRRoute``
+    @MainActor
     func pop(to route: some SRRoute)
     
     /// Opens a window that's associated with the specified transition.
@@ -98,12 +109,14 @@ public protocol SRRouterType<RouteType> where RouteType: SRRoute {
     /// ```swif
     /// openWindow(windowTrans: windowTrans)
     /// ```
+    @MainActor
     func openWindow(windowTrans: SRWindowTransition)
     
     /// Opens a URL, following system conventions.
     /// - Parameters:
     ///   - url: `URL`
     ///   - completion: `AcceptionCallback`
+    @MainActor
     func openURL(at url: URL, completion: AcceptionCallback?)
     
     #if os(macOS)
@@ -111,6 +124,7 @@ public protocol SRRouterType<RouteType> where RouteType: SRRoute {
     /// - Parameters:
     ///   - url: file URL
     ///   - completion: `ErrorHandler`
+    @MainActor
     func openDocument(at url: URL, completion: ErrorHandler?)
     #endif
 }

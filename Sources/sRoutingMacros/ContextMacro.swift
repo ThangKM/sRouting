@@ -113,6 +113,7 @@ public struct ContextMacro: MemberMacro {
         result.append(singleRoutingFunc)
         
         let routingFunc: DeclSyntax = """
+        @MainActor
         func routing(_ routes: SRRootRoute...) async {
             let routeStream = AsyncStream { continuation in
                 for route in routes {
@@ -145,7 +146,10 @@ extension ContextMacro: PeerMacro {
         var result: [DeclSyntax] = []
         let rootRouter: DeclSyntax = """
         @sRouter(AnyRoute.self) @Observable
-        class SRRootRouter {
+        final class SRRootRouter {
+            init() {
+        
+            }
         }
         """
         result.append(rootRouter)

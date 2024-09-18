@@ -90,6 +90,7 @@ final class ContextMacroTest: XCTestCase {
                 }
             }
 
+            @MainActor
             func routing(_ routes: SRRootRoute...) async {
                 let routeStream = AsyncStream { continuation in
                     for route in routes {
@@ -103,10 +104,13 @@ final class ContextMacroTest: XCTestCase {
                 }
             }
         }@Observable
-        class SRRootRouter {
+        final class SRRootRouter {
+            init() {
+
+            }
 
             @MainActor
-            private (set) var transition: SRTransition<AnyRoute> {
+            var transition: SRTransition<AnyRoute> {
                 get {
                   access(keyPath: \\.transition)
                   return _transition

@@ -32,7 +32,7 @@ final class RouterMacroTest: XCTestCase {
         class HomeViewModel {
 
             @MainActor
-            private (set) var transition: SRTransition<HomeRoute> {
+            var transition: SRTransition<HomeRoute> {
                 get {
                   access(keyPath: \\.transition)
                   return _transition
