@@ -19,7 +19,6 @@ import sRoutingMacros
 
 final class RouteObserveMacroTest: XCTestCase {
     
-    @available(macOS 15.0, *)
     func testRouteObserveMacroImp() async throws {
         assertMacroExpansion("""
         @sRouteObserve(HomeRoute.self, SettingRoute.self)
@@ -38,8 +37,8 @@ final class RouteObserveMacroTest: XCTestCase {
 
             var body: some View {
                 content()
-                .navigationDestination(for: HomeRoute.self) { route in route.screen }
-            .navigationDestination(for: SettingRoute.self) { route in route.screen }
+                .navigationDestination(for: HomeRoute.self) { route in route.screen.environment(path) }
+            .navigationDestination(for: SettingRoute.self) { route in route.screen.environment(path) }
 
             }
         }
@@ -50,7 +49,6 @@ final class RouteObserveMacroTest: XCTestCase {
         macros: testMacros)
     }
     
-    @available(macOS 15.0, *)
     func testRouteObserveMacroWhereImp() async throws {
         assertMacroExpansion("""
         @sRouteObserve(HomeRoute.self, SettingRoute.self)
@@ -69,8 +67,8 @@ final class RouteObserveMacroTest: XCTestCase {
 
             var body: some View {
                 content()
-                .navigationDestination(for: HomeRoute.self) { route in route.screen }
-            .navigationDestination(for: SettingRoute.self) { route in route.screen }
+                .navigationDestination(for: HomeRoute.self) { route in route.screen.environment(path) }
+            .navigationDestination(for: SettingRoute.self) { route in route.screen.environment(path) }
 
             }
         }

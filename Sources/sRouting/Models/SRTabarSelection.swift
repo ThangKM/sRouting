@@ -21,13 +21,8 @@ public final class SRTabbarSelection: Sendable {
         }
         set {
             if newValue == _selection {
-                
                 tapCountStream.increase()
                 _autoCancelTapCount()
-                
-                #if canImport(UIKit)
-                _emitPopToRootIfNeeded()
-                #endif
             } else {
                 tapCountStream.resetCount()
             }
@@ -74,14 +69,6 @@ extension SRTabbarSelection {
     private func _emmitDoubleTap() {
         doubleTapEmmiter = !doubleTapEmmiter
     }
-    
-    #if canImport(UIKit)
-    @MainActor
-    private func _emitPopToRootIfNeeded() {
-        guard #available(iOS 18.0, *) else { return }
-        popToRoot = !popToRoot
-    }
-    #endif
     
     private func _autoCancelTapCount() {
         cancelBag.cancelAll()
