@@ -25,14 +25,8 @@ public struct RouteObserveMacro: MemberMacro {
         let routes = try Self._arguments(of: node)
         
         var destinationObserve = ""
-        if #available(iOS 18.0, macOS 15.0, *) {
-            for route in routes {
-                destinationObserve += ".navigationDestination(for: \(route).self) { route in route.screen }\n"
-            }
-        } else {
-            for route in routes {
-                destinationObserve += ".navigationDestination(for: \(route).self) { route in route.screen.environment(path) }\n"
-            }
+        for route in routes {
+            destinationObserve += ".navigationDestination(for: \(route).self) { route in route.screen.environment(path) }\n"
         }
         
         let decl: DeclSyntax = """
