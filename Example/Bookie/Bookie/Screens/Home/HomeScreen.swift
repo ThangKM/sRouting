@@ -12,11 +12,14 @@ struct HomeScreen: View {
     @State
     private var viewModel: HomeViewModel = .init()
     
+    @State
+    private var router: HomeRouter = .init()
+    
     @Environment(MockBookData.self)  private var mockData
     
     var body: some View {
         BookieNavigationView(title: "My Book List",
-                             router: viewModel,
+                             router: router,
                              isBackType: false) {
             VStack {
                 Group {
@@ -41,10 +44,10 @@ struct HomeScreen: View {
                     .padding()
                     .frame(maxWidth: .infinity, alignment: .leading)
                 
-                List(viewModel.books, id: \.id) { book in
+                List(viewModel.books) { book in
                     BookCell(book: book)
                         .onTapGesture {
-                            viewModel.trigger(to: .bookDetailScreen(book: book), with: .push)
+                            router.trigger(to: .bookDetailScreen(book: book), with: .allCases.randomElement() ?? .push)
                         }
                         
                 }

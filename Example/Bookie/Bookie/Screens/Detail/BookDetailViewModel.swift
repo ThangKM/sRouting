@@ -8,7 +8,7 @@
 import SwiftUI
 import sRouting
 
-@sRouter(HomeRoute.self) @Observable
+@Observable
 final class BookDetailViewModel {
     
      var book: BookModel = .empty

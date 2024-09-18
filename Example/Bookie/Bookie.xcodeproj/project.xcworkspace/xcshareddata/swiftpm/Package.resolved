@@ -1,13 +1,13 @@
 {
-  "originHash" : "dc47595be41bc4fd7fe009da5aa93e08af474798ad3627aeb251f865041e907f",
+  "originHash" : "2387c9d28bd36207f0a81b74e32114afb0d0716b29e23c66272d787d278cd3c0",
   "pins" : [
     {
       "identity" : "srouting",
       "kind" : "remoteSourceControl",
-      "location" : "https://github.com/ThangKM/sRouting.git",
+      "location" : "git@github.com:ThangKM/sRouting.git",
       "state" : {
-        "revision" : "963dedd1d39793372c05b46cd3094acc2fad4549",
-        "version" : "1.1.3"
+        "branch" : "develop",
+        "revision" : "38870c0751b837a415696f107a2a07d5e6e701d7"
       }
     },
     {

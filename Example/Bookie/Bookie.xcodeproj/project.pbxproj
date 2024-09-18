@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		3732440826957AE1007DE034 /* sRouting in Frameworks */ = {isa = PBXBuildFile; productRef = 3732440726957AE1007DE034 /* sRouting */; };
 		3732440C26957BEF007DE034 /* MockBookData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3732440B26957BEF007DE034 /* MockBookData.swift */; };
 		373244432695E2C9007DE034 /* BookDetailViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 373244422695E2C9007DE034 /* BookDetailViewModel.swift */; };
 		373244462695FCC6007DE034 /* EmptyObjectType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 373244452695FCC6007DE034 /* EmptyObjectType.swift */; };
@@ -32,6 +31,7 @@
 		37AAE7AF2695670D007EA3B6 /* AppRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37AAE7AE2695670D007EA3B6 /* AppRouter.swift */; };
 		37AAE7B226956D9B007EA3B6 /* RatingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37AAE7B126956D9B007EA3B6 /* RatingView.swift */; };
 		37AAE7B426957226007EA3B6 /* BookModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37AAE7B326957226007EA3B6 /* BookModel.swift */; };
+		37D09DA02C9B67E800919C3F /* sRouting in Frameworks */ = {isa = PBXBuildFile; productRef = 37D09D9F2C9B67E800919C3F /* sRouting */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -87,7 +87,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				3732440826957AE1007DE034 /* sRouting in Frameworks */,
+				37D09DA02C9B67E800919C3F /* sRouting in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -303,7 +303,7 @@
 			);
 			name = Bookie;
 			packageProductDependencies = (
-				3732440726957AE1007DE034 /* sRouting */,
+				37D09D9F2C9B67E800919C3F /* sRouting */,
 			);
 			productName = Bookie;
 			productReference = 379D3460268D024800903D92 /* Bookie.app */;
@@ -378,7 +378,7 @@
 			);
 			mainGroup = 379D3457268D024800903D92;
 			packageReferences = (
-				3732440626957AE1007DE034 /* XCRemoteSwiftPackageReference "sRouting" */,
+				37D09D9E2C9B67E800919C3F /* XCRemoteSwiftPackageReference "sRouting" */,
 			);
 			productRefGroup = 379D3461268D024800903D92 /* Products */;
 			projectDirPath = "";
@@ -801,20 +801,20 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		3732440626957AE1007DE034 /* XCRemoteSwiftPackageReference "sRouting" */ = {
+		37D09D9E2C9B67E800919C3F /* XCRemoteSwiftPackageReference "sRouting" */ = {
 			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/ThangKM/sRouting.git";
+			repositoryURL = "git@github.com:ThangKM/sRouting.git";
 			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 1.0.0;
+				branch = develop;
+				kind = branch;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		3732440726957AE1007DE034 /* sRouting */ = {
+		37D09D9F2C9B67E800919C3F /* sRouting */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 3732440626957AE1007DE034 /* XCRemoteSwiftPackageReference "sRouting" */;
+			package = 37D09D9E2C9B67E800919C3F /* XCRemoteSwiftPackageReference "sRouting" */;
 			productName = sRouting;
 		};
 /* End XCSwiftPackageProductDependency section */

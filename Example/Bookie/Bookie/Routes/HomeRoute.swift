@@ -21,3 +21,5 @@ enum HomeRoute: SRRoute {
     }
 }
 
+@sRouter(HomeRoute.self) @Observable
+final class HomeRouter { }
