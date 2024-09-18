@@ -53,6 +53,7 @@ struct NavigatorView<RouterType>: View where RouterType: SRRouterType  {
         router.transition.route?.screen
     }
     /// The alert from transition
+    @MainActor
     private var alertView: Alert? {
         router.transition.alert
     }
@@ -62,6 +63,7 @@ struct NavigatorView<RouterType>: View where RouterType: SRRouterType  {
     
     #if os(iOS) || os(tvOS)
     /// The ActionSheet from transaction
+    @MainActor
     private var actionSheet: ActionSheet? {
         router.transition.actionSheet
     }
