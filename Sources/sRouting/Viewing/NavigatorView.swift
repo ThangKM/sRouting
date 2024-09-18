@@ -53,22 +53,24 @@ struct NavigatorView<RouterType>: View where RouterType: SRRouterType  {
         router.transition.route?.screen
     }
     /// The alert from transition
-    private let alertView: Alert?
+    private var alertView: Alert? {
+        router.transition.alert
+    }
     
     ///Action test holder
     private let tests: UnitTestActions<Self>?
     
     #if os(iOS) || os(tvOS)
     /// The ActionSheet from transaction
-    private var actionSheet: ActionSheet?
+    private var actionSheet: ActionSheet? {
+        router.transition.actionSheet
+    }
     
     init(router: RouterType,
          onDismiss: @escaping VoidAction,
          testsActions: UnitTestActions<Self>? = nil) {
         self.router = router
         self.dismissAction = onDismiss
-        self.alertView = router.transition.alert
-        self.actionSheet = router.transition.actionSheet
         // test action holder
         self.tests = testsActions
         //
@@ -80,7 +82,6 @@ struct NavigatorView<RouterType>: View where RouterType: SRRouterType  {
          testsActions: UnitTestActions<Self>? = nil) {
         self.router = router
         self.dismissAction = onDismiss
-        self.alertView = router.transition.alert
         // test action holder
         self.tests = testsActions
         //
@@ -95,9 +96,11 @@ struct NavigatorView<RouterType>: View where RouterType: SRRouterType  {
             destinationView
         })
         .alert(isPresented: $isActiveAlert) {
-            guard let alert = alertView
-            else { return Alert(title: Text("Something went wrong!")) }
-            return alert
+            if let alertView {
+                alertView
+            } else {
+                Alert(title: Text("Something went wrong!"))
+            }
         }
         .onChange(of: dismissAllEmitter?.dismissAllSignal, { oldValue, newValue in
             resetActiveState()
@@ -127,12 +130,18 @@ struct NavigatorView<RouterType>: View where RouterType: SRRouterType  {
             .environment(tabbarSelection)
         })
         .alert(isPresented: $isActiveAlert) {
-            guard let alert = alertView
-            else { return Alert(title: Text("Something went wrong!")) }
-            return alert
+            if let alertView {
+                alertView
+            } else {
+                Alert(title: Text("Something went wrong!"))
+            }
         }
         .actionSheet(isPresented: $isActiveActionSheet, content: {
-            ActionSheet(title: Text(""))
+           if let actionSheet {
+               actionSheet
+           } else {
+               ActionSheet(title: Text("Action Sheet not found!"))
+           }
         })
         .onChange(of: dismissAllEmitter?.dismissAllSignal, { oldValue, newValue in
             resetActiveState()
