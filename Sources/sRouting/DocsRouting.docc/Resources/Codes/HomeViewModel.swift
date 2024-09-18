@@ -9,7 +9,7 @@ import Foundation
 import sRouting
 import Combine
 
-@sRouter(HomeRoute.self) @Observable
+@Observable
 final class HomeViewModel {
     
     var textInSearch: String = "" {

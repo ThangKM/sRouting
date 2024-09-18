@@ -103,17 +103,17 @@ enum HomeRoute: SRRoute {
 }
 
 @sRouter(HomeRoute.self)
-class HomeViewModel { ... }
+class HomeRouter { }
 
 struct HomeScreen: View {
 
     @Environment(\.dismiss)
     private var dismissAction
 
-    @State let viewModel = HomeViewModel()
+    @State var router = HomeRouter()
 
     var body: some View {
-        ScreenView(router: viewModel, dismissAction: dismissAction) {
+        ScreenView(router: router, dismissAction: dismissAction) {
         ...
         }
     }

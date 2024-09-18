@@ -12,6 +12,9 @@ struct BookDetailScreen: View {
     @State
     private var viewModel: BookDetailViewModel = .init()
     
+    @State
+    private var router: HomeRouter = .init()
+    
     @Environment(MockBookData.self)
     private var mockData
     
@@ -19,7 +22,7 @@ struct BookDetailScreen: View {
     
     var body: some View {
         BookieNavigationView(title: viewModel.book.name,
-                             router: viewModel,
+                             router: router,
                              isBackType: true) {
             GeometryReader { geo in
                 ScrollView {
