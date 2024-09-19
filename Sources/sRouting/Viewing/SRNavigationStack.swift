@@ -11,13 +11,12 @@ import Observation
 public struct SRNavigationStack<ObserveView, Content>: View
 where ObserveView: (View & SRObserveViewType), Content: View, ObserveView.ObserveContent == Content {
     
-    @Bindable private var path: SRNavigationPath
+    private let path: SRNavigationPath
     
     private let content: () -> Content
 
     /// Initalizer of ``SRNavigationStack``
     ///  - Parameters:
-    ///   - path: ``SRNavigationPath``
     ///   - content: Content view builder
     ///   - observeView: ``SRObserveViewType``
     public init(path: SRNavigationPath,
@@ -28,7 +27,11 @@ where ObserveView: (View & SRObserveViewType), Content: View, ObserveView.Observ
     }
     
     public var body: some View {
-        NavigationStack(path: $path.navPath) {
+        NavigationStack(path: .init(get: {
+            path.navPath
+        }, set: { newPath in
+            path.navPath = newPath
+        })) {
             ObserveView(path: path) {
                 content()
             }

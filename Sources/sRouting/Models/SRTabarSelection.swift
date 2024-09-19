@@ -9,7 +9,9 @@ import Foundation
 
 /// Tabbar's selection Observation
 @Observable
-public final class SRTabbarSelection {
+public final class SRTabbarSelection: Sendable {
+    
+    typealias SignalChange = Bool
     
     @MainActor
     public var selection: Int {
@@ -30,9 +32,12 @@ public final class SRTabbarSelection {
         }
     }
     
-    internal var doubleTapEmmiter: Int = .zero
+    @MainActor
+    internal var doubleTapEmmiter: SignalChange = false
     
-    @ObservationIgnored
+    @MainActor var popToRoot: SignalChange = false
+    
+    @ObservationIgnored @MainActor
     private var _selection: Int = .zero
     
     private let tapCountStream = IncreaseCountStream()
@@ -62,7 +67,7 @@ extension SRTabbarSelection {
     
     @MainActor
     private func _emmitDoubleTap() {
-        doubleTapEmmiter = if doubleTapEmmiter == .zero { 1 } else { .zero }
+        doubleTapEmmiter = !doubleTapEmmiter
     }
     
     private func _autoCancelTapCount() {

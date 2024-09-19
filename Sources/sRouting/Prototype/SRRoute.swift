@@ -8,7 +8,7 @@
 import SwiftUI
 
 /// Protocol to build ``ScreenView`` in the route.
-public protocol SRRoute: Hashable, Codable {
+public protocol SRRoute: Hashable, Codable, Sendable {
     
     associatedtype ViewType: View
     

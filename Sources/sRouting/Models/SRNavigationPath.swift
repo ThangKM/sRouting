@@ -10,7 +10,7 @@ import SwiftUI
 
 /// NavigationStack's path
 @Observable
-public final class SRNavigationPath {
+public final class SRNavigationPath: Sendable {
     
     @MainActor
     internal var stack: [String] = []
@@ -29,9 +29,10 @@ public final class SRNavigationPath {
         }
     }
     
-    @ObservationIgnored
+    @ObservationIgnored @MainActor
     private var _navPath: NavigationPath = .init()
     
+    @ObservationIgnored @MainActor
     public private(set) var didAppear: Bool = false
     
     public init() { }

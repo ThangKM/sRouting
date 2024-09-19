@@ -90,6 +90,7 @@ final class ContextMacroTest: XCTestCase {
                 }
             }
 
+            @MainActor
             func routing(_ routes: SRRootRoute...) async {
                 let routeStream = AsyncStream { continuation in
                     for route in routes {
@@ -103,10 +104,9 @@ final class ContextMacroTest: XCTestCase {
                 }
             }
         }@Observable
-        class SRRootRouter {
+        final class SRRootRouter {
 
-            @MainActor
-            private (set) var transition: SRTransition<AnyRoute> {
+            var transition: SRTransition<AnyRoute> {
                 get {
                   access(keyPath: \\.transition)
                   return _transition
@@ -118,7 +118,7 @@ final class ContextMacroTest: XCTestCase {
                 }
             }
 
-            @MainActor @ObservationIgnored
+            @ObservationIgnored
             private var _transition: SRTransition<AnyRoute> = .none
 
             /// Select tabbar item at index
@@ -128,7 +128,6 @@ final class ContextMacroTest: XCTestCase {
             /// ```swift
             /// router.selectTabbar(at: 0)
             /// ```
-            @MainActor
             func selectTabbar(at index: Int) {
                 transition = .init(selectTab: index)
             }
@@ -142,7 +141,6 @@ final class ContextMacroTest: XCTestCase {
             /// ```swift
             /// router.trigger(to: .detailScreen, with: .push)
             /// ```
-            @MainActor
             func trigger(to route: AnyRoute, with action: SRTriggerType) {
                 transition = .init(with: route, and: .init(with: action))
             }
@@ -156,7 +154,6 @@ final class ContextMacroTest: XCTestCase {
             /// ```swift
             /// router.show(NetworkingError.notFound)
             /// ```
-            @MainActor
             func show(error: Error, and title: String? = nil) {
                 transition = .init(with: error, and: title)
             }
@@ -170,13 +167,11 @@ final class ContextMacroTest: XCTestCase {
             ///                                message: Text("Message"),
             ///                                dismissButton: .cancel(Text("OK")))
             /// ```
-            @MainActor
             func show(alert: Alert) {
                 transition = .init(with: alert)
             }
 
             #if os(iOS) || os(tvOS)
-            @MainActor
             func show(actionSheet: ActionSheet) {
                 transition = .init(with: actionSheet)
             }
@@ -188,7 +183,6 @@ final class ContextMacroTest: XCTestCase {
             /// ```swift
             /// router.dismiss()
             /// ```
-            @MainActor
             func dismiss() {
                 transition = .init(with: .dismiss)
             }
@@ -199,22 +193,18 @@ final class ContextMacroTest: XCTestCase {
             /// ```swift
             /// router.dismissAll()
             /// ```
-            @MainActor
             func dismissAll() {
                 transition = .init(with: .dismissAll)
             }
 
-            @MainActor
             func pop() {
                 transition = .init(with: .pop)
             }
 
-            @MainActor
             func popToRoot() {
                 transition = .init(with: .popToRoot)
             }
 
-            @MainActor
             func pop(to route: some SRRoute) {
                 transition = .init(popTo: route)
             }
@@ -226,7 +216,6 @@ final class ContextMacroTest: XCTestCase {
             /// ```swif
             /// openWindow(windowTrans: windowTrans)
             /// ```
-            @MainActor
             func openWindow(windowTrans: SRWindowTransition) {
                 transition = .init(with: .openWindow, windowTransition: windowTrans)
             }
@@ -235,7 +224,6 @@ final class ContextMacroTest: XCTestCase {
             /// - Parameters:
             ///   - url: `URL`
             ///   - completion: `AcceptionCallback`
-            @MainActor
             func openURL(at url: URL, completion: AcceptionCallback?) {
                 transition = .init(with: .openURL, windowTransition: .init(url: url, acceoption: completion))
             }
@@ -245,11 +233,11 @@ final class ContextMacroTest: XCTestCase {
             /// - Parameters:
             ///   - url: file URL
             ///   - completion: `ErrorHandler`
-            @MainActor
             func openDocument(at url: URL, completion: ErrorHandler?) {
                 transition = .init(with: .openDocument, windowTransition: .init(url: url, errorHandler: completion))
             }
             #endif
+
         }
 
         enum SRRootRoute: SRRoute {

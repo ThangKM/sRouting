@@ -33,7 +33,7 @@ enum SettingRoute: SRRoute {
 }
 
 @sRouter(HomeRoute.self) @Observable
-class HomeViewModel { }
+final class HomeRouter { }
  
 @sRouteObserve(HomeRoute.self, SettingRoute.self)
 struct ObserveView<Content>: View where Content: View { }

@@ -10,10 +10,11 @@ import SwiftUI
 /// A screen's router that can navigate to other screen of route.
 ///
 /// The router can trigger a transition from inside(view) or outside(view model) the view.
+@MainActor
 public protocol SRRouterType<RouteType> where RouteType: SRRoute {
 
-    typealias AcceptionCallback = (_ accepted: Bool) -> Void
-    typealias ErrorHandler = (_ error: Error?) -> Void
+    typealias AcceptionCallback = @Sendable (_ accepted: Bool) -> Void
+    typealias ErrorHandler = @Sendable (_ error: Error?) -> Void
     
     associatedtype RouteType: SRRoute
     

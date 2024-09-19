@@ -11,8 +11,7 @@ import Observation
 public struct SRRootView<Content, ContextType>: View
 where Content: View, ContextType: SRContextType {
 
-    @Environment(\.dismiss)
-    private var dismiss
+    @Environment(\.dismiss) private var dismiss
     private var context: ContextType
     private let content: () -> Content
     

@@ -10,7 +10,7 @@ import SwiftUI
 public struct SRTransition<RouteType>
 where RouteType: SRRoute {
     
-    let contextId: String
+    let contextId: TimeIdentifier
     let type: SRTransitionType
     private(set) var route: RouteType?
     private(set) var alert: Alert?
@@ -23,81 +23,81 @@ where RouteType: SRRoute {
     
     public init(with actionSheet: ActionSheet) {
         self.type = .actionSheet
-        self.contextId = TimeIdentifier.newId()
+        self.contextId = TimeIdentifier()
         self.actionSheet = actionSheet
     }
   
     public init(with type: SRTransitionType) {
         self.type = type
-        self.contextId = TimeIdentifier.newId()
+        self.contextId = TimeIdentifier()
     }
     
     public init(selectTab index: Int) {
         self.type = .selectTab
-        self.contextId = TimeIdentifier.newId()
+        self.contextId = TimeIdentifier()
         self.tabIndex = index
     }
 
     public init(with alert: Alert) {
         self.type = .alert
-        self.contextId = TimeIdentifier.newId()
+        self.contextId = TimeIdentifier()
         self.alert = alert
     }
     
     public init(with error: Error, and alertTitle: String? = nil) {
         self.type = .alert
-        self.contextId = TimeIdentifier.newId()
+        self.contextId = TimeIdentifier()
         self.alert = SRTransition.alert(from: error, with: alertTitle)
     }
     
     public init(with route: RouteType, and action: SRTransitionType) {
         self.type = action
         self.route = route
-        self.contextId = TimeIdentifier.newId()
+        self.contextId = TimeIdentifier()
         self.alert = nil
     }
     
     public init(popTo route: some SRRoute) {
         self.type = .popToRoute
         self.popToRoute = route
-        self.contextId = TimeIdentifier.newId()
+        self.contextId = TimeIdentifier()
     }
     
     public init(with type: SRTransitionType,
                 windowTransition: SRWindowTransition) {
-        self.contextId = TimeIdentifier.newId()
+        self.contextId = TimeIdentifier()
         self.type = type
         self.windowTransition = windowTransition
     }
     #else
     public init(with type: SRTransitionType,
                 windowTransition: SRWindowTransition) {
-        self.contextId = TimeIdentifier.newId()
+        self.contextId = TimeIdentifier()
         self.type = type
         self.windowTransition = windowTransition
     }
     
     public init(with type: SRTransitionType) {
         self.type = type
-        self.contextId = TimeIdentifier.newId()
+        self.contextId = TimeIdentifier()
     }
     
     public init(selectTab index: Int) {
         self.type = .selectTab
         self.tabIndex = index
-        self.contextId = TimeIdentifier.newId()
+        self.contextId = TimeIdentifier()
     }
 
     public init(with alert: Alert) {
         self.type = .alert
         self.alert = alert
-        self.contextId = TimeIdentifier.newId()
+        self.contextId = TimeIdentifier()
     }
     
     public init(with error: Error, and alertTitle: String? = nil) {
         self.type = .alert
         self.alert = SRTransition.alert(from: error, with: alertTitle)
-        self.contextId = TimeIdentifier.newId()
+        self.contextId = TimeIdentifier()
     }
     
     public init(with route: RouteType, and action: SRTransitionType) {
@@ -105,13 +105,13 @@ where RouteType: SRRoute {
         precondition(action != .actionSheet, "macOS didn't support actionSheet")
         self.type = action
         self.route = route
-        self.contextId = TimeIdentifier.newId()
+        self.contextId = TimeIdentifier()
     }
     
     public init(popTo route: some SRRoute) {
         self.type = .popToRoute
         self.popToRoute = route
-        self.contextId = TimeIdentifier.newId()
+        self.contextId = TimeIdentifier()
     }
     #endif
     

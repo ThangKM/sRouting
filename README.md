@@ -2,7 +2,7 @@
 # sRouting
 
 [![Building Actions Status](https://github.com/ThangKM/sRouting/workflows/Building/badge.svg)](https://github.com/ThangKM/sRouting/actions)
-![Platforms](https://img.shields.io/badge/Platforms-macOS_iOS-blue?style=flat-square)
+[![Platforms](https://img.shields.io/badge/Platforms-macOS_iOS-blue?style=flat-square)]
 [![codecov.io](https://codecov.io/gh/ThangKM/sRouting/branch/main/graphs/badge.svg?branch=main)](https://codecov.io/github/ThangKM/sRouting?branch=main)
 [![Swift Package Manager compatible](https://img.shields.io/badge/Swift%20Package%20Manager-compatible-brightgreen.svg)](https://github.com/apple/swift-package-manager)
 
@@ -12,7 +12,6 @@ The lightweight navigation framework for SwiftUI.
 
 sRouting using the native navigation mechanism in SwiftUI.
 It's easy to handle navigation between screens by sRouting.
-The ``Router`` can trigger a transition from inside(view) or outside(view model) the view.
 
 ![A sRouting banner.](https://github.com/ThangKM/sRouting/blob/main/Sources/sRouting/DocsRouting.docc/Resources/sRouting/srouting_banner.png)
 
@@ -27,7 +26,6 @@ See [this WWDC presentation](https://developer.apple.com/videos/play/wwdc2021/10
 
 From xCode select Product -> Build Doccumentation -> Explore.
 
-Or downloads the doccument archive from [release](https://github.com/ThangKM/sRouting/releases) 
 ## 🛠 Installation
 
 Add `sRouting` as a dependency to the project.
@@ -139,18 +137,18 @@ enum HomeRoute: SRRoute {
     ...
 }
 
-@sRouter(HomeRoute.self)
-class HomeViewModel { ... }
+@sRouter(HomeRoute.self) @Observable
+class HomeRouter { }
 
 struct HomeScreen: View {
 
     @Environment(\.dismiss)
     private var dismissAction
 
-    @State let viewModel = HomeViewModel()
+    @State var homeRouter = HomeRouter()
 
     var body: some View {
-        ScreenView(router: viewModel, dismissAction: dismissAction) {
+        ScreenView(router: homeRouter, dismissAction: dismissAction) {
         ...
         }
     }

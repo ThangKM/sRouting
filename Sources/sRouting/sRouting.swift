@@ -16,4 +16,4 @@ public macro sRContext(tabs: [String] = [], stacks: String...) = #externalMacro(
 /// Generate a view of navigation destinations that observing routes
 @attached(member, names: named(path), named(content), arbitrary)
 @attached(extension, conformances: SRObserveViewType)
-public macro sRouteObserve<each T>(_ routes: repeat each T) = #externalMacro(module: "sRoutingMacros", type: "RouteObserveMacro")
+public macro sRouteObserve(_ routes: (any SRRoute.Type)...) = #externalMacro(module: "sRoutingMacros", type: "RouteObserveMacro")

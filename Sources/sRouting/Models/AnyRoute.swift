@@ -12,14 +12,14 @@ import Foundation
 public struct AnyRoute: SRRoute {
     
     public let path: String
-    private let viewBuilder:  @MainActor () -> AnyView
+    private let viewBuilder:  @MainActor @Sendable () -> AnyView
     
     public var screen: some View {
         viewBuilder().id(path)
     }
     
     public init(route: some SRRoute) {
-        self.path = route.path + "_" + TimeIdentifier.newId()
+        self.path = route.path + "_" + TimeIdentifier().id
         self.viewBuilder = {
             AnyView(route.screen)
         }
