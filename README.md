@@ -21,7 +21,7 @@ It's easy to handle navigation between screens by sRouting.
 - Xcode 15 or above
 
 ## 📚 Documentation
-Explore DocC to find the rich tutorials and getting started with sRouting.
+Explore DocC to find rich tutorials and get started with sRouting.
 See [this WWDC presentation](https://developer.apple.com/videos/play/wwdc2021/10166/) about more information.
 
 From xCode select Product -> Build Doccumentation -> Explore.
@@ -29,14 +29,14 @@ From xCode select Product -> Build Doccumentation -> Explore.
 ## 🛠 Installation
 
 Add `sRouting` as a dependency to the project.
-See [this WWDC presentation](https://developer.apple.com/videos/play/wwdc2019/408/) about more information how to adopt Swift packages in your app.
+See [this WWDC presentation](https://developer.apple.com/videos/play/wwdc2019/408/) for more information on how to adopt Swift packages in your app.
 Specify `https://github.com/ThangKM/sRouting.git` as the `sRouting` package link.
 
 ![](https://github.com/ThangKM/sRouting/blob/main/Sources/sRouting/DocsRouting.docc/Resources/Bookie/SectionOne/bookie_add_srouting.png)
 
 ## 🏃‍♂️ Getting Started with sRouting
 
-Set up `SRRootView` and working with `sRouter(_:)`
+Set up `SRRootView` and work with `sRouter(_:)`
 
 ## Overview
 
