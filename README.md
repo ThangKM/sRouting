@@ -2,7 +2,7 @@
 # sRouting
 
 [![Building Actions Status](https://github.com/ThangKM/sRouting/workflows/Building/badge.svg)](https://github.com/ThangKM/sRouting/actions)
-[![Platforms](https://img.shields.io/badge/Platforms-macOS_iOS-blue?style=flat-square)]
+![Platforms](https://img.shields.io/badge/Platforms-macOS_iOS-blue?style=flat-square)
 [![codecov.io](https://codecov.io/gh/ThangKM/sRouting/branch/main/graphs/badge.svg?branch=main)](https://codecov.io/github/ThangKM/sRouting?branch=main)
 [![Swift Package Manager compatible](https://img.shields.io/badge/Swift%20Package%20Manager-compatible-brightgreen.svg)](https://github.com/apple/swift-package-manager)
 
