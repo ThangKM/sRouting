@@ -35,8 +35,6 @@ public final class SRTabbarSelection: Sendable {
     @MainActor
     internal var doubleTapEmmiter: SignalChange = false
     
-    @MainActor var popToRoot: SignalChange = false
-    
     @ObservationIgnored @MainActor
     private var _selection: Int = .zero
     
