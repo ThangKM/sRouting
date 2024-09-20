@@ -106,7 +106,10 @@ final class ContextMacroTest: XCTestCase {
         }@Observable
         final class SRRootRouter {
 
-            var transition: SRTransition<AnyRoute> {
+            @ObservationIgnored
+            private var _transition: SRTransition<AnyRoute> = .none
+        
+            private(set) var transition: SRTransition<AnyRoute> {
                 get {
                   access(keyPath: \\.transition)
                   return _transition
@@ -117,9 +120,6 @@ final class ContextMacroTest: XCTestCase {
                   }
                 }
             }
-
-            @ObservationIgnored
-            private var _transition: SRTransition<AnyRoute> = .none
 
             /// Select tabbar item at index
             /// - Parameter index: Index of tabbar item

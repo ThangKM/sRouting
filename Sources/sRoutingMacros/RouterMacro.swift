@@ -38,7 +38,10 @@ public struct RouterMacro: MemberMacro {
         
         return ["""
         
-        var transition: SRTransition<\(raw: routeType)> {
+        @ObservationIgnored
+        private var _transition: SRTransition<\(raw: routeType)> = .none
+        
+        private(set) var transition: SRTransition<\(raw: routeType)> {
             get {
               access(keyPath: \\.transition)
               return _transition
@@ -49,9 +52,6 @@ public struct RouterMacro: MemberMacro {
               }
             }
         }
-        
-        @ObservationIgnored
-        private var _transition: SRTransition<\(raw: routeType)> = .none
         
         /// Select tabbar item at index
         /// - Parameter index: Index of tabbar item

@@ -31,7 +31,10 @@ final class RouterMacroTest: XCTestCase {
         @Observable
         class HomeViewModel {
 
-            var transition: SRTransition<HomeRoute> {
+            @ObservationIgnored
+            private var _transition: SRTransition<HomeRoute> = .none
+        
+            private(set) var transition: SRTransition<HomeRoute> {
                 get {
                   access(keyPath: \\.transition)
                   return _transition
@@ -42,9 +45,6 @@ final class RouterMacroTest: XCTestCase {
                   }
                 }
             }
-
-            @ObservationIgnored
-            private var _transition: SRTransition<HomeRoute> = .none
 
             /// Select tabbar item at index
             /// - Parameter index: Index of tabbar item
