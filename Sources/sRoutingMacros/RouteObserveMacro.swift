@@ -11,7 +11,7 @@ import SwiftSyntax
 import SwiftSyntaxMacros
 import Foundation
 
-private var genericContent = "Content"
+private let genericContent = "Content"
 
 public struct RouteObserveMacro: MemberMacro {
     

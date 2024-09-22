@@ -18,9 +18,6 @@ struct BookCell: View {
                 .aspectRatio(contentMode: .fit)
                 .frame(width: 109, alignment: .leading)
                 .clipped()
-                .onTapGesture {
-                    print("abc")
-                }
             
             VStack(alignment: .leading) {
                 Text(book.name)

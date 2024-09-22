@@ -54,15 +54,15 @@ private extension CancelBag {
     }
 }
 
-private struct Canceller: Identifiable {
-    let cancel: () -> Void
+private struct Canceller: Identifiable, Sendable {
+    let cancel: @Sendable () -> Void
     let id: String
     var isCancelled: Bool { isCancelledBock() }
     
-    private let isCancelledBock: () -> Bool
+    private let isCancelledBock: @Sendable () -> Bool
     
     init<S,E>(_ task: Task<S,E>, identifier: String = UUID().uuidString) {
-        cancel = task.cancel
+        cancel = { task.cancel() }
         isCancelledBock = { task.isCancelled }
         id = identifier
     }

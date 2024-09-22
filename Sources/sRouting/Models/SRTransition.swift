@@ -7,24 +7,24 @@
 
 import SwiftUI
 
-public struct SRTransition<RouteType>
+public struct SRTransition<RouteType>: Sendable
 where RouteType: SRRoute {
     
     let contextId: TimeIdentifier
     let type: SRTransitionType
     private(set) var route: RouteType?
-    private(set) var alert: Alert?
+    private(set) var alert: UncheckedSendable<Alert>?
     private(set) var tabIndex: Int?
     private(set) var popToRoute: (any SRRoute)?
     private(set) var windowTransition: SRWindowTransition?
 
     #if os(iOS) || os(tvOS)
-    private(set) var actionSheet: ActionSheet?
+    private(set) var actionSheet: UncheckedSendable<ActionSheet>?
     
     public init(with actionSheet: ActionSheet) {
         self.type = .actionSheet
         self.contextId = TimeIdentifier()
-        self.actionSheet = actionSheet
+        self.actionSheet = .init(value: actionSheet)
     }
   
     public init(with type: SRTransitionType) {
@@ -41,13 +41,13 @@ where RouteType: SRRoute {
     public init(with alert: Alert) {
         self.type = .alert
         self.contextId = TimeIdentifier()
-        self.alert = alert
+        self.alert = .init(value: alert)
     }
     
     public init(with error: Error, and alertTitle: String? = nil) {
         self.type = .alert
         self.contextId = TimeIdentifier()
-        self.alert = SRTransition.alert(from: error, with: alertTitle)
+        self.alert = .init(value: SRTransition.alert(from: error, with: alertTitle))
     }
     
     public init(with route: RouteType, and action: SRTransitionType) {
@@ -90,13 +90,13 @@ where RouteType: SRRoute {
 
     public init(with alert: Alert) {
         self.type = .alert
-        self.alert = alert
+        self.alert = .init(value: alert)
         self.contextId = TimeIdentifier()
     }
     
     public init(with error: Error, and alertTitle: String? = nil) {
         self.type = .alert
-        self.alert = SRTransition.alert(from: error, with: alertTitle)
+        self.alert = .init(value: SRTransition.alert(from: error, with: alertTitle))
         self.contextId = TimeIdentifier()
     }
     

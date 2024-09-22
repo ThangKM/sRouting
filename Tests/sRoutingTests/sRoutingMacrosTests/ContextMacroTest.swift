@@ -28,13 +28,13 @@ final class ContextMacroTest: XCTestCase {
         """, expandedSource:"""
         struct SRContext {
 
-            let rootRouter = SRRootRouter()
+            @MainActor let rootRouter = SRRootRouter()
 
-            let dismissAllEmitter = SRDismissAllEmitter()
+            @MainActor let dismissAllEmitter = SRDismissAllEmitter()
 
-            let tabSelection = SRTabbarSelection()
+            @MainActor let tabSelection = SRTabbarSelection()
 
-            private let navStacks = [SRNavStack.home: SRNavigationPath(), SRNavStack.setting: SRNavigationPath()]
+            @MainActor private let navStacks = [SRNavStack.home: SRNavigationPath(), SRNavStack.setting: SRNavigationPath()]
 
             @MainActor
             var homePath: SRNavigationPath {
@@ -44,6 +44,9 @@ final class ContextMacroTest: XCTestCase {
             @MainActor
             var settingPath: SRNavigationPath {
                 navStacks[SRNavStack.setting]!
+            }
+
+            @MainActor init() {
             }
 
             @MainActor
@@ -106,9 +109,10 @@ final class ContextMacroTest: XCTestCase {
         }@Observable
         final class SRRootRouter {
 
-            @ObservationIgnored
+            @ObservationIgnored @MainActor
             private var _transition: SRTransition<AnyRoute> = .none
-        
+
+            @MainActor
             private(set) var transition: SRTransition<AnyRoute> {
                 get {
                   access(keyPath: \\.transition)
@@ -121,6 +125,8 @@ final class ContextMacroTest: XCTestCase {
                 }
             }
 
+            @MainActor init() { }
+
             /// Select tabbar item at index
             /// - Parameter index: Index of tabbar item
             ///
@@ -128,6 +134,7 @@ final class ContextMacroTest: XCTestCase {
             /// ```swift
             /// router.selectTabbar(at: 0)
             /// ```
+            @MainActor
             func selectTabbar(at index: Int) {
                 transition = .init(selectTab: index)
             }
@@ -141,6 +148,7 @@ final class ContextMacroTest: XCTestCase {
             /// ```swift
             /// router.trigger(to: .detailScreen, with: .push)
             /// ```
+            @MainActor
             func trigger(to route: AnyRoute, with action: SRTriggerType) {
                 transition = .init(with: route, and: .init(with: action))
             }
@@ -154,6 +162,7 @@ final class ContextMacroTest: XCTestCase {
             /// ```swift
             /// router.show(NetworkingError.notFound)
             /// ```
+            @MainActor
             func show(error: Error, and title: String? = nil) {
                 transition = .init(with: error, and: title)
             }
@@ -167,11 +176,13 @@ final class ContextMacroTest: XCTestCase {
             ///                                message: Text("Message"),
             ///                                dismissButton: .cancel(Text("OK")))
             /// ```
+            @MainActor
             func show(alert: Alert) {
                 transition = .init(with: alert)
             }
 
             #if os(iOS) || os(tvOS)
+            @MainActor
             func show(actionSheet: ActionSheet) {
                 transition = .init(with: actionSheet)
             }
@@ -183,6 +194,7 @@ final class ContextMacroTest: XCTestCase {
             /// ```swift
             /// router.dismiss()
             /// ```
+            @MainActor
             func dismiss() {
                 transition = .init(with: .dismiss)
             }
@@ -193,18 +205,22 @@ final class ContextMacroTest: XCTestCase {
             /// ```swift
             /// router.dismissAll()
             /// ```
+            @MainActor
             func dismissAll() {
                 transition = .init(with: .dismissAll)
             }
 
+            @MainActor
             func pop() {
                 transition = .init(with: .pop)
             }
 
+            @MainActor
             func popToRoot() {
                 transition = .init(with: .popToRoot)
             }
 
+            @MainActor
             func pop(to route: some SRRoute) {
                 transition = .init(popTo: route)
             }
@@ -216,6 +232,7 @@ final class ContextMacroTest: XCTestCase {
             /// ```swif
             /// openWindow(windowTrans: windowTrans)
             /// ```
+            @MainActor
             func openWindow(windowTrans: SRWindowTransition) {
                 transition = .init(with: .openWindow, windowTransition: windowTrans)
             }
@@ -224,6 +241,7 @@ final class ContextMacroTest: XCTestCase {
             /// - Parameters:
             ///   - url: `URL`
             ///   - completion: `AcceptionCallback`
+            @MainActor
             func openURL(at url: URL, completion: AcceptionCallback?) {
                 transition = .init(with: .openURL, windowTransition: .init(url: url, acceoption: completion))
             }
@@ -233,6 +251,7 @@ final class ContextMacroTest: XCTestCase {
             /// - Parameters:
             ///   - url: file URL
             ///   - completion: `ErrorHandler`
+            @MainActor
             func openDocument(at url: URL, completion: ErrorHandler?) {
                 transition = .init(with: .openDocument, windowTransition: .init(url: url, errorHandler: completion))
             }
@@ -289,12 +308,12 @@ final class ContextMacroTest: XCTestCase {
             }
         }
 
-        enum SRTabItem: Int {
+        enum SRTabItem: Int, Sendable {
             case homeItem
             case settingItem
         }
 
-        enum SRNavStack: String {
+        enum SRNavStack: String, Sendable {
             case home
             case setting
         }
