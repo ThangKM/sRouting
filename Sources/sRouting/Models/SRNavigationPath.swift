@@ -9,13 +9,12 @@ import Foundation
 import SwiftUI
 
 /// NavigationStack's path
-@Observable
-public final class SRNavigationPath: Sendable {
+@Observable @MainActor
+public final class SRNavigationPath {
     
-    @MainActor
     internal var stack: [String] = []
     
-    @MainActor @ObservationIgnored
+    @ObservationIgnored
     internal var navPath: NavigationPath {
         get {
             access(keyPath: \.navPath)
@@ -29,21 +28,19 @@ public final class SRNavigationPath: Sendable {
         }
     }
     
-    @ObservationIgnored @MainActor
+    @ObservationIgnored
     private var _navPath: NavigationPath = .init()
     
-    @ObservationIgnored @MainActor
+    @ObservationIgnored
     public private(set) var didAppear: Bool = false
     
     public init() { }
     
-    @MainActor
     public func pop() {
         guard !navPath.isEmpty else { return }
         navPath.removeLast()
     }
     
-    @MainActor
     public func pop(to route: some SRRoute) {
         guard navPath.count == stack.count else { return }
         let path = Helpers.navigationStoredPath(for: route)
@@ -54,25 +51,21 @@ public final class SRNavigationPath: Sendable {
         navPath.removeLast(dropCount)
     }
     
-    @MainActor
     public func popToRoot() {
         guard !navPath.isEmpty else { return }
         let count = navPath.count
         navPath.removeLast(count)
     }
     
-    @MainActor
     public func push(to route: some SRRoute) {
         navPath.append(route)
     }
     
-    @MainActor
     internal func stackDidAppear() {
         guard !didAppear else { return }
         didAppear = true
     }
     
-    @MainActor
     private func _matchingStack(from navCodable: NavigationPath.CodableRepresentation?) {
         
         guard let navCodable else { return }

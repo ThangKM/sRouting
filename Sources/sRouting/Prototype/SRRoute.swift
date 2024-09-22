@@ -20,6 +20,11 @@ public protocol SRRoute: Hashable, Codable, Sendable {
 }
 
 extension SRRoute {
+
+    /// Provide full path when self is a child route.
+    public var fullPath: String {
+        String(describing: Self.self) + "." + path
+    }
     
     public static func == (lhs: Self, rhs: Self) -> Bool {
         return lhs.path == rhs.path

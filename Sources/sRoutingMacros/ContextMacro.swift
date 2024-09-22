@@ -28,13 +28,13 @@ public struct ContextMacro: MemberMacro {
         
         var result: [DeclSyntax] = []
         
-        let rootRouter: DeclSyntax = "let rootRouter = SRRootRouter()"
+        let rootRouter: DeclSyntax = "@MainActor let rootRouter = SRRootRouter()"
         result.append(rootRouter)
         
-        let dsaEmiiter: DeclSyntax = "let dismissAllEmitter = SRDismissAllEmitter()"
+        let dsaEmiiter: DeclSyntax = "@MainActor let dismissAllEmitter = SRDismissAllEmitter()"
         result.append(dsaEmiiter)
         
-        let tabSelection: DeclSyntax = "let tabSelection = SRTabbarSelection()"
+        let tabSelection: DeclSyntax = "@MainActor let tabSelection = SRTabbarSelection()"
         result.append(tabSelection)
         
         let indexLastStack = arguments.stacks.count - 1
@@ -49,7 +49,7 @@ public struct ContextMacro: MemberMacro {
         }
         initStacks += "]"
 
-        let navStacks: DeclSyntax = "private let navStacks = \(raw: initStacks)"
+        let navStacks: DeclSyntax = "@MainActor private let navStacks = \(raw: initStacks)"
         result.append(navStacks)
         
         for stack in arguments.stacks {
@@ -61,6 +61,11 @@ public struct ContextMacro: MemberMacro {
             """
             result.append(shortPath)
         }
+        
+        let defaultInit: DeclSyntax = """
+        @MainActor init() { }
+        """
+        result.append(defaultInit)
         
         let navPathFunc: DeclSyntax = """
         @MainActor
@@ -204,7 +209,8 @@ extension ContextMacro: PeerMacro {
         result.append(rootRoute)
         
         let iheritanceClause: InheritanceClauseSyntax = .init(inheritedTypes:
-                .init(arrayLiteral: InheritedTypeSyntax(type: TypeSyntax(stringLiteral: "Int"))))
+                .init(arrayLiteral: InheritedTypeSyntax(type: TypeSyntax(stringLiteral: "Int"), trailingTrivia: .unexpectedText(",")),
+                      InheritedTypeSyntax(type: TypeSyntax(stringLiteral: "Sendable"))))
         
         let tabItem = DeclSyntax(
             EnumDeclSyntax(name: "SRTabItem", inheritanceClause:iheritanceClause) {
@@ -220,7 +226,8 @@ extension ContextMacro: PeerMacro {
         result.append(tabItem)
 
         let navIheritanceClause: InheritanceClauseSyntax = .init(inheritedTypes:
-                .init(arrayLiteral: InheritedTypeSyntax(type: TypeSyntax(stringLiteral: "String"))))
+                .init(arrayLiteral: InheritedTypeSyntax(type: TypeSyntax(stringLiteral: "String"), trailingTrivia: .unexpectedText(",")),
+                      InheritedTypeSyntax(type: TypeSyntax(stringLiteral: "Sendable"))))
         let navStack = DeclSyntax(
             EnumDeclSyntax(name: "SRNavStack", inheritanceClause:navIheritanceClause) {
                 for stack in arguments.stacks {

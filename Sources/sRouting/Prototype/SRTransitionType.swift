@@ -8,7 +8,7 @@
 import SwiftUI
 
 /// Transition type of navigation for the trigger action.
-public enum SRTriggerType: String, CaseIterable {
+public enum SRTriggerType: String, CaseIterable, Sendable {
     /// Push a screen
     case push
     /// Present full screen
@@ -22,7 +22,7 @@ public enum SRTriggerType: String, CaseIterable {
 }
 
 /// Transition type of navigation that using internal.
-public enum SRTransitionType: String, CaseIterable {
+public enum SRTransitionType: String, CaseIterable, Sendable {
     case none
     /// Push a screen
     case push

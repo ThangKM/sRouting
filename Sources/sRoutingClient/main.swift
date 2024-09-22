@@ -41,7 +41,7 @@ struct ObserveView<Content>: View where Content: View { }
 @sRContext(tabs: ["homeItem", "settingItem"], stacks: "home", "setting")
 struct SRContext { }
 
-
+@MainActor
 func routingDeeplink() {
     let context = SRContext()
     Task {

@@ -14,3 +14,11 @@ struct Helpers {
     }
 }
 
+struct UncheckedSendable<V>: @unchecked Sendable {
+    
+    let value: V
+    
+    init(value: V) {
+        self.value = value
+    }
+}

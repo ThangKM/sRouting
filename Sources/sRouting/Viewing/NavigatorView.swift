@@ -55,7 +55,7 @@ struct NavigatorView<RouterType>: View where RouterType: SRRouterType  {
     /// The alert from transition
     @MainActor
     private var alertView: Alert? {
-        router.transition.alert
+        router.transition.alert?.value
     }
     
     ///Action test holder
@@ -65,7 +65,7 @@ struct NavigatorView<RouterType>: View where RouterType: SRRouterType  {
     /// The ActionSheet from transaction
     @MainActor
     private var actionSheet: ActionSheet? {
-        router.transition.actionSheet
+        router.transition.actionSheet?.value
     }
     
     init(router: RouterType,

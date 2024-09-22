@@ -38,9 +38,10 @@ public struct RouterMacro: MemberMacro {
         
         return ["""
         
-        @ObservationIgnored
+        @ObservationIgnored @MainActor
         private var _transition: SRTransition<\(raw: routeType)> = .none
         
+        @MainActor
         private(set) var transition: SRTransition<\(raw: routeType)> {
             get {
               access(keyPath: \\.transition)
@@ -53,6 +54,8 @@ public struct RouterMacro: MemberMacro {
             }
         }
         
+        @MainActor init() { }
+        
         /// Select tabbar item at index
         /// - Parameter index: Index of tabbar item
         ///
@@ -60,6 +63,7 @@ public struct RouterMacro: MemberMacro {
         /// ```swift
         /// router.selectTabbar(at: 0)
         /// ```
+        @MainActor
         func selectTabbar(at index: Int) {
             transition = .init(selectTab: index)
         }
@@ -73,6 +77,7 @@ public struct RouterMacro: MemberMacro {
         /// ```swift
         /// router.trigger(to: .detailScreen, with: .push)
         /// ```
+        @MainActor
         func trigger(to route: \(raw: routeType), with action: SRTriggerType) {
             transition = .init(with: route, and: .init(with: action))
         }
@@ -86,6 +91,7 @@ public struct RouterMacro: MemberMacro {
         /// ```swift
         /// router.show(NetworkingError.notFound)
         /// ```
+        @MainActor
         func show(error: Error, and title: String? = nil) {
             transition = .init(with: error, and: title)
         }
@@ -99,11 +105,13 @@ public struct RouterMacro: MemberMacro {
         ///                                message: Text("Message"),
         ///                                dismissButton: .cancel(Text("OK")))
         /// ```
+        @MainActor
         func show(alert: Alert) {
             transition = .init(with: alert)
         }
         
         #if os(iOS) || os(tvOS)
+        @MainActor
         func show(actionSheet: ActionSheet) {
             transition = .init(with: actionSheet)
         }
@@ -115,6 +123,7 @@ public struct RouterMacro: MemberMacro {
         /// ```swift
         /// router.dismiss()
         /// ```
+        @MainActor
         func dismiss() {
             transition = .init(with: .dismiss)
         }
@@ -125,18 +134,22 @@ public struct RouterMacro: MemberMacro {
         /// ```swift
         /// router.dismissAll()
         /// ```
+        @MainActor
         func dismissAll() {
             transition = .init(with: .dismissAll)
         }
         
+        @MainActor
         func pop() {
             transition = .init(with: .pop)
         }
         
+        @MainActor
         func popToRoot() {
             transition = .init(with: .popToRoot)
         }
         
+        @MainActor
         func pop(to route: some SRRoute) {
             transition = .init(popTo: route)
         }
@@ -148,6 +161,7 @@ public struct RouterMacro: MemberMacro {
         /// ```swif
         /// openWindow(windowTrans: windowTrans)
         /// ```
+        @MainActor
         func openWindow(windowTrans: SRWindowTransition) {
             transition = .init(with: .openWindow, windowTransition: windowTrans)
         }
@@ -156,6 +170,7 @@ public struct RouterMacro: MemberMacro {
         /// - Parameters:
         ///   - url: `URL`
         ///   - completion: `AcceptionCallback`
+        @MainActor
         func openURL(at url: URL, completion: AcceptionCallback?) {
             transition = .init(with: .openURL, windowTransition: .init(url: url, acceoption: completion))
         }
@@ -165,6 +180,7 @@ public struct RouterMacro: MemberMacro {
         /// - Parameters:
         ///   - url: file URL
         ///   - completion: `ErrorHandler`
+        @MainActor
         func openDocument(at url: URL, completion: ErrorHandler?) {
             transition = .init(with: .openDocument, windowTransition: .init(url: url, errorHandler: completion))
         }

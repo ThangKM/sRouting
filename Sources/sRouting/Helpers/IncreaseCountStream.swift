@@ -24,19 +24,19 @@ class IncreaseCountStream: @unchecked Sendable {
     }
     
     private func append(_ continuation: Continuation) {
-        Task { await island.append(continuation) }
+        Task(priority: .high) { await island.append(continuation) }
     }
     
     func resetCount() {
-        Task { await island.resetCount() }
+        Task(priority: .high) { await island.resetCount() }
     }
     
     func increase() {
-        Task { await island.increase() }
+        Task(priority: .high) { await island.increase() }
     }
     
     func finish() {
-        Task { await island.finish() }
+        Task(priority: .high) { await island.finish() }
     }
 }
 
