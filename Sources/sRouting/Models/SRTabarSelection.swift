@@ -20,10 +20,10 @@ public final class SRTabbarSelection {
         }
         set {
             if newValue == _selection {
-                tapCountStream.increase()
+                _increaseTapCount()
                 _autoCancelTapCount()
             } else {
-                tapCountStream.resetCount()
+                _resetTapCount()
             }
             withMutation(keyPath: \.selection) {
                 _selection = newValue
@@ -36,7 +36,7 @@ public final class SRTabbarSelection {
     @ObservationIgnored
     private var _selection: Int = .zero
     
-    nonisolated private let tapCountStream = IncreaseCountStream()
+    nonisolated private let tapCountStream = SRAsyncStream(defaultValue: 0)
     nonisolated private let cancelBag = CancelBag()
     nonisolated private let autoCancelTapIdentifier = "autoCancelTapIdentifier"
     
@@ -52,14 +52,27 @@ public final class SRTabbarSelection {
         doubleTapEmmiter = !doubleTapEmmiter
     }
     
-    deinit { cancelBag.cancelAll() }
+    deinit {
+        cancelBag.cancelAllInTask()
+    }
 }
 
 extension SRTabbarSelection {
     
+    nonisolated private func _increaseTapCount() {
+        Task(priority: .high) {
+            await tapCountStream.increase()
+        }
+    }
+    
+    nonisolated private func _resetTapCount() {
+        Task(priority: .high) {
+            await tapCountStream.reset()
+        }
+    }
+    
     nonisolated private func _observeTapCountStream() {
         Task.detached {[weak self] in
-            
             guard let stream = self?.tapCountStream.stream,
             let cancelTapId = self?.autoCancelTapIdentifier
             else { return }
@@ -67,21 +80,20 @@ extension SRTabbarSelection {
             for await _ in stream.filter({ $0 == 2 }) {
                 try Task.checkCancellation()
                 await self?._emmitDoubleTap()
-                self?.tapCountStream.resetCount()
-                self?.cancelBag.cancel(forIdentifier: cancelTapId)
+                await self?.tapCountStream.reset()
+                await self?.cancelBag.cancel(forIdentifier: cancelTapId)
             }
         }.store(in: cancelBag)
     }
 
     nonisolated private func _autoCancelTapCount() {
-        cancelBag.cancel(forIdentifier: autoCancelTapIdentifier)
         Task.detached {[weak self] in
             do {
                 try await Task.sleep(for: .milliseconds(400))
                 try Task.checkCancellation()
-                self?.tapCountStream.resetCount()
+                await self?.tapCountStream.reset()
                 guard let cancelId = self?.autoCancelTapIdentifier else { return }
-                self?.cancelBag.cancel(forIdentifier: cancelId)
+                await self?.cancelBag.cancel(forIdentifier: cancelId)
             }
         }.store(in: cancelBag, withIdentifier: autoCancelTapIdentifier)
     }
