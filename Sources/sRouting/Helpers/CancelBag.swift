@@ -24,10 +24,7 @@ actor CancelBag {
     }
     
     private func store(_ canceller: Canceller) {
-        if let task = cancellers[canceller.id] {
-            task.cancel()
-            cancellers.removeValue(forKey: canceller.id)
-        }
+        cancel(forIdentifier: canceller.id)
         cancellers.updateValue(canceller, forKey: canceller.id)
     }
     
