@@ -9,13 +9,7 @@ import SwiftUI
 
 /// The test callbacks action of navigator views
 struct UnitTestActions<TargetView>
-where TargetView: View {
-    
+where TargetView: ViewModifier {
     typealias ViewReturnAction = (TargetView) -> Void
-    typealias VoidAction = () -> Void
-    
     var didChangeTransition: ViewReturnAction?
-    var didAppear: ViewReturnAction?
-    var resetActiveState: ViewReturnAction?
-    var dismissAction: VoidAction?
 }

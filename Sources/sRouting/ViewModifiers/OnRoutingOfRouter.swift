@@ -1,20 +1,19 @@
 //
-//  NavigatorView.swift
+//  OnRoutingOfRouter.swift
 //  sRouting
 //
-//  Created by ThangKieu on 2/19/21.
+//  Created by Thang Kieu on 23/9/24.
 //
 
 import SwiftUI
 
-/// The hidden view that handle the navigation of a screen.
-struct NavigatorView<RouterType>: View where RouterType: SRRouterType  {
+struct RouterModifier<Router>: ViewModifier where Router: SRRouterType {
     
     typealias VoidAction = () -> Void
-    typealias RouteType = RouterType.RouteType
+    typealias RouteType = Router.RouteType
     
     /// A  screen's ``Router``
-    private var router: RouterType
+    private let router: Router
 
     @Environment(SRTabbarSelection.self)
     private var tabbarSelection: SRTabbarSelection?
@@ -31,6 +30,8 @@ struct NavigatorView<RouterType>: View where RouterType: SRRouterType  {
     
     @Environment(\.scenePhase) private var scenePhase
     
+    @Environment(\.dismiss) private var dismissAction
+    
     #if os(macOS)
     @Environment(\.openDocument) private var openDocument
     #endif
@@ -44,9 +45,6 @@ struct NavigatorView<RouterType>: View where RouterType: SRRouterType  {
     /// Active state of action sheet
     @State private(set) var isActiveActionSheet: Bool = false
 
-    /// Dismiss action of presentationMode from @Enviroment
-    private let dismissAction: VoidAction
-    
     /// The destination screen from transition
     @ViewBuilder @MainActor
     private var destinationView: some View {
@@ -58,123 +56,89 @@ struct NavigatorView<RouterType>: View where RouterType: SRRouterType  {
         router.transition.alert?.value
     }
     
-    ///Action test holder
-    private let tests: UnitTestActions<Self>?
-    
-    #if os(iOS) || os(tvOS)
+    #if canImport(UIKit)
     /// The ActionSheet from transaction
     @MainActor
     private var actionSheet: ActionSheet? {
         router.transition.actionSheet?.value
     }
-    
-    init(router: RouterType,
-         onDismiss: @escaping VoidAction,
-         testsActions: UnitTestActions<Self>? = nil) {
-        self.router = router
-        self.dismissAction = onDismiss
-        // test action holder
-        self.tests = testsActions
-        //
-    }
-    
-    #else
-    init(router: RouterType,
-         onDismiss: @escaping VoidAction,
-         testsActions: UnitTestActions<Self>? = nil) {
-        self.router = router
-        self.dismissAction = onDismiss
-        // test action holder
-        self.tests = testsActions
-        //
-    }
     #endif
     
-    #if os(macOS)
-    var body: some View {
-        Text("Navigator View")
-        .sheet(isPresented: $isActiveSheet,
-               content: {
-            destinationView
-        })
-        .alert(isPresented: $isActiveAlert) {
-            if let alertView {
-                alertView
-            } else {
-                Alert(title: Text("Something went wrong!"))
-            }
-        }
-        .onChange(of: dismissAllEmitter?.dismissAllSignal, { oldValue, newValue in
-            resetActiveState()
-        })
-        .onChange(of: router.transition, { oldValue, newValue in
-            updateActiveState(from: newValue)
-        })
-        .onAppear {
-            // test - action
-            tests?.didAppear?(self)
-            //
-        }
-        .hidden()
+    ///Action test holder
+    private let tests: UnitTestActions<Self>?
+    
+    init(router: Router, tests: UnitTestActions<Self>? = .none) {
+        self.router = router
+        self.tests = tests
     }
-    #else
-    var body: some View {
-        Text("Navigator View")
-        .fullScreenCover(isPresented: $isActivePresent) {
-            destinationView
-            .environment(dismissAllEmitter)
-            .environment(tabbarSelection)
-        }
-        .sheet(isPresented: $isActiveSheet,
-            content: {
-            destinationView
-            .environment(dismissAllEmitter)
-            .environment(tabbarSelection)
-        })
-        .alert(isPresented: $isActiveAlert) {
-            if let alertView {
-                alertView
-            } else {
-                Alert(title: Text("Something went wrong!"))
+    
+    func body(content: Content) -> some View {
+        #if os(macOS)
+        content
+            .sheet(isPresented: $isActiveSheet,
+                   content: {
+                destinationView
+            })
+            .alert(isPresented: $isActiveAlert) {
+                if let alertView {
+                    alertView
+                } else {
+                    Alert(title: Text("Something went wrong!"))
+                }
             }
-        }
-        .actionSheet(isPresented: $isActiveActionSheet, content: {
-           if let actionSheet {
-               actionSheet
-           } else {
-               ActionSheet(title: Text("Action Sheet not found!"))
-           }
-        })
-        .onChange(of: dismissAllEmitter?.dismissAllSignal, { oldValue, newValue in
-            resetActiveState()
-        })
-        .onChange(of: router.transition, { oldValue, newValue in
-            updateActiveState(from: newValue)
-        })
-        .onAppear {
-            //test - action
-            tests?.didAppear?(self)
-            //
-        }
-        .hidden()
+            .onChange(of: dismissAllEmitter?.dismissAllSignal, { oldValue, newValue in
+                resetActiveState()
+            })
+            .onChange(of: router.transition, { oldValue, newValue in
+                updateActiveState(from: newValue)
+            })
+        #else
+        content
+            .fullScreenCover(isPresented: $isActivePresent) {
+                destinationView
+                .environment(dismissAllEmitter)
+                .environment(tabbarSelection)
+            }
+            .sheet(isPresented: $isActiveSheet,
+                content: {
+                destinationView
+                .environment(dismissAllEmitter)
+                .environment(tabbarSelection)
+            })
+            .alert(isPresented: $isActiveAlert) {
+                if let alertView {
+                    alertView
+                } else {
+                    Alert(title: Text("Something went wrong!"))
+                }
+            }
+            .actionSheet(isPresented: $isActiveActionSheet, content: {
+               if let actionSheet {
+                   actionSheet
+               } else {
+                   ActionSheet(title: Text("Action Sheet not found!"))
+               }
+            })
+            .onChange(of: dismissAllEmitter?.dismissAllSignal, { oldValue, newValue in
+                resetActiveState()
+            })
+            .onChange(of: router.transition, { oldValue, newValue in
+                updateActiveState(from: newValue)
+            })
+        #endif
     }
-    #endif
 }
 
-//MARK: Extension NavigatorView
-extension NavigatorView {
+extension RouterModifier {
     
     /// Reset all active state to false
     @MainActor
     private func resetActiveState() {
-        guard scenePhase == .active || tests != nil else { return }
+        guard scenePhase == .active else { return }
         isActivePresent = false
         isActiveAlert = false
         isActiveSheet = false
         isActiveActionSheet = false
-        // test - action
-        tests?.resetActiveState?(self)
-        //
     }
     
     /// Observe the transition change from router
@@ -229,13 +193,12 @@ extension NavigatorView {
                     
         case .none: break
         }
-        // test - action
+        
         tests?.didChangeTransition?(self)
-        //
     }
     
     #if os(macOS)
-    @MainActor 
+    @MainActor
     private func openDoc(at url: URL, errorHandler: ((Error?) -> Void)?) async {
         do {
             try await openDocument(at: url)
@@ -265,3 +228,23 @@ extension NavigatorView {
 #if os(macOS)
 extension OpenDocumentAction: @unchecked Sendable { }
 #endif
+
+extension View {
+    
+    /// Observe Dismiss all change
+    /// - Parameter onChange: action
+    /// - Returns: some `View`
+    public func onRouting<Router: SRRouterType>(of router: Router) -> some View {
+        self.modifier(RouterModifier(router: router))
+    }
+    
+    /// Observe Dismiss all change on test purpose
+    /// - Parameters:
+    ///   - router: onChange: action
+    ///   - tests: Unit test action
+    /// - Returns: some `View`
+    func onRouting<Router: SRRouterType>(of router: Router,
+                                         tests: UnitTestActions<RouterModifier<Router>>?) -> some View {
+        self.modifier(RouterModifier(router: router, tests: tests))
+    }
+}

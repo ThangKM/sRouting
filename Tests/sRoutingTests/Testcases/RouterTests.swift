@@ -19,10 +19,11 @@ class RouterTests: XCTestCase {
         let router = TestRouter()
         let exp = XCTestExpectation()
         let sut = SRRootView(context: SRContext()) {
-            TestScreen(router: router, tests: .none).onChange(of: router.transition) { oldValue, newValue in
-                XCTAssertEqual(newValue.tabIndex, 3)
-                exp.fulfill()
-            }
+            TestScreen(router: router, tests: .none)
+                .onChange(of: router.transition) { oldValue, newValue in
+                    XCTAssertEqual(newValue.tabIndex, 3)
+                    exp.fulfill()
+                }
         }
         ViewHosting.host(view: sut)
         router.selectTabbar(at: 3)

@@ -15,17 +15,6 @@ import SwiftUI
 class TestInitializers: XCTestCase {
 
     @MainActor
-    func testInitScreenView() throws {
-        let sut = ScreenView(router: TestRouter(), 
-                             dismissAction: .none, tests: .none) {
-            Text("ScreenView.Text")
-        }
-        ViewHosting.host(view: sut)
-        let text = try sut.inspect().find(text: "ScreenView.Text").string()
-        XCTAssertEqual(text, "ScreenView.Text")
-    }
-    
-    @MainActor
     func testInitRootView() throws {
         let view = SRRootView(context: SRContext()) {
             Text("This is content in RootView")
