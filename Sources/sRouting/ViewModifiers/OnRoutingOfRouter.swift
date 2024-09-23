@@ -46,7 +46,7 @@ struct RouterModifier<Router>: ViewModifier where Router: SRRouterType {
     @State private(set) var isActiveActionSheet: Bool = false
 
     /// The destination screen from transition
-    @ViewBuilder @MainActor
+    @MainActor
     private var destinationView: some View {
         router.transition.route?.screen
     }
