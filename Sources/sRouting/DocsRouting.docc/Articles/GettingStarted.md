@@ -1,12 +1,12 @@
-# Getting Started with sRouting
+# 🏃‍♂️ Getting Started with sRouting
 
-Set up ``SRRootView`` and working with ``sRouter(_:)``
+Set up `SRRootView` and work with `sRouter(_:)`
 
 ## Overview
 
 Create your root view with ``SRRootView``.
 Declares your ``SRRoute``.
-Working with ``sRContext(tabs:stacks:)``, ``ScreenView`` and ``sRouter(_:)`` macro.
+Working with macros and ViewModifers.
 
 ### Create a Route
 
@@ -77,7 +77,6 @@ struct BookieApp: App {
                 }
                 .onDoubleTapTabItem { ... }
                 .onTabSelectionChange { ... }
-                .onNaviStackChange { ... }
             }
             .onOpenURL { url in
                 Task {
@@ -92,9 +91,7 @@ struct BookieApp: App {
 ```
 ### Make a Screen and working with Router
 
-Build a screen with ``ScreenView``, ``ScreenView`` will create a hidden NavigatorView at below content view
-in a ZStack.
-The NavigatorView will handle transactions that are emited by `Router`
+Using the `onRouting(of:)` ViewModifier to observe router transition.
 
 ```swift
 enum HomeRoute: SRRoute {
@@ -102,25 +99,20 @@ enum HomeRoute: SRRoute {
     ...
 }
 
-@sRouter(HomeRoute.self)
+@sRouter(HomeRoute.self) @Observable
 class HomeRouter { }
 
 struct HomeScreen: View {
 
-    @Environment(\.dismiss)
-    private var dismissAction
-
-    @State var router = HomeRouter()
+    @State var homeRouter = HomeRouter()
 
     var body: some View {
-        ScreenView(router: router, dismissAction: dismissAction) {
-        ...
+        VStack { 
+            ...
         }
+        .onRouting(of: homeRouter)
     }
 ```
-
-To navigate to a screen that must be in HomeRoute 
-we use the `trigger(to:with:)` function in the `Router`
 
 DeepLink:
 ```swift

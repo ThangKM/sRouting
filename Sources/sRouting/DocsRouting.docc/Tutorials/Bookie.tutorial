@@ -121,7 +121,7 @@
             
             @Step {
                 Create the `router`  with Route is `AppRoute` in `StartScreen`.
-                Layout the `StartScreen` with `ScreenView` and `RandomBubbleView`.
+                Layout the `StartScreen` and `RandomBubbleView`.
                 Change root to home with `AppRouter` when tapping on start button.
                 @Code(name: "StartScreen.swift", file: StartScreen.swift) {
                     @Image(source: startscreen.jpeg, alt: "start screen screenshoot")
