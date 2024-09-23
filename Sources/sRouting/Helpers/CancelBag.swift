@@ -25,6 +25,7 @@ actor CancelBag {
     
     private func store(_ canceller: Canceller) {
         cancel(forIdentifier: canceller.id)
+        guard !canceller.isCancelled else { return }
         cancellers.updateValue(canceller, forKey: canceller.id)
     }
     
