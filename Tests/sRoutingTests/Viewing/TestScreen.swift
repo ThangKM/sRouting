@@ -15,7 +15,7 @@ struct TestScreen: View {
     let tests: UnitTestActions<RouterModifier<TestRouter>>?
     
     var body: some View {
-        Text("TestScreen.ScreenView.Text")
+        Text("TestScreen.Screen.Text")
             .onRouting(of: router, tests: tests)
     }
 }

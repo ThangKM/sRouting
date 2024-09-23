@@ -47,12 +47,11 @@ struct BookieNavigationView<Content, RouterType>: View where Content: View, Rout
                     .fixedSize(horizontal: false, vertical: true)
                     .padding(.horizontal)
                     
-                ScreenView(router: router, dismissAction: dismissAction) {
-                    content
-                }
+                content()
                 Spacer()
             }
         }
+        .onRouting(of: router)
         .background(Color("backgournd.EEECFF"))
         .edgesIgnoringSafeArea(.bottom)
         .navigationBarHidden(true)

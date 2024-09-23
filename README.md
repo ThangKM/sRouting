@@ -42,7 +42,7 @@ Set up `SRRootView` and work with `sRouter(_:)`
 
 Create your root view with ``SRRootView``.
 Declares your ``SRRoute``.
-Working with ``sRContext(tabs:stacks:)`` macro, ``ScreenView`` and ``sRouter(_:)`` macro.
+Working with macros and ViewModifers.
 
 ### Create a Route
 
@@ -127,9 +127,7 @@ struct BookieApp: App {
 ```
 ### Make a Screen and working with Router
 
-Build a screen with ``ScreenView``, ``ScreenView`` will create a hidden NavigatorView at below content view
-in a ZStack.
-The NavigatorView will handle transactions that are emited by `Router`
+Using the `onRouting(of:)` ViewModifier to observe router transition.
 
 ```swift
 enum HomeRoute: SRRoute {
@@ -142,20 +140,15 @@ class HomeRouter { }
 
 struct HomeScreen: View {
 
-    @Environment(\.dismiss)
-    private var dismissAction
-
     @State var homeRouter = HomeRouter()
 
     var body: some View {
-        ScreenView(router: homeRouter, dismissAction: dismissAction) {
-        ...
+        VStack { 
+            ...
         }
+        .onRouting(of: homeRouter)
     }
 ```
-
-To navigate to a screen that must be in HomeRoute 
-we use the `trigger(to:with:)` function in the `Router`
 
 DeepLink:
 ```swift
