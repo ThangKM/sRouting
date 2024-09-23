@@ -8,7 +8,6 @@
 import Foundation
 import SwiftUI
 
-
 public struct SRWindowTransition: Sendable {
     
     private(set) var acception: (@Sendable (_ aception: Bool) -> Void)?
@@ -16,8 +15,6 @@ public struct SRWindowTransition: Sendable {
     private(set) var url: URL?
     public private(set) var windowId: String?
     public private(set) var windowValue: (any (Codable & Hashable & Sendable))?
-
-//    public private(set) var windowShareBehavior: OpenWindowAction.SharingBehavior?
     
     public init(url: URL,
                 acceoption: (@Sendable (_ aception: Bool) -> Void)? = .none,

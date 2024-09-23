@@ -7,54 +7,45 @@
 
 import Foundation
 
-final class CancelBag: @unchecked Sendable {
-    
-    private let island = Island()
+actor CancelBag {
+
+    private lazy var cancellers: [String:Canceller] = .init()
     
     func cancelAll() {
-        Task(priority: .high) {
-            await island.cancelAll()
-        }
+        let runningTasks = cancellers.values.filter({ !$0.isCancelled })
+        runningTasks.forEach{ $0.cancel() }
+        cancellers.removeAll()
     }
     
     func cancel(forIdentifier identifier: String) {
+        guard let task = cancellers[identifier] else { return }
+        task.cancel()
+        cancellers.removeValue(forKey: identifier)
+    }
+    
+    private func store(_ canceller: Canceller) {
+        if let task = cancellers[canceller.id] {
+            task.cancel()
+            cancellers.removeValue(forKey: canceller.id)
+        }
+        cancellers.updateValue(canceller, forKey: canceller.id)
+    }
+    
+    nonisolated fileprivate func append(canceller: Canceller) {
         Task(priority: .high) {
-            await island.cancel(forIdentifier:identifier)
+            await store(canceller)
         }
     }
     
-    fileprivate func append(canceller: Canceller) {
+    nonisolated func cancelAllInTask() {
         Task(priority: .high) {
-            await island.append(canceller:canceller)
-        }
-    }
-}
-
-private extension CancelBag {
-
-    actor Island {
-        
-        private lazy var cancellers: [String:Canceller] = .init()
-        
-        func cancelAll() {
-            let runningTasks = cancellers.values.filter({ !$0.isCancelled })
-            runningTasks.forEach{ $0.cancel() }
-            cancellers.removeAll()
-        }
-        
-        func cancel(forIdentifier identifier: String) {
-            guard let task = cancellers[identifier] else { return }
-            task.cancel()
-            cancellers.removeValue(forKey: identifier)
-        }
-        
-        func append(canceller: Canceller) {
-            cancellers.updateValue(canceller, forKey: canceller.id)
+            await cancelAll()
         }
     }
 }
 
 private struct Canceller: Identifiable, Sendable {
+    
     let cancel: @Sendable () -> Void
     let id: String
     var isCancelled: Bool { isCancelledBock() }
