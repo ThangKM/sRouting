@@ -12,11 +12,11 @@ import Observation
 @Observable @MainActor
 public final class SRDismissAllEmitter {
     
-    internal var dismissAllSignal: Int = .zero
+    internal var dismissAllSignal: SignalChange = false
     
     public init() { }
     
     public func dismissAll() {
-        dismissAllSignal = if dismissAllSignal == .zero { 1 } else { .zero }
+        dismissAllSignal = !dismissAllSignal
     }
 }
