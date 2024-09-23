@@ -7,6 +7,8 @@
 
 import Foundation
 
+typealias SignalChange = Bool
+
 struct Helpers {
     
     static func navigationStoredPath(for route: some SRRoute) -> String {

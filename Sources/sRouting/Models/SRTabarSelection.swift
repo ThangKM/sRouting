@@ -11,8 +11,6 @@ import Foundation
 @Observable @MainActor
 public final class SRTabbarSelection {
     
-    typealias SignalChange = Bool
-    
     public var selection: Int {
         get {
             access(keyPath: \.selection)
