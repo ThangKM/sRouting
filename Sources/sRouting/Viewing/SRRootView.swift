@@ -11,7 +11,6 @@ import Observation
 public struct SRRootView<Content, ContextType>: View
 where Content: View, ContextType: SRContextType {
 
-    @Environment(\.dismiss) private var dismiss
     private var context: ContextType
     private let content: () -> Content
     
@@ -22,10 +21,9 @@ where Content: View, ContextType: SRContextType {
     }
     
     public var body: some View {
-        ScreenView(router: context.rootRouter, dismissAction: dismiss) {
-            content()
-        }
-        .environment(context.dismissAllEmitter)
-        .environment(context.tabSelection)
+        content()
+            .onRouting(of: context.rootRouter)
+            .environment(context.dismissAllEmitter)
+            .environment(context.tabSelection)
     }
 }

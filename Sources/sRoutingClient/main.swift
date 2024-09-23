@@ -20,7 +20,7 @@ enum HomeRoute: SRRoute {
     }
     
     var screen: some View {
-        Text("hello word")
+        Text("Hello World")
     }
 }
 

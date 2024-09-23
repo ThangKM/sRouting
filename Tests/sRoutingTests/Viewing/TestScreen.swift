@@ -11,15 +11,11 @@ import ViewInspector
 
 struct TestScreen: View {
     
-    @Environment(\.dismiss)
-    private var dismissAction
-    
     let router: TestRouter
-    let tests: UnitTestActions<ScreenView<Text,TestRouter>>?
+    let tests: UnitTestActions<RouterModifier<TestRouter>>?
     
     var body: some View {
-        ScreenView(router: router, dismissAction: dismissAction, tests: tests) {
-            Text("TestScreen.ScreenView.Text")
-        }
+        Text("TestScreen.ScreenView.Text")
+            .onRouting(of: router, tests: tests)
     }
 }

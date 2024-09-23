@@ -10,10 +10,17 @@ import SwiftUI
 
 enum EmptyRoute: SRRoute {
     
-    var path: String { "empty screen" }
+    var path: String {
+        switch self {
+        case .emptyScreen: "empty screen"
+        case .home: "home screen"
+        case .setting: "setting screen"
+        }
+    }
     
-    
+    case home
     case emptyScreen
+    case setting
     
     var screen: some View {
         EmptyView()
@@ -38,5 +45,5 @@ class TestRouter { }
 @sRContext(stacks: "home")
 struct SRContext { }
 
-@sRouteObserve(EmptyRoute.self)
+@sRouteObserve(EmptyRoute.self, HomeRoute.self)
 struct ObserveView<Content>: View where Content: View { }
