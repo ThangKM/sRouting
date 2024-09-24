@@ -31,7 +31,7 @@
 		37AAE7AF2695670D007EA3B6 /* AppRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37AAE7AE2695670D007EA3B6 /* AppRouter.swift */; };
 		37AAE7B226956D9B007EA3B6 /* RatingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37AAE7B126956D9B007EA3B6 /* RatingView.swift */; };
 		37AAE7B426957226007EA3B6 /* BookModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37AAE7B326957226007EA3B6 /* BookModel.swift */; };
-		37D09DA02C9B67E800919C3F /* sRouting in Frameworks */ = {isa = PBXBuildFile; productRef = 37D09D9F2C9B67E800919C3F /* sRouting */; };
+		37D887072CA1A40900316FC7 /* sRouting in Frameworks */ = {isa = PBXBuildFile; productRef = 37D887062CA1A40900316FC7 /* sRouting */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -87,7 +87,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				37D09DA02C9B67E800919C3F /* sRouting in Frameworks */,
+				37D887072CA1A40900316FC7 /* sRouting in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -303,7 +303,7 @@
 			);
 			name = Bookie;
 			packageProductDependencies = (
-				37D09D9F2C9B67E800919C3F /* sRouting */,
+				37D887062CA1A40900316FC7 /* sRouting */,
 			);
 			productName = Bookie;
 			productReference = 379D3460268D024800903D92 /* Bookie.app */;
@@ -353,7 +353,7 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
 				LastSwiftUpdateCheck = 1300;
-				LastUpgradeCheck = 1300;
+				LastUpgradeCheck = 1600;
 				TargetAttributes = {
 					379D345F268D024800903D92 = {
 						CreatedOnToolsVersion = 13.0;
@@ -378,7 +378,7 @@
 			);
 			mainGroup = 379D3457268D024800903D92;
 			packageReferences = (
-				37D09D9E2C9B67E800919C3F /* XCRemoteSwiftPackageReference "sRouting" */,
+				37D887052CA1A40900316FC7 /* XCRemoteSwiftPackageReference "sRouting" */,
 			);
 			productRefGroup = 379D3461268D024800903D92 /* Products */;
 			projectDirPath = "";
@@ -514,6 +514,7 @@
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
@@ -575,6 +576,7 @@
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
@@ -668,7 +670,6 @@
 		379D3486268D024A00903D92 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
@@ -692,7 +693,6 @@
 		379D3487268D024A00903D92 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
@@ -716,7 +716,6 @@
 		379D3489268D024A00903D92 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -739,7 +738,6 @@
 		379D348A268D024A00903D92 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -801,7 +799,7 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		37D09D9E2C9B67E800919C3F /* XCRemoteSwiftPackageReference "sRouting" */ = {
+		37D887052CA1A40900316FC7 /* XCRemoteSwiftPackageReference "sRouting" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "git@github.com:ThangKM/sRouting.git";
 			requirement = {
@@ -812,9 +810,9 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		37D09D9F2C9B67E800919C3F /* sRouting */ = {
+		37D887062CA1A40900316FC7 /* sRouting */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 37D09D9E2C9B67E800919C3F /* XCRemoteSwiftPackageReference "sRouting" */;
+			package = 37D887052CA1A40900316FC7 /* XCRemoteSwiftPackageReference "sRouting" */;
 			productName = sRouting;
 		};
 /* End XCSwiftPackageProductDependency section */
