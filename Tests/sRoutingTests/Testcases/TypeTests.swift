@@ -5,29 +5,28 @@
 //  Created by Thang Kieu on 20/8/24.
 //
 
-import Foundation
+import Testing
 import SwiftUI
-
-import XCTest
 
 @testable import sRouting
 
-class TypeTests: XCTestCase {
+@Suite("Test AnyRoute and SRRoutingError")
+struct TypeTests {
     
     
-    @MainActor
-    func testAnyRoute() async throws {
+    @Test @MainActor
+    func testAnyRoute() {
         let route = AnyRoute(route: HomeRoute.home)
-        let condition = route.path.contains(HomeRoute.home.path)
-        XCTAssertTrue(condition)
-        XCTAssertNotNil(route.screen)
+        #expect(route.screen != nil)
+        #expect(route.path.contains(HomeRoute.home.path))
     }
     
-    func testSRRoutingError() async throws {
+    @Test
+    func testSRRoutingError() {
         let error = SRRoutingError.unsupportedDecodable
-        XCTAssertTrue(error.errorCode < .zero)
-        XCTAssertEqual(error.localizedDescription, error.description)
-        XCTAssertEqual(SRRoutingError.errorDomain, "com.srouting")
+        #expect(error.errorCode < .zero)
+        #expect(error.localizedDescription == error.description)
+        #expect(SRRoutingError.errorDomain == "com.srouting")
     }
 }
 

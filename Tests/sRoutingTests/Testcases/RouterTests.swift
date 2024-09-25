@@ -6,236 +6,212 @@
 //
 
 import SwiftUI
-import XCTest
-import Combine
 import ViewInspector
+import Testing
+
 @testable import sRouting
 
-
-class RouterTests: XCTestCase {
+@Suite("Test Router functionality")
+@MainActor
+struct RouterTests {
     
-    @MainActor
-    func testSelectTabbarItem() async {
-        let router = TestRouter()
-        let exp = XCTestExpectation()
-        let sut = SRRootView(context: SRContext()) {
+    let router = TestRouter()
+    let context = SRContext()
+    let waiter = Waiter()
+    
+    @Test
+    func testSelectTabbarItem() async throws {
+        let sut = SRRootView(context: context) {
             TestScreen(router: router, tests: .none)
                 .onChange(of: router.transition) { oldValue, newValue in
-                    XCTAssertEqual(newValue.tabIndex, 3)
-                    exp.fulfill()
+                    #expect(newValue.tabIndex == 3)
+                    waiter.finish()
                 }
         }
         ViewHosting.host(view: sut)
         router.selectTabbar(at: 3)
-        await fulfillment(of: [exp], timeout: 0.2)
+        try await waiter.await(for: .milliseconds(200))
     }
     
-    @MainActor
-    func testTrigger() async {
-        let router = TestRouter()
-        let exp = XCTestExpectation()
-        let sut = SRRootView(context: SRContext()) {
+    @Test
+    func testTrigger() async throws {
+        let sut = SRRootView(context: context) {
             TestScreen(router: router, tests: .none).onChange(of: router.transition) { oldValue, newValue in
-                XCTAssertEqual(newValue.type, .push)
-                XCTAssertNotNil(newValue.route)
-                exp.fulfill()
+                #expect(newValue.type == .push)
+                #expect(newValue.route != nil)
+                waiter.finish()
             }
         }
         ViewHosting.host(view: sut)
         router.trigger(to: .emptyScreen, with: .push)
-        await fulfillment(of: [exp], timeout: 0.2)
+        try await waiter.await(for: .milliseconds(200))
     }
     
-    @MainActor
-    func testShowError() async {
-        let router = TestRouter()
-        let exp = XCTestExpectation()
-        let sut = SRRootView(context: SRContext()) {
+    @Test
+    func testShowError() async throws {
+        let sut = SRRootView(context: context) {
             TestScreen(router: router, tests: .none).onChange(of: router.transition) { oldValue, newValue in
-                XCTAssertEqual(newValue.type, .alert)
-                XCTAssertNotNil(newValue.alert)
-                exp.fulfill()
+                #expect(newValue.type == .alert)
+                #expect(newValue.alert != nil)
+                waiter.finish()
             }
         }
         ViewHosting.host(view: sut)
         router.show(error: NSError(domain: "", code: 11, userInfo: nil), and: nil)
-        await fulfillment(of: [exp], timeout: 0.2)
+        try await waiter.await(for: .milliseconds(200))
     }
     
-    @MainActor
-    func testShowAlert() async {
-        let router = TestRouter()
-        let exp = XCTestExpectation()
-        let sut = SRRootView(context: SRContext()) {
+    @Test
+    func testShowAlert() async throws {
+        let sut = SRRootView(context: context) {
             TestScreen(router: router, tests: .none).onChange(of: router.transition) { oldValue, newValue in
-                XCTAssertEqual(newValue.type, .alert)
-                XCTAssertNotNil(newValue.alert)
-                exp.fulfill()
+                #expect(newValue.type == .alert)
+                #expect(newValue.alert != nil)
+                waiter.finish()
             }
         }
         ViewHosting.host(view: sut)
         router.show(alert: .init(title: Text(""), message: Text("message"), dismissButton: nil))
-        await fulfillment(of: [exp], timeout: 0.2)
+        try await waiter.await(for: .milliseconds(200))
     }
-    
-    @MainActor
-    func testDismiss() async {
-        let router = TestRouter()
-        let exp = XCTestExpectation()
-        let sut = SRRootView(context: SRContext()) {
+
+    @Test
+    func testDismiss() async throws {
+        let sut = SRRootView(context: context) {
             TestScreen(router: router, tests: .none).onChange(of: router.transition) { oldValue, newValue in
-                XCTAssertEqual(newValue.type, .dismiss)
-                exp.fulfill()
+                #expect(newValue.type == .dismiss)
+                waiter.finish()
             }
         }
         ViewHosting.host(view: sut)
         router.dismiss()
-        await fulfillment(of: [exp], timeout: 0.2)
+        try await waiter.await(for: .milliseconds(200))
     }
     
-    @MainActor
-    func testDismissAll() async {
-        let router = TestRouter()
-        let exp = XCTestExpectation()
+    @Test
+    func testDismissAll() async throws {
         let sut = SRRootView(context: SRContext()) {
             TestScreen(router: router, tests: .none).onChange(of: router.transition) { oldValue, newValue in
-                XCTAssertEqual(newValue.type, .dismissAll)
-                exp.fulfill()
+                #expect(newValue.type == .dismissAll)
+                waiter.finish()
             }
         }
         ViewHosting.host(view: sut)
         router.dismissAll()
-        await fulfillment(of: [exp], timeout: 0.2)
+        try await waiter.await(for: .milliseconds(200))
     }
     
-    @MainActor
-    func testPop() async {
-        let router = TestRouter()
-        let exp = XCTestExpectation()
-        let sut = SRRootView(context: SRContext()) {
+    @Test
+    func testPop() async throws {
+        let sut = SRRootView(context: context) {
             TestScreen(router: router, tests: .none).onChange(of: router.transition) { oldValue, newValue in
-                XCTAssertEqual(newValue.type, .pop)
-                exp.fulfill()
+                #expect(newValue.type == .pop)
+                waiter.finish()
             }
         }
         ViewHosting.host(view: sut)
         router.pop()
-        await fulfillment(of: [exp], timeout: 0.2)
+        try await waiter.await(for: .milliseconds(200))
     }
     
-    @MainActor
-    func testPopToRoot() async {
-        let router = TestRouter()
-        let exp = XCTestExpectation()
-        let sut = SRRootView(context: SRContext()) {
+    @Test
+    func testPopToRoot() async throws {
+        let sut = SRRootView(context: context) {
             TestScreen(router: router, tests: .none).onChange(of: router.transition) { oldValue, newValue in
-                XCTAssertEqual(newValue.type, .popToRoot)
-                exp.fulfill()
+                #expect(newValue.type == .popToRoot)
+                waiter.finish()
             }
         }
         ViewHosting.host(view: sut)
         router.popToRoot()
-        await fulfillment(of: [exp], timeout: 0.2)
+        try await waiter.await(for: .milliseconds(200))
     }
     
-    @MainActor
-    func testPopToRoute() async {
-        let router = TestRouter()
-        let exp = XCTestExpectation()
-        let sut = SRRootView(context: SRContext()) {
+    @Test
+    func testPopToRoute() async throws {
+        let sut = SRRootView(context: context) {
             TestScreen(router: router, tests: .none).onChange(of: router.transition) { oldValue, newValue in
-                XCTAssertEqual(newValue.type, .popToRoute)
-                XCTAssertNotNil(newValue.popToRoute)
-                exp.fulfill()
+                #expect(newValue.type == .popToRoute)
+                #expect(newValue.popToRoute != nil)
+                waiter.finish()
             }
         }
         ViewHosting.host(view: sut)
         router.pop(to: EmptyRoute.emptyScreen)
-        await fulfillment(of: [exp], timeout: 0.2)
+        try await waiter.await(for: .milliseconds(200))
     }
     
-    @MainActor
-    func testOpenWindowId() async {
-        let router = TestRouter()
-        let exp = XCTestExpectation()
-        let sut = SRRootView(context: SRContext()) {
+    @Test
+    func testOpenWindowId() async throws {
+        let sut = SRRootView(context: context) {
             TestScreen(router: router, tests: .none).onChange(of: router.transition) { oldValue, newValue in
-                XCTAssertEqual(newValue.type, .openWindow)
-                XCTAssertEqual(newValue.windowTransition?.windowId, "window_id")
-                XCTAssertNil(newValue.windowTransition?.windowValue)
-                exp.fulfill()
+                #expect(newValue.type == .openWindow)
+                #expect(newValue.windowTransition?.windowId == "window_id")
+                #expect(newValue.windowTransition?.windowValue == nil)
+                waiter.finish()
             }
         }
         ViewHosting.host(view: sut)
         router.openWindow(windowTrans: .init(windowId: "window_id"))
-        await fulfillment(of: [exp], timeout: 0.2)
+        try await waiter.await(for: .milliseconds(200))
     }
     
-    @MainActor
-    func testOpenWindowValue() async {
-        let router = TestRouter()
-        let exp = XCTestExpectation()
+    @Test
+    func testOpenWindowValue() async throws {
         let sut = SRRootView(context: SRContext()) {
             TestScreen(router: router, tests: .none).onChange(of: router.transition) { oldValue, newValue in
-                XCTAssertEqual(newValue.type, .openWindow)
-                XCTAssertEqual(newValue.windowTransition?.windowValue?.hashValue, 123.hashValue)
-                XCTAssertNil(newValue.windowTransition?.windowId)
-                exp.fulfill()
+                #expect(newValue.type == .openWindow)
+                #expect(newValue.windowTransition?.windowValue?.hashValue == 123.hashValue)
+                #expect(newValue.windowTransition?.windowId == nil)
+                waiter.finish()
             }
         }
         ViewHosting.host(view: sut)
         router.openWindow(windowTrans: .init(value: 123))
-        await fulfillment(of: [exp], timeout: 0.2)
+        try await waiter.await(for: .milliseconds(200))
     }
     
-    @MainActor
-    func testOpenWindowIdAndValue() async {
-        let router = TestRouter()
-        let exp = XCTestExpectation()
-        let sut = SRRootView(context: SRContext()) {
+    @Test
+    func testOpenWindowIdAndValue() async throws {
+        let sut = SRRootView(context: context) {
             TestScreen(router: router, tests: .none).onChange(of: router.transition) { oldValue, newValue in
-                XCTAssertEqual(newValue.type, .openWindow)
-                XCTAssertEqual(newValue.windowTransition?.windowValue?.hashValue, 123.hashValue)
-                XCTAssertEqual(newValue.windowTransition?.windowId, "window_id")
-                exp.fulfill()
+                #expect(newValue.type == .openWindow)
+                #expect(newValue.windowTransition?.windowValue?.hashValue == 123.hashValue)
+                #expect(newValue.windowTransition?.windowId == "window_id")
+                waiter.finish()
             }
         }
         ViewHosting.host(view: sut)
         router.openWindow(windowTrans: .init(windowId: "window_id", value: 123))
-        await fulfillment(of: [exp], timeout: 0.2)
+        try await waiter.await(for: .milliseconds(200))
     }
     
-    @MainActor
-    func testOpenURL() async {
-        let router = TestRouter()
-        let exp = XCTestExpectation()
-        let sut = SRRootView(context: SRContext()) {
+    @Test
+    func testOpenURL() async throws {
+        let sut = SRRootView(context: context) {
             TestScreen(router: router, tests: .none).onChange(of: router.transition) { oldValue, newValue in
-                XCTAssertEqual(newValue.type, .openURL)
-                XCTAssertEqual(newValue.windowTransition?.url?.absoluteString, "www.google.com")
-                exp.fulfill()
+                #expect(newValue.type == .openURL)
+                #expect(newValue.windowTransition?.url?.absoluteString == "www.google.com")
+                waiter.finish()
             }
         }
         ViewHosting.host(view: sut)
         router.openURL(at: URL(string: "www.google.com")!, completion: .none)
-        await fulfillment(of: [exp], timeout: 0.2)
+        try await waiter.await(for: .milliseconds(200))
     }
     
     #if os(macOS)
-    @MainActor
-    func testDocument() async {
-        let router = TestRouter()
-        let exp = XCTestExpectation()
-        let sut = SRRootView(context: SRContext()) {
+    func testDocument() async throws {
+        let sut = SRRootView(context: context) {
             TestScreen(router: router, tests: .none).onChange(of: router.transition) { oldValue, newValue in
-                XCTAssertEqual(newValue.type, .openDocument)
-                XCTAssertEqual(newValue.windowTransition?.url?.absoluteString, "file://user")
-                exp.fulfill()
+                #expect(newValue.type == .openDocument)
+                #expect(newValue.windowTransition?.url?.absoluteString == "file://user")
+                waiter.finish()
             }
         }
         ViewHosting.host(view: sut)
         router.openDocument(at: URL(string: "file://user")!, completion: .none)
-        await fulfillment(of: [exp], timeout: 0.2)
+        try await waiter.await(for: .milliseconds(200))
     }
     #endif
 }

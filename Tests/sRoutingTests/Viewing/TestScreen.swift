@@ -7,6 +7,8 @@
 
 import SwiftUI
 import ViewInspector
+import Testing
+
 @testable import sRouting
 
 struct TestScreen: View {
@@ -19,3 +21,5 @@ struct TestScreen: View {
             .onRouting(of: router, tests: tests)
     }
 }
+
+

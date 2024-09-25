@@ -5,53 +5,50 @@
 //  Created by Thang Kieu on 29/03/2024.
 //
 
-import Foundation
-
-import XCTest
+import Testing
 import ViewInspector
 import SwiftUI
 
 @testable import sRouting
 
-class TestModifiers: XCTestCase {
+@Suite("Test ViewModifiers actions")
+@MainActor
+struct TestModifiers {
     
-    @MainActor
-    func testOnDismissAll() async {
-        let exp = XCTestExpectation()
-        let router = TestRouter()
-        let sut = SRRootView(context: SRContext()) {
+    let router = TestRouter()
+    let waiter = Waiter()
+    let context = SRContext()
+    
+    @Test
+    func testOnDismissAll() async throws {
+        let sut = SRRootView(context: context) {
             TestScreen(router: router, tests: .none).onDismissAllChange {
-                exp.fulfill()
+                waiter.finish()
             }
         }
         ViewHosting.host(view: sut)
         router.dismissAll()
-        await fulfillment(of: [exp], timeout: 0.2)
+        try await waiter.await(for: .milliseconds(200))
     }
     
-    @MainActor
-    func testOnNavigationStackChange() async {
-        let exp = XCTestExpectation()
-        let router = TestRouter()
-        let sut = SRRootView(context: SRContext()) {
+    @Test
+    func testOnNavigationStackChange() async throws {
+        let sut = SRRootView(context: context) {
             SRNavigationStack(path: .init(), observeView: ObserveView.self) {
                 TestScreen(router: router, tests: .none).onNaviStackChange { oldPaths, newPaths in
-                    XCTAssertTrue(oldPaths.isEmpty)
-                    XCTAssertFalse(newPaths.isEmpty)
-                    exp.fulfill()
+                    #expect(oldPaths.isEmpty)
+                    #expect(newPaths.count == 1)
+                    waiter.finish()
                 }
             }
         }
         ViewHosting.host(view: sut)
         router.trigger(to: .emptyScreen, with: .push)
-        await fulfillment(of: [exp], timeout: 0.2)
+        try await waiter.await(for: .milliseconds(200))
     }
     
-    @MainActor
-    func testOnTabSelectionChange() async {
-        let exp = XCTestExpectation()
-        let router = TestRouter()
-        let context = SRContext()
+    @Test
+    func testOnTabSelectionChange() async throws {
         let sut =  SRRootView(context: context) {
             SRTabbarView {
                 TestScreen(router: router, tests: .none)
@@ -59,8 +56,8 @@ class TestModifiers: XCTestCase {
                         Label("Home", systemImage: "house")
                     }.tag(0)
                     .onTabSelectionChange { value in
-                        XCTAssertEqual(value, 1)
-                        exp.fulfill()
+                        #expect(value == 1)
+                        waiter.finish()
                     }
                 
                 TestScreen(router: router, tests: .none).tabItem {
@@ -70,14 +67,11 @@ class TestModifiers: XCTestCase {
         }
         ViewHosting.host(view: sut)
         router.selectTabbar(at: 1)
-        await fulfillment(of: [exp], timeout: 0.2)
+        try await waiter.await(for: .milliseconds(200))
     }
     
-    @MainActor
+    @Test
     func testOnDoubleTapTabItemChange() async throws {
-        let exp = XCTestExpectation()
-        let router = TestRouter()
-        let context = SRContext()
         let sut =  SRRootView(context: context) {
             SRTabbarView {
                 TestScreen(router: router, tests: .none)
@@ -86,21 +80,19 @@ class TestModifiers: XCTestCase {
                     }.tag(0)
             }
             .onDoubleTapTabItem { selection in
-                XCTAssertEqual(selection, .zero)
-                exp.fulfill()
+                #expect(selection == .zero)
+                waiter.finish()
             }
         }
         ViewHosting.host(view: sut)
         router.selectTabbar(at: 0)
-        try await Task.sleep(for: .milliseconds(200))
+        try await Task.sleep(for: .milliseconds(100))
         router.selectTabbar(at: 0)
-        await fulfillment(of: [exp], timeout: 1)
+        try await waiter.await(for: .milliseconds(200))
     }
     
-    @MainActor
+    @Test
     func testNoneDoubleTapTabItemChange() async throws {
-        let router = TestRouter()
-        let context = SRContext()
         let sut =  SRRootView(context: context) {
             SRTabbarView {
                 TestScreen(router: router, tests: .none)
@@ -109,13 +101,12 @@ class TestModifiers: XCTestCase {
                     }.tag(0)
             }
             .onDoubleTapTabItem { selection in
-                XCTFail()
+                Issue.record()
             }
         }
         ViewHosting.host(view: sut)
         router.selectTabbar(at: 0)
-        try await Task.sleep(for: .milliseconds(600))
+        try await Task.sleep(for: .milliseconds(500))
         router.selectTabbar(at: 0)
-        XCTAssertTrue(true)
     }
 }

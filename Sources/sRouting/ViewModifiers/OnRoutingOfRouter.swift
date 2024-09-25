@@ -231,7 +231,7 @@ extension OpenDocumentAction: @unchecked Sendable { }
 
 extension View {
     
-    /// Observe router transition
+    /// Observe router transitions
     /// - Parameter router: ``SRRouterType``
     /// - Returns: some `View`
     public func onRouting<Router: SRRouterType>(of router: Router) -> some View {

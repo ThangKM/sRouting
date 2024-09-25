@@ -6,28 +6,27 @@
 //
 
 import Foundation
-
-import XCTest
-
+import Testing
 @testable import sRouting
 
-class NavigationPathTests: XCTestCase {
+@Suite("Testing SRNavigationPath")
+@MainActor
+struct NavigationPathTests {
     
+    let path = SRNavigationPath()
     
-    @MainActor
-    func testMatchingStack() async throws {
-        let path = SRNavigationPath()
+    @Test
+    func testMatchingStack() {
         path.push(to: HomeRoute.home)
         path.push(to: EmptyRoute.emptyScreen)
         let homePath = Helpers.navigationStoredPath(for: HomeRoute.home)
         let emptyPath = Helpers.navigationStoredPath(for: EmptyRoute.emptyScreen)
         let stack = path.stack.map({ $0.replacingOccurrences(of: "sRoutingTests.", with: "")})
-        XCTAssertEqual(stack, [homePath, emptyPath])
+        #expect(stack == [homePath, emptyPath])
     }
     
-    @MainActor
-    func testPopToTarget() async throws {
-        let path = SRNavigationPath()
+    @Test
+    func testPopToTarget() {
         path.push(to: EmptyRoute.emptyScreen)
         path.push(to: HomeRoute.home)
         path.push(to: EmptyRoute.emptyScreen)
@@ -40,12 +39,11 @@ class NavigationPathTests: XCTestCase {
         path.pop(to: HomeRoute.home)
         
         let stack = path.stack.map({ $0.replacingOccurrences(of: "sRoutingTests.", with: "")})
-        XCTAssertEqual(stack, [emptyPath, homePath])
+        #expect(stack == [emptyPath, homePath])
     }
     
-    @MainActor
-    func testPopToRoot() async throws {
-        let path = SRNavigationPath()
+    @Test
+    func testPopToRoot() {
         path.push(to: EmptyRoute.emptyScreen)
         path.push(to: HomeRoute.home)
         path.push(to: EmptyRoute.emptyScreen)
@@ -53,19 +51,18 @@ class NavigationPathTests: XCTestCase {
         path.push(to: EmptyRoute.emptyScreen)
 
         path.popToRoot()
-        XCTAssertTrue(path.stack.isEmpty)
+        #expect(path.stack.isEmpty)
     }
     
-    @MainActor
+    @Test
     func testPop() async throws {
-        let path = SRNavigationPath()
         path.push(to: HomeRoute.home)
         path.push(to: EmptyRoute.emptyScreen)
 
         path.pop()
         let homePath = Helpers.navigationStoredPath(for: HomeRoute.home)
         let stack = path.stack.map({ $0.replacingOccurrences(of: "sRoutingTests.", with: "")})
-        XCTAssertEqual(stack, [homePath])
+        #expect(stack == [homePath])
     }
 }
 

@@ -10,16 +10,17 @@ import SwiftSyntax
 import SwiftSyntaxBuilder
 import SwiftSyntaxMacros
 import SwiftSyntaxMacrosTestSupport
-import XCTest
-import sRouting
+import Testing
 import Observation
-
+@testable import sRouting
 
 #if canImport(sRoutingMacros) && os(macOS)
 import sRoutingMacros
 
-final class ContextMacroTest: XCTestCase {
+@Suite("Test ContextMacro")
+struct ContextMacroTest {
     
+    @Test
     func testContextMacroImp() async throws {
         assertMacroExpansion("""
         @sRContext(tabs: ["homeItem", "settingItem"], stacks: "home", "setting")
@@ -346,6 +347,7 @@ final class ContextMacroTest: XCTestCase {
         macros: testMacros)
     }
     
+    @Test
     func testMissingArgsImp() async throws {
         
         let dianosSpec = DiagnosticSpec(message: SRMacroError.missingArguments.description, line: 1, column: 1,severity: .error)
@@ -365,6 +367,7 @@ final class ContextMacroTest: XCTestCase {
         macros: testMacros)
     }
     
+    @Test
     func testTabItemDuplicationArgsImp() async throws {
         
         let dianosSpec = DiagnosticSpec(message: SRMacroError.duplication.description, line: 1, column: 1,severity: .error)
@@ -384,6 +387,7 @@ final class ContextMacroTest: XCTestCase {
         macros: testMacros)
     }
     
+    @Test
     func testStackDuplicationArgsImp() async throws {
         
         let dianosSpec = DiagnosticSpec(message: SRMacroError.duplication.description, line: 1, column: 1,severity: .error)

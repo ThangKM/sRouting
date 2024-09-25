@@ -9,8 +9,8 @@ import SwiftSyntax
 import SwiftSyntaxBuilder
 import SwiftSyntaxMacros
 import SwiftSyntaxMacrosTestSupport
-import XCTest
-import sRouting
+import Testing
+@testable import sRouting
 
 ///Using for dev
 #if canImport(sRoutingMacros) && os(macOS)
@@ -18,9 +18,10 @@ import sRouting
 import sRoutingMacros
 
 
+@Suite("Test RouterMacro")
+struct RouterMacroTest {
 
-final class RouterMacroTest: XCTestCase {
-
+    @Test
     func testRouterMacroImp() async throws {
         
         assertMacroExpansion("""
@@ -186,6 +187,7 @@ final class RouterMacroTest: XCTestCase {
         macros: testMacros)
     }
     
+    @Test
     func testNoneClassImp() async throws {
         assertMacroExpansion("""
         @sRouter(HomeRoute.self) @Observable
@@ -202,6 +204,7 @@ final class RouterMacroTest: XCTestCase {
             macros: testMacros)
     }
     
+    @Test
     func testMissingArgs() async throws {
         assertMacroExpansion("""
         @sRouter() @Observable
@@ -218,6 +221,7 @@ final class RouterMacroTest: XCTestCase {
             macros: testMacros)
     }
     
+    @Test
     func testInvalidArgs() async throws {
         assertMacroExpansion("""
         @sRouter("string") @Observable
@@ -234,6 +238,7 @@ final class RouterMacroTest: XCTestCase {
             macros: testMacros)
     }
     
+    @Test
     func testMissingObservation() async throws {
         assertMacroExpansion("""
         @sRouter(HomeRoute.self)

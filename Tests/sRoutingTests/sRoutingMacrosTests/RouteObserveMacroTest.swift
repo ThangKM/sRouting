@@ -9,16 +9,17 @@ import SwiftSyntax
 import SwiftSyntaxBuilder
 import SwiftSyntaxMacros
 import SwiftSyntaxMacrosTestSupport
-import XCTest
-import sRouting
+import Testing
 import Observation
-
+@testable import sRouting
 
 #if canImport(sRoutingMacros) && os(macOS)
 import sRoutingMacros
 
-final class RouteObserveMacroTest: XCTestCase {
+@Suite("Test RouterObserveMacro")
+struct RouteObserveMacroTest {
     
+    @Test
     func testRouteObserveMacroImp() async throws {
         assertMacroExpansion("""
         @sRouteObserve(HomeRoute.self, SettingRoute.self)
@@ -49,6 +50,7 @@ final class RouteObserveMacroTest: XCTestCase {
         macros: testMacros)
     }
     
+    @Test
     func testRouteObserveMacroWhereImp() async throws {
         assertMacroExpansion("""
         @sRouteObserve(HomeRoute.self, SettingRoute.self)
@@ -79,6 +81,7 @@ final class RouteObserveMacroTest: XCTestCase {
         macros: testMacros)
     }
     
+    @Test
     func testNoneStructImp() async throws {
         assertMacroExpansion("""
         @sRouteObserve(HomeRoute.self, SettingRoute.self)
@@ -95,6 +98,7 @@ final class RouteObserveMacroTest: XCTestCase {
         macros: testMacros)
     }
     
+    @Test
     func testNoneConentGenericName() async throws {
         assertMacroExpansion("""
         @sRouteObserve(HomeRoute.self, SettingRoute.self)
@@ -111,6 +115,7 @@ final class RouteObserveMacroTest: XCTestCase {
         macros: testMacros)
     }
     
+    @Test
     func testContentIsNotViewImp() async throws {
         assertMacroExpansion("""
         @sRouteObserve(HomeRoute.self, SettingRoute.self)
@@ -127,6 +132,7 @@ final class RouteObserveMacroTest: XCTestCase {
         macros: testMacros)
     }
     
+    @Test
     func testRouteDuplication() async throws {
         assertMacroExpansion("""
         @sRouteObserve(HomeRoute.self, SettingRoute.self, HomeRoute.self)
