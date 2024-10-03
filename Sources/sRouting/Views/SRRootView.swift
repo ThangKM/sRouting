@@ -11,7 +11,7 @@ import Observation
 public struct SRRootView<Content, ContextType>: View
 where Content: View, ContextType: SRContextType {
 
-    private var context: ContextType
+    private let context: ContextType
     private let content: () -> Content
     
     public init(context: ContextType,
