@@ -13,7 +13,6 @@ import SwiftUI
 @Suite("Test AnyRoute and SRRoutingError")
 struct TypeTests {
     
-    
     @Test @MainActor
     func testAnyRoute() {
         let route = AnyRoute(route: HomeRoute.home)

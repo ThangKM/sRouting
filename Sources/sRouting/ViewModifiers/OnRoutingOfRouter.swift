@@ -25,13 +25,9 @@ struct RouterModifier<Router>: ViewModifier where Router: SRRouterType {
     private var dismissAllEmitter: SRDismissAllEmitter?
     
     @Environment(\.openWindow) private var openWindow
-    
     @Environment(\.openURL) private var openURL
-    
     @Environment(\.scenePhase) private var scenePhase
-    
     @Environment(\.dismiss) private var dismissAction
-    
     #if os(macOS)
     @Environment(\.openDocument) private var openDocument
     #endif
