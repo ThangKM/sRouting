@@ -71,7 +71,7 @@ extension SRTabbarSelection {
     
     nonisolated private func _observeTapCountStream() {
         Task.detached {[weak self] in
-            guard let stream = self?.tapCountStream.stream,
+            guard let stream = await self?.tapCountStream.stream,
             let cancelTapId = self?.autoCancelTapIdentifier
             else { return }
             
