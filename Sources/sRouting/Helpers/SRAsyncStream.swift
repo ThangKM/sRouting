@@ -22,12 +22,9 @@ actor SRAsyncStream<Value> where Value: Sendable {
     
     /// Events stream
     var stream: AsyncStream<Value> {
-        var continuations = [Continuation]()
-        let stream = AsyncStream { con in
-            continuations.append(con)
+        AsyncStream { continuation in
+            append(continuation)
         }
-        append(continuations.removeFirst())
-        return stream
     }
     
     private func append(_ continuation: Continuation) {
