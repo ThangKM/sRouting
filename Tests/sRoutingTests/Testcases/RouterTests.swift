@@ -158,7 +158,7 @@ struct RouterTests {
     
     @Test
     func testOpenWindowValue() async throws {
-        let sut = SRRootView(context: SRContext()) {
+        let sut = SRRootView(context: context) {
             TestScreen(router: router, tests: .none).onChange(of: router.transition) { oldValue, newValue in
                 #expect(newValue.type == .openWindow)
                 #expect(newValue.windowTransition?.windowValue?.hashValue == 123.hashValue)

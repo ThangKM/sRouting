@@ -14,10 +14,8 @@ jobs:
     runs-on: macOS-latest
     steps:
     - uses: actions/checkout@v4
-    - name: Run iOS tests
-      run: xcodebuild test -destination 'platform=iOS Simulator' -scheme 'sRouting' -enableCodeCoverage YES build test
     - name: Run macOS tests
-      run: xcodebuild test -scheme 'sRouting' -destination 'platform=macOS' -enableCodeCoverage YES build test
+      run: swift test --enable-code-coverage
     - name: Upload coverage to Codecov
       uses: codecov/codecov-action@v4
       with:
