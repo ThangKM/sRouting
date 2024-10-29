@@ -10,17 +10,15 @@ import SwiftSyntax
 import SwiftSyntaxBuilder
 import SwiftSyntaxMacros
 import SwiftSyntaxMacrosTestSupport
-import Testing
+import XCTest
 import Observation
 @testable import sRouting
 
 #if canImport(sRoutingMacros) && os(macOS)
 import sRoutingMacros
 
-@Suite("Test ContextMacro")
-struct ContextMacroTest {
+final class ContextMacroTest: XCTestCase {
     
-    @Test
     func testContextMacroImp() async throws {
         assertMacroExpansion("""
         @sRContext(tabs: ["homeItem", "settingItem"], stacks: "home", "setting")
@@ -136,8 +134,8 @@ struct ContextMacroTest {
             /// router.selectTabbar(at: 0)
             /// ```
             @MainActor
-            func selectTabbar(at index: Int) {
-                transition = .init(selectTab: index)
+            func selectTabbar(at index: Int, with transaction: WithTransaction? = .none) {
+                transition = .init(selectTab: index, and: transaction)
             }
 
             /// Trigger to new screen
@@ -150,8 +148,8 @@ struct ContextMacroTest {
             /// router.trigger(to: .detailScreen, with: .push)
             /// ```
             @MainActor
-            func trigger(to route: AnyRoute, with action: SRTriggerType) {
-                transition = .init(with: route, and: .init(with: action))
+            func trigger(to route: AnyRoute, with action: SRTriggerType, and transaction: WithTransaction? = .none) {
+                transition = .init(with: route, and: .init(with: action), transaction: transaction)
             }
 
             /// Show an alert
@@ -212,18 +210,18 @@ struct ContextMacroTest {
             }
 
             @MainActor
-            func pop() {
-                transition = .init(with: .pop)
+            func pop(with transaction: WithTransaction? = .none) {
+                transition = .init(with: .pop, and: transaction)
             }
 
             @MainActor
-            func popToRoot() {
-                transition = .init(with: .popToRoot)
+            func popToRoot(with transaction: WithTransaction? = .none) {
+                transition = .init(with: .popToRoot, and: transaction)
             }
 
             @MainActor
-            func pop(to route: some SRRoute) {
-                transition = .init(popTo: route)
+            func pop(to route: some SRRoute, with transaction: WithTransaction? = .none) {
+                transition = .init(popTo: route, and: transaction)
             }
 
             /// Opens a window that's associated with the specified transition.
@@ -347,7 +345,6 @@ struct ContextMacroTest {
         macros: testMacros)
     }
     
-    @Test
     func testMissingArgsImp() async throws {
         
         let dianosSpec = DiagnosticSpec(message: SRMacroError.missingArguments.description, line: 1, column: 1,severity: .error)
@@ -367,7 +364,6 @@ struct ContextMacroTest {
         macros: testMacros)
     }
     
-    @Test
     func testTabItemDuplicationArgsImp() async throws {
         
         let dianosSpec = DiagnosticSpec(message: SRMacroError.duplication.description, line: 1, column: 1,severity: .error)
@@ -387,7 +383,6 @@ struct ContextMacroTest {
         macros: testMacros)
     }
     
-    @Test
     func testStackDuplicationArgsImp() async throws {
         
         let dianosSpec = DiagnosticSpec(message: SRMacroError.duplication.description, line: 1, column: 1,severity: .error)

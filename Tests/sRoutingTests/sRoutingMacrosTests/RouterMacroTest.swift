@@ -9,7 +9,7 @@ import SwiftSyntax
 import SwiftSyntaxBuilder
 import SwiftSyntaxMacros
 import SwiftSyntaxMacrosTestSupport
-import Testing
+import XCTest
 @testable import sRouting
 
 ///Using for dev
@@ -17,11 +17,8 @@ import Testing
 
 import sRoutingMacros
 
+final class RouterMacroTest: XCTestCase {
 
-@Suite("Test RouterMacro")
-struct RouterMacroTest {
-
-    @Test
     func testRouterMacroImp() async throws {
         
         assertMacroExpansion("""
@@ -58,8 +55,8 @@ struct RouterMacroTest {
             /// router.selectTabbar(at: 0)
             /// ```
             @MainActor
-            func selectTabbar(at index: Int) {
-                transition = .init(selectTab: index)
+            func selectTabbar(at index: Int, with transaction: WithTransaction? = .none) {
+                transition = .init(selectTab: index, and: transaction)
             }
 
             /// Trigger to new screen
@@ -72,8 +69,8 @@ struct RouterMacroTest {
             /// router.trigger(to: .detailScreen, with: .push)
             /// ```
             @MainActor
-            func trigger(to route: HomeRoute, with action: SRTriggerType) {
-                transition = .init(with: route, and: .init(with: action))
+            func trigger(to route: HomeRoute, with action: SRTriggerType, and transaction: WithTransaction? = .none) {
+                transition = .init(with: route, and: .init(with: action), transaction: transaction)
             }
 
             /// Show an alert
@@ -134,18 +131,18 @@ struct RouterMacroTest {
             }
 
             @MainActor
-            func pop() {
-                transition = .init(with: .pop)
+            func pop(with transaction: WithTransaction? = .none) {
+                transition = .init(with: .pop, and: transaction)
             }
 
             @MainActor
-            func popToRoot() {
-                transition = .init(with: .popToRoot)
+            func popToRoot(with transaction: WithTransaction? = .none) {
+                transition = .init(with: .popToRoot, and: transaction)
             }
 
             @MainActor
-            func pop(to route: some SRRoute) {
-                transition = .init(popTo: route)
+            func pop(to route: some SRRoute, with transaction: WithTransaction? = .none) {
+                transition = .init(popTo: route, and: transaction)
             }
 
             /// Opens a window that's associated with the specified transition.
@@ -187,7 +184,6 @@ struct RouterMacroTest {
         macros: testMacros)
     }
     
-    @Test
     func testNoneClassImp() async throws {
         assertMacroExpansion("""
         @sRouter(HomeRoute.self) @Observable
@@ -204,7 +200,6 @@ struct RouterMacroTest {
             macros: testMacros)
     }
     
-    @Test
     func testMissingArgs() async throws {
         assertMacroExpansion("""
         @sRouter() @Observable
@@ -221,7 +216,6 @@ struct RouterMacroTest {
             macros: testMacros)
     }
     
-    @Test
     func testInvalidArgs() async throws {
         assertMacroExpansion("""
         @sRouter("string") @Observable
@@ -238,7 +232,6 @@ struct RouterMacroTest {
             macros: testMacros)
     }
     
-    @Test
     func testMissingObservation() async throws {
         assertMacroExpansion("""
         @sRouter(HomeRoute.self)

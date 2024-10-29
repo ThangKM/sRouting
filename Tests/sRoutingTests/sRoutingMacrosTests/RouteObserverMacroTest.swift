@@ -9,24 +9,23 @@ import SwiftSyntax
 import SwiftSyntaxBuilder
 import SwiftSyntaxMacros
 import SwiftSyntaxMacrosTestSupport
-import Testing
+import XCTest
 @testable import sRouting
 
 #if canImport(sRoutingMacros) && os(macOS)
 import sRoutingMacros
 
-@Suite("Test RouteObserverMacro")
-struct RouteObserverMacroTest {
+final class RouteObserverMacroTest: XCTestCase {
     
-    @Test
     func testRouteObserverMacroImp() async throws {
         assertMacroExpansion("""
-        @sRouteObserver(HomeRoute.self, SettingRoute.self, HomeRoute.self)
+        @sRouteObserver(HomeRoute.self, SettingRoute.self)
         struct RouteObserver {
         
         }
         """, expandedSource:"""
         struct RouteObserver {
+
             @Environment(SRNavigationPath.self)
             private var path
 
@@ -39,6 +38,7 @@ struct RouteObserverMacroTest {
             .navigationDestination(for: SettingRoute.self) { route in route.screen.environment(path) }
 
             }
+
         }
 
         extension RouteObserver: sRouting.SRRouteObserverType {
@@ -47,7 +47,6 @@ struct RouteObserverMacroTest {
         macros: testMacros)
     }
 
-    @Test
     func testNoneStructImp() async throws {
         assertMacroExpansion("""
         @sRouteObserver(HomeRoute.self, SettingRoute.self)
@@ -64,14 +63,13 @@ struct RouteObserverMacroTest {
         macros: testMacros)
     }
     
-    @Test
     func testRouteDuplication() async throws {
         assertMacroExpansion("""
         @sRouteObserver(HomeRoute.self, SettingRoute.self, HomeRoute.self)
-        class RouteObserver {
+        struct RouteObserver {
         }
         """, expandedSource:"""
-        class RouteObserver {
+        struct RouteObserver {
         }
 
         extension RouteObserver: sRouting.SRRouteObserverType {
