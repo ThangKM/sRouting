@@ -58,7 +58,7 @@ struct RouterModifierTests {
     
     @Test
     func testPush() async throws {
-        let sut = SRNavigationStack(path: .init(), observeView: ObserveView.self) {
+        let sut = NavigationStack(path: SRNavigationPath()) {
             TestScreen(router: router, tests: .none).onNaviStackChange { oldPaths, newPaths in
                 #expect(newPaths.count == 1)
                 waiter.finish()
@@ -71,7 +71,7 @@ struct RouterModifierTests {
     
     @Test
     func testPop() async throws {
-        let sut = SRNavigationStack(path: .init(), observeView: ObserveView.self) {
+        let sut = NavigationStack(path: SRNavigationPath()) {
             TestScreen(router: router, tests: .none).onNaviStackChange { oldPaths, newPaths in
                 guard newPaths.count == .zero else { return }
                 waiter.finish()
@@ -86,7 +86,7 @@ struct RouterModifierTests {
     
     @Test
     func testPopToRoot() async throws {
-        let sut = SRNavigationStack(path: .init(), observeView: ObserveView.self) {
+        let sut = NavigationStack(path: SRNavigationPath()) {
             TestScreen(router: router, tests: .none).onNaviStackChange { oldPaths, newPaths in
                 guard newPaths.count == .zero else { return }
                 waiter.finish()
@@ -105,7 +105,7 @@ struct RouterModifierTests {
     
     @Test
     func testPopToTarget() async throws {
-        let sut = SRNavigationStack(path: .init(), observeView: ObserveView.self) {
+        let sut = NavigationStack(path: SRNavigationPath()) {
             TestScreen(router: router, tests: .none).onNaviStackChange { oldPaths, newPaths in
                 guard let path = newPaths.first, newPaths.count == 1 else { return }
                 #expect(path.contains("home"))

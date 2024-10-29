@@ -34,7 +34,7 @@ struct TestModifiers {
     @Test
     func testOnNavigationStackChange() async throws {
         let sut = SRRootView(context: context) {
-            SRNavigationStack(path: .init(), observeView: ObserveView.self) {
+            NavigationStack(path: context.homePath) {
                 TestScreen(router: router, tests: .none).onNaviStackChange { oldPaths, newPaths in
                     #expect(oldPaths.isEmpty)
                     #expect(newPaths.count == 1)
@@ -50,7 +50,7 @@ struct TestModifiers {
     @Test
     func testOnTabSelectionChange() async throws {
         let sut =  SRRootView(context: context) {
-            SRTabbarView {
+            TabView {
                 TestScreen(router: router, tests: .none)
                     .tabItem {
                         Label("Home", systemImage: "house")
@@ -73,7 +73,7 @@ struct TestModifiers {
     @Test
     func testOnDoubleTapTabItemChange() async throws {
         let sut =  SRRootView(context: context) {
-            SRTabbarView {
+            TabView {
                 TestScreen(router: router, tests: .none)
                     .tabItem {
                         Label("Home", systemImage: "house")
@@ -94,7 +94,7 @@ struct TestModifiers {
     @Test
     func testNoneDoubleTapTabItemChange() async throws {
         let sut =  SRRootView(context: context) {
-            SRTabbarView {
+            TabView {
                 TestScreen(router: router, tests: .none)
                     .tabItem {
                         Label("Home", systemImage: "house")

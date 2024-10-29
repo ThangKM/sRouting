@@ -64,8 +64,8 @@ public struct RouterMacro: MemberMacro {
         /// router.selectTabbar(at: 0)
         /// ```
         @MainActor
-        func selectTabbar(at index: Int) {
-            transition = .init(selectTab: index)
+        func selectTabbar(at index: Int, with transaction: WithTransaction? = .none) {
+            transition = .init(selectTab: index, and: transaction)
         }
         
         /// Trigger to new screen
@@ -78,8 +78,8 @@ public struct RouterMacro: MemberMacro {
         /// router.trigger(to: .detailScreen, with: .push)
         /// ```
         @MainActor
-        func trigger(to route: \(raw: routeType), with action: SRTriggerType) {
-            transition = .init(with: route, and: .init(with: action))
+        func trigger(to route: \(raw: routeType), with action: SRTriggerType, and transaction: WithTransaction? = .none) {
+            transition = .init(with: route, and: .init(with: action), transaction: transaction)
         }
         
         /// Show an alert
@@ -140,18 +140,18 @@ public struct RouterMacro: MemberMacro {
         }
         
         @MainActor
-        func pop() {
-            transition = .init(with: .pop)
+        func pop(with transaction: WithTransaction? = .none) {
+            transition = .init(with: .pop, and: transaction)
         }
         
         @MainActor
-        func popToRoot() {
-            transition = .init(with: .popToRoot)
+        func popToRoot(with transaction: WithTransaction? = .none) {
+            transition = .init(with: .popToRoot, and: transaction)
         }
         
         @MainActor
-        func pop(to route: some SRRoute) {
-            transition = .init(popTo: route)
+        func pop(to route: some SRRoute, with transaction: WithTransaction? = .none) {
+            transition = .init(popTo: route, and: transaction)
         }
         
         /// Opens a window that's associated with the specified transition.

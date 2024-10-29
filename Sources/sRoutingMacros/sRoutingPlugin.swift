@@ -12,7 +12,7 @@ import SwiftSyntaxMacros
 @main
 struct sRoutingPlugin: CompilerPlugin {
     let providingMacros: [Macro.Type] = [
-        RouterMacro.self, ContextMacro.self, RouteObserveMacro.self
+        RouterMacro.self, ContextMacro.self, RouteObserverMacro.self
     ]
 }
 
@@ -21,7 +21,7 @@ public enum SRMacroError: Error, CustomStringConvertible, CustomNSError {
     case onlyStruct
     case missingArguments
     case invalidGenericFormat(String)
-    case haveToUsingMemberAccess
+    case haveToUseMemberAccess
     case duplication
     case structOrClass
     case onlyClass
@@ -38,7 +38,7 @@ public enum SRMacroError: Error, CustomStringConvertible, CustomNSError {
             -501
         case .invalidGenericFormat:
             -502
-        case .haveToUsingMemberAccess:
+        case .haveToUseMemberAccess:
             -503
         case .duplication:
             -504
@@ -61,7 +61,7 @@ public enum SRMacroError: Error, CustomStringConvertible, CustomNSError {
             "Missing arguments!"
         case .invalidGenericFormat(let name):
             "Using 'struct \(name)<Content>: View where Content: View' instead of!"
-        case .haveToUsingMemberAccess:
+        case .haveToUseMemberAccess:
             "Using `YourRoute.self` instead of!"
         case .duplication:
             "Duplication!"

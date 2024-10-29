@@ -45,5 +45,5 @@ class TestRouter { }
 @sRContext(stacks: "home")
 struct SRContext { }
 
-@sRouteObserve(EmptyRoute.self, HomeRoute.self)
-struct ObserveView<Content>: View where Content: View { }
+@sRouteObserver(EmptyRoute.self, HomeRoute.self)
+struct RouteObserver { }

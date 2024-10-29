@@ -86,7 +86,14 @@ struct RouterModifier<Router>: ViewModifier where Router: SRRouterType {
                 resetActiveState()
             })
             .onChange(of: router.transition, { oldValue, newValue in
-                updateActiveState(from: newValue)
+                let transaction = newValue.transaction?()
+                if let transaction {
+                    withTransaction(transaction) {
+                        updateActiveState(from: newValue)
+                    }
+                } else {
+                    updateActiveState(from: newValue)
+                }
             })
         #else
         content
@@ -119,7 +126,14 @@ struct RouterModifier<Router>: ViewModifier where Router: SRRouterType {
                 resetActiveState()
             })
             .onChange(of: router.transition, { oldValue, newValue in
-                updateActiveState(from: newValue)
+                let transaction = newValue.transaction?()
+                if let transaction {
+                    withTransaction(transaction) {
+                        updateActiveState(from: newValue)
+                    }
+                } else {
+                    updateActiveState(from: newValue)
+                }
             })
         #endif
     }
