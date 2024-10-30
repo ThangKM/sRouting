@@ -21,7 +21,7 @@ jobs:
     - name: Run macOS tests
       run: swift test
     - name: Run iOS tests
-      run: xcodebuild test -destination 'platform=iOS Simulator,OS=18.0,name=iPhone 16' -scheme 'sRouting' -enableCodeCoverage YES
+      run: xcodebuild test -destination 'platform=iOS Simulator,OS=18.0,name=iPhone 16' -scheme 'sRouting-Package' -enableCodeCoverage YES
     - name: Upload coverage to Codecov
       uses: codecov/codecov-action@v4
       with:
