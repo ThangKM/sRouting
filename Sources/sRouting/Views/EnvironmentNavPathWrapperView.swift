@@ -14,7 +14,6 @@ public struct EnvironmentNavPathWrapperView<Content>: View
 where Content: View {
     
     private let path: SRNavigationPath
-    
     private let content: () -> Content
 
     /// Initalizer of ``EnviromentNavPathWrapperView``
@@ -36,10 +35,10 @@ where Content: View {
     }
 }
 
-extension NavigationStack {
+extension NavigationStack where Data == NavigationPath {
     
     public init<Content: View>(path: SRNavigationPath, @ViewBuilder root: @escaping () -> Content)
-    where Data == NavigationPath, Root == EnvironmentNavPathWrapperView<Content> {
+    where Root == EnvironmentNavPathWrapperView<Content> {
         @Bindable var bindPath = path
         self.init(path: $bindPath.navPath) {
             EnvironmentNavPathWrapperView(path: path, content: root)

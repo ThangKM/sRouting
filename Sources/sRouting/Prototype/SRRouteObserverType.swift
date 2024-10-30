@@ -8,7 +8,6 @@
 import Foundation
 import SwiftUI
 
-@MainActor
 public protocol SRRouteObserverType: ViewModifier {
     
     init()

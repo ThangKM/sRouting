@@ -83,8 +83,8 @@ struct SRContext { }
 Declaring View of navigation destination:
 
 ```swift
-@sRouteObserve(HomeRoute.self, SettingRoute.self)
-struct ObserveView<Content>: View where Content: View { }
+@sRouteObserver(HomeRoute.self, SettingRoute.self)
+struct RouteObserver { }
 ```
 
 Setup Your App:
@@ -98,15 +98,18 @@ struct BookieApp: App {
 
         WindowGroup {
             SRRootView(context: context) {
-                SRTabbarView {
-                    SRNavigationStack(path: context.homePath, observeView: ObserveView.self) {
+                @Bindable var tabSelection = context.tabSelection
+                TabView(selection: $tabSelection.selection) {
+                    NavigationStack(path: context.homePath) {
                         AppRoute.home.screen
+                            .routeObserver(RouteObserver.self)
                     }.tabItem {
                         Label("Home", systemImage: "house")
                     }.tag(SRTabItem.home.rawValue)
                     
-                    SRNavigationStack(path: context.settingPath, observeView: ObserveView.self) {
+                    NavigationStack(path: context.settingPath) {
                         AppRoute.setting.screen
+                            .routeObserver(RouteObserver.self)
                     }.tabItem {
                         Label("Setting", systemImage: "gear")
                     }.tag(SRTabItem.setting.rawValue)
