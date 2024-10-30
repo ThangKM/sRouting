@@ -52,7 +52,8 @@ struct TestModifiers {
     func testOnTabSelectionChange() async throws {
         var tabIndex = 0
         let sut =  SRRootView(context: context) {
-            TabView {
+            @Bindable var tabSelection = context.tabSelection
+            TabView(selection: $tabSelection.selection) {
                 TestScreen(router: router, tests: .none)
                     .tabItem {
                         Label("Home", systemImage: "house")
@@ -76,7 +77,8 @@ struct TestModifiers {
     func testOnDoubleTapTabItem() async throws {
         var selection = -1
         let sut =  SRRootView(context: context) {
-            TabView {
+            @Bindable var tabSelection = context.tabSelection
+            TabView(selection: $tabSelection.selection) {
                 TestScreen(router: router, tests: .none)
                     .tabItem {
                         Label("Home", systemImage: "house")
@@ -90,14 +92,15 @@ struct TestModifiers {
         router.selectTabbar(at: 0)
         try await Task.sleep(for: .milliseconds(100))
         router.selectTabbar(at: 0)
-        try await Task.sleep(for: .milliseconds(100))
+        try await Task.sleep(for: .milliseconds(10))
         #expect(selection == .zero)
     }
     
     @Test
     func testNoneDoubleTapTabItem() async throws {
         let sut =  SRRootView(context: context) {
-            TabView {
+            @Bindable var tabSelection = context.tabSelection
+            TabView(selection: $tabSelection.selection) {
                 TestScreen(router: router, tests: .none)
                     .tabItem {
                         Label("Home", systemImage: "house")
