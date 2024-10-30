@@ -15,9 +15,9 @@ struct TypeTests {
     
     @Test @MainActor
     func testAnyRoute() {
-        let route = AnyRoute(route: HomeRoute.home)
+        let route = AnyRoute(route: TestRoute.home)
         #expect(route.screen != nil)
-        #expect(route.path.contains(HomeRoute.home.path))
+        #expect(route.path.contains(TestRoute.home.path))
     }
     
     @Test

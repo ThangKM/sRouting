@@ -8,7 +8,7 @@
 import SwiftUI
 @testable import sRouting
 
-enum EmptyRoute: SRRoute {
+enum TestRoute: SRRoute {
     
     var path: String {
         switch self {
@@ -27,23 +27,11 @@ enum EmptyRoute: SRRoute {
     }
 }
 
-enum HomeRoute: SRRoute {
-    
-    var path: String { "home screen" }
-    
-    
-    case home
-    
-    var screen: some View {
-        EmptyView()
-    }
-}
-
-@sRouter(EmptyRoute.self) @Observable
+@sRouter(TestRoute.self) @Observable
 class TestRouter { }
 
-@sRContext(stacks: "home")
+@sRContext(stacks: "testStack")
 struct SRContext { }
 
-@sRouteObserver(EmptyRoute.self, HomeRoute.self)
+@sRouteObserver(TestRoute.self)
 struct RouteObserver { }

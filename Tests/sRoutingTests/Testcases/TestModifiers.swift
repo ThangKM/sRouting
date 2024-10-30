@@ -34,7 +34,7 @@ struct TestModifiers {
     @Test
     func testOnNavigationStackChange() async throws {
         let sut = SRRootView(context: context) {
-            NavigationStack(path: context.homePath) {
+            NavigationStack(path: context.testStackPath) {
                 TestScreen(router: router, tests: .none).onNaviStackChange { oldPaths, newPaths in
                     #expect(oldPaths.isEmpty)
                     #expect(newPaths.count == 1)

@@ -17,26 +17,26 @@ struct NavigationPathTests {
     
     @Test
     func testMatchingStack() {
-        path.push(to: HomeRoute.home)
-        path.push(to: EmptyRoute.emptyScreen)
-        let homePath = Helpers.navigationStoredPath(for: HomeRoute.home)
-        let emptyPath = Helpers.navigationStoredPath(for: EmptyRoute.emptyScreen)
+        path.push(to: TestRoute.home)
+        path.push(to: TestRoute.emptyScreen)
+        let homePath = Helpers.navigationStoredPath(for: TestRoute.home)
+        let emptyPath = Helpers.navigationStoredPath(for: TestRoute.emptyScreen)
         let stack = path.stack.map({ $0.replacingOccurrences(of: "sRoutingTests.", with: "")})
         #expect(stack == [homePath, emptyPath])
     }
     
     @Test
     func testPopToTarget() {
-        path.push(to: EmptyRoute.emptyScreen)
-        path.push(to: HomeRoute.home)
-        path.push(to: EmptyRoute.emptyScreen)
-        path.push(to: EmptyRoute.emptyScreen)
-        path.push(to: EmptyRoute.emptyScreen)
+        path.push(to: TestRoute.emptyScreen)
+        path.push(to: TestRoute.home)
+        path.push(to: TestRoute.emptyScreen)
+        path.push(to: TestRoute.emptyScreen)
+        path.push(to: TestRoute.emptyScreen)
         
-        let homePath = Helpers.navigationStoredPath(for: HomeRoute.home)
-        let emptyPath = Helpers.navigationStoredPath(for: EmptyRoute.emptyScreen)
+        let homePath = Helpers.navigationStoredPath(for: TestRoute.home)
+        let emptyPath = Helpers.navigationStoredPath(for: TestRoute.emptyScreen)
         
-        path.pop(to: HomeRoute.home)
+        path.pop(to: TestRoute.home)
         
         let stack = path.stack.map({ $0.replacingOccurrences(of: "sRoutingTests.", with: "")})
         #expect(stack == [emptyPath, homePath])
@@ -44,11 +44,11 @@ struct NavigationPathTests {
     
     @Test
     func testPopToRoot() {
-        path.push(to: EmptyRoute.emptyScreen)
-        path.push(to: HomeRoute.home)
-        path.push(to: EmptyRoute.emptyScreen)
-        path.push(to: EmptyRoute.emptyScreen)
-        path.push(to: EmptyRoute.emptyScreen)
+        path.push(to: TestRoute.emptyScreen)
+        path.push(to: TestRoute.home)
+        path.push(to: TestRoute.emptyScreen)
+        path.push(to: TestRoute.emptyScreen)
+        path.push(to: TestRoute.emptyScreen)
 
         path.popToRoot()
         #expect(path.stack.isEmpty)
@@ -56,11 +56,11 @@ struct NavigationPathTests {
     
     @Test
     func testPop() async throws {
-        path.push(to: HomeRoute.home)
-        path.push(to: EmptyRoute.emptyScreen)
+        path.push(to: TestRoute.home)
+        path.push(to: TestRoute.emptyScreen)
 
         path.pop()
-        let homePath = Helpers.navigationStoredPath(for: HomeRoute.home)
+        let homePath = Helpers.navigationStoredPath(for: TestRoute.home)
         let stack = path.stack.map({ $0.replacingOccurrences(of: "sRoutingTests.", with: "")})
         #expect(stack == [homePath])
     }

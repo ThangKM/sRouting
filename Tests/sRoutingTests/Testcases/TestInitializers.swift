@@ -16,7 +16,7 @@ struct TestInitializers {
 
     @Test
     func testInitialTransitionWithSelectTab() {
-        let sut = SRTransition<EmptyRoute>(selectTab: 0)
+        let sut = SRTransition<TestRoute>(selectTab: 0)
         #expect(sut.alert == nil)
         #expect(sut.route == nil)
         #expect(sut.tabIndex == 0)
@@ -25,7 +25,7 @@ struct TestInitializers {
     
     @Test
     func testInitalTrasitionWithType() {
-        let sut = SRTransition<EmptyRoute>(with: .dismissAll)
+        let sut = SRTransition<TestRoute>(with: .dismissAll)
         #expect(sut.alert == nil)
         #expect(sut.route == nil)
         #expect(sut.tabIndex == nil)
@@ -34,7 +34,7 @@ struct TestInitializers {
     
     @Test
     func testInitTransitionWithAlert() {
-        let sut = SRTransition<EmptyRoute>(with: Alert(title: Text(""), message: Text("message"), dismissButton: nil))
+        let sut = SRTransition<TestRoute>(with: Alert(title: Text(""), message: Text("message"), dismissButton: nil))
         #expect(sut.alert != nil)
         #expect(sut.route == nil)
         #expect(sut.tabIndex == nil)
@@ -43,7 +43,7 @@ struct TestInitializers {
     
     @Test
     func testInitTransitionWithError() {
-        let sut = SRTransition<EmptyRoute>(with: NSError(domain: "", code: 1, userInfo: [:]), and: nil)
+        let sut = SRTransition<TestRoute>(with: NSError(domain: "", code: 1, userInfo: [:]), and: nil)
         #expect(sut.alert != nil)
         #expect(sut.route == nil)
         #expect(sut.tabIndex == nil)
@@ -52,7 +52,7 @@ struct TestInitializers {
     
     @Test
     func testInitTransitionWithRoute() {
-        let sut = SRTransition<EmptyRoute>(with: .emptyScreen, and: .sheet)
+        let sut = SRTransition<TestRoute>(with: .emptyScreen, and: .sheet)
         #expect(sut.route != nil)
         #expect(sut.alert == nil)
         #expect(sut.tabIndex == nil)
@@ -61,7 +61,7 @@ struct TestInitializers {
     
     @Test
     func testInitTransitionNoneType() throws {
-        let sut = SRTransition<EmptyRoute>(with: .none)
+        let sut = SRTransition<TestRoute>(with: .none)
         #expect(sut.alert == nil)
         #expect(sut.route == nil)
         #expect(sut.tabIndex == nil)

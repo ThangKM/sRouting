@@ -16,6 +16,7 @@ struct RouterModifierTests {
     
     let router = TestRouter()
     let waiter = Waiter()
+    let context = SRContext()
     
     @Test
     func testActiveSheet() async throws {
@@ -58,7 +59,7 @@ struct RouterModifierTests {
     
     @Test
     func testPush() async throws {
-        let sut = NavigationStack(path: SRNavigationPath()) {
+        let sut = NavigationStack(path: context.testStackPath) {
             TestScreen(router: router, tests: .none).onNaviStackChange { oldPaths, newPaths in
                 #expect(newPaths.count == 1)
                 waiter.finish()
@@ -71,7 +72,7 @@ struct RouterModifierTests {
     
     @Test
     func testPop() async throws {
-        let sut = NavigationStack(path: SRNavigationPath()) {
+        let sut = NavigationStack(path: context.testStackPath) {
             TestScreen(router: router, tests: .none).onNaviStackChange { oldPaths, newPaths in
                 guard newPaths.count == .zero else { return }
                 waiter.finish()
@@ -86,7 +87,7 @@ struct RouterModifierTests {
     
     @Test
     func testPopToRoot() async throws {
-        let sut = NavigationStack(path: SRNavigationPath()) {
+        let sut = NavigationStack(path: context.testStackPath) {
             TestScreen(router: router, tests: .none).onNaviStackChange { oldPaths, newPaths in
                 guard newPaths.count == .zero else { return }
                 waiter.finish()
@@ -105,7 +106,7 @@ struct RouterModifierTests {
     
     @Test
     func testPopToTarget() async throws {
-        let sut = NavigationStack(path: SRNavigationPath()) {
+        let sut = NavigationStack(path: context.testStackPath) {
             TestScreen(router: router, tests: .none).onNaviStackChange { oldPaths, newPaths in
                 guard let path = newPaths.first, newPaths.count == 1 else { return }
                 #expect(path.contains("home"))
@@ -119,7 +120,7 @@ struct RouterModifierTests {
         try await Task.sleep(for:.milliseconds(50))
         router.trigger(to: .setting, with: .push)
         try await Task.sleep(for:.milliseconds(50))
-        router.pop(to: EmptyRoute.home)
+        router.pop(to: TestRoute.home)
         try await waiter.await(for: .milliseconds(200))
     }
                                                           

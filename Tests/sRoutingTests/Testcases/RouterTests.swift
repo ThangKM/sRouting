@@ -137,7 +137,7 @@ struct RouterTests {
             }
         }
         ViewHosting.host(view: sut)
-        router.pop(to: EmptyRoute.emptyScreen)
+        router.pop(to: TestRoute.emptyScreen)
         try await waiter.await(for: .milliseconds(200))
     }
     
