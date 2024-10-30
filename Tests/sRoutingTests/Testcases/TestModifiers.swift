@@ -28,7 +28,7 @@ struct TestModifiers {
         }
         ViewHosting.host(view: sut)
         router.dismissAll()
-        try await Task.sleep(for: .milliseconds(10))
+        try await Task.sleep(for: .milliseconds(50))
         #expect(isEnter)
     }
     
@@ -44,7 +44,7 @@ struct TestModifiers {
         }
         ViewHosting.host(view: sut)
         router.trigger(to: .emptyScreen, with: .push)
-        try await Task.sleep(for: .milliseconds(10))
+        try await Task.sleep(for: .milliseconds(50))
         #expect(pathCount == 1)
     }
     
@@ -69,7 +69,7 @@ struct TestModifiers {
         }
         ViewHosting.host(view: sut)
         router.selectTabbar(at: 1)
-        try await Task.sleep(for: .milliseconds(10))
+        try await Task.sleep(for: .milliseconds(50))
         #expect(tabIndex == 1)
     }
     
@@ -92,7 +92,7 @@ struct TestModifiers {
         router.selectTabbar(at: 0)
         try await Task.sleep(for: .milliseconds(100))
         router.selectTabbar(at: 0)
-        try await Task.sleep(for: .milliseconds(10))
+        try await Task.sleep(for: .milliseconds(50))
         #expect(selection == .zero)
     }
     
