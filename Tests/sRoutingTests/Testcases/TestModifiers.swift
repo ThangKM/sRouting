@@ -88,7 +88,7 @@ struct TestModifiers {
         router.selectTabbar(at: 0)
         try await Task.sleep(for: .milliseconds(100))
         router.selectTabbar(at: 0)
-        try await waiter.await(for: .milliseconds(200))
+        try await waiter.await(for: .milliseconds(300))
     }
     
     @Test

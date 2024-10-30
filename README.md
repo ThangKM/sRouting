@@ -18,7 +18,7 @@ It's easy to handle navigation between screens by sRouting.
 ## Requirements
 
 - iOS 17 or above
-- Xcode 15 or above
+- Xcode 16 or above
 
 ## 📚 Documentation
 Explore DocC to find rich tutorials and get started with sRouting.
