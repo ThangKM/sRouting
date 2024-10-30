@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import XCTest
 
 struct TimeOutError: Error, CustomStringConvertible {
     var description: String { "time out" }
@@ -13,24 +14,26 @@ struct TimeOutError: Error, CustomStringConvertible {
 
 final class Waiter: @unchecked Sendable {
 
-    private var task: Task<Void, Never>?
+    private let exp = XCTestExpectation()
     
     @discardableResult
-    func await(for timeout: Duration) async throws -> Bool {
+    func await(for timeout: TimeInterval) async throws -> Bool {
         try await withCheckedThrowingContinuation {[weak self] continuation in
-            self?.task = Task.detached {
-                do {
-                    try await Task.sleep(for: timeout)
-                    continuation.resume(throwing: TimeOutError())
-                } catch {
-                    continuation.resume(returning: true)
-                }
+            guard let `self` else {
+                continuation.resume(throwing: TimeOutError())
+                return
+            }
+            let result = XCTWaiter.wait(for: [exp], timeout: timeout)
+            switch result {
+            case .completed:
+                continuation.resume(returning: true)
+            default :
+                continuation.resume(throwing: TimeOutError())
             }
         }
     }
     
     func finish() {
-        task?.cancel()
-        task = nil
+        exp.fulfill()
     }
 }
