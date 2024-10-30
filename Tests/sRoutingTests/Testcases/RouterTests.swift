@@ -30,7 +30,7 @@ struct RouterTests {
         }
         ViewHosting.host(view: sut)
         router.selectTabbar(at: 3)
-        try await waiter.await(for: 0.2)
+        try await waiter.await(for: .milliseconds(200))
     }
     
     @Test
@@ -44,7 +44,7 @@ struct RouterTests {
         }
         ViewHosting.host(view: sut)
         router.trigger(to: .emptyScreen, with: .push)
-        try await waiter.await(for: 0.2)
+        try await waiter.await(for: .milliseconds(200))
     }
     
     @Test
@@ -58,7 +58,7 @@ struct RouterTests {
         }
         ViewHosting.host(view: sut)
         router.show(error: NSError(domain: "", code: 11, userInfo: nil), and: nil)
-        try await waiter.await(for: 0.2)
+        try await waiter.await(for: .milliseconds(200))
     }
     
     @Test
@@ -72,7 +72,7 @@ struct RouterTests {
         }
         ViewHosting.host(view: sut)
         router.show(alert: .init(title: Text(""), message: Text("message"), dismissButton: nil))
-        try await waiter.await(for: 0.2)
+        try await waiter.await(for: .milliseconds(200))
     }
 
     @Test
@@ -85,7 +85,7 @@ struct RouterTests {
         }
         ViewHosting.host(view: sut)
         router.dismiss()
-        try await waiter.await(for: 0.2)
+        try await waiter.await(for: .milliseconds(200))
     }
     
     @Test
@@ -98,7 +98,7 @@ struct RouterTests {
         }
         ViewHosting.host(view: sut)
         router.dismissAll()
-        try await waiter.await(for: 0.2)
+        try await waiter.await(for: .milliseconds(200))
     }
     
     @Test
@@ -111,7 +111,7 @@ struct RouterTests {
         }
         ViewHosting.host(view: sut)
         router.pop()
-        try await waiter.await(for: 0.2)
+        try await waiter.await(for: .milliseconds(200))
     }
     
     @Test
@@ -124,7 +124,7 @@ struct RouterTests {
         }
         ViewHosting.host(view: sut)
         router.popToRoot()
-        try await waiter.await(for: 0.2)
+        try await waiter.await(for: .milliseconds(200))
     }
     
     @Test
@@ -138,7 +138,7 @@ struct RouterTests {
         }
         ViewHosting.host(view: sut)
         router.pop(to: TestRoute.emptyScreen)
-        try await waiter.await(for: 0.2)
+        try await waiter.await(for: .milliseconds(200))
     }
     
     @Test
@@ -152,7 +152,7 @@ struct RouterTests {
         }
         ViewHosting.host(view: sut)
         router.openWindow(windowTrans: .init(windowId: "window_id"))
-        try await waiter.await(for: 0.2)
+        try await waiter.await(for: .milliseconds(200))
     }
     
     @Test
@@ -166,7 +166,7 @@ struct RouterTests {
         }
         ViewHosting.host(view: sut)
         router.openWindow(windowTrans: .init(value: 123))
-        try await waiter.await(for: 0.2)
+        try await waiter.await(for: .milliseconds(200))
     }
     
     @Test
@@ -180,7 +180,7 @@ struct RouterTests {
         }
         ViewHosting.host(view: sut)
         router.openWindow(windowTrans: .init(windowId: "window_id", value: 123))
-        try await waiter.await(for: 0.2)
+        try await waiter.await(for: .milliseconds(200))
     }
     
     @Test
@@ -193,7 +193,7 @@ struct RouterTests {
         }
         ViewHosting.host(view: sut)
         router.openURL(at: URL(string: "www.google.com")!, completion: .none)
-        try await waiter.await(for: 0.2)
+        try await waiter.await(for: .milliseconds(200))
     }
     
     #if os(macOS)
@@ -207,7 +207,7 @@ struct RouterTests {
         }
         ViewHosting.host(view: sut)
         router.openDocument(at: URL(string: "file://user")!, completion: .none)
-        try await waiter.await(for: 0.2)
+        try await waiter.await(for: .milliseconds(200))
     }
     #endif
 }

@@ -28,7 +28,7 @@ struct TestModifiers {
         }
         ViewHosting.host(view: sut)
         router.dismissAll()
-        try await waiter.await(for: 0.2)
+        try await waiter.await(for: .milliseconds(200))
     }
     
     @Test
@@ -44,7 +44,7 @@ struct TestModifiers {
         }
         ViewHosting.host(view: sut)
         router.trigger(to: .emptyScreen, with: .push)
-        try await waiter.await(for: 0.2)
+        try await waiter.await(for: .milliseconds(200))
     }
     
     @Test
@@ -67,7 +67,7 @@ struct TestModifiers {
         }
         ViewHosting.host(view: sut)
         router.selectTabbar(at: 1)
-        try await waiter.await(for: 0.2)
+        try await waiter.await(for: .milliseconds(200))
     }
     
     @Test
@@ -88,7 +88,7 @@ struct TestModifiers {
         router.selectTabbar(at: 0)
         try await Task.sleep(for: .milliseconds(100))
         router.selectTabbar(at: 0)
-        try await waiter.await(for: 0.3)
+        try await waiter.await(for: .milliseconds(300))
     }
     
     @Test

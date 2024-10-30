@@ -19,7 +19,7 @@ jobs:
     - name: Show current version of Xcode
       run: xcodebuild -version
     - name: Run macOS tests
-      run: swift test --enable-code-coverage
+      run: swift test
     - name: Run iOS tests
       run: xcodebuild test -destination 'platform=iOS Simulator,OS=18.0,name=iPhone 16' -scheme 'sRouting' -enableCodeCoverage YES
     - name: Upload coverage to Codecov

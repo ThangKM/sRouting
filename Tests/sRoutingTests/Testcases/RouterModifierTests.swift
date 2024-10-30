@@ -26,7 +26,7 @@ struct RouterModifierTests {
         }))
         ViewHosting.host(view: sut)
         router.trigger(to: .emptyScreen, with: .sheet)
-        try await waiter.await(for: 0.2)
+        try await waiter.await(for: .milliseconds(200))
     }
     
     @Test
@@ -38,7 +38,7 @@ struct RouterModifierTests {
         
         ViewHosting.host(view: sut)
         router.show(error: NSError(domain: "unittest.navigator", code: -1, userInfo: [:]), and: nil)
-        try await waiter.await(for: 0.2)
+        try await waiter.await(for: .milliseconds(200))
     }
     
     @Test
@@ -54,7 +54,7 @@ struct RouterModifierTests {
         ViewHosting.host(view: sut)
         
         router.dismissAll()
-        try await waiter.await(for: 0.2)
+        try await waiter.await(for: .milliseconds(200))
     }
     
     @Test
@@ -67,7 +67,7 @@ struct RouterModifierTests {
         }
         ViewHosting.host(view: sut)
         router.trigger(to: .emptyScreen, with: .push)
-        try await waiter.await(for: 0.2)
+        try await waiter.await(for: .milliseconds(200))
     }
     
     @Test
@@ -82,7 +82,7 @@ struct RouterModifierTests {
         router.trigger(to: .emptyScreen, with: .push)
         try await Task.sleep(for:.milliseconds(50))
         router.pop()
-        try await waiter.await(for: 0.2)
+        try await waiter.await(for: .milliseconds(200))
     }
     
     @Test
@@ -101,7 +101,7 @@ struct RouterModifierTests {
         router.trigger(to: .setting, with: .push)
         try await Task.sleep(for:.milliseconds(50))
         router.popToRoot()
-        try await waiter.await(for: 0.2)
+        try await waiter.await(for: .milliseconds(200))
     }
     
     @Test
@@ -121,7 +121,7 @@ struct RouterModifierTests {
         router.trigger(to: .setting, with: .push)
         try await Task.sleep(for:.milliseconds(50))
         router.pop(to: TestRoute.home)
-        try await waiter.await(for: 0.2)
+        try await waiter.await(for: .milliseconds(200))
     }
                                                           
     #if os(iOS) || os(tvOS)
@@ -134,7 +134,7 @@ struct RouterModifierTests {
         
         ViewHosting.host(view: sut)
         router.show(actionSheet: .init(title: Text("test")))
-        try await waiter.await(for: 0.2)
+        try await waiter.await(for: .milliseconds(200))
     }
     
     @Test
@@ -146,7 +146,7 @@ struct RouterModifierTests {
         
         ViewHosting.host(view: sut)
         router.trigger(to: .home, with: .present)
-        try await waiter.await(for: 0.2)
+        try await waiter.await(for: .milliseconds(200))
     }
     
     #endif
