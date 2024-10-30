@@ -144,12 +144,11 @@ struct RouterTests {
     @Test
     func testOpenWindowId() async throws {
         let sut = SRRootView(context: context) {
-            TestScreen(router: router, tests: .none).onChange(of: router.transition) { oldValue, newValue in
-                #expect(newValue.type == .openWindow)
-                #expect(newValue.windowTransition?.windowId == "window_id")
-                #expect(newValue.windowTransition?.windowValue == nil)
+            TestScreen(router: router, tests: .init(didOpenWindow: { transition in
+                #expect(transition.windowId == "window_id")
+                #expect(transition.windowValue == nil)
                 waiter.finish()
-            }
+            }))
         }
         ViewHosting.host(view: sut)
         router.openWindow(windowTrans: .init(windowId: "window_id"))
@@ -159,12 +158,11 @@ struct RouterTests {
     @Test
     func testOpenWindowValue() async throws {
         let sut = SRRootView(context: context) {
-            TestScreen(router: router, tests: .none).onChange(of: router.transition) { oldValue, newValue in
-                #expect(newValue.type == .openWindow)
-                #expect(newValue.windowTransition?.windowValue?.hashValue == 123.hashValue)
-                #expect(newValue.windowTransition?.windowId == nil)
+            TestScreen(router: router, tests: .init(didOpenWindow: { transition in
+                #expect(transition.windowValue?.hashValue == 123.hashValue)
+                #expect(transition.windowId == nil)
                 waiter.finish()
-            }
+            }))
         }
         ViewHosting.host(view: sut)
         router.openWindow(windowTrans: .init(value: 123))
@@ -174,12 +172,11 @@ struct RouterTests {
     @Test
     func testOpenWindowIdAndValue() async throws {
         let sut = SRRootView(context: context) {
-            TestScreen(router: router, tests: .none).onChange(of: router.transition) { oldValue, newValue in
-                #expect(newValue.type == .openWindow)
-                #expect(newValue.windowTransition?.windowValue?.hashValue == 123.hashValue)
-                #expect(newValue.windowTransition?.windowId == "window_id")
+            TestScreen(router: router, tests: .init(didOpenWindow: { transition in
+                #expect(transition.windowValue?.hashValue == 123.hashValue)
+                #expect(transition.windowId == "window_id")
                 waiter.finish()
-            }
+            }))
         }
         ViewHosting.host(view: sut)
         router.openWindow(windowTrans: .init(windowId: "window_id", value: 123))
@@ -189,11 +186,10 @@ struct RouterTests {
     @Test
     func testOpenURL() async throws {
         let sut = SRRootView(context: context) {
-            TestScreen(router: router, tests: .none).onChange(of: router.transition) { oldValue, newValue in
-                #expect(newValue.type == .openURL)
-                #expect(newValue.windowTransition?.url?.absoluteString == "www.google.com")
+            TestScreen(router: router, tests: .init(didOpenURL: { url in
+                #expect(url.absoluteString == "www.google.com")
                 waiter.finish()
-            }
+            }))
         }
         ViewHosting.host(view: sut)
         router.openURL(at: URL(string: "www.google.com")!, completion: .none)
@@ -201,13 +197,13 @@ struct RouterTests {
     }
     
     #if os(macOS)
+    @Test
     func testDocument() async throws {
         let sut = SRRootView(context: context) {
-            TestScreen(router: router, tests: .none).onChange(of: router.transition) { oldValue, newValue in
-                #expect(newValue.type == .openDocument)
-                #expect(newValue.windowTransition?.url?.absoluteString == "file://user")
+            TestScreen(router: router, tests: .init(didOpenDoc: { url in
+                #expect(url.absoluteString == "file://user")
                 waiter.finish()
-            }
+            }))
         }
         ViewHosting.host(view: sut)
         router.openDocument(at: URL(string: "file://user")!, completion: .none)

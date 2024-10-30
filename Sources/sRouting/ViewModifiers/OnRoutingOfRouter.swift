@@ -183,22 +183,10 @@ extension RouterModifier {
         case .openWindow:
             openWindow(transition: transition.windowTransition)
         case .openURL:
-            guard let windowTransition = transition.windowTransition,
-                  let url = windowTransition.url
-            else { break }
-            if let acception = windowTransition.acception {
-                openURL(url, completion: acception)
-            } else {
-                openURL(url)
-            }
+            openURL(from: transition.windowTransition)
         #if os(macOS)
         case .openDocument:
-            guard let windowTransition = transition.windowTransition,
-                  let url = windowTransition.url
-            else { break }
-            Task {
-                await openDoc(at:url, errorHandler:windowTransition.errorHandler)
-            }
+            openDoc(transition: transition.windowTransition)
         #endif
                     
         case .none: break
@@ -209,19 +197,53 @@ extension RouterModifier {
     
     #if os(macOS)
     @MainActor
-    private func openDoc(at url: URL, errorHandler: ((Error?) -> Void)?) async {
-        do {
-            try await openDocument(at: url)
-            errorHandler?(.none)
-        } catch {
-            errorHandler?(error)
+    private func openDoc(transition: SRWindowTransition?) {
+        guard let transition,
+              let url = transition.url
+        else { return }
+        
+        guard tests == nil else {
+            tests?.didOpenDoc?(url)
+            return
+        }
+        
+        Task {
+            do {
+                try await openDocument(at: url)
+                transition.errorHandler?(.none)
+            } catch {
+                transition.errorHandler?(error)
+            }
         }
     }
     #endif
     
     @MainActor
+    private func openURL(from transition: SRWindowTransition?) {
+        guard let windowTransition = transition,
+              let url = windowTransition.url
+        else { return }
+        
+        guard tests == nil else {
+            tests?.didOpenURL?(url)
+            return
+        }
+        
+        if let acception = windowTransition.acception {
+            openURL(url, completion: acception)
+        } else {
+            openURL(url)
+        }
+    }
+    
+    @MainActor
     private func openWindow(transition: SRWindowTransition?) {
         guard let transition else { return }
+        guard tests == nil else {
+            tests?.didOpenWindow?(transition)
+            return
+        }
+        
         switch (transition.windowId, transition.windowValue) {
         case (.some(let id), .none):
             openWindow(id: id)

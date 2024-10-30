@@ -10,6 +10,14 @@ import SwiftUI
 /// The test callbacks action of navigator views
 struct UnitTestActions<TargetView>
 where TargetView: ViewModifier {
+    
     typealias ViewReturnAction = (TargetView) -> Void
+    typealias DidOpenWindow = (SRWindowTransition) -> Void
+    typealias DidOpenURL = (URL) -> Void
+    typealias DidOpenDoc = (URL) -> Void
+    
     var didChangeTransition: ViewReturnAction?
+    var didOpenWindow: DidOpenWindow?
+    var didOpenURL: DidOpenURL?
+    var didOpenDoc: DidOpenDoc?
 }
