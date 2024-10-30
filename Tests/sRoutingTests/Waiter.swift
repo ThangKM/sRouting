@@ -18,7 +18,7 @@ final class Waiter: @unchecked Sendable {
     @discardableResult
     func await(for timeout: Duration) async throws -> Bool {
         try await withCheckedThrowingContinuation {[weak self] continuation in
-            self?.task = Task {
+            self?.task = Task.detached {
                 do {
                     try await Task.sleep(for: timeout)
                     continuation.resume(throwing: TimeOutError())
