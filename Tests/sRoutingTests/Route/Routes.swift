@@ -8,6 +8,11 @@
 import SwiftUI
 @testable import sRouting
 
+
+struct TimeOutError: Error, CustomStringConvertible {
+    var description: String { "time out" }
+}
+
 enum TestRoute: SRRoute {
     
     var path: String {

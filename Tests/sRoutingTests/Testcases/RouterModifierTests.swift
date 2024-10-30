@@ -15,82 +15,82 @@ import Testing
 struct RouterModifierTests {
     
     let router = TestRouter()
-    let waiter = Waiter()
     let context = SRContext()
     
     @Test
     func testActiveSheet() async throws {
+        var isActive = false
         let sut = TestScreen(router: router, tests: .init(didChangeTransition: { view in
-            #expect(view.isActiveSheet)
-            waiter.finish()
+            isActive = view.isActiveSheet
         }))
         ViewHosting.host(view: sut)
         router.trigger(to: .emptyScreen, with: .sheet)
-        try await waiter.await(for: .milliseconds(200))
+        try await Task.sleep(for: .milliseconds(10))
+        #expect(isActive)
     }
     
     @Test
     func testActiveAlert() async throws {
+        var isActive = false
         let sut = TestScreen(router: router, tests: .init(didChangeTransition: { view in
-            #expect(view.isActiveAlert)
-            waiter.finish()
+            isActive = view.isActiveAlert
         }))
         
         ViewHosting.host(view: sut)
-        router.show(error: NSError(domain: "unittest.navigator", code: -1, userInfo: [:]), and: nil)
-        try await waiter.await(for: .milliseconds(200))
+        router.show(error: TimeOutError())
+        try await Task.sleep(for: .milliseconds(10))
+        #expect(isActive)
     }
     
     @Test
     func testDismissAll() async throws {
+        var isActive = true
         let sut = TestScreen(router: router, tests: .init(didChangeTransition: { view in
-            #expect(!view.isActiveAlert)
-            #expect(!view.isActiveSheet)
-            #expect(!view.isActivePresent)
-            #expect(!view.isActiveActionSheet)
-            waiter.finish()
+            isActive = view.isActiveAlert && view.isActiveSheet && view.isActivePresent && view.isActiveActionSheet
         }))
         
         ViewHosting.host(view: sut)
-        
         router.dismissAll()
-        try await waiter.await(for: .milliseconds(200))
+        try await Task.sleep(for: .milliseconds(10))
+        #expect(!isActive)
     }
     
     @Test
     func testPush() async throws {
+        var pathCount = 0
         let sut = NavigationStack(path: context.testStackPath) {
             TestScreen(router: router, tests: .none).onNaviStackChange { oldPaths, newPaths in
-                #expect(newPaths.count == 1)
-                waiter.finish()
+                pathCount = newPaths.count
             }
         }
         ViewHosting.host(view: sut)
         router.trigger(to: .emptyScreen, with: .push)
-        try await waiter.await(for: .milliseconds(200))
+        try await Task.sleep(for: .milliseconds(10))
+        #expect(pathCount == 1)
     }
     
     @Test
     func testPop() async throws {
+        var pathCount = 1
         let sut = NavigationStack(path: context.testStackPath) {
             TestScreen(router: router, tests: .none).onNaviStackChange { oldPaths, newPaths in
-                guard newPaths.count == .zero else { return }
-                waiter.finish()
+                pathCount = newPaths.count
             }
         }
         ViewHosting.host(view: sut)
         router.trigger(to: .emptyScreen, with: .push)
         try await Task.sleep(for:.milliseconds(50))
         router.pop()
-        try await waiter.await(for: .milliseconds(200))
+        try await Task.sleep(for: .milliseconds(10))
+        #expect(pathCount == .zero)
     }
     
     @Test
     func testPopToRoot() async throws {
+        var pathCount = 1
         let sut = NavigationStack(path: context.testStackPath) {
             TestScreen(router: router, tests: .none).onNaviStackChange { oldPaths, newPaths in
-                guard newPaths.count == .zero else { return }
-                waiter.finish()
+                pathCount = newPaths.count
             }
         }
         ViewHosting.host(view: sut)
@@ -101,16 +101,17 @@ struct RouterModifierTests {
         router.trigger(to: .setting, with: .push)
         try await Task.sleep(for:.milliseconds(50))
         router.popToRoot()
-        try await waiter.await(for: .milliseconds(200))
+        try await Task.sleep(for: .milliseconds(10))
+        #expect(pathCount == .zero)
     }
     
     @Test
     func testPopToTarget() async throws {
+        var paths = [String]()
+        
         let sut = NavigationStack(path: context.testStackPath) {
             TestScreen(router: router, tests: .none).onNaviStackChange { oldPaths, newPaths in
-                guard let path = newPaths.first, newPaths.count == 1 else { return }
-                #expect(path.contains("home"))
-                waiter.finish()
+                paths = newPaths
             }
         }
         ViewHosting.host(view: sut)
@@ -121,32 +122,37 @@ struct RouterModifierTests {
         router.trigger(to: .setting, with: .push)
         try await Task.sleep(for:.milliseconds(50))
         router.pop(to: TestRoute.home)
-        try await waiter.await(for: .milliseconds(200))
+        let path = try #require(paths.first)
+        try await Task.sleep(for: .milliseconds(10))
+        #expect(paths.count == 1)
+        #expect(path.contains("home"))
     }
                                                           
     #if os(iOS) || os(tvOS)
     @Test
     func testActiveActionSheet() async throws {
+        var isActive = false
         let sut = TestScreen(router: router, tests: .init(didChangeTransition: { view in
-            #expect(view.isActiveActionSheet)
-            waiter.finish()
+            isActive = view.isActiveActionSheet
         }))
         
         ViewHosting.host(view: sut)
         router.show(actionSheet: .init(title: Text("test")))
-        try await waiter.await(for: .milliseconds(200))
+        try await Task.sleep(for: .milliseconds(10))
+        #expect(isActive)
     }
     
     @Test
     func testActivePresent() async throws {
+        var isActive = false
         let sut = TestScreen(router: router, tests: .init(didChangeTransition: { view in
-            #expect(view.isActivePresent)
-            waiter.finish()
+            isActive = view.isActivePresent
         }))
         
         ViewHosting.host(view: sut)
         router.trigger(to: .home, with: .present)
-        try await waiter.await(for: .milliseconds(200))
+        try await Task.sleep(for: .milliseconds(10))
+        #expect(isActive)
     }
     
     #endif

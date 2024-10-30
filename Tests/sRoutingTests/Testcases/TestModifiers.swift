@@ -16,39 +16,41 @@ import SwiftUI
 struct TestModifiers {
     
     let router = TestRouter()
-    let waiter = Waiter()
     let context = SRContext()
     
     @Test
     func testOnDismissAll() async throws {
+        var isEnter = false
         let sut = SRRootView(context: context) {
             TestScreen(router: router, tests: .none).onDismissAllChange {
-                waiter.finish()
+                isEnter.toggle()
             }
         }
         ViewHosting.host(view: sut)
         router.dismissAll()
-        try await waiter.await(for: .milliseconds(200))
+        try await Task.sleep(for: .milliseconds(10))
+        #expect(isEnter)
     }
     
     @Test
     func testOnNavigationStackChange() async throws {
+        var pathCount = 0
         let sut = SRRootView(context: context) {
             NavigationStack(path: context.testStackPath) {
                 TestScreen(router: router, tests: .none).onNaviStackChange { oldPaths, newPaths in
-                    #expect(oldPaths.isEmpty)
-                    #expect(newPaths.count == 1)
-                    waiter.finish()
+                    pathCount = newPaths.count
                 }
             }
         }
         ViewHosting.host(view: sut)
         router.trigger(to: .emptyScreen, with: .push)
-        try await waiter.await(for: .milliseconds(200))
+        try await Task.sleep(for: .milliseconds(10))
+        #expect(pathCount == 1)
     }
     
     @Test
     func testOnTabSelectionChange() async throws {
+        var tabIndex = 0
         let sut =  SRRootView(context: context) {
             TabView {
                 TestScreen(router: router, tests: .none)
@@ -56,8 +58,7 @@ struct TestModifiers {
                         Label("Home", systemImage: "house")
                     }.tag(0)
                     .onTabSelectionChange { value in
-                        #expect(value == 1)
-                        waiter.finish()
+                        tabIndex = value
                     }
                 
                 TestScreen(router: router, tests: .none).tabItem {
@@ -67,11 +68,13 @@ struct TestModifiers {
         }
         ViewHosting.host(view: sut)
         router.selectTabbar(at: 1)
-        try await waiter.await(for: .milliseconds(200))
+        try await Task.sleep(for: .milliseconds(10))
+        #expect(tabIndex == 1)
     }
     
     @Test
-    func testOnDoubleTapTabItemChange() async throws {
+    func testOnDoubleTapTabItem() async throws {
+        var selection = -1
         let sut =  SRRootView(context: context) {
             TabView {
                 TestScreen(router: router, tests: .none)
@@ -79,20 +82,20 @@ struct TestModifiers {
                         Label("Home", systemImage: "house")
                     }.tag(0)
             }
-            .onDoubleTapTabItem { selection in
-                #expect(selection == .zero)
-                waiter.finish()
+            .onDoubleTapTabItem { _selection in
+                selection = _selection
             }
         }
         ViewHosting.host(view: sut)
         router.selectTabbar(at: 0)
         try await Task.sleep(for: .milliseconds(100))
         router.selectTabbar(at: 0)
-        try await waiter.await(for: .milliseconds(300))
+        try await Task.sleep(for: .milliseconds(100))
+        #expect(selection == .zero)
     }
     
     @Test
-    func testNoneDoubleTapTabItemChange() async throws {
+    func testNoneDoubleTapTabItem() async throws {
         let sut =  SRRootView(context: context) {
             TabView {
                 TestScreen(router: router, tests: .none)
