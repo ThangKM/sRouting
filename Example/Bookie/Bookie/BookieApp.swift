@@ -11,8 +11,8 @@ import sRouting
 @sRContext(stacks: "rootStack")
 struct SRContext { }
 
-@sRouteObserve(AppRoute.self, HomeRoute.self)
-struct ObserveView<Content>: View where Content: View { }
+@sRouteObserver(AppRoute.self, HomeRoute.self)
+struct RouteObserver { }
 
 @main
 struct BookieApp: App {
@@ -25,8 +25,9 @@ struct BookieApp: App {
     var body: some Scene {
         WindowGroup {
             SRRootView(context: srcontext) {
-                SRNavigationStack(path: srcontext.rootStackPath, observeView: ObserveView.self) {
+                NavigationStack(path: srcontext.rootStackPath) {
                     appRouter.rootRoute.screen
+                        .routeObserver(RouteObserver.self)
                 }
             }
             .environment(data)

@@ -6,8 +6,8 @@
       "kind" : "remoteSourceControl",
       "location" : "git@github.com:ThangKM/sRouting.git",
       "state" : {
-        "revision" : "b3261771e30a7e253cfc5dd00fe132a7d9da625c",
-        "version" : "1.1.5"
+        "revision" : "c907b1af54d2e70b9934b78f8c5770bff1d1e73b",
+        "version" : "1.1.6"
       }
     },
     {
