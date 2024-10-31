@@ -13,7 +13,7 @@ import Observation
 enum HomeRoute: SRRoute {
 
     case home
-    case deatail(String)
+    case detail(String)
     
     var path: String {
         return "Home"
@@ -34,18 +34,46 @@ enum SettingRoute: SRRoute {
 
 @sRouter(HomeRoute.self) @Observable
 final class HomeRouter { }
- 
-@sRouteObserve(HomeRoute.self, SettingRoute.self)
-struct ObserveView<Content>: View where Content: View { }
+
+let router = HomeRouter()
+router.trigger(to: .home, with: .present) {
+    var trans = Transaction()
+    trans.disablesAnimations = true
+    return trans
+}
+
+@sRouteObserver(HomeRoute.self, SettingRoute.self)
+struct RouteObserver { }
 
 @sRContext(tabs: ["homeItem", "settingItem"], stacks: "home", "setting")
 struct SRContext { }
 
-@MainActor
-func routingDeeplink() {
+struct TestApp: App {
+    
     let context = SRContext()
-    Task {
-        await context.routing(.resetAll, .select(tabItem: .homeItem),
-                              .push(route: HomeRoute.deatail("detail"), into: .home))
+    
+    var body: some Scene {
+        WindowGroup {
+            SRRootView(context: context) {
+                @Bindable var selection = context.tabSelection
+                TabView(selection:$selection.selection) {
+                    NavigationStack(path: context.homePath) {
+                        Text("Home")
+                            .routeObserver(RouteObserver.self)
+                    }.tag(SRTabItem.homeItem.rawValue)
+                    
+                    NavigationStack(path: context.settingPath) {
+                        Text("Setting")
+                            .routeObserver(RouteObserver.self)
+                    }.tag(SRTabItem.settingItem.rawValue)
+                }
+            }
+            .onOpenURL { url in
+                Task {
+                    await context.routing(.resetAll, .select(tabItem: .homeItem),
+                                          .push(route: HomeRoute.detail("testing"), into: .home))
+                }
+            }
+        }
     }
 }

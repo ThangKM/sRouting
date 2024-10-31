@@ -27,7 +27,7 @@ public protocol SRRouterType<RouteType> where RouteType: SRRoute {
     /// ```swift
     /// router.selectTabbar(at: 0)
     /// ```
-    func selectTabbar(at index: Int)
+    func selectTabbar(at index: Int, with transition: WithTransaction?)
     
     /// Trigger to new screen
     /// - Parameters:
@@ -38,7 +38,7 @@ public protocol SRRouterType<RouteType> where RouteType: SRRoute {
     /// ```swift
     /// router.trigger(to: .detailScreen, with: .push)
     /// ```
-    func trigger(to route: RouteType, with action: SRTriggerType)
+    func trigger(to route: RouteType, with action: SRTriggerType, and transaction: WithTransaction?)
     
     /// Show an alert
     /// - Parameters:
@@ -83,14 +83,14 @@ public protocol SRRouterType<RouteType> where RouteType: SRRoute {
     func dismissAll()
     
     /// Navigation pop
-    func pop()
+    func pop(with transaction: WithTransaction?)
     
     /// Navigation pop to root
-    func popToRoot()
+    func popToRoot(with transaction: WithTransaction?)
     
     /// Navigation pop to route
     /// - Parameter route: some``SRRoute``
-    func pop(to route: some SRRoute)
+    func pop(to route: some SRRoute, with transaction: WithTransaction?)
     
     /// Opens a window that's associated with the specified transition.
     /// - Parameter windowTrans: ``SRWindowTransition``

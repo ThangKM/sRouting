@@ -22,12 +22,10 @@ The `Router` can trigger a transition from inside(view) or outside(view model) t
 - ``SRRouterType``
 - ``SRContextType``
 - ``SRTriggerType``
+- ``SRRouteObserverType``
 - ``SRNavigationPath``
 - ``SRTabbarSelection``
 
 ### Viewing
 
 - ``SRRootView``
-- ``SRNavigationStack``
-- ``SRTabbarView``
-

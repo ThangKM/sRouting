@@ -11,7 +11,7 @@ import Observation
 public struct SRRootView<Content, ContextType>: View
 where Content: View, ContextType: SRContextType {
 
-    private var context: ContextType
+    private let context: ContextType
     private let content: () -> Content
     
     public init(context: ContextType,
@@ -22,7 +22,7 @@ where Content: View, ContextType: SRContextType {
     
     public var body: some View {
         content()
-            .onRouting(of: context.rootRouter)
+            .onRouting(of:context.rootRouter)
             .environment(context.dismissAllEmitter)
             .environment(context.tabSelection)
     }

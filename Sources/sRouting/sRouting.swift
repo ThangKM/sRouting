@@ -13,7 +13,7 @@ public macro sRouter<T: SRRoute>(_ route: T.Type) = #externalMacro(module: "sRou
 @attached(extension, conformances: SRContextType)
 public macro sRContext(tabs: [String] = [], stacks: String...) = #externalMacro(module: "sRoutingMacros", type: "ContextMacro")
 
-/// Generate a view of navigation destinations that observing routes
-@attached(member, names: named(path), named(content), arbitrary)
-@attached(extension, conformances: SRObserveViewType)
-public macro sRouteObserve(_ routes: (any SRRoute.Type)...) = #externalMacro(module: "sRoutingMacros", type: "RouteObserveMacro")
+/// Generate a `ViewModifier` of navigation destinations that observing routes
+@attached(member, names: named(path), arbitrary)
+@attached(extension, conformances: SRRouteObserverType)
+public macro sRouteObserver(_ routes: (any SRRoute.Type)...) = #externalMacro(module: "sRoutingMacros", type: "RouteObserverMacro")

@@ -11,7 +11,6 @@ import SwiftSyntax
 import SwiftSyntaxMacros
 import Foundation
 
-
 private let tabsParam = "tabs"
 private let stacksParam = "stacks"
 

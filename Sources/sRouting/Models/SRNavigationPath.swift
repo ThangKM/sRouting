@@ -79,7 +79,6 @@ public final class SRNavigationPath {
         } else {
             self.stack = Array(matchedArray.reversed())
         }
-        
     }
 }
 

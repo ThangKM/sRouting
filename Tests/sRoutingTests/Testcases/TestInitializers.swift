@@ -5,99 +5,89 @@
 //  Created by ThangKieu on 7/1/21.
 //
 
-import XCTest
-import ViewInspector
+import Testing
 import SwiftUI
 
 @testable import sRouting
 
 
-class TestInitializers: XCTestCase {
+@Suite("Test SRTransition initializers")
+struct TestInitializers {
 
-    @MainActor
-    func testInitRootView() throws {
-        let view = SRRootView(context: SRContext()) {
-            Text("This is content in RootView")
-        }
-        ViewHosting.host(view: view)
-        let sut = try view.inspect().find(text: "This is content in RootView").string()
-        XCTAssertEqual(sut, "This is content in RootView")
+    @Test
+    func testInitialTransitionWithSelectTab() {
+        let sut = SRTransition<TestRoute>(selectTab: 0)
+        #expect(sut.alert == nil)
+        #expect(sut.route == nil)
+        #expect(sut.tabIndex == 0)
+        #expect(sut.type == .selectTab)
     }
     
-    @MainActor
-    func testInitialTransitionWithSelectTab() throws {
-        let sut = SRTransition<EmptyRoute>(selectTab: 0)
-        XCTAssertNil(sut.alert)
-        XCTAssertNil(sut.route)
-        XCTAssertEqual(sut.tabIndex, 0)
-        XCTAssertEqual(sut.type, .selectTab)
+    @Test
+    func testInitalTrasitionWithType() {
+        let sut = SRTransition<TestRoute>(with: .dismissAll)
+        #expect(sut.alert == nil)
+        #expect(sut.route == nil)
+        #expect(sut.tabIndex == nil)
+        #expect(sut.type == .dismissAll)
     }
     
-    @MainActor
-    func testInitalTrasitionWithType() throws {
-        let sut = SRTransition<EmptyRoute>(with: .dismissAll)
-        XCTAssertNil(sut.alert)
-        XCTAssertNil(sut.route)
-        XCTAssertNil(sut.tabIndex)
-        XCTAssertEqual(sut.type, .dismissAll)
+    @Test
+    func testInitTransitionWithAlert() {
+        let sut = SRTransition<TestRoute>(with: Alert(title: Text(""), message: Text("message"), dismissButton: nil))
+        #expect(sut.alert != nil)
+        #expect(sut.route == nil)
+        #expect(sut.tabIndex == nil)
+        #expect(sut.type == .alert)
     }
     
-    @MainActor
-    func testInitTransitionWithAlert() throws {
-        let sut = SRTransition<EmptyRoute>(with: Alert(title: Text(""), message: Text("message"), dismissButton: nil))
-        XCTAssertNotNil(sut.alert)
-        XCTAssertNil(sut.route)
-        XCTAssertNil(sut.tabIndex)
-        XCTAssertEqual(sut.type, .alert)
+    @Test
+    func testInitTransitionWithError() {
+        let sut = SRTransition<TestRoute>(with: NSError(domain: "", code: 1, userInfo: [:]), and: nil)
+        #expect(sut.alert != nil)
+        #expect(sut.route == nil)
+        #expect(sut.tabIndex == nil)
+        #expect(sut.type == .alert)
     }
     
-    @MainActor
-    func testInitTransitionWithError() throws {
-        let sut = SRTransition<EmptyRoute>(with: NSError(domain: "", code: 1, userInfo: [:]), and: nil)
-        XCTAssertNotNil(sut.alert)
-        XCTAssertNil(sut.route)
-        XCTAssertNil(sut.tabIndex)
-        XCTAssertEqual(sut.type, .alert)
+    @Test
+    func testInitTransitionWithRoute() {
+        let sut = SRTransition<TestRoute>(with: .emptyScreen, and: .sheet)
+        #expect(sut.route != nil)
+        #expect(sut.alert == nil)
+        #expect(sut.tabIndex == nil)
+        #expect(sut.type == .sheet)
     }
     
-    @MainActor
-    func testInitTransitionWithRoute() throws {
-        let sut = SRTransition<EmptyRoute>(with: .emptyScreen, and: .sheet)
-        XCTAssertNotNil(sut.route)
-        XCTAssertNil(sut.alert)
-        XCTAssertNil(sut.tabIndex)
-        XCTAssertEqual(sut.type, .sheet)
-    }
-    
-    @MainActor
+    @Test
     func testInitTransitionNoneType() throws {
-        let sut = SRTransition<EmptyRoute>(with: .none)
-        XCTAssertNil(sut.alert)
-        XCTAssertNil(sut.route)
-        XCTAssertNil(sut.tabIndex)
-        XCTAssertEqual(sut.type, .none)
-        XCTAssertEqual(sut, SRTransition.none)
+        let sut = SRTransition<TestRoute>(with: .none)
+        #expect(sut.alert == nil)
+        #expect(sut.route == nil)
+        #expect(sut.tabIndex == nil)
+        #expect(sut.type == .none)
+        #expect(sut == SRTransition.none)
     }
-    
-    @MainActor
-    func testInitTransitionType() throws {
+
+    @Test
+    func testInitTransitionType() {
         SRTriggerType.allCases.forEach { triggerType in
             let transitionType = SRTransitionType(with: triggerType)
-            XCTAssertEqual(transitionType.rawValue, triggerType.rawValue)
+            #expect(transitionType.rawValue == triggerType.rawValue)
         }
     }
     
-    @MainActor
+    @Test
     func testTransitionType() {
         SRTransitionType.allCases.forEach { type in
-            XCTAssertEqual(type.description, "TransitionType - \(type)")
+            #expect(type.description == "TransitionType - \(type)")
         }
     }
     
-    @MainActor
+    @Test
     func testTriggerType() {
         SRTriggerType.allCases.forEach { type in
-            XCTAssertEqual(type.description, "TriggerType - \(type)")
+            #expect(type.description == "TriggerType - \(type)")
         }
     }
 }

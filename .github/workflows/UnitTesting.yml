@@ -5,21 +5,23 @@ on:
 
   push:
     branches:
-      - main
       - develop
   pull_request:
     branches:
       - main
-      - develop
 jobs:
   Run_Unit_Tests:
     runs-on: macOS-latest
     steps:
     - uses: actions/checkout@v4
-    - name: Run iOS tests
-      run: xcodebuild test -destination 'platform=iOS Simulator' -scheme 'sRouting' -enableCodeCoverage YES build test
+    - name: Select Xcode version
+      run: sudo xcode-select -s '/Applications/Xcode_16.1.app/Contents/Developer'
+    - name: Show current version of Xcode
+      run: xcodebuild -version
     - name: Run macOS tests
-      run: xcodebuild test -scheme 'sRouting' -destination 'platform=macOS' -enableCodeCoverage YES build test
+      run: swift test --enable-code-coverage
+    - name: Run iOS tests
+      run: xcodebuild test -destination 'platform=iOS Simulator,OS=18.0,name=iPhone 16' -scheme 'sRouting-Package' -enableCodeCoverage YES
     - name: Upload coverage to Codecov
       uses: codecov/codecov-action@v4
       with:

@@ -19,7 +19,7 @@ import sRouting
 import sRoutingMacros
 
 let testMacros: [String: Macro.Type] = [
-    "sRContext": ContextMacro.self, "sRouter": RouterMacro.self, "sRouteObserve": RouteObserveMacro.self
+    "sRContext": ContextMacro.self, "sRouter": RouterMacro.self, "sRouteObserver": RouteObserverMacro.self
 ]
 
 #endif

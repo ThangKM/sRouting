@@ -7,6 +7,8 @@
 
 import SwiftUI
 
+public typealias WithTransaction =  @MainActor @Sendable () -> Transaction
+
 /// Transition type of navigation for the trigger action.
 public enum SRTriggerType: String, CaseIterable, Sendable {
     /// Push a screen

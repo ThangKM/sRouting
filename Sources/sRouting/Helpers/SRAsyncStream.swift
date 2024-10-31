@@ -21,11 +21,9 @@ actor SRAsyncStream<Value> where Value: Sendable {
     }
     
     /// Events stream
-    nonisolated var stream: AsyncStream<Value> {
+    var stream: AsyncStream<Value> {
         AsyncStream { continuation in
-            Task(priority: .high) {[weak self] in
-                await self?.append(continuation)
-            }
+            append(continuation)
         }
     }
     

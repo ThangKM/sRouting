@@ -7,166 +7,152 @@
 
 import SwiftUI
 import ViewInspector
-import XCTest
+import Testing
 @testable import sRouting
 
-class RouterModifierTests: XCTestCase {
-        
-    @MainActor
-    func testActiveSheet() async {
-        let router = TestRouter()
-        let exp = XCTestExpectation()
+@Suite("Test RouterModifer")
+@MainActor
+struct RouterModifierTests {
+    
+    let router = TestRouter()
+    let context = SRContext()
+    
+    @Test
+    func testActiveSheet() async throws {
+        var isActive = false
         let sut = TestScreen(router: router, tests: .init(didChangeTransition: { view in
-            XCTAssertTrue(view.isActiveSheet)
-            exp.fulfill()
+            isActive = view.isActiveSheet
         }))
         ViewHosting.host(view: sut)
         router.trigger(to: .emptyScreen, with: .sheet)
-        await fulfillment(of: [exp], timeout: 0.2)
+        try await Task.sleep(for: .milliseconds(10))
+        #expect(isActive)
     }
     
-    @MainActor
-    func testActiveAlert() async {
-        let router = TestRouter()
-        let exp = XCTestExpectation()
+    @Test
+    func testActiveAlert() async throws {
+        var isActive = false
         let sut = TestScreen(router: router, tests: .init(didChangeTransition: { view in
-            XCTAssertTrue(view.isActiveAlert)
-            exp.fulfill()
+            isActive = view.isActiveAlert
         }))
         
         ViewHosting.host(view: sut)
-        router.show(error: NSError(domain: "unittest.navigator", code: -1, userInfo: [:]), and: nil)
-        await fulfillment(of: [exp], timeout: 0.2)
+        router.show(error: TimeOutError())
+        try await Task.sleep(for: .milliseconds(10))
+        #expect(isActive)
     }
     
-    @MainActor
-    func testDismissAll() async {
-        let router = TestRouter()
-        let exp = XCTestExpectation(description: "wait.dismiss")
-        
+    @Test
+    func testDismissAll() async throws {
+        var isActive = true
         let sut = TestScreen(router: router, tests: .init(didChangeTransition: { view in
-            XCTAssertFalse(view.isActiveAlert)
-            XCTAssertFalse(view.isActiveSheet)
-            XCTAssertFalse(view.isActivePresent)
-            XCTAssertFalse(view.isActiveActionSheet)
-            exp.fulfill()
+            isActive = view.isActiveAlert && view.isActiveSheet && view.isActivePresent && view.isActiveActionSheet
         }))
         
         ViewHosting.host(view: sut)
-        
         router.dismissAll()
-        await fulfillment(of: [exp], timeout: 0.2)
+        try await Task.sleep(for: .milliseconds(10))
+        #expect(!isActive)
     }
     
-    @MainActor
-    func testPush() async {
-        let router = TestRouter()
-        let exp = XCTestExpectation()
-        let sut = SRNavigationStack(path: .init(), observeView: ObserveView.self) {
+    @Test
+    func testPush() async throws {
+        var pathCount = 0
+        let sut = NavigationStack(path: context.testStackPath) {
             TestScreen(router: router, tests: .none).onNaviStackChange { oldPaths, newPaths in
-                XCTAssertTrue(newPaths.count == 1)
-                exp.fulfill()
+                pathCount = newPaths.count
             }
         }
         ViewHosting.host(view: sut)
         router.trigger(to: .emptyScreen, with: .push)
-        await fulfillment(of: [exp], timeout: 0.2)
+        try await Task.sleep(for: .milliseconds(10))
+        #expect(pathCount == 1)
     }
     
-    @MainActor
-    func testPop() async {
-        let exp = XCTestExpectation()
-        let router = TestRouter()
-        let sut = SRNavigationStack(path: .init(), observeView: ObserveView.self) {
+    @Test
+    func testPop() async throws {
+        var pathCount = 1
+        let sut = NavigationStack(path: context.testStackPath) {
             TestScreen(router: router, tests: .none).onNaviStackChange { oldPaths, newPaths in
-                guard newPaths.count == .zero else { return }
-                exp.fulfill()
-                
+                pathCount = newPaths.count
             }
         }
         ViewHosting.host(view: sut)
-        Task.detached {
-            await router.trigger(to: .emptyScreen, with: .push)
-            try await Task.sleep(for:.milliseconds(50))
-            await router.pop()
-        }
-        await fulfillment(of: [exp], timeout: 0.3)
+        router.trigger(to: .emptyScreen, with: .push)
+        try await Task.sleep(for:.milliseconds(50))
+        router.pop()
+        try await Task.sleep(for: .milliseconds(10))
+        #expect(pathCount == .zero)
     }
     
-    @MainActor
-    func testPopToRoot() async {
-        let exp = XCTestExpectation()
-        let router = TestRouter()
-        let sut = SRNavigationStack(path: .init(), observeView: ObserveView.self) {
+    @Test
+    func testPopToRoot() async throws {
+        var pathCount = 1
+        let sut = NavigationStack(path: context.testStackPath) {
             TestScreen(router: router, tests: .none).onNaviStackChange { oldPaths, newPaths in
-                guard newPaths.count == .zero else { return }
-                exp.fulfill()
+                pathCount = newPaths.count
             }
         }
         ViewHosting.host(view: sut)
-        Task.detached {
-            await router.trigger(to: .home, with: .push)
-            await router.trigger(to: .emptyScreen, with: .push)
-            await router.trigger(to: .setting, with: .push)
-            try await Task.sleep(for:.milliseconds(50))
-            await router.popToRoot()
-        }
-        await fulfillment(of: [exp], timeout: 0.5)
+        router.trigger(to: .home, with: .push)
+        try await Task.sleep(for:.milliseconds(50))
+        router.trigger(to: .emptyScreen, with: .push)
+        try await Task.sleep(for:.milliseconds(50))
+        router.trigger(to: .setting, with: .push)
+        try await Task.sleep(for:.milliseconds(50))
+        router.popToRoot()
+        try await Task.sleep(for: .milliseconds(10))
+        #expect(pathCount == .zero)
     }
     
-    @MainActor
-    func testPopToTarget() async {
-        let exp = XCTestExpectation()
-        let router = TestRouter()
-        let sut = SRNavigationStack(path: .init(), observeView: ObserveView.self) {
+    @Test
+    func testPopToTarget() async throws {
+        var paths = [String]()
+        
+        let sut = NavigationStack(path: context.testStackPath) {
             TestScreen(router: router, tests: .none).onNaviStackChange { oldPaths, newPaths in
-                guard let path = newPaths.first, newPaths.count == 1 else { return }
-                XCTAssertTrue(path.contains("home"))
-                exp.fulfill()
+                paths = newPaths
             }
         }
         ViewHosting.host(view: sut)
-        Task.detached {
-            await router.trigger(to: .home, with: .push)
-            await router.trigger(to: .emptyScreen, with: .push)
-            await router.trigger(to: .setting, with: .push)
-            try await Task.sleep(for:.milliseconds(50))
-            await router.pop(to: EmptyRoute.home)
-        }
-        await fulfillment(of: [exp], timeout: 0.5)
+        router.trigger(to: .home, with: .push)
+        try await Task.sleep(for:.milliseconds(50))
+        router.trigger(to: .emptyScreen, with: .push)
+        try await Task.sleep(for:.milliseconds(50))
+        router.trigger(to: .setting, with: .push)
+        try await Task.sleep(for:.milliseconds(50))
+        router.pop(to: TestRoute.home)
+        let path = try #require(paths.first)
+        try await Task.sleep(for: .milliseconds(10))
+        #expect(paths.count == 1)
+        #expect(path.contains("home"))
     }
                                                           
     #if os(iOS) || os(tvOS)
-    @MainActor
-    func testActiveActionSheet() async {
-        let router = TestRouter()
-        let exp = XCTestExpectation(description: "wait.dismiss")
-        
+    @Test
+    func testActiveActionSheet() async throws {
+        var isActive = false
         let sut = TestScreen(router: router, tests: .init(didChangeTransition: { view in
-            XCTAssertTrue(view.isActiveActionSheet)
-            exp.fulfill()
+            isActive = view.isActiveActionSheet
         }))
         
         ViewHosting.host(view: sut)
-        
         router.show(actionSheet: .init(title: Text("test")))
-        await fulfillment(of: [exp], timeout: 0.2)
+        try await Task.sleep(for: .milliseconds(10))
+        #expect(isActive)
     }
     
-    @MainActor
-    func testActivePresent() async {
-        let router = TestRouter()
-        let exp = XCTestExpectation(description: "wait.dismiss")
-        
+    @Test
+    func testActivePresent() async throws {
+        var isActive = false
         let sut = TestScreen(router: router, tests: .init(didChangeTransition: { view in
-            XCTAssertTrue(view.isActivePresent)
-            exp.fulfill()
+            isActive = view.isActivePresent
         }))
         
         ViewHosting.host(view: sut)
-        
         router.trigger(to: .home, with: .present)
-        await fulfillment(of: [exp], timeout: 0.2)
+        try await Task.sleep(for: .milliseconds(10))
+        #expect(isActive)
     }
     
     #endif
