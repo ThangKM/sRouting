@@ -32,10 +32,7 @@ enum SettingRoute: SRRoute {
     var screen: some View { Text("Setting") }
 }
 
-@sRouter(HomeRoute.self) @Observable
-final class HomeRouter { }
-
-let router = HomeRouter()
+let router = SRRouter(HomeRoute.self)
 router.trigger(to: .home, with: .present) {
     var trans = Transaction()
     trans.disablesAnimations = true
