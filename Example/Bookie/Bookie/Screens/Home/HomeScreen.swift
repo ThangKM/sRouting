@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import sRouting
 
 struct HomeScreen: View {
     
@@ -13,7 +14,7 @@ struct HomeScreen: View {
     private var viewModel: HomeViewModel = .init()
     
     @State
-    private var router: HomeRouter = .init()
+    private var router = SRRouter(HomeRoute.self)
     
     @Environment(MockBookData.self)  private var mockData
     

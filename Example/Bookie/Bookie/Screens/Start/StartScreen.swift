@@ -16,9 +16,6 @@ struct StartScreen: View {
     @Environment(\.dismiss)
     private var dismissAction
     
-    @State
-    private var viewModel: StartViewModel = .init()
-    
     @Environment(AppRouter.self)
     private var appRouter
     
@@ -76,7 +73,6 @@ struct StartScreen: View {
                 
             }
         }
-        .onRouting(of: viewModel)
         .navigationBarHidden(true)
     }
 }

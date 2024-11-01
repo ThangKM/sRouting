@@ -8,13 +8,13 @@
 import SwiftUI
 import sRouting
 
-struct BookieNavigationView<Content, RouterType>: View where Content: View, RouterType: SRRouterType {
+struct BookieNavigationView<Content, Route>: View where Content: View, Route: SRRoute {
     
     @Environment(\.dismiss)
     private var dismissAction
     
     let title: String
-    let router: RouterType
+    let router: SRRouter<Route>
     let isBackType: Bool
    
     @ViewBuilder
