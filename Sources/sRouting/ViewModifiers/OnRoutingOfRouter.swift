@@ -48,14 +48,14 @@ struct RouterModifier<Route>: ViewModifier where Route: SRRoute {
     /// The alert from transition
     @MainActor
     private var alertView: Alert? {
-        router.transition.alert?.value
+        router.transition.alert?()
     }
     
     #if canImport(UIKit)
     /// The ActionSheet from transaction
     @MainActor
     private var actionSheet: ActionSheet? {
-        router.transition.actionSheet?.value
+        router.transition.actionSheet?()
     }
     #endif
     

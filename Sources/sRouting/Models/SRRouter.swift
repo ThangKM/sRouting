@@ -76,12 +76,12 @@ public final class SRRouter<Route> where Route: SRRoute {
     ///                                message: Text("Message"),
     ///                                dismissButton: .cancel(Text("OK")))
     /// ```
-    public func show(alert: Alert) {
+    public func show(alert: GetAlert?) {
         transition = .init(with: alert)
     }
     
     #if os(iOS) || os(tvOS)
-    public func show(actionSheet: ActionSheet) {
+    public func show(actionSheet: GetActionSheet?) {
         transition = .init(with: actionSheet)
     }
     #endif
