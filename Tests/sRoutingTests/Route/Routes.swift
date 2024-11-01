@@ -32,9 +32,6 @@ enum TestRoute: SRRoute {
     }
 }
 
-@sRouter(TestRoute.self) @Observable
-class TestRouter { }
-
 @sRContext(stacks: "testStack")
 struct SRContext { }
 
