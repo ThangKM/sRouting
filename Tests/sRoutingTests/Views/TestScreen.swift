@@ -13,8 +13,8 @@ import Testing
 
 struct TestScreen: View {
     
-    let router: TestRouter
-    let tests: UnitTestActions<RouterModifier<TestRouter>>?
+    let router: SRRouter<TestRoute>
+    let tests: UnitTestActions<RouterModifier<TestRoute>>?
     
     var body: some View {
         Text("TestScreen.Screen.Text")

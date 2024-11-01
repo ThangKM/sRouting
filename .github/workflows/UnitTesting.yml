@@ -4,11 +4,9 @@ name: Unit Testing
 on:
 
   push:
-    branches:
-      - develop
+    branches: [ develop, main ]
   pull_request:
-    branches:
-      - main
+    branches: [ develop ]
 jobs:
   Run_Unit_Tests:
     runs-on: macOS-latest

@@ -14,7 +14,7 @@ import Testing
 @MainActor
 struct RouterModifierTests {
     
-    let router = TestRouter()
+    let router = SRRouter(TestRoute.self)
     let context = SRContext()
     
     @Test
