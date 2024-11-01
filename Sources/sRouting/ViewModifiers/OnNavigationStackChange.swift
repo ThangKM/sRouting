@@ -7,7 +7,6 @@
 
 import SwiftUI
 
-
 private typealias OnChangeBlock = @MainActor (_ oldPaths: [String], _ newPaths: [String]) -> Void
 
 private struct NavigationModifier: ViewModifier {

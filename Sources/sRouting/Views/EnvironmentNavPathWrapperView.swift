@@ -8,7 +8,6 @@
 import SwiftUI
 import Observation
 
-
 /// Inject ``SRNavigationPath`` environment value before observing the navigation's route transitions
 public struct EnvironmentNavPathWrapperView<Content>: View
 where Content: View {
