@@ -19,8 +19,8 @@ struct NavigationPathTests {
     func testMatchingStack() {
         path.push(to: TestRoute.home)
         path.push(to: TestRoute.emptyScreen)
-        let homePath = Helpers.navigationStoredPath(for: TestRoute.home)
-        let emptyPath = Helpers.navigationStoredPath(for: TestRoute.emptyScreen)
+        let homePath = TestRoute.home.fullPath
+        let emptyPath = TestRoute.emptyScreen.fullPath
         let stack = path.stack.map({ $0.replacingOccurrences(of: "sRoutingTests.", with: "")})
         #expect(stack == [homePath, emptyPath])
     }
@@ -33,8 +33,8 @@ struct NavigationPathTests {
         path.push(to: TestRoute.emptyScreen)
         path.push(to: TestRoute.emptyScreen)
         
-        let homePath = Helpers.navigationStoredPath(for: TestRoute.home)
-        let emptyPath = Helpers.navigationStoredPath(for: TestRoute.emptyScreen)
+        let homePath = TestRoute.home.fullPath
+        let emptyPath = TestRoute.emptyScreen.fullPath
         
         path.pop(to: TestRoute.home)
         
@@ -60,7 +60,7 @@ struct NavigationPathTests {
         path.push(to: TestRoute.emptyScreen)
 
         path.pop()
-        let homePath = Helpers.navigationStoredPath(for: TestRoute.home)
+        let homePath = TestRoute.home.fullPath
         let stack = path.stack.map({ $0.replacingOccurrences(of: "sRoutingTests.", with: "")})
         #expect(stack == [homePath])
     }
