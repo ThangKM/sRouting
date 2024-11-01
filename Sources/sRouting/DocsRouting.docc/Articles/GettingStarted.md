@@ -102,12 +102,9 @@ enum HomeRoute: SRRoute {
     ...
 }
 
-@sRouter(HomeRoute.self) @Observable
-class HomeRouter { }
-
 struct HomeScreen: View {
 
-    @State var homeRouter = HomeRouter()
+    @State var homeRouter = SRRouter(HomeRoute.self)
 
     var body: some View {
         VStack { 
