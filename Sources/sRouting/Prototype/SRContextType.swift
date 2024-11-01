@@ -9,9 +9,7 @@ import Foundation
 
 @MainActor
 public protocol SRContextType {
-    associatedtype RouterType: SRRouterType
-    
-    var rootRouter: RouterType { get }
+    var rootRouter: SRRouter<AnyRoute> { get }
     var dismissAllEmitter: SRDismissAllEmitter { get }
     var tabSelection: SRTabbarSelection { get }
 }

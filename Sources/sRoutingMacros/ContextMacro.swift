@@ -27,7 +27,7 @@ public struct ContextMacro: MemberMacro {
         
         var result: [DeclSyntax] = []
         
-        let rootRouter: DeclSyntax = "@MainActor let rootRouter = SRRootRouter()"
+        let rootRouter: DeclSyntax = "@MainActor let rootRouter = SRRouter(AnyRoute.self)"
         result.append(rootRouter)
         
         let dsaEmiiter: DeclSyntax = "@MainActor let dismissAllEmitter = SRDismissAllEmitter()"
@@ -148,14 +148,7 @@ extension ContextMacro: PeerMacro {
         let arguments = try Self._arguments(of: node)
         
         var result: [DeclSyntax] = []
-        let rootRouter: DeclSyntax = """
-        @sRouter(AnyRoute.self) @Observable
-        final class SRRootRouter {
-        
-        }
-        """
-        result.append(rootRouter)
-        
+
         let rootRoute: DeclSyntax =  """
         enum SRRootRoute: SRRoute {
             case resetAll

@@ -15,7 +15,7 @@ import SwiftUI
 @MainActor
 struct TestModifiers {
     
-    let router = TestRouter()
+    let router = SRRouter(TestRoute.self)
     let context = SRContext()
     
     @Test

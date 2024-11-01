@@ -7,13 +7,12 @@
 
 import SwiftUI
 
-struct RouterModifier<Router>: ViewModifier where Router: SRRouterType {
+struct RouterModifier<Route>: ViewModifier where Route: SRRoute {
     
     typealias VoidAction = () -> Void
-    typealias RouteType = Router.RouteType
-    
+
     /// A  screen's ``Router``
-    private let router: Router
+    private let router: SRRouter<Route>
 
     @Environment(SRTabbarSelection.self)
     private var tabbarSelection: SRTabbarSelection?
@@ -63,7 +62,7 @@ struct RouterModifier<Router>: ViewModifier where Router: SRRouterType {
     ///Action test holder
     private let tests: UnitTestActions<Self>?
     
-    init(router: Router, tests: UnitTestActions<Self>? = .none) {
+    init(router: SRRouter<Route>, tests: UnitTestActions<Self>? = .none) {
         self.router = router
         self.tests = tests
     }
@@ -154,7 +153,7 @@ extension RouterModifier {
     /// Observe the transition change from router
     /// - Parameter transition: ``Transiton``
     @MainActor
-    private func updateActiveState(from transition: SRTransition<RouteType>) {
+    private func updateActiveState(from transition: SRTransition<Route>) {
         switch transition.type {
         case .push:
             guard let route = transition.route else { return }
@@ -266,7 +265,7 @@ extension View {
     /// Observe router transitions
     /// - Parameter router: ``SRRouterType``
     /// - Returns: some `View`
-    public func onRouting<Router: SRRouterType>(of router: Router) -> some View {
+    public func onRouting<Route: SRRoute>(of router: SRRouter<Route>) -> some View {
         self.modifier(RouterModifier(router: router))
     }
     
@@ -275,8 +274,8 @@ extension View {
     ///   - router: ``SRRouterType``
     ///   - tests: Unit test action
     /// - Returns: some `View`
-    func onRouting<Router: SRRouterType>(of router: Router,
-                                         tests: UnitTestActions<RouterModifier<Router>>?) -> some View {
+    func onRouting<Route: SRRoute>(of router: SRRouter<Route>,
+                                   tests: UnitTestActions<RouterModifier<Route>>?) -> some View {
         self.modifier(RouterModifier(router: router, tests: tests))
     }
 }
