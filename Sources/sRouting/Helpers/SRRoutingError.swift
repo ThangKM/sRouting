@@ -7,7 +7,6 @@
 
 import Foundation
 
-
 public enum SRRoutingError: Error, CustomStringConvertible, CustomNSError {
     
     case unsupportedDecodable
