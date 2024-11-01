@@ -16,7 +16,7 @@ public final class SRRouter<Route> where Route: SRRoute {
     @ObservationIgnored
     private var _transition: SRTransition<Route> = .none
 
-    public private(set) var transition: SRTransition<Route> {
+    private(set) var transition: SRTransition<Route> {
         get {
           access(keyPath: \.transition)
           return _transition

@@ -37,16 +37,12 @@ extension SRRoute {
 
 extension SRRoute {
     
-    internal var formatedPath: String {
-        path.replacingOccurrences(of: " ", with: "_")
-    }
-    
     public init(from decoder: any Decoder) throws {
         throw SRRoutingError.unsupportedDecodable
     }
     
     public func encode(to encoder: any Encoder) throws {
         var container = encoder.singleValueContainer()
-        try container.encode(formatedPath)
+        try container.encode(path)
     }
 }
