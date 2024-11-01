@@ -34,7 +34,9 @@ struct TestInitializers {
     
     @Test
     func testInitTransitionWithAlert() {
-        let sut = SRTransition<TestRoute>(with: Alert(title: Text(""), message: Text("message"), dismissButton: nil))
+        let sut = SRTransition<TestRoute>(with: {
+            Alert(title: Text(""), message: Text("message"), dismissButton: nil)
+        })
         #expect(sut.alert != nil)
         #expect(sut.route == nil)
         #expect(sut.tabIndex == nil)
@@ -61,7 +63,7 @@ struct TestInitializers {
     
     @Test
     func testInitTransitionNoneType() throws {
-        let sut = SRTransition<TestRoute>(with: .none)
+        let sut = SRTransition<TestRoute>.none
         #expect(sut.alert == nil)
         #expect(sut.route == nil)
         #expect(sut.tabIndex == nil)
@@ -72,14 +74,14 @@ struct TestInitializers {
     @Test
     func testInitTransitionType() {
         SRTriggerType.allCases.forEach { triggerType in
-            let transitionType = SRTransitionType(with: triggerType)
+            let transitionType = SRTransitionKind(with: triggerType)
             #expect(transitionType.rawValue == triggerType.rawValue)
         }
     }
     
     @Test
     func testTransitionType() {
-        SRTransitionType.allCases.forEach { type in
+        SRTransitionKind.allCases.forEach { type in
             #expect(type.description == "TransitionType - \(type)")
         }
     }

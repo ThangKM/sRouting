@@ -137,7 +137,9 @@ struct RouterModifierTests {
         }))
         
         ViewHosting.host(view: sut)
-        router.show(actionSheet: .init(title: Text("test")))
+        router.show(actionSheet: {
+            .init(title: Text("test"))
+        })
         try await Task.sleep(for: .milliseconds(10))
         #expect(isActive)
     }

@@ -73,7 +73,9 @@ struct RouterTests {
             }
         }
         ViewHosting.host(view: sut)
-        router.show(alert: .init(title: Text(""), message: Text("message"), dismissButton: nil))
+        router.show(alert: {
+            .init(title: Text(""), message: Text("message"), dismissButton: nil)
+        })
         try await Task.sleep(for: .milliseconds(10))
         #expect(transition?.type == .alert)
         #expect(transition?.alert != nil)

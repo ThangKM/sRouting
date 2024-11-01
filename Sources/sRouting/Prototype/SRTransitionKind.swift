@@ -1,5 +1,5 @@
 //
-//  SRTransitionType.swift
+//  SRTransitionKind.swift
 //  sRouting
 //
 //  Created by ThangKieu on 6/30/21.
@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-public typealias WithTransaction =  @MainActor @Sendable () -> Transaction
+
 
 /// Transition type of navigation for the trigger action.
 public enum SRTriggerType: String, CaseIterable, Sendable {
@@ -24,7 +24,7 @@ public enum SRTriggerType: String, CaseIterable, Sendable {
 }
 
 /// Transition type of navigation that using internal.
-public enum SRTransitionType: String, CaseIterable, Sendable {
+enum SRTransitionKind: String, CaseIterable, Sendable {
     case none
     /// Push a screen
     case push
@@ -56,7 +56,7 @@ public enum SRTransitionType: String, CaseIterable, Sendable {
     /// Open file
     case openDocument
     #endif
-    public init(with triggerType: SRTriggerType) {
+    init(with triggerType: SRTriggerType) {
         switch triggerType {
         case .push: self = .push
         case .present: self = .present
@@ -64,7 +64,7 @@ public enum SRTransitionType: String, CaseIterable, Sendable {
         }
     }
     
-    public var description: String {
+    var description: String {
         "TransitionType - \(self)"
     }
 }

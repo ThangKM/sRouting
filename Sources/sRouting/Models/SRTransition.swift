@@ -8,57 +8,61 @@
 import SwiftUI
 
 
-public struct SRTransition<RouteType>: Sendable
-where RouteType: SRRoute {
-
-    let contextId: TimeIdentifier
-    let type: SRTransitionType
-    let transaction: WithTransaction?
+public struct SRTransition<Route>: Sendable
+where Route: SRRoute {
     
-    private(set) var route: RouteType?
-    private(set) var alert: UncheckedSendable<Alert>?
+    let contextId: TimeIdentifier
+    let type: SRTransitionKind
+    
+    let transaction: WithTransaction?
+    private(set) var route: Route?
+    private(set) var alert: GetAlert?
     private(set) var tabIndex: Int?
     private(set) var popToRoute: (any SRRoute)?
     private(set) var windowTransition: SRWindowTransition?
     
     #if os(iOS) || os(tvOS)
-    private(set) var actionSheet: UncheckedSendable<ActionSheet>?
+    private(set) var actionSheet: GetActionSheet?
     
-    public init(with actionSheet: ActionSheet, and transaction: WithTransaction? = .none) {
+    init(with actionSheet: GetActionSheet?, and transaction: WithTransaction? = .none) {
         self.type = .actionSheet
         self.contextId = TimeIdentifier()
-        self.actionSheet = .init(value: actionSheet)
+        self.actionSheet = actionSheet
         self.transaction = transaction
     }
   
-    public init(with type: SRTransitionType, and transaction: WithTransaction? = .none) {
+    init(with type: SRTransitionKind, and transaction: WithTransaction? = .none) {
         self.type = type
         self.contextId = TimeIdentifier()
         self.transaction = transaction
     }
     
-    public init(selectTab index: Int, and transaction: WithTransaction? = .none) {
+    init(selectTab index: Int, and transaction: WithTransaction? = .none) {
         self.type = .selectTab
         self.contextId = TimeIdentifier()
         self.tabIndex = index
         self.transaction = transaction
     }
 
-    public init(with alert: Alert, and transaction: WithTransaction? = .none) {
+    init(with alert: GetAlert?, and transaction: WithTransaction? = .none) {
         self.type = .alert
         self.contextId = TimeIdentifier()
-        self.alert = .init(value: alert)
+        self.alert = alert
         self.transaction = transaction
     }
     
-    public init(with error: Error, and alertTitle: String? = nil, transaction: WithTransaction? = .none) {
+    init(with error: Error, and alertTitle: String? = nil, transaction: WithTransaction? = .none) {
         self.type = .alert
         self.contextId = TimeIdentifier()
-        self.alert = .init(value: SRTransition.alert(from: error, with: alertTitle))
+        self.alert = { @Sendable in
+            Alert.init(title: Text(alertTitle ?? ""),
+                       message: Text(error.localizedDescription),
+                       dismissButton: .cancel(Text("OK")))
+        }
         self.transaction = transaction
     }
     
-    public init(with route: RouteType, and action: SRTransitionType, transaction: WithTransaction? = .none) {
+    init(with route: Route, and action: SRTransitionKind, transaction: WithTransaction? = .none) {
         self.type = action
         self.route = route
         self.contextId = TimeIdentifier()
@@ -66,14 +70,14 @@ where RouteType: SRRoute {
         self.transaction = transaction
     }
     
-    public init(popTo route: some SRRoute, and transaction: WithTransaction? = .none) {
+    init(popTo route: some SRRoute, and transaction: WithTransaction? = .none) {
         self.type = .popToRoute
         self.popToRoute = route
         self.contextId = TimeIdentifier()
         self.transaction = transaction
     }
     
-    public init(with type: SRTransitionType,
+    init(with type: SRTransitionKind,
                 windowTransition: SRWindowTransition,
                 transaction: WithTransaction? = .none) {
         self.contextId = TimeIdentifier()
@@ -82,7 +86,7 @@ where RouteType: SRRoute {
         self.transaction = transaction
     }
     #else
-    public init(with type: SRTransitionType,
+    init(with type: SRTransitionKind,
                 windowTransition: SRWindowTransition,
                 transaction: WithTransaction? = .none) {
         self.contextId = TimeIdentifier()
@@ -91,34 +95,38 @@ where RouteType: SRRoute {
         self.transaction = transaction
     }
     
-    public init(with type: SRTransitionType, and transaction: WithTransaction? = .none) {
+    init(with type: SRTransitionKind, and transaction: WithTransaction? = .none) {
         self.type = type
         self.contextId = TimeIdentifier()
         self.transaction = transaction
     }
     
-    public init(selectTab index: Int, and transaction: WithTransaction? = .none) {
+    init(selectTab index: Int, and transaction: WithTransaction? = .none) {
         self.type = .selectTab
         self.tabIndex = index
         self.contextId = TimeIdentifier()
         self.transaction = transaction
     }
 
-    public init(with alert: Alert, and transaction: WithTransaction? = .none) {
+    init(with alert: GetAlert?, and transaction: WithTransaction? = .none) {
         self.type = .alert
-        self.alert = .init(value: alert)
+        self.alert = alert
         self.contextId = TimeIdentifier()
         self.transaction = transaction
     }
     
-    public init(with error: Error, and alertTitle: String? = nil, transaction: WithTransaction? = .none) {
+    init(with error: Error, and alertTitle: String? = nil, transaction: WithTransaction? = .none) {
         self.type = .alert
-        self.alert = .init(value: SRTransition.alert(from: error, with: alertTitle))
+        self.alert = { @Sendable in
+            Alert.init(title: Text(alertTitle ?? ""),
+                       message: Text(error.localizedDescription),
+                       dismissButton: .cancel(Text("OK")))
+        }
         self.contextId = TimeIdentifier()
         self.transaction = transaction
     }
     
-    public init(with route: RouteType, and action: SRTransitionType, transaction: WithTransaction? = .none) {
+    init(with route: Route, and action: SRTransitionKind, transaction: WithTransaction? = .none) {
         precondition(action != .present, "macOS didn't support fullScreenCover")
         precondition(action != .actionSheet, "macOS didn't support actionSheet")
         self.type = action
@@ -127,26 +135,18 @@ where RouteType: SRRoute {
         self.transaction = transaction
     }
     
-    public init(popTo route: some SRRoute, and transaction: WithTransaction? = .none) {
+    init(popTo route: some SRRoute, and transaction: WithTransaction? = .none) {
         self.type = .popToRoute
         self.popToRoute = route
         self.contextId = TimeIdentifier()
         self.transaction = transaction
     }
     #endif
-    
-    private static func alert(from error: Error,
-                       with title: String?) -> Alert {
-        
-        Alert.init(title: Text(title ?? ""),
-                   message: Text(error.localizedDescription),
-                   dismissButton: .cancel(Text("OK")))
-    }
 }
 
 extension SRTransition {
     public static var none: SRTransition {
-        SRTransition(with: .none)
+        SRTransition(with: SRTransitionKind.none)
     }
 }
 
