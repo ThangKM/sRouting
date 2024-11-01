@@ -7,7 +7,6 @@
 
 import SwiftUI
 
-
 public struct SRTransition<Route>: Sendable
 where Route: SRRoute {
     
