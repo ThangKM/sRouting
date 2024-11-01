@@ -13,7 +13,7 @@ struct BookDetailScreen: View {
     private var viewModel: BookDetailViewModel = .init()
     
     @State
-    private var router: HomeRouter = .init()
+    private var router = SRRouter(HomeRoute.self)
     
     @Environment(MockBookData.self)
     private var mockData

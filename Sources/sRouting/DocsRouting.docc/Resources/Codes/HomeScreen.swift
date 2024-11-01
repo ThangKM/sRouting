@@ -7,16 +7,13 @@
 
 import SwiftUI
 
-@sRouter(HomeRoute.self)
-final class HomeRouter { }
-
 struct HomeScreen: View {
     
     @State
     private var viewModel: HomeViewModel = .init()
     
     @State
-    private var router: HomeRouter = .init()
+    private var router = SRRouter(HomeRoute.self)
     
     @Environment(MockBookData.self)  private var mockData
     
