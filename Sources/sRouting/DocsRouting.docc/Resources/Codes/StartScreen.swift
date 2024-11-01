@@ -13,9 +13,6 @@ struct StartScreen: View {
     @AppStorage("didTutorial")
     private var didTutorial: Bool = false
 
-    @State
-    private var viewModel: StartViewModel = .init()
-    
     @Environment(AppRouter.self)
     private var appRouter
     
@@ -73,7 +70,6 @@ struct StartScreen: View {
                 
             }
         }
-        .onRouting(of: router)
         .navigationBarHidden(true)
     }
 }
