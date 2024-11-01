@@ -20,6 +20,8 @@ jobs:
       run: swift test --enable-code-coverage
     - name: Run iOS tests
       run: xcodebuild test -destination 'platform=iOS Simulator,OS=18.0,name=iPhone 16' -scheme 'sRouting-Package' -enableCodeCoverage YES
+    - name: Prepare Code Coverage
+      run: xcrun llvm-cov export -format="lcov" .build/debug/sRoutingPackageTests.xctest/Contents/MacOS/sRoutingPackageTests  -instr-profile .build/debug/codecov/default.profdata > info.lcov
     - name: Upload coverage to Codecov
       uses: codecov/codecov-action@v4
       with:
