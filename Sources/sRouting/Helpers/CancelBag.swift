@@ -9,7 +9,7 @@ import Foundation
 
 actor CancelBag {
 
-    private lazy var cancellers: [String:Canceller] = .init()
+    private var cancellers: [String:Canceller] = .init()
     
     func cancelAll() {
         let runningTasks = cancellers.values.filter({ !$0.isCancelled })

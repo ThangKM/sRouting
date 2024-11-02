@@ -14,9 +14,9 @@ import Foundation
 private let tabsParam = "tabs"
 private let stacksParam = "stacks"
 
-public struct ContextMacro: MemberMacro {
+package struct ContextMacro: MemberMacro {
     
-    public static func expansion(of node: AttributeSyntax,
+    package static func expansion(of node: AttributeSyntax,
                                  providingMembersOf declaration: some DeclGroupSyntax,
                                  in context: some MacroExpansionContext) throws -> [DeclSyntax] {
         
@@ -137,7 +137,7 @@ public struct ContextMacro: MemberMacro {
 }
 
 extension ContextMacro: PeerMacro {
-    public static func expansion(of node: SwiftSyntax.AttributeSyntax,
+    package static func expansion(of node: SwiftSyntax.AttributeSyntax,
                                  providingPeersOf declaration: some SwiftSyntax.DeclSyntaxProtocol,
                                  in context: some SwiftSyntaxMacros.MacroExpansionContext) throws -> [SwiftSyntax.DeclSyntax] {
         
@@ -284,7 +284,7 @@ extension ContextMacro {
 
 extension ContextMacro: ExtensionMacro {
     
-    public static func expansion(
+    package static func expansion(
         of node: AttributeSyntax,
         attachedTo declaration: some DeclGroupSyntax,
         providingExtensionsOf type: some TypeSyntaxProtocol,

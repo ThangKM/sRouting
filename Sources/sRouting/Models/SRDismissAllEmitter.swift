@@ -17,6 +17,6 @@ public final class SRDismissAllEmitter {
     public init() { }
     
     public func dismissAll() {
-        dismissAllSignal = !dismissAllSignal
+        dismissAllSignal.toggle()
     }
 }
