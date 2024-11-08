@@ -1,5 +1,5 @@
 //
-//  EnvironmentNavPathWrapperView.swift
+//  NavigationRootView.swift
 //
 //
 //  Created by Thang Kieu on 20/03/2024.
@@ -9,7 +9,7 @@ import SwiftUI
 import Observation
 
 /// Inject ``SRNavigationPath`` environment value before observing the navigation's route transitions
-public struct EnvironmentNavPathWrapperView<Content>: View
+public struct NavigationRootView<Content>: View
 where Content: View {
     
     private let path: SRNavigationPath
@@ -37,10 +37,10 @@ where Content: View {
 extension NavigationStack where Data == NavigationPath {
     
     public init<Content: View>(path: SRNavigationPath, @ViewBuilder root: @escaping () -> Content)
-    where Root == EnvironmentNavPathWrapperView<Content> {
+    where Root == NavigationRootView<Content> {
         @Bindable var bindPath = path
         self.init(path: $bindPath.navPath) {
-            EnvironmentNavPathWrapperView(path: path, content: root)
+            NavigationRootView(path: path, content: root)
         }
     }
 }
