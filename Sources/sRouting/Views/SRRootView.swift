@@ -8,6 +8,7 @@
 import SwiftUI
 import Observation
 
+/// The root view of a window
 public struct SRRootView<Content, ContextType>: View
 where Content: View, ContextType: SRContextType {
 

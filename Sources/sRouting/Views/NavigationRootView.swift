@@ -15,7 +15,7 @@ where Content: View {
     private let path: SRNavigationPath
     private let content: () -> Content
 
-    /// Initalizer of ``EnviromentNavPathWrapperView``
+    /// Initalizer of ``NavigationRootView``
     ///  - Parameters:
     ///     - path: ``SRNavigationPath``
     ///     - content: Content view builder
