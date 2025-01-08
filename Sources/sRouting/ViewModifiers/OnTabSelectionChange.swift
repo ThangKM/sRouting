@@ -21,7 +21,7 @@ private struct TabbarModifier: ViewModifier {
     }
     
     func body(content: Content) -> some View {
-        content.onReceive(tabSelection.$selection.onChanges()) { selection in
+        content.onReceive(tabSelection.$selection.dropFirst().onChanges()) { selection in
             onChange(selection)
         }
     }

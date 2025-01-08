@@ -21,7 +21,7 @@ private struct OnDoubleTapTabItem: ViewModifier {
     }
     
     func body(content: Content) -> some View {
-        content.onReceive(tabSelection.$doubleTapEmmiter.onChanges()) { _ in
+        content.onReceive(tabSelection.$doubleTapEmmiter.dropFirst().onChanges()) { _ in
             let selection = tabSelection.selection
             onChange(selection)
         }

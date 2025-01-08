@@ -21,7 +21,7 @@ private struct NavigationModifier: ViewModifier {
     }
     
     func body(content: Content) -> some View {
-        content.onReceive(navigationPath.$stack.onChanges()) { path in
+        content.onReceive(navigationPath.$stack.dropFirst().onChanges()) { path in
             onChange(path)
         }
     }
