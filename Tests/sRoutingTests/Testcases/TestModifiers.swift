@@ -82,9 +82,6 @@ struct TestModifiers {
                     .tabItem {
                         Label("Home", systemImage: "house")
                     }.tag(0)
-                TestScreen(router: SRRouter(TestRoute.self), tests: .none).tabItem {
-                    Label("Setting", systemImage: "gear")
-                }.tag(1)
             }
             .onDoubleTapTabItem { _selection in
                 selection = _selection
