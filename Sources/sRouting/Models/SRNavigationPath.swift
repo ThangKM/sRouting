@@ -9,29 +9,19 @@ import Foundation
 import SwiftUI
 
 /// NavigationStack's path
-@Observable @MainActor
-public final class SRNavigationPath {
+@MainActor
+public final class SRNavigationPath: ObservableObject {
     
-    internal var stack: [String] = []
+    @Published
+    var stack: [String] = []
     
-    @ObservationIgnored
-    internal var navPath: NavigationPath {
-        get {
-            access(keyPath: \.navPath)
-            return _navPath
-        }
-        set {
+    @Published
+    public var navPath: NavigationPath = .init() {
+        willSet {
             _matchingStack(from: newValue.codable)
-            withMutation(keyPath: \.navPath) {
-                _navPath = newValue
-            }
         }
     }
-    
-    @ObservationIgnored
-    private var _navPath: NavigationPath = .init()
-    
-    @ObservationIgnored
+        
     public private(set) var didAppear: Bool = false
     
     public init() { }

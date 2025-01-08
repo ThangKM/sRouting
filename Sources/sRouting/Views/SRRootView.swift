@@ -24,7 +24,7 @@ where Content: View, ContextType: SRContextType {
     public var body: some View {
         content()
             .onRouting(of:context.rootRouter)
-            .environment(context.dismissAllEmitter)
-            .environment(context.tabSelection)
+            .environmentObject(context.dismissAllEmitter)
+            .environmentObject(context.tabSelection)
     }
 }

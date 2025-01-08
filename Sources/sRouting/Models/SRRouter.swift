@@ -7,26 +7,14 @@
 
 import SwiftUI
 
-@Observable @MainActor
-public final class SRRouter<Route> where Route: SRRoute {
+@MainActor
+public final class SRRouter<Route>: ObservableObject where Route: SRRoute {
     
     public typealias AcceptionCallback = @Sendable (_ accepted: Bool) -> Void
     public typealias ErrorHandler = @Sendable (_ error: Error?) -> Void
     
-    @ObservationIgnored
-    private var _transition: SRTransition<Route> = .none
-
-    private(set) var transition: SRTransition<Route> {
-        get {
-          access(keyPath: \.transition)
-          return _transition
-        }
-        set {
-          withMutation(keyPath: \.transition) {
-            _transition  = newValue
-          }
-        }
-    }
+    @Published
+    private(set) var transition: SRTransition<Route> = .none
     
     public init(_ route: Route.Type) { }
     

@@ -14,14 +14,15 @@ struct RouterModifier<Route>: ViewModifier where Route: SRRoute {
     /// A  screen's ``Router``
     private let router: SRRouter<Route>
 
-    @Environment(SRTabbarSelection.self)
-    private var tabbarSelection: SRTabbarSelection?
     
-    @Environment(SRNavigationPath.self)
-    private var navigationPath: SRNavigationPath?
+    @EnvironmentObject
+    private var tabbarSelection: SRTabbarSelection
     
-    @Environment(SRDismissAllEmitter.self)
-    private var dismissAllEmitter: SRDismissAllEmitter?
+    @EnvironmentObject
+    private var navigationPath: SRNavigationPath
+    
+    @EnvironmentObject
+    private var dismissAllEmitter: SRDismissAllEmitter
     
     @Environment(\.openWindow) private var openWindow
     @Environment(\.openURL) private var openURL
@@ -98,14 +99,14 @@ struct RouterModifier<Route>: ViewModifier where Route: SRRoute {
         content
             .fullScreenCover(isPresented: $isActivePresent) {
                 destinationView
-                .environment(dismissAllEmitter)
-                .environment(tabbarSelection)
+                .environmentObject(dismissAllEmitter)
+                .environmentObject(tabbarSelection)
             }
             .sheet(isPresented: $isActiveSheet,
                 content: {
                 destinationView
-                .environment(dismissAllEmitter)
-                .environment(tabbarSelection)
+                .environmentObject(dismissAllEmitter)
+                .environmentObject(tabbarSelection)
             })
             .alert(isPresented: $isActiveAlert) {
                 if let alertView {
@@ -121,10 +122,10 @@ struct RouterModifier<Route>: ViewModifier where Route: SRRoute {
                    ActionSheet(title: Text("Action Sheet not found!"))
                }
             })
-            .onChange(of: dismissAllEmitter?.dismissAllSignal, { oldValue, newValue in
+            .onReceive(dismissAllEmitter.$dismissAllSignal, perform: { _ in
                 resetActiveState()
             })
-            .onChange(of: router.transition, { oldValue, newValue in
+            .onReceive(router.$transition, perform: { newValue in
                 let transaction = newValue.transaction?()
                 if let transaction {
                     withTransaction(transaction) {
@@ -157,7 +158,7 @@ extension RouterModifier {
         switch transition.type {
         case .push:
             guard let route = transition.route else { return }
-            navigationPath?.push(to: route)
+            navigationPath.push(to: route)
         case .present:
             isActivePresent = true
         case .sheet:
@@ -169,16 +170,16 @@ extension RouterModifier {
         case .dismiss:
             dismissAction()
         case .selectTab:
-            tabbarSelection?.select(tag: transition.tabIndex ?? .zero)
+            tabbarSelection.select(tag: transition.tabIndex ?? .zero)
         case .dismissAll:
-            dismissAllEmitter?.dismissAll()
+            dismissAllEmitter.dismissAll()
         case .pop:
-            navigationPath?.pop()
+            navigationPath.pop()
         case .popToRoot:
-            navigationPath?.popToRoot()
+            navigationPath.popToRoot()
         case .popToRoute:
             guard let route = transition.popToRoute else { break }
-            navigationPath?.pop(to: route)
+            navigationPath.pop(to: route)
         case .openWindow:
             openWindow(transition: transition.windowTransition)
         case .openURL:

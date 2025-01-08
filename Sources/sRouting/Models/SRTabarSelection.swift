@@ -8,32 +8,24 @@
 import Foundation
 
 /// Tabbar's selection Observation
-@Observable @MainActor
-public final class SRTabbarSelection {
+@MainActor
+public final class SRTabbarSelection: ObservableObject {
     
-    public var selection: Int {
-        get {
-            access(keyPath: \.selection)
-            return _selection
-        }
-        set {
-            if newValue == _selection {
+    @Published
+    public var selection: Int = .zero {
+        willSet {
+            if newValue == selection {
                 _increaseTapCount()
                 _autoCancelTapCount()
             } else {
                 _resetTapCount()
             }
-            withMutation(keyPath: \.selection) {
-                _selection = newValue
-            }
         }
     }
     
-    internal var doubleTapEmmiter: SignalChange = false
-    
-    @ObservationIgnored
-    private var _selection: Int = .zero
-    
+    @Published
+    var doubleTapEmmiter: SignalChange = false
+
     nonisolated private let tapCountStream = SRAsyncStream(defaultValue: 0)
     nonisolated private let cancelBag = CancelBag()
     nonisolated private let autoCancelTapIdentifier = "autoCancelTapIdentifier"

@@ -9,10 +9,10 @@ import Foundation
 import Observation
 
 /// `Dismiss all` signal emitter
-@Observable @MainActor
-public final class SRDismissAllEmitter {
+@MainActor
+public final class SRDismissAllEmitter: ObservableObject {
     
-    internal var dismissAllSignal: SignalChange = false
+    @Published var dismissAllSignal: SignalChange = false
     
     public init() { }
     

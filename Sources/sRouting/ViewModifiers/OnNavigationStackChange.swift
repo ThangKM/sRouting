@@ -7,12 +7,12 @@
 
 import SwiftUI
 
-private typealias OnChangeBlock = @MainActor (_ oldPaths: [String], _ newPaths: [String]) -> Void
+private typealias OnChangeBlock = @MainActor (_ newPaths: [String]) -> Void
 
 private struct NavigationModifier: ViewModifier {
     
-    @Environment(SRNavigationPath.self)
-    private var navigationPath: SRNavigationPath?
+    @EnvironmentObject
+    private var navigationPath: SRNavigationPath
     
     private let onChange: OnChangeBlock
     
@@ -21,10 +21,8 @@ private struct NavigationModifier: ViewModifier {
     }
     
     func body(content: Content) -> some View {
-        content.onChange(of: navigationPath?.stack) { oldValue, newValue in
-            let oldPaths = (oldValue ?? [])
-            let newPahts = (newValue ?? [])
-            onChange(oldPaths, newPahts)
+        content.onReceive(navigationPath.$stack.onChanges()) { path in
+            onChange(path)
         }
     }
 }
@@ -34,7 +32,7 @@ extension View {
     /// Observe Navigation stack change
     /// - Parameter onChange: action
     /// - Returns: some `View`
-    public func onNaviStackChange(_ onChange: @escaping @MainActor (_ oldPaths: [String], _ newPaths: [String]) -> Void) -> some View {
+    public func onNaviStackChange(_ onChange: @escaping @MainActor (_ newPaths: [String]) -> Void) -> some View {
         self.modifier(NavigationModifier(onChange))
     }
 }

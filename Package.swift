@@ -8,8 +8,8 @@ let package = Package(
     name: "sRouting",
     
     platforms: [
-        .iOS(.v17),
-        .macOS(.v14),
+        .iOS(.v16),
+        .macOS(.v13),
         .visionOS(.v1)
     ],
     

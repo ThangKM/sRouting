@@ -27,7 +27,7 @@ where Content: View {
     
     public var body: some View {
         content()
-        .environment(path)
+        .environmentObject(path)
         .onAppear(perform: {
             path.stackDidAppear()
         })
@@ -36,14 +36,14 @@ where Content: View {
 
 extension NavigationStack where Data == NavigationPath {
     
-    public init<Content: View>(path: SRNavigationPath, @ViewBuilder root: @escaping () -> Content)
+    public init<Content: View>(manager: SRNavigationPath, path: Binding<NavigationPath>, @ViewBuilder root: @escaping () -> Content)
     where Root == NavigationRootView<Content> {
-        @Bindable var bindPath = path
-        self.init(path: $bindPath.navPath) {
-            NavigationRootView(path: path, content: root)
+        self.init(path: path) {
+            NavigationRootView(path: manager, content: root)
         }
     }
 }
+
 
 extension NavigationLink where Destination == Never {
 
