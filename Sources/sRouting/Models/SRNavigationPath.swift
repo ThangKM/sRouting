@@ -15,7 +15,7 @@ public final class SRNavigationPath: ObservableObject {
     @Published
     var stack: [String] = []
     
-    private(set) var navPath: Binding<NavigationPath>?
+    public private(set) var navPath: Binding<NavigationPath>?
 
     public init() { }
     
