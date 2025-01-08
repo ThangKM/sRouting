@@ -17,15 +17,15 @@ import Observation
 #if canImport(sRoutingMacros) && os(macOS)
 import sRoutingMacros
 
-final class ContextMacroTest: XCTestCase {
+final class CoordinatorMacroTest: XCTestCase {
     
     func testContextMacroImp() async throws {
         assertMacroExpansion("""
-        @sRContext(tabs: ["homeItem", "settingItem"], stacks: "home", "setting")
-        struct SRContext {
+        @sRouteCoordinator(tabs: ["homeItem", "settingItem"], stacks: "home", "setting")
+        struct Coordinator {
         }
         """, expandedSource:"""
-        struct SRContext {
+        struct Coordinator {
 
             @MainActor let rootRouter = SRRouter(AnyRoute.self)
 
@@ -166,7 +166,7 @@ final class ContextMacroTest: XCTestCase {
             case setting
         }
 
-        extension SRContext: sRouting.SRContextType {
+        extension Coordinator: sRouting.SRRouteCoordinatorType {
         }
         """,
         macros: testMacros)
@@ -177,14 +177,14 @@ final class ContextMacroTest: XCTestCase {
         let dianosSpec = DiagnosticSpec(message: SRMacroError.structOrClass.description, line: 1, column: 1,severity: .error)
         
         assertMacroExpansion("""
-        @sRContext(tabs: ["homeItem", "settingItem"], stacks: "home", "setting")
-        enum SRContext {
+        @sRouteCoordinator(tabs: ["homeItem", "settingItem"], stacks: "home", "setting")
+        enum Coordinator {
         }
         """, expandedSource:"""
-        enum SRContext {
+        enum Coordinator {
         }
 
-        extension SRContext: sRouting.SRContextType {
+        extension Coordinator: sRouting.SRRouteCoordinatorType {
         }
         """,
                              diagnostics: [dianosSpec, dianosSpec],
@@ -196,14 +196,14 @@ final class ContextMacroTest: XCTestCase {
         let dianosSpec = DiagnosticSpec(message: SRMacroError.missingArguments.description, line: 1, column: 1,severity: .error)
         
         assertMacroExpansion("""
-        @sRContext(tabs: [], stacks: "")
-        struct SRContext {
+        @sRouteCoordinator(tabs: [], stacks: "")
+        struct Coordinator {
         }
         """, expandedSource:"""
-        struct SRContext {
+        struct Coordinator {
         }
 
-        extension SRContext: sRouting.SRContextType {
+        extension Coordinator: sRouting.SRRouteCoordinatorType {
         }
         """,
                              diagnostics: [dianosSpec, dianosSpec],
@@ -215,14 +215,14 @@ final class ContextMacroTest: XCTestCase {
         let dianosSpec = DiagnosticSpec(message: SRMacroError.duplication.description, line: 1, column: 1,severity: .error)
         
         assertMacroExpansion("""
-        @sRContext(tabs: ["home","home"], stacks: "home")
-        struct SRContext {
+        @sRouteCoordinator(tabs: ["home","home"], stacks: "home")
+        struct Coordinator {
         }
         """, expandedSource:"""
-        struct SRContext {
+        struct Coordinator {
         }
 
-        extension SRContext: sRouting.SRContextType {
+        extension Coordinator: sRouting.SRRouteCoordinatorType {
         }
         """,
                              diagnostics: [dianosSpec, dianosSpec],
@@ -234,14 +234,14 @@ final class ContextMacroTest: XCTestCase {
         let dianosSpec = DiagnosticSpec(message: SRMacroError.duplication.description, line: 1, column: 1,severity: .error)
         
         assertMacroExpansion("""
-        @sRContext(tabs: ["home", "setting"], stacks: "home", "setting", "home")
-        struct SRContext {
+        @sRouteCoordinator(tabs: ["home", "setting"], stacks: "home", "setting", "home")
+        struct Coordinator {
         }
         """, expandedSource:"""
-        struct SRContext {
+        struct Coordinator {
         }
 
-        extension SRContext: sRouting.SRContextType {
+        extension Coordinator: sRouting.SRRouteCoordinatorType {
         }
         """,
                              diagnostics: [dianosSpec, dianosSpec],

@@ -15,12 +15,12 @@ import Testing
 struct RouterModifierTests {
     
     let router = SRRouter(TestRoute.self)
-    let context = SRContext()
+    let coordinator = Coordinator()
     
     @Test
     func testActiveSheet() async throws {
         var isActive = false
-        let sut = TestScreen(router: router, tests: .init(didChangeTransition: { view in
+        let sut = TestUnitTestActionView(coordinator: coordinator, router: router, tests: .init(didChangeTransition: { view in
             isActive = view.isActiveSheet
         }))
         ViewHosting.host(view: sut)
@@ -32,7 +32,7 @@ struct RouterModifierTests {
     @Test
     func testActiveAlert() async throws {
         var isActive = false
-        let sut = TestScreen(router: router, tests: .init(didChangeTransition: { view in
+        let sut = TestUnitTestActionView(coordinator: coordinator, router: router, tests: .init(didChangeTransition: { view in
             isActive = view.isActiveAlert
         }))
         
@@ -45,7 +45,7 @@ struct RouterModifierTests {
     @Test
     func testDismissAll() async throws {
         var isActive = true
-        let sut = TestScreen(router: router, tests: .init(didChangeTransition: { view in
+        let sut = TestUnitTestActionView(coordinator: coordinator, router: router, tests: .init(didChangeTransition: { view in
             isActive = view.isActiveAlert && view.isActiveSheet && view.isActivePresent && view.isActiveActionSheet
         }))
         
@@ -58,8 +58,8 @@ struct RouterModifierTests {
     @Test
     func testPush() async throws {
         var pathCount = 0
-        let sut = NavigationStack(path: context.testStackPath) {
-            TestScreen(router: router, tests: .none).onNaviStackChange { oldPaths, newPaths in
+        let sut =  TestViewModifierView(coordinator: coordinator, router: router) {
+            Text("Test").onNaviStackChange { newPaths in
                 pathCount = newPaths.count
             }
         }
@@ -72,8 +72,8 @@ struct RouterModifierTests {
     @Test
     func testPop() async throws {
         var pathCount = 1
-        let sut = NavigationStack(path: context.testStackPath) {
-            TestScreen(router: router, tests: .none).onNaviStackChange { oldPaths, newPaths in
+        let sut = TestViewModifierView(coordinator: coordinator, router: router) {
+            Text("Test").onNaviStackChange { newPaths in
                 pathCount = newPaths.count
             }
         }
@@ -88,8 +88,8 @@ struct RouterModifierTests {
     @Test
     func testPopToRoot() async throws {
         var pathCount = 1
-        let sut = NavigationStack(path: context.testStackPath) {
-            TestScreen(router: router, tests: .none).onNaviStackChange { oldPaths, newPaths in
+        let sut = TestViewModifierView(coordinator: coordinator, router: router) {
+            Text("Test").onNaviStackChange { newPaths in
                 pathCount = newPaths.count
             }
         }
@@ -109,8 +109,8 @@ struct RouterModifierTests {
     func testPopToTarget() async throws {
         var paths = [String]()
         
-        let sut = NavigationStack(path: context.testStackPath) {
-            TestScreen(router: router, tests: .none).onNaviStackChange { oldPaths, newPaths in
+        let sut = TestViewModifierView(coordinator: coordinator, router: router) {
+            Text("Test").onNaviStackChange { newPaths in
                 paths = newPaths
             }
         }
@@ -132,10 +132,10 @@ struct RouterModifierTests {
     @Test
     func testActiveActionSheet() async throws {
         var isActive = false
-        let sut = TestScreen(router: router, tests: .init(didChangeTransition: { view in
+        let sut =
+        TestUnitTestActionView(coordinator: coordinator, router: router, tests:.init(didChangeTransition: { view in
             isActive = view.isActiveActionSheet
         }))
-        
         ViewHosting.host(view: sut)
         router.show(actionSheet: {
             .init(title: Text("test"))
@@ -147,7 +147,7 @@ struct RouterModifierTests {
     @Test
     func testActivePresent() async throws {
         var isActive = false
-        let sut = TestScreen(router: router, tests: .init(didChangeTransition: { view in
+        let sut = TestUnitTestActionView(coordinator: coordinator, router: router, tests:.init(didChangeTransition: { view in
             isActive = view.isActivePresent
         }))
         

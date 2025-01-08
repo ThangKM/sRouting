@@ -9,10 +9,10 @@ import SwiftUI
 import Observation
 
 /// Inject ``SRNavigationPath`` environment value before observing the navigation's route transitions
-public struct NavigationRootView<Content>: View
+public struct NavigationStackView<Content>: View
 where Content: View {
     
-    private let path: SRNavigationPath
+    @ObservedObject var path: SRNavigationPath
     private let content: () -> Content
 
     /// Initalizer of ``NavigationRootView``
@@ -26,24 +26,15 @@ where Content: View {
     }
     
     public var body: some View {
-        content()
+        NavigationStack(path: $path.navPath, root: {
+            content()
+        })
         .environmentObject(path)
         .onAppear(perform: {
             path.stackDidAppear()
         })
     }
 }
-
-extension NavigationStack where Data == NavigationPath {
-    
-    public init<Content: View>(manager: SRNavigationPath, path: Binding<NavigationPath>, @ViewBuilder root: @escaping () -> Content)
-    where Root == NavigationRootView<Content> {
-        self.init(path: path) {
-            NavigationRootView(path: manager, content: root)
-        }
-    }
-}
-
 
 extension NavigationLink where Destination == Never {
 

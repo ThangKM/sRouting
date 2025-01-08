@@ -32,8 +32,9 @@ enum TestRoute: SRRoute {
     }
 }
 
-@sRContext(stacks: "testStack")
-struct SRContext { }
+@sRouteCoordinator(stacks: "testStack")
+struct Coordinator { }
 
 @sRouteObserver(TestRoute.self)
-struct RouteObserver { }
+struct RouteObserver: ViewModifier { }
+

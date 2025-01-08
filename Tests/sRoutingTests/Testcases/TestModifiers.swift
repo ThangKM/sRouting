@@ -16,13 +16,14 @@ import SwiftUI
 struct TestModifiers {
     
     let router = SRRouter(TestRoute.self)
-    let context = SRContext()
+    let coordinator = Coordinator()
     
     @Test
     func testOnDismissAll() async throws {
         var isEnter = false
-        let sut = SRRootView(context: context) {
-            TestScreen(router: router, tests: .none).onDismissAllChange {
+        let sut =
+        TestViewModifierView(coordinator: coordinator, router: router) {
+            Text("test").onDismissAllChange {
                 isEnter.toggle()
             }
         }
@@ -35,11 +36,10 @@ struct TestModifiers {
     @Test
     func testOnNavigationStackChange() async throws {
         var pathCount = 0
-        let sut = SRRootView(context: context) {
-            NavigationStack(path: context.testStackPath) {
-                TestScreen(router: router, tests: .none).onNaviStackChange { oldPaths, newPaths in
-                    pathCount = newPaths.count
-                }
+        let sut =
+        TestViewModifierView(coordinator: coordinator, router: router) {
+            Text("test").onNaviStackChange { newPaths in
+                pathCount = newPaths.count
             }
         }
         ViewHosting.host(view: sut)
@@ -51,17 +51,22 @@ struct TestModifiers {
     @Test
     func testOnTabSelectionChange() async throws {
         var tabIndex = 0
-        let sut =  SRRootView(context: context) {
-            @Bindable var tabSelection = context.tabSelection
-            TabView(selection: $tabSelection.selection) {
-                TestScreen(router: router, tests: .none)
+        let sut =  SRRootView(coordinator: coordinator) {
+            TabView(selection: .init(get: {
+                coordinator.tabSelection.selection
+            }, set: { value in
+                coordinator.tabSelection.selection = value
+            })) {
+                Text("home")
                     .tabItem {
                         Label("Home", systemImage: "house")
                     }.tag(0)
-                TestScreen(router: router, tests: .none).tabItem {
+                Text("setting")
+                    .tabItem {
                     Label("Setting", systemImage: "gear")
                 }.tag(1)
             }
+            .onRouting(of: router)
             .onTabSelectionChange { value in
                 tabIndex = value
             }
@@ -75,17 +80,24 @@ struct TestModifiers {
     @Test
     func testOnDoubleTapTabItem() async throws {
         var selection = 1
-        let sut =  SRRootView(context: context) {
-            @Bindable var tabSelection = context.tabSelection
-            TabView(selection: $tabSelection.selection) {
-                TestScreen(router: router, tests: .none)
+        let sut = SRRootView(coordinator: coordinator) {
+            TabView(selection: .init(get: {
+                coordinator.tabSelection.selection
+            }, set: { value in
+                coordinator.tabSelection.selection = value
+            })) {
+                Text("home")
                     .tabItem {
                         Label("Home", systemImage: "house")
                     }.tag(0)
-                TestScreen(router: router, tests: .none).tabItem {
+                    .onRouting(of: router)
+                
+                Text("setting")
+                    .tabItem {
                     Label("Setting", systemImage: "gear")
                 }.tag(1)
             }
+            
             .onDoubleTapTabItem { _selection in
                 selection = _selection
             }
@@ -100,14 +112,22 @@ struct TestModifiers {
     
     @Test
     func testNoneDoubleTapTabItem() async throws {
-        let sut =  SRRootView(context: context) {
-            @Bindable var tabSelection = context.tabSelection
-            TabView(selection: $tabSelection.selection) {
-                TestScreen(router: router, tests: .none)
+        let sut = SRRootView(coordinator: coordinator) {
+            TabView(selection: .init(get: {
+                coordinator.tabSelection.selection
+            }, set: { value in
+                coordinator.tabSelection.selection = value
+            })) {
+                Text("home")
                     .tabItem {
                         Label("Home", systemImage: "house")
                     }.tag(0)
+                Text("setting")
+                    .tabItem {
+                    Label("Setting", systemImage: "gear")
+                }.tag(1)
             }
+            .onRouting(of: router)
             .onDoubleTapTabItem { selection in
                 Issue.record()
             }

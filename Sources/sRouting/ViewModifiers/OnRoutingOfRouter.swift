@@ -82,10 +82,10 @@ struct RouterModifier<Route>: ViewModifier where Route: SRRoute {
                     Alert(title: Text("Something went wrong!"))
                 }
             }
-            .onChange(of: dismissAllEmitter?.dismissAllSignal, { oldValue, newValue in
+            .onReceive(dismissAllEmitter.$dismissAllSignal, perform: { _ in
                 resetActiveState()
             })
-            .onChange(of: router.transition, { oldValue, newValue in
+            .onReceive(router.$transition, perform: { newValue in
                 let transaction = newValue.transaction?()
                 if let transaction {
                     withTransaction(transaction) {

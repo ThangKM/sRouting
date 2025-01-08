@@ -40,7 +40,7 @@ router.trigger(to: .home, with: .present) {
 }
 
 @sRouteObserver(HomeRoute.self, SettingRoute.self)
-struct RouteObserver { }
+struct RouteObserver: ViewModifier { }
 
 @sRouteCoordinator(tabs: ["homeItem", "settingItem"], stacks: "home", "setting")
 struct AppCoordinator { }
@@ -49,27 +49,23 @@ struct TestApp: App {
     
     let appCoordinator: AppCoordinator
     @StateObject var tabselection: SRTabbarSelection
-    @StateObject var homePath: SRNavigationPath
-    @StateObject var settingPath: SRNavigationPath
     
     init() {
         let coordinator = AppCoordinator()
         appCoordinator = coordinator
         _tabselection = .init(wrappedValue: coordinator.tabSelection)
-        _homePath = .init(wrappedValue: coordinator.homePath)
-        _settingPath = .init(wrappedValue: coordinator.settingPath)
     }
     
     var body: some Scene {
         WindowGroup {
             SRRootView(coordinator: appCoordinator) {
                 TabView(selection:$tabselection.selection) {
-                    NavigationStack(manager: homePath, path: $homePath.navPath) {
+                    NavigationStackView(path: appCoordinator.homePath) {
                         Text("Home")
                             .routeObserver(RouteObserver.self)
                     }.tag(SRTabItem.homeItem.rawValue)
                     
-                    NavigationStack(manager: settingPath, path: $settingPath.navPath) {
+                    NavigationStackView(path: appCoordinator.settingPath) {
                         Text("Setting")
                             .routeObserver(RouteObserver.self)
                     }.tag(SRTabItem.settingItem.rawValue)
