@@ -91,16 +91,18 @@ package struct RouteCoordinatorMacro: MemberMacro {
                 tabSelection.select(tag: tabItem.rawValue)
             case .push(route: let route, into: let stack):
                 let navigation = navigationPath(of: stack)
-                guard navigation.didAppear else {
+                guard navigation.navPath != nil else {
                    do {
-                    try await Task.sleep(for: .milliseconds(200))
+                    try await Task.sleep(for: .milliseconds(300))
                    } catch {
                     print("sRouting.\\(error)")
                    }
                    navigation.push(to: route)
+                   try? await Task.sleep(for: .milliseconds(300))
                    return
                 }
                 navigation.push(to: route)
+                try? await Task.sleep(for: .milliseconds(300))
             case .sheet(let route):
                 rootRouter.trigger(to: AnyRoute(route: route), with: .sheet)
             case .window(let windowTrans):

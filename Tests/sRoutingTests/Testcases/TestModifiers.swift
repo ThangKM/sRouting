@@ -43,6 +43,7 @@ struct TestModifiers {
             }
         }
         ViewHosting.host(view: sut)
+        try await Task.sleep(for: .milliseconds(50))
         router.trigger(to: .emptyScreen, with: .push)
         try await Task.sleep(for: .milliseconds(50))
         #expect(pathCount == 1)

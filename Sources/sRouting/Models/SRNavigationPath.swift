@@ -15,10 +15,8 @@ public final class SRNavigationPath: ObservableObject {
     @Published
     var stack: [String] = []
     
-    private var navPath: Binding<NavigationPath>?
-        
-    public private(set) var didAppear: Bool = false
-    
+    public private(set) var navPath: Binding<NavigationPath>?
+
     public init() { }
     
     public func pop() {
@@ -45,11 +43,6 @@ public final class SRNavigationPath: ObservableObject {
     
     public func push(to route: some SRRoute) {
         navPath?.wrappedValue.append(route)
-    }
-    
-    internal func stackDidAppear() {
-        guard !didAppear else { return }
-        didAppear = true
     }
     
     internal func matchingStack(from navCodable: NavigationPath.CodableRepresentation?) {

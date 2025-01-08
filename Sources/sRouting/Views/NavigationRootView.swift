@@ -31,9 +31,6 @@ where Content: View {
             content()
         })
         .environmentObject(pathManager)
-        .onAppear(perform: {
-            pathManager.stackDidAppear()
-        })
         .onChange(of: path, perform: { newValue in
             pathManager.matchingStack(from: newValue.codable)
         })

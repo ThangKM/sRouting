@@ -64,6 +64,7 @@ struct RouterModifierTests {
             }
         }
         ViewHosting.host(view: sut)
+        try await Task.sleep(for: .milliseconds(10))
         router.trigger(to: .emptyScreen, with: .push)
         try await Task.sleep(for: .milliseconds(10))
         #expect(pathCount == 1)
@@ -78,6 +79,7 @@ struct RouterModifierTests {
             }
         }
         ViewHosting.host(view: sut)
+        try await Task.sleep(for:.milliseconds(50))
         router.trigger(to: .emptyScreen, with: .push)
         try await Task.sleep(for:.milliseconds(50))
         router.pop()
@@ -112,9 +114,11 @@ struct RouterModifierTests {
         let sut = TestViewModifierView(coordinator: coordinator, router: router) {
             Text("Test").onNaviStackChange { newPaths in
                 paths = newPaths
+                print(paths)
             }
         }
         ViewHosting.host(view: sut)
+        try await Task.sleep(for:.milliseconds(50))
         router.trigger(to: .home, with: .push)
         try await Task.sleep(for:.milliseconds(50))
         router.trigger(to: .emptyScreen, with: .push)
