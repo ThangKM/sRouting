@@ -76,15 +76,15 @@ Setup a context and ``SRRootView`` for your app
 Declaring Context: 
 
 ```swift
-@sRContext(tabs: ["home", "setting"], stacks: "home", "setting")
-struct SRContext { }
+@sRouteCoordinator(tabs: ["home", "setting"], stacks: "home", "setting")
+struct Coordinator { }
 ```
 
 Declaring View of navigation destination:
 
 ```swift
 @sRouteObserver(HomeRoute.self, SettingRoute.self)
-struct RouteObserver { }
+struct RouteObserver: ViewModifier { }
 ```
 
 Setup Your App:
@@ -92,36 +92,35 @@ Setup Your App:
 ```swift
 @main
 struct BookieApp: App { 
-    let context = SRContext()
-    ...
-    var body: some Scene {
 
+    let appCoordinator: AppCoordinator
+    @StateObject var tabselection: SRTabbarSelection
+    
+    init() {
+        let coordinator = AppCoordinator()
+        appCoordinator = coordinator
+        _tabselection = .init(wrappedValue: coordinator.tabSelection)
+    }
+    
+    var body: some Scene {
         WindowGroup {
-            SRRootView(context: context) {
-                @Bindable var tabSelection = context.tabSelection
-                TabView(selection: $tabSelection.selection) {
-                    NavigationStack(path: context.homePath) {
-                        AppRoute.home.screen
+            SRRootView(coordinator: appCoordinator) {
+                TabView(selection:$tabselection.selection) {
+                    NavigationStackView(path: appCoordinator.homePath) {
+                        Text("Home")
                             .routeObserver(RouteObserver.self)
-                    }.tabItem {
-                        Label("Home", systemImage: "house")
-                    }.tag(SRTabItem.home.rawValue)
+                    }.tag(SRTabItem.homeItem.rawValue)
                     
-                    NavigationStack(path: context.settingPath) {
-                        AppRoute.setting.screen
+                    NavigationStackView(path: appCoordinator.settingPath) {
+                        Text("Setting")
                             .routeObserver(RouteObserver.self)
-                    }.tabItem {
-                        Label("Setting", systemImage: "gear")
-                    }.tag(SRTabItem.setting.rawValue)
+                    }.tag(SRTabItem.settingItem.rawValue)
                 }
-                .onDoubleTapTabItem { ... }
-                .onTabSelectionChange { ... }
             }
             .onOpenURL { url in
                 Task {
-                    ...
-                    await context.routing(.resetAll,.select(tabItem: .home),
-                                          .push(route: HomeRoute.cake, into: .home))
+                    await appCoordinator.routing(.resetAll, .select(tabItem: .homeItem),
+                                          .push(route: HomeRoute.detail("testing"), into: .home))
                 }
             }
         }
