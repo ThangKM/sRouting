@@ -82,7 +82,7 @@ struct TestModifiers {
                     .tabItem {
                         Label("Home", systemImage: "house")
                     }.tag(0)
-                TestScreen(router: router, tests: .none).tabItem {
+                TestScreen(router: SRRouter(TestRoute.self), tests: .none).tabItem {
                     Label("Setting", systemImage: "gear")
                 }.tag(1)
             }
@@ -91,6 +91,7 @@ struct TestModifiers {
             }
         }
         ViewHosting.host(view: sut)
+        try await Task.sleep(for: .milliseconds(50))
         router.selectTabbar(at: 0)
         try await Task.sleep(for: .milliseconds(100))
         router.selectTabbar(at: 0)
