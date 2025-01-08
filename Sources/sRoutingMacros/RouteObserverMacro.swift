@@ -26,12 +26,12 @@ package struct RouteObserverMacro: MemberMacro {
         
         var destinationObserve = ""
         for route in routes {
-            destinationObserve += ".navigationDestination(for: \(route).self) { route in route.screen.environment(path) }\n"
+            destinationObserve += ".navigationDestination(for: \(route).self) { route in route.screen.environmentObject(path) }\n"
         }
         
         let decl: DeclSyntax = """
-        @Environment(SRNavigationPath.self)
-        private var path
+        @EnvironmentObject
+        private var path: SRNavigationPath
 
         init() { }
         

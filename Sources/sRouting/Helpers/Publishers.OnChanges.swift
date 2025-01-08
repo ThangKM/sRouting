@@ -21,7 +21,7 @@ extension Publishers {
         
         func receive<S>(subscriber: S)
         where S : Subscriber, UpStream.Failure == S.Failure, UpStream.Output == S.Input {
-            
+            upstream.subscribe(Inner(downstream: subscriber))
         }
     }
 }
