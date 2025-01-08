@@ -21,7 +21,7 @@ struct TestModifiers {
     @Test
     func testOnDismissAll() async throws {
         var isEnter = false
-        let sut = SRRootView(context: context) {
+        let sut = SRRootView(coordinator: context) {
             TestScreen(router: router, tests: .none).onDismissAllChange {
                 isEnter.toggle()
             }
@@ -35,7 +35,7 @@ struct TestModifiers {
     @Test
     func testOnNavigationStackChange() async throws {
         var pathCount = 0
-        let sut = SRRootView(context: context) {
+        let sut = SRRootView(coordinator: context) {
             NavigationStack(path: context.testStackPath) {
                 TestScreen(router: router, tests: .none).onNaviStackChange { oldPaths, newPaths in
                     pathCount = newPaths.count
@@ -51,7 +51,7 @@ struct TestModifiers {
     @Test
     func testOnTabSelectionChange() async throws {
         var tabIndex = 0
-        let sut =  SRRootView(context: context) {
+        let sut =  SRRootView(coordinator: context) {
             @Bindable var tabSelection = context.tabSelection
             TabView(selection: $tabSelection.selection) {
                 TestScreen(router: router, tests: .none)
@@ -75,7 +75,7 @@ struct TestModifiers {
     @Test
     func testOnDoubleTapTabItem() async throws {
         var selection = 1
-        let sut =  SRRootView(context: context) {
+        let sut =  SRRootView(coordinator: context) {
             @Bindable var tabSelection = context.tabSelection
             TabView(selection: $tabSelection.selection) {
                 TestScreen(router: router, tests: .none)
@@ -100,7 +100,7 @@ struct TestModifiers {
     
     @Test
     func testNoneDoubleTapTabItem() async throws {
-        let sut =  SRRootView(context: context) {
+        let sut =  SRRootView(coordinator: context) {
             @Bindable var tabSelection = context.tabSelection
             TabView(selection: $tabSelection.selection) {
                 TestScreen(router: router, tests: .none)

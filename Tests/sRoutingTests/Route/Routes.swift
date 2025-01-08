@@ -32,7 +32,7 @@ enum TestRoute: SRRoute {
     }
 }
 
-@sRContext(stacks: "testStack")
+@sRouteCoordinator(stacks: "testStack")
 struct SRContext { }
 
 @sRouteObserver(TestRoute.self)

@@ -1,3 +1,4 @@
+
 //
 //  RouteCoordinator.swift
 //
@@ -93,14 +94,16 @@ package struct RouteCoordinator: MemberMacro {
                 let navigation = navigationPath(of: stack)
                 guard navigation.didAppear else {
                    do {
-                    try await Task.sleep(for: .milliseconds(200))
+                    try await Task.sleep(for: .milliseconds(300))
                    } catch {
                     print("sRouting.\\(error)")
                    }
                    navigation.push(to: route)
+                   try? await Task.sleep(for: .milliseconds(300))
                    return
                 }
                 navigation.push(to: route)
+                try? await Task.sleep(for: .milliseconds(300))
             case .sheet(let route):
                 rootRouter.trigger(to: AnyRoute(route: route), with: .sheet)
             case .window(let windowTrans):
