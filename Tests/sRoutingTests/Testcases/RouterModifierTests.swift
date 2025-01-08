@@ -114,7 +114,6 @@ struct RouterModifierTests {
         let sut = TestViewModifierView(coordinator: coordinator, router: router) {
             Text("Test").onNaviStackChange { newPaths in
                 paths = newPaths
-                print(paths)
             }
         }
         ViewHosting.host(view: sut)
