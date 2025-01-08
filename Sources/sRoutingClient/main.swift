@@ -42,24 +42,34 @@ router.trigger(to: .home, with: .present) {
 @sRouteObserver(HomeRoute.self, SettingRoute.self)
 struct RouteObserver { }
 
-@sRContext(tabs: ["homeItem", "settingItem"], stacks: "home", "setting")
-struct SRContext { }
+@sRouteCoordinator(tabs: ["homeItem", "settingItem"], stacks: "home", "setting")
+struct AppCoordinator { }
 
 struct TestApp: App {
     
-    let context = SRContext()
+    let appCoordinator: AppCoordinator
+    @StateObject var tabselection: SRTabbarSelection
+    @StateObject var homePath: SRNavigationPath
+    @StateObject var settingPath: SRNavigationPath
+    
+    init() {
+        let coordinator = AppCoordinator()
+        appCoordinator = coordinator
+        _tabselection = .init(wrappedValue: coordinator.tabSelection)
+        _homePath = .init(wrappedValue: coordinator.homePath)
+        _settingPath = .init(wrappedValue: coordinator.settingPath)
+    }
     
     var body: some Scene {
         WindowGroup {
-            SRRootView(context: context) {
-                @Bindable var selection = context.tabSelection
-                TabView(selection:$selection.selection) {
-                    NavigationStack(path: context.homePath) {
+            SRRootView(coordinator: appCoordinator) {
+                TabView(selection:$tabselection.selection) {
+                    NavigationStack(manager: homePath, path: $homePath.navPath) {
                         Text("Home")
                             .routeObserver(RouteObserver.self)
                     }.tag(SRTabItem.homeItem.rawValue)
                     
-                    NavigationStack(path: context.settingPath) {
+                    NavigationStack(manager: settingPath, path: $settingPath.navPath) {
                         Text("Setting")
                             .routeObserver(RouteObserver.self)
                     }.tag(SRTabItem.settingItem.rawValue)
@@ -67,7 +77,7 @@ struct TestApp: App {
             }
             .onOpenURL { url in
                 Task {
-                    await context.routing(.resetAll, .select(tabItem: .homeItem),
+                    await appCoordinator.routing(.resetAll, .select(tabItem: .homeItem),
                                           .push(route: HomeRoute.detail("testing"), into: .home))
                 }
             }

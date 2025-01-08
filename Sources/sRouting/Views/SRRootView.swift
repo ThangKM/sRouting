@@ -9,22 +9,22 @@ import SwiftUI
 import Observation
 
 /// The root view of a window
-public struct SRRootView<Content, ContextType>: View
-where Content: View, ContextType: SRContextType {
+public struct SRRootView<Content, Coordinator>: View
+where Content: View, Coordinator: SRRouteCoordinatorType {
 
-    private let context: ContextType
+    private let coordinator: Coordinator
     private let content: () -> Content
     
-    public init(context: ContextType,
+    public init(coordinator: Coordinator,
                 @ViewBuilder content: @escaping () -> Content) {
         self.content = content
-        self.context = context
+        self.coordinator = coordinator
     }
     
     public var body: some View {
         content()
-            .onRouting(of:context.rootRouter)
-            .environmentObject(context.dismissAllEmitter)
-            .environmentObject(context.tabSelection)
+            .onRouting(of:coordinator.rootRouter)
+            .environmentObject(coordinator.dismissAllEmitter)
+            .environmentObject(coordinator.tabSelection)
     }
 }
