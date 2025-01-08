@@ -42,24 +42,24 @@ router.trigger(to: .home, with: .present) {
 @sRouteObserver(HomeRoute.self, SettingRoute.self)
 struct RouteObserver { }
 
-@sRContext(tabs: ["homeItem", "settingItem"], stacks: "home", "setting")
-struct SRContext { }
+@sRouteCoordinator(tabs: ["homeItem", "settingItem"], stacks: "home", "setting")
+struct AppCoordinator { }
 
 struct TestApp: App {
     
-    let context = SRContext()
+    let coordinator = AppCoordinator()
     
     var body: some Scene {
         WindowGroup {
-            SRRootView(context: context) {
-                @Bindable var selection = context.tabSelection
+            SRRootView(coordinator: coordinator) {
+                @Bindable var selection = coordinator.tabSelection
                 TabView(selection:$selection.selection) {
-                    NavigationStack(path: context.homePath) {
+                    NavigationStack(path: coordinator.homePath) {
                         Text("Home")
                             .routeObserver(RouteObserver.self)
                     }.tag(SRTabItem.homeItem.rawValue)
                     
-                    NavigationStack(path: context.settingPath) {
+                    NavigationStack(path: coordinator.settingPath) {
                         Text("Setting")
                             .routeObserver(RouteObserver.self)
                     }.tag(SRTabItem.settingItem.rawValue)
@@ -67,7 +67,7 @@ struct TestApp: App {
             }
             .onOpenURL { url in
                 Task {
-                    await context.routing(.resetAll, .select(tabItem: .homeItem),
+                    await coordinator.routing(.resetAll, .select(tabItem: .homeItem),
                                           .push(route: HomeRoute.detail("testing"), into: .home))
                 }
             }

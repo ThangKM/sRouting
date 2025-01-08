@@ -1,5 +1,5 @@
 //
-//  ContextMacro.swift
+//  RouteCoordinator.swift
 //
 //
 //  Created by Thang Kieu on 31/03/2024.
@@ -14,7 +14,7 @@ import Foundation
 private let tabsParam = "tabs"
 private let stacksParam = "stacks"
 
-package struct ContextMacro: MemberMacro {
+package struct RouteCoordinator: MemberMacro {
     
     package static func expansion(of node: AttributeSyntax,
                                  providingMembersOf declaration: some DeclGroupSyntax,
@@ -136,7 +136,7 @@ package struct ContextMacro: MemberMacro {
     }
 }
 
-extension ContextMacro: PeerMacro {
+extension RouteCoordinator: PeerMacro {
     package static func expansion(of node: SwiftSyntax.AttributeSyntax,
                                  providingPeersOf declaration: some SwiftSyntax.DeclSyntaxProtocol,
                                  in context: some SwiftSyntaxMacros.MacroExpansionContext) throws -> [SwiftSyntax.DeclSyntax] {
@@ -232,7 +232,7 @@ extension ContextMacro: PeerMacro {
     }
 }
 
-extension ContextMacro {
+extension RouteCoordinator {
     
     private static func _arguments(of node: AttributeSyntax) throws -> (tabs: [String], stacks: [String]) {
         
@@ -282,7 +282,7 @@ extension ContextMacro {
     }
 }
 
-extension ContextMacro: ExtensionMacro {
+extension RouteCoordinator: ExtensionMacro {
     
     package static func expansion(
         of node: AttributeSyntax,
@@ -293,7 +293,7 @@ extension ContextMacro: ExtensionMacro {
     ) throws -> [ExtensionDeclSyntax] {
         
         let decl: DeclSyntax = """
-            extension \(raw: type.trimmedDescription): sRouting.SRContextType {}
+            extension \(raw: type.trimmedDescription): sRouting.SRRouteCoordinatorType {}
             """
         let ext = decl.cast(ExtensionDeclSyntax.self)
         

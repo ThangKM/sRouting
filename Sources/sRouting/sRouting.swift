@@ -1,10 +1,10 @@
 
 
-/// Create a context that includes the root coordinator of navigations
+/// Create a coordinator that includes navigations, selections...
 @attached(member, names: arbitrary)
 @attached(peer, names: named(SRRootRoute), named(SRNavStack), named(SRTabItem), named(SRRootRouter))
-@attached(extension, conformances: SRContextType)
-public macro sRContext(tabs: [String] = [], stacks: String...) = #externalMacro(module: "sRoutingMacros", type: "ContextMacro")
+@attached(extension, conformances: SRRouteCoordinatorType)
+public macro sRouteCoordinator(tabs: [String] = [], stacks: String...) = #externalMacro(module: "sRoutingMacros", type: "RouteCoordinator")
 
 /// Generate a `ViewModifier` of navigation destinations that observing routes
 @attached(member, names: named(path), arbitrary)
