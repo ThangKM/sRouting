@@ -15,7 +15,7 @@ import Testing
 struct RouterModifierTests {
     
     let router = SRRouter(TestRoute.self)
-    let context = Coordinator()
+    let coordinator = Coordinator()
     
     @Test
     func testActiveSheet() async throws {
@@ -58,7 +58,7 @@ struct RouterModifierTests {
     @Test
     func testPush() async throws {
         var pathCount = 0
-        let sut = NavigationStack(path: context.testStackPath) {
+        let sut = NavigationStack(path: coordinator.testStackPath) {
             TestScreen(router: router, tests: .none).onNaviStackChange { oldPaths, newPaths in
                 pathCount = newPaths.count
             }
@@ -72,7 +72,7 @@ struct RouterModifierTests {
     @Test
     func testPop() async throws {
         var pathCount = 1
-        let sut = NavigationStack(path: context.testStackPath) {
+        let sut = NavigationStack(path: coordinator.testStackPath) {
             TestScreen(router: router, tests: .none).onNaviStackChange { oldPaths, newPaths in
                 pathCount = newPaths.count
             }
@@ -88,7 +88,7 @@ struct RouterModifierTests {
     @Test
     func testPopToRoot() async throws {
         var pathCount = 1
-        let sut = NavigationStack(path: context.testStackPath) {
+        let sut = NavigationStack(path: coordinator.testStackPath) {
             TestScreen(router: router, tests: .none).onNaviStackChange { oldPaths, newPaths in
                 pathCount = newPaths.count
             }
@@ -109,7 +109,7 @@ struct RouterModifierTests {
     func testPopToTarget() async throws {
         var paths = [String]()
         
-        let sut = NavigationStack(path: context.testStackPath) {
+        let sut = NavigationStack(path: coordinator.testStackPath) {
             TestScreen(router: router, tests: .none).onNaviStackChange { oldPaths, newPaths in
                 paths = newPaths
             }

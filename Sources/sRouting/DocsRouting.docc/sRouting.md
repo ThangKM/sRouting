@@ -20,7 +20,7 @@ The `Router` can trigger a transition from inside(view) or outside(view model) t
 ### Routing
 
 - ``SRRouterType``
-- ``SRContextType``
+- ``SRRouteCoordinatorType``
 - ``SRTriggerType``
 - ``SRRouteObserverType``
 - ``SRNavigationPath``

@@ -19,7 +19,7 @@ import sRoutingMacros
 
 final class CoordinatorMacroTest: XCTestCase {
     
-    func testContextMacroImp() async throws {
+    func testCoordinatorMacroImp() async throws {
         assertMacroExpansion("""
         @sRouteCoordinator(tabs: ["homeItem", "settingItem"], stacks: "home", "setting")
         struct Coordinator { 

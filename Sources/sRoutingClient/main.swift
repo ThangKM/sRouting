@@ -33,7 +33,7 @@ enum SettingRoute: SRRoute {
 }
 
 let router = SRRouter(HomeRoute.self)
-router.trigger(to: .home, with: .present) {
+router.trigger(to: .home, with: .sheet) {
     var trans = Transaction()
     trans.disablesAnimations = true
     return trans
