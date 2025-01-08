@@ -16,7 +16,7 @@ import SwiftUI
 struct TestModifiers {
     
     let router = SRRouter(TestRoute.self)
-    let context = SRContext()
+    let context = Coordinator()
     
     @Test
     func testOnDismissAll() async throws {

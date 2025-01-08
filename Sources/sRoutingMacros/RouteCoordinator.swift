@@ -167,35 +167,35 @@ extension RouteCoordinator: PeerMacro {
             #endif
         
             var screen: some View {
-               fatalError("sRouting.SRContextRoute doesn't have screen")
+               fatalError("sRouting.SRRootRoute doesn't have screen")
             }
         
             var path: String {
                 switch self {
                 case .resetAll:
-                    return "srcontext.resetall"
+                    return "rootroute.resetall"
                 case .dismissAll:
-                    return "srcontext.dismissall"
+                    return "rootroute.dismissall"
                 case .select:
-                    return "srcontext.selecttab"
+                    return "rootroute.selecttab"
                 case .push(let route,_):
-                    return "srcontext.push.\\(route.path)"
-                case .sheet(let route): return "srcontext.sheet.\\(route.path)"
+                    return "rootroute.push.\\(route.path)"
+                case .sheet(let route): return "rootroute.sheet.\\(route.path)"
                 case .window(let transition):
                     if let id = transition.windowId {
-                        return "srcontext.window.\\(id)"
+                        return "rootroute.window.\\(id)"
                     } else if let value = transition.windowValue {
-                        return "srcontext.window.\\(value.hashValue)"
+                        return "rootroute.window.\\(value.hashValue)"
                     } else {
-                        return "srcontext.window"
+                        return "rootroute.window"
                     }
                 case .open(let url):
-                    return "srcontext.openurl.\\(url.absoluteString)"
+                    return "rootroute.openurl.\\(url.absoluteString)"
                 case .popToRoot:
-                    return "srcontext.popToRoot"
+                    return "rootroute.popToRoot"
                 #if os(iOS)
                 case .present(let route):
-                    return "srcontext.present.\\(route.path)"
+                    return "rootroute.present.\\(route.path)"
                 #endif
                 }
             }

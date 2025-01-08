@@ -15,7 +15,7 @@ import Testing
 struct RouterModifierTests {
     
     let router = SRRouter(TestRoute.self)
-    let context = SRContext()
+    let context = Coordinator()
     
     @Test
     func testActiveSheet() async throws {

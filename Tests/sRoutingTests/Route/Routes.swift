@@ -33,7 +33,7 @@ enum TestRoute: SRRoute {
 }
 
 @sRouteCoordinator(stacks: "testStack")
-struct SRContext { }
+struct Coordinator { }
 
 @sRouteObserver(TestRoute.self)
 struct RouteObserver { }

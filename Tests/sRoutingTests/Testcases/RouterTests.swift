@@ -16,7 +16,7 @@ import Testing
 struct RouterTests {
     
     let router = SRRouter(TestRoute.self)
-    let context = SRContext()
+    let context = Coordinator()
     
     @Test
     func testSelectTabbarItem() async throws {
@@ -98,7 +98,7 @@ struct RouterTests {
     @Test
     func testDismissAll() async throws {
         var transition: SRTransition<TestRoute>?
-        let sut = SRRootView(coordinator: SRContext()) {
+        let sut = SRRootView(coordinator: Coordinator()) {
             TestScreen(router: router, tests: .none).onChange(of: router.transition) { oldValue, newValue in
                 transition = newValue
             }
