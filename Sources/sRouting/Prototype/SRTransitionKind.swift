@@ -15,7 +15,7 @@ public enum SRTriggerType: String, CaseIterable, Sendable {
     case present
     /// Present a screen
     case sheet
-    
+
     public var description: String {
         "TriggerType - \(self)"
     }

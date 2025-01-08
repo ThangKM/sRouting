@@ -12,9 +12,10 @@ import Observation
 public struct NavigationStackView<Content>: View
 where Content: View {
     
-    @ObservedObject var path: SRNavigationPath
+    private let pathManager: SRNavigationPath
     private let content: () -> Content
-
+    @State private var path = NavigationPath()
+    
     /// Initalizer of ``NavigationRootView``
     ///  - Parameters:
     ///     - path: ``SRNavigationPath``
@@ -22,17 +23,23 @@ where Content: View {
     public init(path: SRNavigationPath,
                 @ViewBuilder content: @escaping () -> Content) {
         self.content = content
-        self.path = path
+        self.pathManager = path
     }
     
     public var body: some View {
-        NavigationStack(path: $path.navPath, root: {
+        NavigationStack(path: $path, root: {
             content()
         })
-        .environmentObject(path)
+        .environmentObject(pathManager)
         .onAppear(perform: {
-            path.stackDidAppear()
+            pathManager.stackDidAppear()
         })
+        .onChange(of: path, perform: { newValue in
+            pathManager.matchingStack(from: newValue.codable)
+        })
+        .task {
+            pathManager.bindingPath($path)
+        }
     }
 }
 

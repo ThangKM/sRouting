@@ -15,39 +15,36 @@ public final class SRNavigationPath: ObservableObject {
     @Published
     var stack: [String] = []
     
-    @Published
-    public var navPath: NavigationPath = .init() {
-        willSet {
-            _matchingStack(from: newValue.codable)
-        }
-    }
+    private var navPath: Binding<NavigationPath>?
         
     public private(set) var didAppear: Bool = false
     
     public init() { }
     
     public func pop() {
-        guard !navPath.isEmpty else { return }
-        navPath.removeLast()
+        guard let navPath else { return }
+        guard !navPath.wrappedValue.isEmpty else { return }
+        navPath.wrappedValue.removeLast()
     }
     
     public func pop(to route: some SRRoute) {
-        guard navPath.count == stack.count, navPath.count > 1 else { return }
+        guard let navPath else { return }
+        guard navPath.wrappedValue.count == stack.count, navPath.wrappedValue.count > 1 else { return }
         guard let index = stack.lastIndex(where: {$0.contains(route.fullPath)})
         else { return }
         let dropCount = (stack.count - 1) - index
-        guard dropCount > 0 && navPath.count >= dropCount else { return }
-        navPath.removeLast(dropCount)
+        guard dropCount > 0 && navPath.wrappedValue.count >= dropCount else { return }
+        navPath.wrappedValue.removeLast(dropCount)
     }
     
     public func popToRoot() {
-        guard !navPath.isEmpty else { return }
-        let count = navPath.count
-        navPath.removeLast(count)
+        guard let navPath, !navPath.wrappedValue.isEmpty else { return }
+        let count = navPath.wrappedValue.count
+        navPath.wrappedValue.removeLast(count)
     }
     
     public func push(to route: some SRRoute) {
-        navPath.append(route)
+        navPath?.wrappedValue.append(route)
     }
     
     internal func stackDidAppear() {
@@ -55,7 +52,7 @@ public final class SRNavigationPath: ObservableObject {
         didAppear = true
     }
     
-    private func _matchingStack(from navCodable: NavigationPath.CodableRepresentation?) {
+    internal func matchingStack(from navCodable: NavigationPath.CodableRepresentation?) {
         
         guard let navCodable else { return }
         guard let data = try? JSONEncoder().encode(navCodable) else { return }
@@ -68,6 +65,10 @@ public final class SRNavigationPath: ObservableObject {
         } else {
             self.stack = Array(matchedArray.reversed())
         }
+    }
+    
+    internal func bindingPath(_ path: Binding<NavigationPath>) {
+        navPath = path
     }
 }
 
