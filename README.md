@@ -139,7 +139,7 @@ enum HomeRoute: SRRoute {
 
 struct HomeScreen: View {
 
-    @State var homeRouter = SRRouter(HomeRoute.self)
+    @StateObject var homeRouter = SRRouter(HomeRoute.self)
 
     var body: some View {
         VStack { 
