@@ -13,13 +13,13 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     - name: Select Xcode version
-      run: sudo xcode-select -s '/Applications/Xcode_16.1.app/Contents/Developer'
+      run: sudo xcode-select -s '/Applications/Xcode_16.2.app/Contents/Developer'
     - name: Show current version of Xcode
       run: xcodebuild -version
     - name: Run macOS tests
       run: swift test --enable-code-coverage
     - name: Run iOS tests
-      run: xcodebuild test -destination 'platform=iOS Simulator,OS=18.1,name=iPhone 16' -scheme 'sRouting-Package' -enableCodeCoverage YES
+      run: xcodebuild test -destination 'platform=iOS Simulator,OS=18.2,name=iPhone 16' -scheme 'sRouting-Package' -enableCodeCoverage YES
     - name: Prepare Code Coverage
       run: xcrun llvm-cov export -format="lcov" .build/debug/sRoutingPackageTests.xctest/Contents/MacOS/sRoutingPackageTests  -instr-profile .build/debug/codecov/default.profdata > info.lcov
     - name: Upload coverage to Codecov
