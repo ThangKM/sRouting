@@ -60,7 +60,7 @@ struct BookDetailScreen: View {
                         
                         VStack(spacing: 8) {
                             Text("TAP TO ADD RATING")
-                            RatingView(rating: $viewModel.book.rating)
+                            RatingView(rating: $viewModel.book.rating, enableEditing: true)
                             
                         }
                         .frame(maxWidth: .infinity)

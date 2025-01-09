@@ -18,15 +18,11 @@ struct BookCell: View {
                 .aspectRatio(contentMode: .fit)
                 .frame(width: 109, alignment: .leading)
                 .clipped()
-                .onTapGesture {
-                    print("abc")
-                }
-            
             VStack(alignment: .leading) {
                 Text(book.name)
                 Text(book.author)
                 Spacer()
-                RatingView(rating: .constant(book.rating))
+                RatingView(rating: .constant(book.rating), enableEditing: false)
             }
             Spacer()
         }
