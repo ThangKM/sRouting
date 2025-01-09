@@ -10,8 +10,7 @@ The lightweight navigation framework for SwiftUI.
 
 ## Overview
 
-sRouting using the native navigation mechanism in SwiftUI.
-It's easy to handle navigation between screens by sRouting.
+sRouting provides a native navigation mechanism that simplifies handling navigation between screens.
 
 ![A sRouting banner.](https://github.com/ThangKM/sRouting/blob/main/Sources/sRouting/DocsRouting.docc/Resources/sRouting/srouting_banner.png)
 
@@ -36,17 +35,17 @@ Specify `https://github.com/ThangKM/sRouting.git` as the `sRouting` package link
 
 ## 🏃‍♂️ Getting Started with sRouting
 
-Set up `SRRootView` and work with `sRouter(_:)`
+Set up the `SRRootView` and interact with macros.
 
 ## Overview
 
-Create your root view with ``SRRootView``.
-Declares your ``SRRoute``.
-Working with macros and ViewModifers.
+Create your root view using ``SRRootView``.
+Declare your ``SRRoute``.
+Learn about macros and ViewModifers.
 
 ### Create a Route
 
-To create a route we have to conform to the ``SRRoute`` Protocol.
+To create a route, we must adhere to the ``SRRoute`` Protocol.
 
 ```swift
 enum HomeRoute: SRRoute {
@@ -71,7 +70,7 @@ enum HomeRoute: SRRoute {
 
 ### Make your Root View
 
-Setup a coordinator and ``SRRootView`` for your app
+Set up a coordinator and ``SRRootView`` for your application.
 
 Declaring a coordinator: 
 
