@@ -14,7 +14,6 @@ struct RouterModifier<Route>: ViewModifier where Route: SRRoute {
     /// A  screen's ``Router``
     private let router: SRRouter<Route>
 
-    
     @EnvironmentObject
     private var tabbarSelection: SRTabbarSelection
     
@@ -95,6 +94,12 @@ struct RouterModifier<Route>: ViewModifier where Route: SRRoute {
                     updateActiveState(from: newValue)
                 }
             })
+            #if DEBUG
+            .task {
+                assert(_tabbarSelection.presence, "Missing setup `SRRootView` from view hierarchy!")
+                assert(_dismissAllEmitter.presence, "Missing setup `SRRootView` from view hierarchy!")
+            }
+            #endif
         #else
         content
             .fullScreenCover(isPresented: $isActivePresent) {
@@ -135,6 +140,12 @@ struct RouterModifier<Route>: ViewModifier where Route: SRRoute {
                     updateActiveState(from: newValue)
                 }
             })
+            #if DEBUG
+            .task {
+                assert(_tabbarSelection.presence, "Missing setup `SRRootView` from view hierarchy!")
+                assert(_dismissAllEmitter.presence, "Missing setup `SRRootView` from view hierarchy!")
+            }
+            #endif
         #endif
     }
 }
@@ -157,7 +168,7 @@ extension RouterModifier {
     private func updateActiveState(from transition: SRTransition<Route>) {
         switch transition.type {
         case .push:
-            guard let route = transition.route else { return }
+            guard let route = transition.route, _navigationPath.presence else { break }
             navigationPath.push(to: route)
         case .present:
             isActivePresent = true
@@ -174,11 +185,13 @@ extension RouterModifier {
         case .dismissAll:
             dismissAllEmitter.dismissAll()
         case .pop:
+            guard _navigationPath.presence else { break }
             navigationPath.pop()
         case .popToRoot:
+            guard _navigationPath.presence else { break }
             navigationPath.popToRoot()
         case .popToRoute:
-            guard let route = transition.popToRoute else { break }
+            guard let route = transition.popToRoute, _navigationPath.presence else { break }
             navigationPath.pop(to: route)
         case .openWindow:
             openWindow(transition: transition.windowTransition)
@@ -278,5 +291,12 @@ extension View {
     func onRouting<Route: SRRoute>(of router: SRRouter<Route>,
                                    tests: UnitTestActions<RouterModifier<Route>>?) -> some View {
         self.modifier(RouterModifier(router: router, tests: tests))
+    }
+}
+
+
+extension EnvironmentObject {
+    var presence: Bool {
+        !String(describing: self).contains("_store: nil")
     }
 }
