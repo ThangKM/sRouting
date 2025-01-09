@@ -9,7 +9,6 @@ import Foundation
 import SwiftUI
 
 public protocol SRRouteObserverType: ViewModifier {
-    
     init()
 }
 

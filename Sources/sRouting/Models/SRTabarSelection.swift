@@ -47,7 +47,7 @@ public final class SRTabbarSelection {
     }
     
     private func _emmitDoubleTap() {
-        doubleTapEmmiter = !doubleTapEmmiter
+        doubleTapEmmiter.toggle()
     }
     
     deinit {

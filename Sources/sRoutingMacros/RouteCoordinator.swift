@@ -1,5 +1,6 @@
+
 //
-//  ContextMacro.swift
+//  RouteCoordinator.swift
 //
 //
 //  Created by Thang Kieu on 31/03/2024.
@@ -14,9 +15,9 @@ import Foundation
 private let tabsParam = "tabs"
 private let stacksParam = "stacks"
 
-public struct ContextMacro: MemberMacro {
+package struct RouteCoordinator: MemberMacro {
     
-    public static func expansion(of node: AttributeSyntax,
+    package static func expansion(of node: AttributeSyntax,
                                  providingMembersOf declaration: some DeclGroupSyntax,
                                  in context: some MacroExpansionContext) throws -> [DeclSyntax] {
         
@@ -93,14 +94,16 @@ public struct ContextMacro: MemberMacro {
                 let navigation = navigationPath(of: stack)
                 guard navigation.didAppear else {
                    do {
-                    try await Task.sleep(for: .milliseconds(200))
+                    try await Task.sleep(for: .milliseconds(300))
                    } catch {
                     print("sRouting.\\(error)")
                    }
                    navigation.push(to: route)
+                   try? await Task.sleep(for: .milliseconds(300))
                    return
                 }
                 navigation.push(to: route)
+                try? await Task.sleep(for: .milliseconds(300))
             case .sheet(let route):
                 rootRouter.trigger(to: AnyRoute(route: route), with: .sheet)
             case .window(let windowTrans):
@@ -136,8 +139,8 @@ public struct ContextMacro: MemberMacro {
     }
 }
 
-extension ContextMacro: PeerMacro {
-    public static func expansion(of node: SwiftSyntax.AttributeSyntax,
+extension RouteCoordinator: PeerMacro {
+    package static func expansion(of node: SwiftSyntax.AttributeSyntax,
                                  providingPeersOf declaration: some SwiftSyntax.DeclSyntaxProtocol,
                                  in context: some SwiftSyntaxMacros.MacroExpansionContext) throws -> [SwiftSyntax.DeclSyntax] {
         
@@ -164,35 +167,35 @@ extension ContextMacro: PeerMacro {
             #endif
         
             var screen: some View {
-               fatalError("sRouting.SRContextRoute doesn't have screen")
+               fatalError("sRouting.SRRootRoute doesn't have screen")
             }
         
             var path: String {
                 switch self {
                 case .resetAll:
-                    return "srcontext.resetall"
+                    return "rootroute.resetall"
                 case .dismissAll:
-                    return "srcontext.dismissall"
+                    return "rootroute.dismissall"
                 case .select:
-                    return "srcontext.selecttab"
+                    return "rootroute.selecttab"
                 case .push(let route,_):
-                    return "srcontext.push.\\(route.path)"
-                case .sheet(let route): return "srcontext.sheet.\\(route.path)"
+                    return "rootroute.push.\\(route.path)"
+                case .sheet(let route): return "rootroute.sheet.\\(route.path)"
                 case .window(let transition):
                     if let id = transition.windowId {
-                        return "srcontext.window.\\(id)"
+                        return "rootroute.window.\\(id)"
                     } else if let value = transition.windowValue {
-                        return "srcontext.window.\\(value.hashValue)"
+                        return "rootroute.window.\\(value.hashValue)"
                     } else {
-                        return "srcontext.window"
+                        return "rootroute.window"
                     }
                 case .open(let url):
-                    return "srcontext.openurl.\\(url.absoluteString)"
+                    return "rootroute.openurl.\\(url.absoluteString)"
                 case .popToRoot:
-                    return "srcontext.popToRoot"
+                    return "rootroute.popToRoot"
                 #if os(iOS)
                 case .present(let route):
-                    return "srcontext.present.\\(route.path)"
+                    return "rootroute.present.\\(route.path)"
                 #endif
                 }
             }
@@ -232,7 +235,7 @@ extension ContextMacro: PeerMacro {
     }
 }
 
-extension ContextMacro {
+extension RouteCoordinator {
     
     private static func _arguments(of node: AttributeSyntax) throws -> (tabs: [String], stacks: [String]) {
         
@@ -282,9 +285,9 @@ extension ContextMacro {
     }
 }
 
-extension ContextMacro: ExtensionMacro {
+extension RouteCoordinator: ExtensionMacro {
     
-    public static func expansion(
+    package static func expansion(
         of node: AttributeSyntax,
         attachedTo declaration: some DeclGroupSyntax,
         providingExtensionsOf type: some TypeSyntaxProtocol,
@@ -293,7 +296,7 @@ extension ContextMacro: ExtensionMacro {
     ) throws -> [ExtensionDeclSyntax] {
         
         let decl: DeclSyntax = """
-            extension \(raw: type.trimmedDescription): sRouting.SRContextType {}
+            extension \(raw: type.trimmedDescription): sRouting.SRRouteCoordinatorType {}
             """
         let ext = decl.cast(ExtensionDeclSyntax.self)
         

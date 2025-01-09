@@ -12,11 +12,11 @@ import SwiftSyntaxMacros
 @main
 struct sRoutingPlugin: CompilerPlugin {
     let providingMacros: [Macro.Type] = [
-        ContextMacro.self, RouteObserverMacro.self
+        RouteCoordinator.self, RouteObserverMacro.self
     ]
 }
 
-public enum SRMacroError: Error, CustomStringConvertible, CustomNSError {
+package enum SRMacroError: Error, CustomStringConvertible, CustomNSError {
     
     case onlyStruct
     case missingArguments
@@ -28,9 +28,9 @@ public enum SRMacroError: Error, CustomStringConvertible, CustomNSError {
     case invalidRouteType
     case missingObservable
     
-    public static var errorDomain: String { "com.srouting.macro" }
+    package static var errorDomain: String { "com.srouting.macro" }
     
-    public var errorCode: Int {
+    package var errorCode: Int {
         switch self {
         case .onlyStruct:
             -500
@@ -53,7 +53,7 @@ public enum SRMacroError: Error, CustomStringConvertible, CustomNSError {
         }
     }
     
-    public var description: String {
+    package var description: String {
         switch self {
         case .onlyStruct:
             "Only support for struct!"
@@ -76,7 +76,7 @@ public enum SRMacroError: Error, CustomStringConvertible, CustomNSError {
         }
     }
     
-    public var errorUserInfo: [String : Any] {
+    package var errorUserInfo: [String : Any] {
         [NSLocalizedDescriptionKey: description]
     }
 }

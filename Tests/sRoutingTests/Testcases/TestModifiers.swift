@@ -16,12 +16,12 @@ import SwiftUI
 struct TestModifiers {
     
     let router = SRRouter(TestRoute.self)
-    let context = SRContext()
+    let coordinator = Coordinator()
     
     @Test
     func testOnDismissAll() async throws {
         var isEnter = false
-        let sut = SRRootView(context: context) {
+        let sut = SRRootView(coordinator: coordinator) {
             TestScreen(router: router, tests: .none).onDismissAllChange {
                 isEnter.toggle()
             }
@@ -35,8 +35,8 @@ struct TestModifiers {
     @Test
     func testOnNavigationStackChange() async throws {
         var pathCount = 0
-        let sut = SRRootView(context: context) {
-            NavigationStack(path: context.testStackPath) {
+        let sut = SRRootView(coordinator: coordinator) {
+            NavigationStack(path: coordinator.testStackPath) {
                 TestScreen(router: router, tests: .none).onNaviStackChange { oldPaths, newPaths in
                     pathCount = newPaths.count
                 }
@@ -51,8 +51,8 @@ struct TestModifiers {
     @Test
     func testOnTabSelectionChange() async throws {
         var tabIndex = 0
-        let sut =  SRRootView(context: context) {
-            @Bindable var tabSelection = context.tabSelection
+        let sut =  SRRootView(coordinator: coordinator) {
+            @Bindable var tabSelection = coordinator.tabSelection
             TabView(selection: $tabSelection.selection) {
                 TestScreen(router: router, tests: .none)
                     .tabItem {
@@ -75,22 +75,20 @@ struct TestModifiers {
     @Test
     func testOnDoubleTapTabItem() async throws {
         var selection = 1
-        let sut =  SRRootView(context: context) {
-            @Bindable var tabSelection = context.tabSelection
+        let sut =  SRRootView(coordinator: coordinator) {
+            @Bindable var tabSelection = coordinator.tabSelection
             TabView(selection: $tabSelection.selection) {
                 TestScreen(router: router, tests: .none)
                     .tabItem {
                         Label("Home", systemImage: "house")
                     }.tag(0)
-                TestScreen(router: router, tests: .none).tabItem {
-                    Label("Setting", systemImage: "gear")
-                }.tag(1)
             }
             .onDoubleTapTabItem { _selection in
                 selection = _selection
             }
         }
         ViewHosting.host(view: sut)
+        try await Task.sleep(for: .milliseconds(50))
         router.selectTabbar(at: 0)
         try await Task.sleep(for: .milliseconds(100))
         router.selectTabbar(at: 0)
@@ -100,8 +98,8 @@ struct TestModifiers {
     
     @Test
     func testNoneDoubleTapTabItem() async throws {
-        let sut =  SRRootView(context: context) {
-            @Bindable var tabSelection = context.tabSelection
+        let sut =  SRRootView(coordinator: coordinator) {
+            @Bindable var tabSelection = coordinator.tabSelection
             TabView(selection: $tabSelection.selection) {
                 TestScreen(router: router, tests: .none)
                     .tabItem {

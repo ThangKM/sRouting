@@ -1,5 +1,5 @@
 //
-//  ContextMacroTest.swift
+//  CoordinatorMacroTest.swift
 //
 //
 //  Created by Thang Kieu on 20/8/24.
@@ -17,15 +17,16 @@ import Observation
 #if canImport(sRoutingMacros) && os(macOS)
 import sRoutingMacros
 
-final class ContextMacroTest: XCTestCase {
+final class CoordinatorMacroTest: XCTestCase {
     
-    func testContextMacroImp() async throws {
+    func testCoordinatorMacroImp() async throws {
         assertMacroExpansion("""
-        @sRContext(tabs: ["homeItem", "settingItem"], stacks: "home", "setting")
-        struct SRContext {
+        @sRouteCoordinator(tabs: ["homeItem", "settingItem"], stacks: "home", "setting")
+        struct Coordinator { 
+        
         }
-        """, expandedSource:"""
-        struct SRContext {
+        """, expandedSource: """
+        struct Coordinator { 
 
             @MainActor let rootRouter = SRRouter(AnyRoute.self)
 
@@ -71,14 +72,16 @@ final class ContextMacroTest: XCTestCase {
                     let navigation = navigationPath(of: stack)
                     guard navigation.didAppear else {
                        do {
-                        try await Task.sleep(for: .milliseconds(200))
+                        try await Task.sleep(for: .milliseconds(300))
                        } catch {
                         print("sRouting.\\(error)")
                        }
                        navigation.push(to: route)
+                       try? await Task.sleep(for: .milliseconds(300))
                        return
                     }
                     navigation.push(to: route)
+                    try? await Task.sleep(for: .milliseconds(300))
                 case .sheet(let route):
                     rootRouter.trigger(to: AnyRoute(route: route), with: .sheet)
                 case .window(let windowTrans):
@@ -105,6 +108,7 @@ final class ContextMacroTest: XCTestCase {
                     await _routing(for: route)
                 }
             }
+
         }
 
         enum SRRootRoute: SRRoute {
@@ -121,36 +125,36 @@ final class ContextMacroTest: XCTestCase {
             #endif
 
             var screen: some View {
-               fatalError("sRouting.SRContextRoute doesn't have screen")
+               fatalError("sRouting.SRRootRoute doesn't have screen")
             }
 
             var path: String {
                 switch self {
                 case .resetAll:
-                    return "srcontext.resetall"
+                    return "rootroute.resetall"
                 case .dismissAll:
-                    return "srcontext.dismissall"
+                    return "rootroute.dismissall"
                 case .select:
-                    return "srcontext.selecttab"
+                    return "rootroute.selecttab"
                 case .push(let route, _):
-                    return "srcontext.push.\\(route.path)"
+                    return "rootroute.push.\\(route.path)"
                 case .sheet(let route):
-                    return "srcontext.sheet.\\(route.path)"
+                    return "rootroute.sheet.\\(route.path)"
                 case .window(let transition):
                     if let id = transition.windowId {
-                        return "srcontext.window.\\(id)"
+                        return "rootroute.window.\\(id)"
                     } else if let value = transition.windowValue {
-                        return "srcontext.window.\\(value.hashValue)"
+                        return "rootroute.window.\\(value.hashValue)"
                     } else {
-                        return "srcontext.window"
+                        return "rootroute.window"
                     }
                 case .open(let url):
-                    return "srcontext.openurl.\\(url.absoluteString)"
+                    return "rootroute.openurl.\\(url.absoluteString)"
                 case .popToRoot:
-                    return "srcontext.popToRoot"
+                    return "rootroute.popToRoot"
                 #if os(iOS)
                 case .present(let route):
-                    return "srcontext.present.\\(route.path)"
+                    return "rootroute.present.\\(route.path)"
                 #endif
                 }
             }
@@ -166,10 +170,9 @@ final class ContextMacroTest: XCTestCase {
             case setting
         }
 
-        extension SRContext: sRouting.SRContextType {
+        extension Coordinator: sRouting.SRRouteCoordinatorType {
         }
-        """,
-        macros: testMacros)
+        """, macros:testMacros)
     }
     
     func testNoneStructOrClassImp() async throws {
@@ -177,17 +180,17 @@ final class ContextMacroTest: XCTestCase {
         let dianosSpec = DiagnosticSpec(message: SRMacroError.structOrClass.description, line: 1, column: 1,severity: .error)
         
         assertMacroExpansion("""
-        @sRContext(tabs: ["homeItem", "settingItem"], stacks: "home", "setting")
-        enum SRContext {
+        @sRouteCoordinator(tabs: ["homeItem", "settingItem"], stacks: "home", "setting")
+        enum Coordinator {
         }
         """, expandedSource:"""
-        enum SRContext {
+        enum Coordinator {
         }
 
-        extension SRContext: sRouting.SRContextType {
+        extension Coordinator: sRouting.SRRouteCoordinatorType {
         }
         """,
-                             diagnostics: [dianosSpec, dianosSpec],
+        diagnostics: [dianosSpec, dianosSpec],
         macros: testMacros)
     }
     
@@ -196,17 +199,17 @@ final class ContextMacroTest: XCTestCase {
         let dianosSpec = DiagnosticSpec(message: SRMacroError.missingArguments.description, line: 1, column: 1,severity: .error)
         
         assertMacroExpansion("""
-        @sRContext(tabs: [], stacks: "")
-        struct SRContext {
+        @sRouteCoordinator(tabs: [], stacks: "")
+        struct Coordinator {
         }
         """, expandedSource:"""
-        struct SRContext {
+        struct Coordinator {
         }
 
-        extension SRContext: sRouting.SRContextType {
+        extension Coordinator: sRouting.SRRouteCoordinatorType {
         }
         """,
-                             diagnostics: [dianosSpec, dianosSpec],
+        diagnostics: [dianosSpec, dianosSpec],
         macros: testMacros)
     }
     
@@ -215,17 +218,17 @@ final class ContextMacroTest: XCTestCase {
         let dianosSpec = DiagnosticSpec(message: SRMacroError.duplication.description, line: 1, column: 1,severity: .error)
         
         assertMacroExpansion("""
-        @sRContext(tabs: ["home","home"], stacks: "home")
-        struct SRContext {
+        @sRouteCoordinator(tabs: ["home","home"], stacks: "home")
+        struct Coordinator {
         }
         """, expandedSource:"""
-        struct SRContext {
+        struct Coordinator {
         }
 
-        extension SRContext: sRouting.SRContextType {
+        extension Coordinator: sRouting.SRRouteCoordinatorType {
         }
         """,
-                             diagnostics: [dianosSpec, dianosSpec],
+        diagnostics: [dianosSpec, dianosSpec],
         macros: testMacros)
     }
     
@@ -234,17 +237,17 @@ final class ContextMacroTest: XCTestCase {
         let dianosSpec = DiagnosticSpec(message: SRMacroError.duplication.description, line: 1, column: 1,severity: .error)
         
         assertMacroExpansion("""
-        @sRContext(tabs: ["home", "setting"], stacks: "home", "setting", "home")
-        struct SRContext {
+        @sRouteCoordinator(tabs: ["home", "setting"], stacks: "home", "setting", "home")
+        struct Coordinator {
         }
         """, expandedSource:"""
-        struct SRContext {
+        struct Coordinator {
         }
 
-        extension SRContext: sRouting.SRContextType {
+        extension Coordinator: sRouting.SRRouteCoordinatorType {
         }
         """,
-                             diagnostics: [dianosSpec, dianosSpec],
+        diagnostics: [dianosSpec, dianosSpec],
         macros: testMacros)
     }
 }

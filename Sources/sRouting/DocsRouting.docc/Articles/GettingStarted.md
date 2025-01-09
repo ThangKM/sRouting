@@ -35,13 +35,13 @@ enum HomeRoute: SRRoute {
 
 ### Make your Root View
 
-Setup a context and ``SRRootView`` for your app
+Setup a coordinator and ``SRRootView`` for your app
 
-Declaring Context: 
+Declaring a coordinator: 
 
 ```swift
-@sRContext(tabs: ["home", "setting"], stacks: "home", "setting")
-struct SRContext { }
+@sRouteCoordinator(tabs: ["home", "setting"], stacks: "home", "setting")
+struct AppCoordinator { }
 ```
 
 Declaring View of navigation destination:
@@ -56,22 +56,22 @@ Setup Your App:
 ```swift
 @main
 struct BookieApp: App { 
-    let context = SRContext()
+    let coordinator = AppCoordinator()
     ...
     var body: some Scene {
 
         WindowGroup {
-            SRRootView(context: context) {
-                @Bindable var tabSelection = context.tabSelection
+            SRRootView(coordinator: coordinator) {
+                @Bindable var tabSelection = coordinator.tabSelection
                 TabView(selection: $tabSelection.selection) {
-                    NavigationStack(path: context.homePath) {
+                    NavigationStack(path: coordinator.homePath) {
                         AppRoute.home.screen
                             .routeObserver(RouteObserver.self)
                     }.tabItem {
                         Label("Home", systemImage: "house")
                     }.tag(SRTabItem.home.rawValue)
                     
-                    NavigationStack(path: context.settingPath) {
+                    NavigationStack(path: coordinator.settingPath) {
                         AppRoute.setting.screen
                             .routeObserver(RouteObserver.self)
                     }.tabItem {
@@ -84,7 +84,7 @@ struct BookieApp: App {
             .onOpenURL { url in
                 Task {
                     ...
-                    await context.routing(.resetAll,.select(tabItem: .home),
+                    await coordinator.routing(.resetAll,.select(tabItem: .home),
                                           .push(route: HomeRoute.cake, into: .home))
                 }
             }
@@ -120,7 +120,7 @@ DeepLink:
 .onOpenURL { url in
     Task {
         ...
-        await context.routing(.resetAll,.select(tabItem: .home),
+        await coordinator.routing(.resetAll,.select(tabItem: .home),
                               .push(route: HomeRoute.cake, into: .home))
     }
 }

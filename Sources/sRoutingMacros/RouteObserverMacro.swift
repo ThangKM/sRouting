@@ -13,10 +13,10 @@ import Foundation
 
 private let genericContent = "Content"
 
-public struct RouteObserverMacro: MemberMacro {
+package struct RouteObserverMacro: MemberMacro {
     
     
-    public static func expansion(of node: AttributeSyntax,
+    package static func expansion(of node: AttributeSyntax,
                                  providingMembersOf declaration: some DeclGroupSyntax,
                                  in context: some MacroExpansionContext) throws -> [DeclSyntax] {
         
@@ -47,7 +47,7 @@ public struct RouteObserverMacro: MemberMacro {
 
 extension RouteObserverMacro: ExtensionMacro {
     
-    public static func expansion(
+    package static func expansion(
         of node: AttributeSyntax,
         attachedTo declaration: some DeclGroupSyntax,
         providingExtensionsOf type: some TypeSyntaxProtocol,
