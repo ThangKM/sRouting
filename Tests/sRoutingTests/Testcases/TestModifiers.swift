@@ -82,13 +82,13 @@ struct TestModifiers {
                     .tabItem {
                         Label("Home", systemImage: "house")
                     }.tag(0)
-            }
-            .onDoubleTapTabItem { _selection in
-                selection = _selection
+                    .onDoubleTapTabItem { _selection in
+                        selection = _selection
+                    }
             }
         }
         ViewHosting.host(view: sut)
-        try await Task.sleep(for: .milliseconds(50))
+        try await Task.sleep(for: .milliseconds(100))
         router.selectTabbar(at: 0)
         try await Task.sleep(for: .milliseconds(100))
         router.selectTabbar(at: 0)
