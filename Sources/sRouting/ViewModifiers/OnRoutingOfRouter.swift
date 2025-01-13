@@ -12,7 +12,8 @@ struct RouterModifier<Route>: ViewModifier where Route: SRRoute {
     typealias VoidAction = () -> Void
 
     /// A  screen's ``Router``
-    private let router: SRRouter<Route>
+    @ObservedObject
+    private var router: SRRouter<Route>
 
     @EnvironmentObject
     private var tabbarSelection: SRTabbarSelection
