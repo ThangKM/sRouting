@@ -10,8 +10,31 @@ import sRouting
 import SwiftUI
 import Observation
 
+enum AppAlerts: SRAlertRoute {
+    case lossConnection
+    
+    var title: LocalizedStringKey {
+        switch self {
+        case .lossConnection:
+            return "Loss Connection"
+        }
+    }
+    
+    var actions: some View {
+        Button("OK") {
+            
+        }
+    }
+    
+    var message: some View {
+        Text("Please check your connection")
+    }
+}
+
 enum HomeRoute: SRRoute {
 
+    typealias AlertRoute = AppAlerts
+    
     case home
     case detail(String)
     
@@ -38,6 +61,8 @@ router.trigger(to: .home, with: .sheet) {
     trans.disablesAnimations = true
     return trans
 }
+
+router.show(alert: .lossConnection)
 
 @sRouteObserver(HomeRoute.self, SettingRoute.self)
 struct RouteObserver { }

@@ -37,7 +37,7 @@ struct RouterModifierTests {
         }))
         
         ViewHosting.host(view: sut)
-        router.show(error: TimeOutError())
+        router.show(alert: .timeOut)
         try await Task.sleep(for: .milliseconds(10))
         #expect(isActive)
     }
