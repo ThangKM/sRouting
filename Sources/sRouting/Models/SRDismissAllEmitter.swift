@@ -12,11 +12,17 @@ import Observation
 @Observable @MainActor
 public final class SRDismissAllEmitter {
     
-    internal var dismissAllSignal: SignalChange = false
+    private(set) var dismissAllSignal: SignalChange = false
+    
+    private(set) var dismissCoordinatorSignal: SignalChange = false
     
     public init() { }
     
     public func dismissAll() {
         dismissAllSignal.toggle()
+    }
+    
+    public func dismissCoordinator() {
+        dismissCoordinatorSignal.toggle()
     }
 }

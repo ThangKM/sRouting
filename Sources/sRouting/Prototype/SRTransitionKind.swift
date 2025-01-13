@@ -41,6 +41,8 @@ enum SRTransitionKind: String, CaseIterable, Sendable {
     case dismiss
     /// Dismiss to root screen
     case dismissAll
+    /// Dismiss the presenting coordinator
+    case dismissCoordinator
     /// Naivation pop action
     case pop
     /// Navigation pop to screen action
