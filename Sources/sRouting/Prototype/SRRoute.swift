@@ -7,7 +7,6 @@
 
 import SwiftUI
 
-
 public protocol SRAlertRoute: Sendable {
     
     associatedtype Message: View
