@@ -53,23 +53,6 @@ struct RouterTests {
     }
     
     @Test
-    func testShowError() async throws {
-        var transition: SRTransition<TestRoute>?
-        let sut =
-        TestViewModifierView(coordinator: coordinator, router: router) {
-            Text("Test")
-                .onReceive(router.$transition, perform: { newValue in
-                    transition = newValue
-                })
-        }
-        ViewHosting.host(view: sut)
-        router.show(error: NSError(domain: "", code: 11, userInfo: nil), and: nil)
-        try await Task.sleep(for: .milliseconds(10))
-        #expect(transition?.type == .alert)
-        #expect(transition?.alert != nil)
-    }
-    
-    @Test
     func testShowAlert() async throws {
         var transition: SRTransition<TestRoute>?
         let sut =
@@ -80,9 +63,7 @@ struct RouterTests {
                 })
         }
         ViewHosting.host(view: sut)
-        router.show(alert: {
-            .init(title: Text(""), message: Text("message"), dismissButton: nil)
-        })
+        router.show(alert: .timeOut)
         try await Task.sleep(for: .milliseconds(10))
         #expect(transition?.type == .alert)
         #expect(transition?.alert != nil)

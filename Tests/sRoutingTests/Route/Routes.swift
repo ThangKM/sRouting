@@ -9,11 +9,16 @@ import SwiftUI
 @testable import sRouting
 
 
-struct TimeOutError: Error, CustomStringConvertible {
-    var description: String { "time out" }
+enum TestErrorRoute: SRAlertRoute {
+    case timeOut
+    var title: LocalizedStringKey { "Error" }
+    var actions: some View { Text("Ok") }
+    var message: some View { Text("Time out!") }
 }
 
 enum TestRoute: SRRoute {
+    
+    typealias AlertRoute = TestErrorRoute
     
     var path: String {
         switch self {

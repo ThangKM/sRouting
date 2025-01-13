@@ -50,6 +50,9 @@ To create a route we have to conform to the ``SRRoute`` Protocol.
 
 ```swift
 enum HomeRoute: SRRoute {
+
+    typealias AlertRoute = YourAlertRoute // Optional declarations
+    
     case pastry
     case cake
     
@@ -180,13 +183,9 @@ Sheet:
 router.trigger(to: .cake, with: .sheet)
 ```
 To show an alert we use the `show(alert:)` function.
-
 ```swift
- router.show(alert:  Alert.init(title: Text("Alert"),
-                                message: Text("Message"),
-                                dismissButton: .cancel(Text("OK")))
+ router.show(alert: YourAlertRoute.alert)
 ```
-
 To show an error message we use the `show(error:and:)` function.
 
 ```swift

@@ -45,10 +45,20 @@ struct RouterModifier<Route>: ViewModifier where Route: SRRoute {
     private var destinationView: some View {
         router.transition.route?.screen
     }
-    /// The alert from transition
+    
     @MainActor
-    private var alertView: Alert? {
-        router.transition.alert?()
+    private var alertTitle: LocalizedStringKey {
+        router.transition.alert?.title ?? ""
+    }
+    
+    @MainActor
+    private var alertActions: some View {
+        router.transition.alert?.actions
+    }
+    
+    @MainActor
+    private var alertMessage: some View {
+        router.transition.alert?.message
     }
     
     #if canImport(UIKit)
@@ -74,13 +84,11 @@ struct RouterModifier<Route>: ViewModifier where Route: SRRoute {
                    content: {
                 destinationView
             })
-            .alert(isPresented: $isActiveAlert) {
-                if let alertView {
-                    alertView
-                } else {
-                    Alert(title: Text("Something went wrong!"))
-                }
-            }
+            .alert(alertTitle, isPresented: $isActiveAlert, actions: {
+                alertActions
+            }, message: {
+                alertMessage
+            })
             .onReceive(dismissAllEmitter.$dismissAllSignal, perform: { _ in
                 resetActiveState()
             })
@@ -113,13 +121,11 @@ struct RouterModifier<Route>: ViewModifier where Route: SRRoute {
                 .environmentObject(dismissAllEmitter)
                 .environmentObject(tabbarSelection)
             })
-            .alert(isPresented: $isActiveAlert) {
-                if let alertView {
-                    alertView
-                } else {
-                    Alert(title: Text("Something went wrong!"))
-                }
-            }
+            .alert(alertTitle, isPresented: $isActiveAlert, actions: {
+                alertActions
+            }, message: {
+                alertMessage
+            })
             .actionSheet(isPresented: $isActiveActionSheet, content: {
                if let actionSheet {
                    actionSheet

@@ -18,6 +18,12 @@ public final class SRRouter<Route>: ObservableObject where Route: SRRoute {
     
     public init(_ route: Route.Type) { }
     
+    #if os(iOS) || os(tvOS)
+    public func show(actionSheet: GetActionSheet?) {
+        transition = .init(with: actionSheet)
+    }
+    #endif
+    
     /// Select tabbar item at index
     /// - Parameter index: Index of tabbar item
     ///
@@ -43,36 +49,15 @@ public final class SRRouter<Route>: ObservableObject where Route: SRRoute {
     }
     
     /// Show an alert
-    /// - Parameters:
-    ///   - error: Type of `Error`
-    ///   - title: The error's title
-    ///
-    /// ### Example
-    /// ```swift
-    /// router.show(NetworkingError.notFound)
-    /// ```
-    public func show(error: Error, and title: String? = nil) {
-        transition = .init(with: error, and: title)
-    }
-    
-    /// Show an alert
     /// - Parameter alert: Alert
     ///
     /// ### Example
     /// ```swift
-    /// router.show(alert:  Alert.init(title: Text("Alert"),
-    ///                                message: Text("Message"),
-    ///                                dismissButton: .cancel(Text("OK")))
+    /// router.show(alert:  AppAlertErrors.lossConnection)
     /// ```
-    public func show(alert: GetAlert?) {
-        transition = .init(with: alert)
+    public func show(alert: Route.AlertRoute, withTransaction transaction: WithTransaction? = .none) {
+        transition = .init(with: alert, and: transaction)
     }
-    
-    #if os(iOS) || os(tvOS)
-    public func show(actionSheet: GetActionSheet?) {
-        transition = .init(with: actionSheet)
-    }
-    #endif
     
     /// Dismiss or pop current screen
     ///

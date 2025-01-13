@@ -7,20 +7,45 @@
 
 import SwiftUI
 
+public protocol SRAlertRoute: Sendable {
+    
+    associatedtype Message: View
+    associatedtype Actions: View
+    
+    var title: LocalizedStringKey { get }
+    
+    @ViewBuilder
+    var message: Message { get }
+    
+    @ViewBuilder
+    var actions: Actions { get }
+}
+
+public struct AlertEmptyRoute: SRAlertRoute {
+    public var title: LocalizedStringKey { "" }
+    public var message: some View { EmptyView() }
+    public var actions: some View { EmptyView() }
+}
+
+//MARK: - SRRoute
 /// Protocol to build screens for the route.
 public protocol SRRoute: Hashable, Codable, Sendable {
     
-    associatedtype ViewType: View
+    associatedtype Screen: View
+    associatedtype AlertRoute: SRAlertRoute
     
     var path: String { get }
 
     /// Screen builder
     @ViewBuilder @MainActor
-    var screen: ViewType { get }
+    var screen: Screen { get }
 }
 
 extension SRRoute {
-
+    
+    /// Provide default type for the AlertRoute
+    public typealias AlertRoute = AlertEmptyRoute
+    
     /// Provide full path when self is a child route.
     public var fullPath: String {
         String(describing: Self.self) + "." + path
@@ -46,3 +71,4 @@ extension SRRoute {
         try container.encode(path)
     }
 }
+
