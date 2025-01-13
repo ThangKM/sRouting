@@ -207,6 +207,8 @@ extension RouterModifier {
             tabbarSelection.select(tag: transition.tabIndex ?? .zero)
         case .dismissAll:
             dismissAllEmitter.dismissAll()
+        case .dismissCoordinator:
+            dismissAllEmitter.dismissCoordinator()
         case .pop:
             guard _navigationPath.presence else { break }
             navigationPath.pop()

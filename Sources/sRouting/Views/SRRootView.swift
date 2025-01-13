@@ -23,6 +23,9 @@ where Content: View, Coordinator: SRRouteCoordinatorType {
     
     public var body: some View {
         content()
+            .onReceive(coordinator.dismissAllEmitter.$dismissCoordinatorSignal, perform: { _ in
+                coordinator.dismissAllEmitter.dismissCoordinator()
+            })
             .onRouting(of:coordinator.rootRouter)
             .environmentObject(coordinator.dismissAllEmitter)
             .environmentObject(coordinator.tabSelection)

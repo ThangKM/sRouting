@@ -79,6 +79,11 @@ public final class SRRouter<Route>: ObservableObject where Route: SRRoute {
         transition = .init(with: .dismissAll)
     }
     
+    /// Dismiss the presenting coordinator
+    public func dismissCoordinator() {
+        transition = .init(with: .dismissCoordinator)
+    }
+    
     /// Navigation pop action.
     /// - Parameter transaction: `Transaction`
     public func pop(with transaction: WithTransaction? = .none) {
