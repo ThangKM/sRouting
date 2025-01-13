@@ -11,6 +11,3 @@ internal typealias SignalChange = Bool
 
 public typealias WithTransaction =  @MainActor @Sendable () -> SwiftUI.Transaction
 
-#if canImport(UIKit)
-public typealias GetActionSheet = @Sendable () -> ActionSheet
-#endif

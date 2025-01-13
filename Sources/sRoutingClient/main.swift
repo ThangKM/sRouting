@@ -10,10 +10,34 @@ import sRouting
 import SwiftUI
 import Observation
 
+#if canImport(UIKit)
+enum AppConfirmationDialog: SRConfirmationDialogRoute {
+    case testConfirmation
+    
+    var titleKey: LocalizedStringKey {
+        "This is Title"
+    }
+    
+    var message: some View {
+        Text("This is Message")
+    }
+    
+    var actions: some View {
+        Button("Yes") { }
+        Button("No", role: .destructive) { }
+    }
+        
+    var titleVisibility: Visibility {
+        .visible
+    }
+}
+#endif
+
 enum AppAlerts: SRAlertRoute {
+    
     case lossConnection
     
-    var title: LocalizedStringKey {
+    var titleKey: LocalizedStringKey {
         switch self {
         case .lossConnection:
             return "Loss Connection"
@@ -34,6 +58,9 @@ enum AppAlerts: SRAlertRoute {
 enum HomeRoute: SRRoute {
 
     typealias AlertRoute = AppAlerts
+    #if canImport(UIKit)
+    typealias ConfirmationDialogRoute = AppConfirmationDialog
+    #endif
     
     case home
     case detail(String)
@@ -63,6 +90,10 @@ router.trigger(to: .home, with: .sheet) {
 }
 
 router.show(alert: .lossConnection)
+
+#if canImport(UIKit)
+router.show(dialog: .testConfirmation)
+#endif
 
 @sRouteObserver(HomeRoute.self, SettingRoute.self)
 struct RouteObserver { }

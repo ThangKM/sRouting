@@ -10,14 +10,31 @@ import SwiftUI
 
 enum TestErrorRoute: SRAlertRoute {
     case timeOut
-    var title: LocalizedStringKey { "Error" }
-    var actions: some View { Text("Ok") }
+    var titleKey: LocalizedStringKey { "Error" }
+    var actions: some View { Button("Ok") { } }
     var message: some View { Text("Time out!") }
+}
+
+enum TestDialog: SRConfirmationDialogRoute {
+    case confirmOK
+    var titleKey: LocalizedStringKey { "Confirm" }
+    var actions: some View {
+        VStack {
+            Button("OK") {
+                
+            }
+            Button("Cancel") {
+            }
+        }
+    }
+    var message: some View { Text("Your question?") }
+    var titleVisibility: Visibility { .visible }
 }
 
 enum TestRoute: SRRoute {
     
     typealias AlertRoute = TestErrorRoute
+    typealias ConfirmationDialogRoute = TestDialog
     
     var path: String {
         switch self {
