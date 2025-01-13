@@ -55,12 +55,14 @@ enum SettingRoute: SRRoute {
     var screen: some View { Text("Setting") }
 }
 
+#if canImport(UIKit)
 let router = SRRouter(HomeRoute.self)
 router.trigger(to: .home, with: .present) {
     var trans = Transaction()
     trans.disablesAnimations = true
     return trans
 }
+#endif
 
 @sRouteObserver(HomeRoute.self, SettingRoute.self)
 struct RouteObserver: ViewModifier { }
@@ -86,12 +88,12 @@ struct TestApp: App {
                     NavigationStackView(path: appCoordinator.homePath) {
                         Text("Home")
                             .routeObserver(RouteObserver.self)
-                    }.tag(SRTabItem.homeItem.rawValue)
+                    }.tag(AppCoordinator.SRTabItem.homeItem.rawValue)
                     
                     NavigationStackView(path: appCoordinator.settingPath) {
                         Text("Setting")
                             .routeObserver(RouteObserver.self)
-                    }.tag(SRTabItem.settingItem.rawValue)
+                    }.tag(AppCoordinator.SRTabItem.settingItem.rawValue)
                 }
             }
             .onOpenURL { url in

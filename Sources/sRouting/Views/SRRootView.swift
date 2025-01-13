@@ -23,8 +23,8 @@ where Content: View, Coordinator: SRRouteCoordinatorType {
     
     public var body: some View {
         content()
-            .onReceive(coordinator.dismissAllEmitter.$dismissCoordinatorSignal, perform: { _ in
-                coordinator.dismissAllEmitter.dismissCoordinator()
+            .onReceive(coordinator.dismissAllEmitter.$dismissCoordinatorSignal.dropFirst().onChanges(), perform: { _ in
+                coordinator.rootRouter.dismiss()
             })
             .onRouting(of:coordinator.rootRouter)
             .environmentObject(coordinator.dismissAllEmitter)
