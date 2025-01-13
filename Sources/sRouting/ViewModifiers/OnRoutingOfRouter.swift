@@ -39,7 +39,7 @@ struct RouterModifier<Route>: ViewModifier where Route: SRRoute {
     /// Active state of a alert
     @State private(set) var isActiveAlert: Bool = false
     /// Active state of action sheet
-    @State private(set) var isActiveActionSheet: Bool = false
+    @State private(set) var isActiveDialog: Bool = false
 
     /// The destination screen from transition
     @MainActor
@@ -49,7 +49,7 @@ struct RouterModifier<Route>: ViewModifier where Route: SRRoute {
     
     @MainActor
     private var alertTitle: LocalizedStringKey {
-        router.transition.alert?.title ?? ""
+        router.transition.alert?.titleKey ?? ""
     }
     
     @MainActor
@@ -61,12 +61,27 @@ struct RouterModifier<Route>: ViewModifier where Route: SRRoute {
     private var alertMessage: some View {
         router.transition.alert?.message
     }
-    
-    #if canImport(UIKit)
+        
+    #if os(iOS) || os(tvOS)
     /// The ActionSheet from transaction
     @MainActor
-    private var actionSheet: ActionSheet? {
-        router.transition.actionSheet?()
+    private var dialogTitleKey: LocalizedStringKey {
+        router.transition.confirmationDialog?.titleKey ?? ""
+    }
+
+    @MainActor
+    private var dialogTitleVisibility: Visibility {
+        router.transition.confirmationDialog?.titleVisibility ?? .hidden
+    }
+
+    @MainActor
+    private var dialogActions: some View {
+        router.transition.confirmationDialog?.actions
+    }
+
+    @MainActor
+    private var dialogMessage: some View {
+        router.transition.confirmationDialog?.message
     }
     #endif
     
@@ -127,12 +142,13 @@ struct RouterModifier<Route>: ViewModifier where Route: SRRoute {
             }, message: {
                 alertMessage
             })
-            .actionSheet(isPresented: $isActiveActionSheet, content: {
-               if let actionSheet {
-                   actionSheet
-               } else {
-                   ActionSheet(title: Text("Action Sheet not found!"))
-               }
+            .confirmationDialog(dialogTitleKey,
+                                isPresented: $isActiveDialog,
+                                titleVisibility: dialogTitleVisibility,
+                                actions: {
+                dialogActions
+            }, message: {
+                dialogMessage
             })
             .onReceive(dismissAllEmitter.$dismissAllSignal, perform: { _ in
                 resetActiveState()
@@ -166,7 +182,7 @@ extension RouterModifier {
         isActivePresent = false
         isActiveAlert = false
         isActiveSheet = false
-        isActiveActionSheet = false
+        isActiveDialog = false
     }
     
     /// Observe the transition change from router
@@ -183,8 +199,8 @@ extension RouterModifier {
             isActiveSheet = true
         case .alert:
             isActiveAlert = true
-        case .actionSheet:
-            isActiveActionSheet = true
+        case .confirmationDialog:
+            isActiveDialog = true
         case .dismiss:
             dismissAction()
         case .selectTab:

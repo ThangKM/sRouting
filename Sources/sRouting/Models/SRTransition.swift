@@ -21,12 +21,12 @@ where Route: SRRoute {
     private(set) var windowTransition: SRWindowTransition?
     
     #if os(iOS) || os(tvOS)
-    private(set) var actionSheet: GetActionSheet?
+    private(set) var confirmationDialog: Route.ConfirmationDialogRoute?
     
-    init(with actionSheet: GetActionSheet?, and transaction: WithTransaction? = .none) {
-        self.type = .actionSheet
+    init(with route: Route.ConfirmationDialogRoute?, and transaction: WithTransaction? = .none) {
+        self.type = .confirmationDialog
         self.contextId = TimeIdentifier()
-        self.actionSheet = actionSheet
+        self.confirmationDialog = route
         self.transaction = transaction
     }
     #endif

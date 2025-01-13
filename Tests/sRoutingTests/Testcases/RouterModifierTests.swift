@@ -46,7 +46,7 @@ struct RouterModifierTests {
     func testDismissAll() async throws {
         var isActive = true
         let sut = TestUnitTestActionView(coordinator: coordinator, router: router, tests: .init(didChangeTransition: { view in
-            isActive = view.isActiveAlert && view.isActiveSheet && view.isActivePresent && view.isActiveActionSheet
+            isActive = view.isActiveAlert && view.isActiveSheet && view.isActivePresent && view.isActiveDialog
         }))
         
         ViewHosting.host(view: sut)
@@ -137,12 +137,10 @@ struct RouterModifierTests {
         var isActive = false
         let sut =
         TestUnitTestActionView(coordinator: coordinator, router: router, tests:.init(didChangeTransition: { view in
-            isActive = view.isActiveActionSheet
+            isActive = view.isActiveDialog
         }))
         ViewHosting.host(view: sut)
-        router.show(actionSheet: {
-            .init(title: Text("test"))
-        })
+        router.show(dialog: .confirmOK)
         try await Task.sleep(for: .milliseconds(10))
         #expect(isActive)
     }

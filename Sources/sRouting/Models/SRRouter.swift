@@ -19,8 +19,8 @@ public final class SRRouter<Route>: ObservableObject where Route: SRRoute {
     public init(_ route: Route.Type) { }
     
     #if os(iOS) || os(tvOS)
-    public func show(actionSheet: GetActionSheet?) {
-        transition = .init(with: actionSheet)
+    public func show(dialog: Route.ConfirmationDialogRoute) {
+        transition = .init(with: dialog)
     }
     #endif
     

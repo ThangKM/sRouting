@@ -11,11 +11,12 @@ import SwiftUI
 public enum SRTriggerType: String, CaseIterable, Sendable {
     /// Push a screen
     case push
-    /// Present full screen
-    case present
     /// Present a screen
     case sheet
-
+    #if os(iOS) || os(tvOS)
+    /// Present full screen
+    case present
+    #endif
     public var description: String {
         "TriggerType - \(self)"
     }
@@ -33,7 +34,7 @@ enum SRTransitionKind: String, CaseIterable, Sendable {
     /// Show alert
     case alert
     /// Show actions sheet on iOS & iPad
-    case actionSheet
+    case confirmationDialog
     /// Present a  screen
     case sheet
     /// Dismiss(pop) screen
@@ -57,8 +58,10 @@ enum SRTransitionKind: String, CaseIterable, Sendable {
     init(with triggerType: SRTriggerType) {
         switch triggerType {
         case .push: self = .push
-        case .present: self = .present
         case .sheet: self = .sheet
+        #if os(iOS) || os(tvOS)
+        case .present: self = .present
+        #endif
         }
     }
     

@@ -13,7 +13,7 @@ import Observation
 enum AppAlerts: SRAlertRoute {
     case lossConnection
     
-    var title: LocalizedStringKey {
+    var titleKey: LocalizedStringKey {
         switch self {
         case .lossConnection:
             return "Loss Connection"
