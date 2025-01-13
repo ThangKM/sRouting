@@ -34,18 +34,7 @@ struct TestInitializers {
     
     @Test
     func testInitTransitionWithAlert() {
-        let sut = SRTransition<TestRoute>(with: {
-            Alert(title: Text(""), message: Text("message"), dismissButton: nil)
-        })
-        #expect(sut.alert != nil)
-        #expect(sut.route == nil)
-        #expect(sut.tabIndex == nil)
-        #expect(sut.type == .alert)
-    }
-    
-    @Test
-    func testInitTransitionWithError() {
-        let sut = SRTransition<TestRoute>(with: NSError(domain: "", code: 1, userInfo: [:]), and: nil)
+        let sut = SRTransition<TestRoute>.init(with: .timeOut)
         #expect(sut.alert != nil)
         #expect(sut.route == nil)
         #expect(sut.tabIndex == nil)

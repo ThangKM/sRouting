@@ -58,7 +58,7 @@ struct RouterTests {
             }
         }
         ViewHosting.host(view: sut)
-        router.show(error: NSError(domain: "", code: 11, userInfo: nil), and: nil)
+        router.show(alert: .timeOut)
         try await Task.sleep(for: .milliseconds(10))
         #expect(transition?.type == .alert)
         #expect(transition?.alert != nil)
@@ -73,9 +73,7 @@ struct RouterTests {
             }
         }
         ViewHosting.host(view: sut)
-        router.show(alert: {
-            .init(title: Text(""), message: Text("message"), dismissButton: nil)
-        })
+        router.show(alert: .timeOut)
         try await Task.sleep(for: .milliseconds(10))
         #expect(transition?.type == .alert)
         #expect(transition?.alert != nil)
