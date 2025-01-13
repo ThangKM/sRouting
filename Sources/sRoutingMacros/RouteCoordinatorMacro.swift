@@ -1,6 +1,6 @@
 
 //
-//  RouteCoordinator.swift
+//  RouteCoordinatorMacro.swift
 //
 //
 //  Created by Thang Kieu on 31/03/2024.
@@ -15,7 +15,7 @@ import Foundation
 private let tabsParam = "tabs"
 private let stacksParam = "stacks"
 
-package struct RouteCoordinator: MemberMacro {
+package struct RouteCoordinatorMacro: MemberMacro {
     
     package static func expansion(of node: AttributeSyntax,
                                  providingMembersOf declaration: some DeclGroupSyntax,
@@ -139,7 +139,7 @@ package struct RouteCoordinator: MemberMacro {
     }
 }
 
-extension RouteCoordinator: ExtensionMacro {
+extension RouteCoordinatorMacro: ExtensionMacro {
     
     package static func expansion(
         of node: AttributeSyntax,
@@ -240,7 +240,7 @@ extension RouteCoordinator: ExtensionMacro {
     }
 }
 
-extension RouteCoordinator {
+extension RouteCoordinatorMacro {
     
     private static func _arguments(of node: AttributeSyntax) throws -> (tabs: [String], stacks: [String]) {
         
