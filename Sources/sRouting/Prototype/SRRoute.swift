@@ -80,7 +80,7 @@ extension SRRoute {
     public typealias AlertRoute = AlertEmptyRoute
     
     #if os(iOS) || os(tvOS)
-    /// Provide default type for the ``DefaultConfirmationDialogRoute``
+    /// Provide default type for the ``ConfirmationDialogEmptyRoute``
     public typealias ConfirmationDialogRoute = ConfirmationDialogEmptyRoute
     #endif
     
