@@ -111,66 +111,65 @@ final class CoordinatorMacroTest: XCTestCase {
 
         }
 
-        enum SRRootRoute: SRRoute {
-            case resetAll
-            case dismissAll
-            case popToRoot(of: SRNavStack)
-            case select(tabItem: SRTabItem)
-            case push(route: any SRRoute, into: SRNavStack)
-            case sheet(any SRRoute)
-            case window(SRWindowTransition)
-            case open(url: URL)
-            #if os(iOS)
-            case present(any SRRoute)
-            #endif
-
-            var screen: some View {
-               fatalError("sRouting.SRRootRoute doesn't have screen")
-            }
-
-            var path: String {
-                switch self {
-                case .resetAll:
-                    return "rootroute.resetall"
-                case .dismissAll:
-                    return "rootroute.dismissall"
-                case .select:
-                    return "rootroute.selecttab"
-                case .push(let route, _):
-                    return "rootroute.push.\\(route.path)"
-                case .sheet(let route):
-                    return "rootroute.sheet.\\(route.path)"
-                case .window(let transition):
-                    if let id = transition.windowId {
-                        return "rootroute.window.\\(id)"
-                    } else if let value = transition.windowValue {
-                        return "rootroute.window.\\(value.hashValue)"
-                    } else {
-                        return "rootroute.window"
-                    }
-                case .open(let url):
-                    return "rootroute.openurl.\\(url.absoluteString)"
-                case .popToRoot:
-                    return "rootroute.popToRoot"
+        extension Coordinator: sRouting.SRRouteCoordinatorType {
+            enum SRRootRoute: SRRoute {
+                case resetAll
+                case dismissAll
+                case popToRoot(of: SRNavStack)
+                case select(tabItem: SRTabItem)
+                case push(route: any SRRoute, into: SRNavStack)
+                case sheet(any SRRoute)
+                case window(SRWindowTransition)
+                case open(url: URL)
                 #if os(iOS)
-                case .present(let route):
-                    return "rootroute.present.\\(route.path)"
+                case present(any SRRoute)
                 #endif
+
+                var screen: some View {
+                   fatalError("sRouting.SRRootRoute doesn't have screen")
+                }
+
+                var path: String {
+                    switch self {
+                    case .resetAll:
+                        return "rootroute.resetall"
+                    case .dismissAll:
+                        return "rootroute.dismissall"
+                    case .select:
+                        return "rootroute.selecttab"
+                    case .push(let route, _):
+                        return "rootroute.push.\\(route.path)"
+                    case .sheet(let route):
+                        return "rootroute.sheet.\\(route.path)"
+                    case .window(let transition):
+                        if let id = transition.windowId {
+                            return "rootroute.window.\\(id)"
+                        } else if let value = transition.windowValue {
+                            return "rootroute.window.\\(value.hashValue)"
+                        } else {
+                            return "rootroute.window"
+                        }
+                    case .open(let url):
+                        return "rootroute.openurl.\\(url.absoluteString)"
+                    case .popToRoot:
+                        return "rootroute.popToRoot"
+                    #if os(iOS)
+                    case .present(let route):
+                        return "rootroute.present.\\(route.path)"
+                    #endif
+                    }
                 }
             }
-        }
 
-        enum SRTabItem: Int, Sendable {
-            case homeItem
-            case settingItem
-        }
+            enum SRTabItem: Int, Sendable {
+                case homeItem
+                case settingItem
+            }
 
-        enum SRNavStack: String, Sendable {
-            case home
-            case setting
-        }
-
-        extension Coordinator: sRouting.SRRouteCoordinatorType {
+            enum SRNavStack: String, Sendable {
+                case home
+                case setting
+            }
         }
         """, macros:testMacros)
     }
@@ -185,9 +184,6 @@ final class CoordinatorMacroTest: XCTestCase {
         }
         """, expandedSource:"""
         enum Coordinator {
-        }
-
-        extension Coordinator: sRouting.SRRouteCoordinatorType {
         }
         """,
         diagnostics: [dianosSpec, dianosSpec],
@@ -205,9 +201,6 @@ final class CoordinatorMacroTest: XCTestCase {
         """, expandedSource:"""
         struct Coordinator {
         }
-
-        extension Coordinator: sRouting.SRRouteCoordinatorType {
-        }
         """,
         diagnostics: [dianosSpec, dianosSpec],
         macros: testMacros)
@@ -224,9 +217,6 @@ final class CoordinatorMacroTest: XCTestCase {
         """, expandedSource:"""
         struct Coordinator {
         }
-
-        extension Coordinator: sRouting.SRRouteCoordinatorType {
-        }
         """,
         diagnostics: [dianosSpec, dianosSpec],
         macros: testMacros)
@@ -242,9 +232,6 @@ final class CoordinatorMacroTest: XCTestCase {
         }
         """, expandedSource:"""
         struct Coordinator {
-        }
-
-        extension Coordinator: sRouting.SRRouteCoordinatorType {
         }
         """,
         diagnostics: [dianosSpec, dianosSpec],

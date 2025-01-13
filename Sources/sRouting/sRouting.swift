@@ -2,8 +2,7 @@
 
 /// Create a coordinator that includes navigations, selections...
 @attached(member, names: arbitrary)
-@attached(peer, names: named(SRRootRoute), named(SRNavStack), named(SRTabItem), named(SRRootRouter))
-@attached(extension, conformances: SRRouteCoordinatorType)
+@attached(extension, conformances: SRRouteCoordinatorType, names: named(SRRootRoute), named(SRNavStack), named(SRTabItem), named(SRRootRouter))
 public macro sRouteCoordinator(tabs: [String] = [], stacks: String...) = #externalMacro(module: "sRoutingMacros", type: "RouteCoordinator")
 
 /// Generate a `ViewModifier` of navigation destinations that observing routes

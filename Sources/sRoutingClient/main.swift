@@ -113,12 +113,12 @@ struct TestApp: App {
                     NavigationStack(path: coordinator.homePath) {
                         Text("Home")
                             .routeObserver(RouteObserver.self)
-                    }.tag(SRTabItem.homeItem.rawValue)
+                    }.tag(AppCoordinator.SRTabItem.homeItem.rawValue)
                     
                     NavigationStack(path: coordinator.settingPath) {
                         Text("Setting")
                             .routeObserver(RouteObserver.self)
-                    }.tag(SRTabItem.settingItem.rawValue)
+                    }.tag(AppCoordinator.SRTabItem.settingItem.rawValue)
                 }
             }
             .onOpenURL { url in
