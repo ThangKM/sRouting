@@ -56,6 +56,24 @@ struct RouterModifierTests {
     }
     
     @Test
+    func testDismissCoordinator() async throws {
+        var isEnter = false
+
+        let sut = SRRootView(coordinator: coordinator) {
+            TestScreen(router: router, tests: nil)
+                .onChange(of: coordinator.dismissAllEmitter.dismissCoordinatorSignal) { oldValue, newValue in
+                    isEnter = true
+                }
+        }
+        
+        ViewHosting.host(view: sut)
+        try await Task.sleep(for: .milliseconds(10))
+        router.dismissCoordinator()
+        try await Task.sleep(for: .milliseconds(10))
+        #expect(isEnter)
+    }
+    
+    @Test
     func testPush() async throws {
         var pathCount = 0
         let sut = NavigationStack(path: coordinator.testStackPath) {
@@ -126,6 +144,25 @@ struct RouterModifierTests {
         try await Task.sleep(for: .milliseconds(10))
         #expect(paths.count == 1)
         #expect(path.contains("home"))
+    }
+    
+    @Test
+    func testOnDoubleTap() async throws {
+        
+        var selection = -1
+        let tabManager = SRTabbarSelection()
+        let sut = Text("")
+                    .onDoubleTapTabItem { value in
+                        selection = value
+                    }
+                    .environment(tabManager)
+        ViewHosting.host(view: sut)
+        try await Task.sleep(for:.milliseconds(50))
+        tabManager.select(tag: 0)
+        try await Task.sleep(for:.milliseconds(100))
+        tabManager.select(tag: 0)
+        try await Task.sleep(for:.milliseconds(50))
+        #expect(selection == .zero)
     }
                                                           
     #if os(iOS) || os(tvOS)
