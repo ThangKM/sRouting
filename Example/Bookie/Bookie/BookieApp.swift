@@ -9,7 +9,7 @@ import SwiftUI
 import sRouting
 
 @sRouteCoordinator(stacks: "rootStack")
-struct AppCoordinator { }
+final class AppCoordinator { }
 
 @sRouteObserver(AppRoute.self, HomeRoute.self)
 struct RouteObserver { }
@@ -17,7 +17,7 @@ struct RouteObserver { }
 @main
 struct BookieApp: App {
 
-    let appCoordinator = AppCoordinator()
+    @StateObject private var appCoordinator = AppCoordinator()
     
     @State var appRouter = AppRouter()
     @State var data = MockBookData()
