@@ -104,6 +104,7 @@ struct TestModifiers {
             }
         }
         ViewHosting.host(view: sut)
+        try await Task.sleep(for: .milliseconds(100))
         router.selectTabbar(at: 0)
         try await Task.sleep(for: .milliseconds(100))
         router.selectTabbar(at: 0)

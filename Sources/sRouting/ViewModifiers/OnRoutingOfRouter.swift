@@ -25,12 +25,8 @@ struct RouterModifier<Route>: ViewModifier where Route: SRRoute {
     private var dismissAllEmitter: SRDismissAllEmitter
     
     @Environment(\.openWindow) private var openWindow
-    @Environment(\.openURL) private var openURL
     @Environment(\.scenePhase) private var scenePhase
     @Environment(\.dismiss) private var dismissAction
-    #if os(macOS)
-    @Environment(\.openDocument) private var openDocument
-    #endif
     
     /// Active state of a full screen presentation
     @State private(set) var isActivePresent: Bool = false
@@ -220,58 +216,10 @@ extension RouterModifier {
             navigationPath.pop(to: route)
         case .openWindow:
             openWindow(transition: transition.windowTransition)
-        case .openURL:
-            openURL(from: transition.windowTransition)
-        #if os(macOS)
-        case .openDocument:
-            openDoc(transition: transition.windowTransition)
-        #endif
-                    
         case .none: break
         }
         
         tests?.didChangeTransition?(self)
-    }
-    
-    #if os(macOS)
-    @MainActor
-    private func openDoc(transition: SRWindowTransition?) {
-        guard let transition,
-              let url = transition.url
-        else { return }
-        
-        guard tests == nil else {
-            tests?.didOpenDoc?(url)
-            return
-        }
-        
-        Task {
-            do {
-                try await openDocument(at: url)
-                transition.errorHandler?(.none)
-            } catch {
-                transition.errorHandler?(error)
-            }
-        }
-    }
-    #endif
-    
-    @MainActor
-    private func openURL(from transition: SRWindowTransition?) {
-        guard let windowTransition = transition,
-              let url = windowTransition.url
-        else { return }
-        
-        guard tests == nil else {
-            tests?.didOpenURL?(url)
-            return
-        }
-        
-        if let acception = windowTransition.acception {
-            openURL(url, completion: acception)
-        } else {
-            openURL(url)
-        }
     }
     
     @MainActor

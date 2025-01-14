@@ -191,31 +191,4 @@ struct RouterTests {
         #expect(transition?.windowValue?.hashValue == 123.hashValue)
         #expect(transition?.windowId == "window_id")
     }
-    
-    @Test
-    func testOpenURL() async throws {
-        var url: URL?
-        let sut =
-        TestUnitTestActionView(coordinator: coordinator, router: router, tests:.init(didOpenURL: { _url in
-            url = _url
-        }))
-        ViewHosting.host(view: sut)
-        router.openURL(at: URL(string: "www.google.com")!, completion: .none)
-        try await Task.sleep(for: .milliseconds(10))
-        #expect(url?.absoluteString == "www.google.com")
-    }
-    
-    #if os(macOS)
-    @Test
-    func testDocument() async throws {
-        var url: URL?
-        let sut = TestUnitTestActionView(coordinator: coordinator, router: router, tests:.init(didOpenDoc: { _url in
-            url = _url
-        }))
-        ViewHosting.host(view: sut)
-        router.openDocument(at: URL(string: "file://user")!, completion: .none)
-        try await Task.sleep(for: .milliseconds(10))
-        #expect(url?.absoluteString == "file://user")
-    }
-    #endif
 }
