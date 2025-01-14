@@ -31,8 +31,8 @@ public final class SRRouter<Route> where Route: SRRoute {
     public init(_ route: Route.Type) { }
     
     #if os(iOS) || os(tvOS)
-    public func show(actionSheet: GetActionSheet?) {
-        transition = .init(with: actionSheet)
+    public func show(dialog: Route.ConfirmationDialogRoute) {
+        transition = .init(with: dialog)
     }
     #endif
     
@@ -91,6 +91,11 @@ public final class SRRouter<Route> where Route: SRRoute {
         transition = .init(with: .dismissAll)
     }
     
+    /// Dismiss the presenting coordinator
+    public func dismissCoordinator() {
+        transition = .init(with: .dismissCoordinator)
+    }
+    
     /// Navigation pop action.
     /// - Parameter transaction: `Transaction`
     public func pop(with transaction: WithTransaction? = .none) {
@@ -122,21 +127,9 @@ public final class SRRouter<Route> where Route: SRRoute {
         transition = .init(with: .openWindow, windowTransition: windowTrans)
     }
     
-    /// Opens a URL, following system conventions.
-    /// - Parameters:
-    ///   - url: `URL`
-    ///   - completion: `AcceptionCallback`
-    public func openURL(at url: URL, completion: AcceptionCallback?) {
-        transition = .init(with: .openURL, windowTransition: .init(url: url, acceoption: completion))
+    /// Reset the transition to release anything the route holds.
+    internal func resetTransition() {
+        guard transition != .none else { return }
+        transition = .none
     }
-    
-    #if os(macOS)
-    /// Opens the document at the specified file URL.
-    /// - Parameters:
-    ///   - url: file URL
-    ///   - completion: `ErrorHandler`
-    public func openDocument(at url: URL, completion: ErrorHandler?) {
-        transition = .init(with: .openDocument, windowTransition: .init(url: url, errorHandler: completion))
-    }
-    #endif
 }

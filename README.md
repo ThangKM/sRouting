@@ -79,7 +79,7 @@ Declaring a coordinator:
 
 ```swift
 @sRouteCoordinator(tabs: ["home", "setting"], stacks: "home", "setting")
-struct AppCoordinator { }
+final class AppCoordinator { }
 ```
 
 Declaring View of navigation destination:
@@ -94,7 +94,8 @@ Setup Your App:
 ```swift
 @main
 struct BookieApp: App { 
-    let coordinator = AppCoordinator()
+    @StateObject 
+    private var coordinator = AppCoordinator()
     ...
     var body: some Scene {
 
@@ -204,7 +205,7 @@ To seclect the Tabbar item we use the `selectTabbar(at:)` function.
 router.selectTabbar(at:0)
 ```
 
-sRouting also supported pop, pop to root and pop to a target function for the NavigationView
+sRouting also supported pop, pop to root and pop to a target function for the NavigationStack
 
 ```swift
 router.pop()

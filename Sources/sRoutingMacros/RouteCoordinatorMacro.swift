@@ -1,6 +1,6 @@
 
 //
-//  RouteCoordinator.swift
+//  RouteCoordinatorMacro.swift
 //
 //
 //  Created by Thang Kieu on 31/03/2024.
@@ -15,15 +15,14 @@ import Foundation
 private let tabsParam = "tabs"
 private let stacksParam = "stacks"
 
-package struct RouteCoordinator: MemberMacro {
+package struct RouteCoordinatorMacro: MemberMacro {
     
     package static func expansion(of node: AttributeSyntax,
                                  providingMembersOf declaration: some DeclGroupSyntax,
                                  in context: some MacroExpansionContext) throws -> [DeclSyntax] {
         
         guard declaration.kind == SwiftSyntax.SyntaxKind.classDecl
-                || declaration.kind == SwiftSyntax.SyntaxKind.structDecl
-        else { throw SRMacroError.structOrClass }
+        else { throw SRMacroError.onlyClass }
         let arguments = try Self._arguments(of: node)
         
         var result: [DeclSyntax] = []
@@ -108,8 +107,6 @@ package struct RouteCoordinator: MemberMacro {
                 rootRouter.trigger(to: AnyRoute(route: route), with: .sheet)
             case .window(let windowTrans):
                 rootRouter.openWindow(windowTrans: windowTrans)
-            case .open(let url):
-                rootRouter.openURL(at: url, completion: nil)
             #if os(iOS)
             case .present(let route):
                 rootRouter.trigger(to: .init(route: route), with: .present)
@@ -139,103 +136,111 @@ package struct RouteCoordinator: MemberMacro {
     }
 }
 
-extension RouteCoordinator: PeerMacro {
-    package static func expansion(of node: SwiftSyntax.AttributeSyntax,
-                                 providingPeersOf declaration: some SwiftSyntax.DeclSyntaxProtocol,
-                                 in context: some SwiftSyntaxMacros.MacroExpansionContext) throws -> [SwiftSyntax.DeclSyntax] {
+extension RouteCoordinatorMacro: ExtensionMacro {
+    
+    package static func expansion(
+        of node: AttributeSyntax,
+        attachedTo declaration: some DeclGroupSyntax,
+        providingExtensionsOf type: some TypeSyntaxProtocol,
+        conformingTo protocols: [TypeSyntax],
+        in context: some MacroExpansionContext
+    ) throws -> [ExtensionDeclSyntax] {
         
         guard declaration.kind == SwiftSyntax.SyntaxKind.classDecl
-                || declaration.kind == SwiftSyntax.SyntaxKind.structDecl
-        else { throw SRMacroError.structOrClass }
-        
-        let arguments = try Self._arguments(of: node)
-        
-        var result: [DeclSyntax] = []
+        else { throw SRMacroError.onlyClass }
 
-        let rootRoute: DeclSyntax =  """
-        enum SRRootRoute: SRRoute {
-            case resetAll
-            case dismissAll
-            case popToRoot(of: SRNavStack)
-            case select(tabItem: SRTabItem)
-            case push(route: any SRRoute, into: SRNavStack)
-            case sheet(any SRRoute)
-            case window(SRWindowTransition)
-            case open(url: URL)
-            #if os(iOS)
-            case present(any SRRoute)
-            #endif
-        
-            var screen: some View {
-               fatalError("sRouting.SRRootRoute doesn't have screen")
-            }
-        
-            var path: String {
-                switch self {
-                case .resetAll:
-                    return "rootroute.resetall"
-                case .dismissAll:
-                    return "rootroute.dismissall"
-                case .select:
-                    return "rootroute.selecttab"
-                case .push(let route,_):
-                    return "rootroute.push.\\(route.path)"
-                case .sheet(let route): return "rootroute.sheet.\\(route.path)"
-                case .window(let transition):
-                    if let id = transition.windowId {
-                        return "rootroute.window.\\(id)"
-                    } else if let value = transition.windowValue {
-                        return "rootroute.window.\\(value.hashValue)"
-                    } else {
-                        return "rootroute.window"
-                    }
-                case .open(let url):
-                    return "rootroute.openurl.\\(url.absoluteString)"
-                case .popToRoot:
-                    return "rootroute.popToRoot"
-                #if os(iOS)
-                case .present(let route):
-                    return "rootroute.present.\\(route.path)"
-                #endif
+        let arguments = try Self._arguments(of: node)
+
+        var caseTabItems = ""
+        if arguments.tabs.isEmpty {
+            caseTabItems = "case none"
+        } else {
+            for item in arguments.tabs {
+                caseTabItems += "case \(item)"
+                if item != arguments.tabs.last {
+                    caseTabItems += "\n"
                 }
             }
         }
-        """
-        result.append(rootRoute)
         
-        let iheritanceClause: InheritanceClauseSyntax = .init(inheritedTypes:
-                .init(arrayLiteral: InheritedTypeSyntax(type: TypeSyntax(stringLiteral: "Int"), trailingTrivia: .unexpectedText(",")),
-                      InheritedTypeSyntax(type: TypeSyntax(stringLiteral: "Sendable"))))
+        var caseStackItems = ""
+        for stack in arguments.stacks {
+            caseStackItems += "case \(stack)"
+            if stack != arguments.stacks.last {
+                caseStackItems += "\n"
+            }
+        }
         
-        let tabItem = DeclSyntax(
-            EnumDeclSyntax(name: "SRTabItem", inheritanceClause:iheritanceClause) {
-                if arguments.tabs.isEmpty {
-                    "case none"
-                } else {
-                    for item in arguments.tabs {
-                        "case \(raw: item)"
+        let declCoordinator: DeclSyntax = """
+            extension \(raw: type.trimmedDescription): sRouting.SRRouteCoordinatorType {
+                enum SRRootRoute: SRRoute {
+                    case resetAll
+                    case dismissAll
+                    case popToRoot(of: SRNavStack)
+                    case select(tabItem: SRTabItem)
+                    case push(route: any SRRoute, into: SRNavStack)
+                    case sheet(any SRRoute)
+                    case window(SRWindowTransition)
+                    #if os(iOS)
+                    case present(any SRRoute)
+                    #endif
+                
+                    var screen: some View {
+                       fatalError("sRouting.SRRootRoute doesn't have screen")
+                    }
+                
+                    var path: String {
+                        switch self {
+                        case .resetAll:
+                            return "rootroute.resetall"
+                        case .dismissAll:
+                            return "rootroute.dismissall"
+                        case .select:
+                            return "rootroute.selecttab"
+                        case .push(let route,_):
+                            return "rootroute.push.\\(route.path)"
+                        case .sheet(let route): return "rootroute.sheet.\\(route.path)"
+                        case .window(let transition):
+                            if let id = transition.windowId {
+                                return "rootroute.window.\\(id)"
+                            } else if let value = transition.windowValue {
+                                return "rootroute.window.\\(value.hashValue)"
+                            } else {
+                                return "rootroute.window"
+                            }
+                        case .popToRoot:
+                            return "rootroute.popToRoot"
+                        #if os(iOS)
+                        case .present(let route):
+                            return "rootroute.present.\\(route.path)"
+                        #endif
+                        }
                     }
                 }
-            }
-        )
-        result.append(tabItem)
-
-        let navIheritanceClause: InheritanceClauseSyntax = .init(inheritedTypes:
-                .init(arrayLiteral: InheritedTypeSyntax(type: TypeSyntax(stringLiteral: "String"), trailingTrivia: .unexpectedText(",")),
-                      InheritedTypeSyntax(type: TypeSyntax(stringLiteral: "Sendable"))))
-        let navStack = DeclSyntax(
-            EnumDeclSyntax(name: "SRNavStack", inheritanceClause:navIheritanceClause) {
-                for stack in arguments.stacks {
-                    "case \(raw: stack)"
+                
+                enum SRTabItem: Int, Sendable {
+                    \(raw: caseTabItems)
+                }
+            
+                enum SRNavStack: String, Sendable {
+                    \(raw: caseStackItems)
                 }
             }
-        )
-        result.append(navStack)
-        return result
+            """
+        
+        let declObservableObject: DeclSyntax = """
+        extension \(raw: type.trimmedDescription): Foundation.ObservableObject {
+        
+        }
+        """
+        
+        let extCoordinator = declCoordinator.cast(ExtensionDeclSyntax.self)
+        let extObservableObject = declObservableObject.cast(ExtensionDeclSyntax.self)
+        return [extCoordinator, extObservableObject]
     }
 }
 
-extension RouteCoordinator {
+extension RouteCoordinatorMacro {
     
     private static func _arguments(of node: AttributeSyntax) throws -> (tabs: [String], stacks: [String]) {
         
@@ -282,24 +287,5 @@ extension RouteCoordinator {
         guard stacks.count == Set(stacks).count else { throw SRMacroError.duplication }
         
         return (tabs,stacks)
-    }
-}
-
-extension RouteCoordinator: ExtensionMacro {
-    
-    package static func expansion(
-        of node: AttributeSyntax,
-        attachedTo declaration: some DeclGroupSyntax,
-        providingExtensionsOf type: some TypeSyntaxProtocol,
-        conformingTo protocols: [TypeSyntax],
-        in context: some MacroExpansionContext
-    ) throws -> [ExtensionDeclSyntax] {
-        
-        let decl: DeclSyntax = """
-            extension \(raw: type.trimmedDescription): sRouting.SRRouteCoordinatorType {}
-            """
-        let ext = decl.cast(ExtensionDeclSyntax.self)
-        
-        return [ext]
     }
 }

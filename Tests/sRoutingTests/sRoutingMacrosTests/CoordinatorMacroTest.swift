@@ -22,11 +22,11 @@ final class CoordinatorMacroTest: XCTestCase {
     func testCoordinatorMacroImp() async throws {
         assertMacroExpansion("""
         @sRouteCoordinator(tabs: ["homeItem", "settingItem"], stacks: "home", "setting")
-        struct Coordinator { 
+        class Coordinator { 
         
         }
         """, expandedSource: """
-        struct Coordinator { 
+        class Coordinator { 
 
             @MainActor let rootRouter = SRRouter(AnyRoute.self)
 
@@ -86,8 +86,6 @@ final class CoordinatorMacroTest: XCTestCase {
                     rootRouter.trigger(to: AnyRoute(route: route), with: .sheet)
                 case .window(let windowTrans):
                     rootRouter.openWindow(windowTrans: windowTrans)
-                case .open(let url):
-                    rootRouter.openURL(at: url, completion: nil)
                 #if os(iOS)
                 case .present(let route):
                     rootRouter.trigger(to: .init(route: route), with: .present)
@@ -111,73 +109,73 @@ final class CoordinatorMacroTest: XCTestCase {
 
         }
 
-        enum SRRootRoute: SRRoute {
-            case resetAll
-            case dismissAll
-            case popToRoot(of: SRNavStack)
-            case select(tabItem: SRTabItem)
-            case push(route: any SRRoute, into: SRNavStack)
-            case sheet(any SRRoute)
-            case window(SRWindowTransition)
-            case open(url: URL)
-            #if os(iOS)
-            case present(any SRRoute)
-            #endif
-
-            var screen: some View {
-               fatalError("sRouting.SRRootRoute doesn't have screen")
-            }
-
-            var path: String {
-                switch self {
-                case .resetAll:
-                    return "rootroute.resetall"
-                case .dismissAll:
-                    return "rootroute.dismissall"
-                case .select:
-                    return "rootroute.selecttab"
-                case .push(let route, _):
-                    return "rootroute.push.\\(route.path)"
-                case .sheet(let route):
-                    return "rootroute.sheet.\\(route.path)"
-                case .window(let transition):
-                    if let id = transition.windowId {
-                        return "rootroute.window.\\(id)"
-                    } else if let value = transition.windowValue {
-                        return "rootroute.window.\\(value.hashValue)"
-                    } else {
-                        return "rootroute.window"
-                    }
-                case .open(let url):
-                    return "rootroute.openurl.\\(url.absoluteString)"
-                case .popToRoot:
-                    return "rootroute.popToRoot"
+        extension Coordinator: sRouting.SRRouteCoordinatorType {
+            enum SRRootRoute: SRRoute {
+                case resetAll
+                case dismissAll
+                case popToRoot(of: SRNavStack)
+                case select(tabItem: SRTabItem)
+                case push(route: any SRRoute, into: SRNavStack)
+                case sheet(any SRRoute)
+                case window(SRWindowTransition)
                 #if os(iOS)
-                case .present(let route):
-                    return "rootroute.present.\\(route.path)"
+                case present(any SRRoute)
                 #endif
+
+                var screen: some View {
+                   fatalError("sRouting.SRRootRoute doesn't have screen")
+                }
+
+                var path: String {
+                    switch self {
+                    case .resetAll:
+                        return "rootroute.resetall"
+                    case .dismissAll:
+                        return "rootroute.dismissall"
+                    case .select:
+                        return "rootroute.selecttab"
+                    case .push(let route, _):
+                        return "rootroute.push.\\(route.path)"
+                    case .sheet(let route):
+                        return "rootroute.sheet.\\(route.path)"
+                    case .window(let transition):
+                        if let id = transition.windowId {
+                            return "rootroute.window.\\(id)"
+                        } else if let value = transition.windowValue {
+                            return "rootroute.window.\\(value.hashValue)"
+                        } else {
+                            return "rootroute.window"
+                        }
+                    case .popToRoot:
+                        return "rootroute.popToRoot"
+                    #if os(iOS)
+                    case .present(let route):
+                        return "rootroute.present.\\(route.path)"
+                    #endif
+                    }
                 }
             }
-        }
 
-        enum SRTabItem: Int, Sendable {
-            case homeItem
-            case settingItem
-        }
+            enum SRTabItem: Int, Sendable {
+                case homeItem
+                case settingItem
+            }
 
-        enum SRNavStack: String, Sendable {
-            case home
-            case setting
+            enum SRNavStack: String, Sendable {
+                case home
+                case setting
+            }
         }
+        
+        extension Coordinator: Foundation.ObservableObject {
 
-        extension Coordinator: sRouting.SRRouteCoordinatorType {
         }
         """, macros:testMacros)
     }
     
     func testNoneStructOrClassImp() async throws {
         
-        let dianosSpec = DiagnosticSpec(message: SRMacroError.structOrClass.description, line: 1, column: 1,severity: .error)
+        let dianosSpec = DiagnosticSpec(message: SRMacroError.onlyClass.description, line: 1, column: 1,severity: .error)
         
         assertMacroExpansion("""
         @sRouteCoordinator(tabs: ["homeItem", "settingItem"], stacks: "home", "setting")
@@ -185,9 +183,6 @@ final class CoordinatorMacroTest: XCTestCase {
         }
         """, expandedSource:"""
         enum Coordinator {
-        }
-
-        extension Coordinator: sRouting.SRRouteCoordinatorType {
         }
         """,
         diagnostics: [dianosSpec, dianosSpec],
@@ -200,13 +195,10 @@ final class CoordinatorMacroTest: XCTestCase {
         
         assertMacroExpansion("""
         @sRouteCoordinator(tabs: [], stacks: "")
-        struct Coordinator {
+        class Coordinator {
         }
         """, expandedSource:"""
-        struct Coordinator {
-        }
-
-        extension Coordinator: sRouting.SRRouteCoordinatorType {
+        class Coordinator {
         }
         """,
         diagnostics: [dianosSpec, dianosSpec],
@@ -219,13 +211,10 @@ final class CoordinatorMacroTest: XCTestCase {
         
         assertMacroExpansion("""
         @sRouteCoordinator(tabs: ["home","home"], stacks: "home")
-        struct Coordinator {
+        class Coordinator {
         }
         """, expandedSource:"""
-        struct Coordinator {
-        }
-
-        extension Coordinator: sRouting.SRRouteCoordinatorType {
+        class Coordinator {
         }
         """,
         diagnostics: [dianosSpec, dianosSpec],
@@ -238,13 +227,10 @@ final class CoordinatorMacroTest: XCTestCase {
         
         assertMacroExpansion("""
         @sRouteCoordinator(tabs: ["home", "setting"], stacks: "home", "setting", "home")
-        struct Coordinator {
+        class Coordinator {
         }
         """, expandedSource:"""
-        struct Coordinator {
-        }
-
-        extension Coordinator: sRouting.SRRouteCoordinatorType {
+        class Coordinator {
         }
         """,
         diagnostics: [dianosSpec, dianosSpec],

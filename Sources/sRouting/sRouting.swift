@@ -1,10 +1,10 @@
 
+import Foundation
 
 /// Create a coordinator that includes navigations, selections...
 @attached(member, names: arbitrary)
-@attached(peer, names: named(SRRootRoute), named(SRNavStack), named(SRTabItem), named(SRRootRouter))
-@attached(extension, conformances: SRRouteCoordinatorType)
-public macro sRouteCoordinator(tabs: [String] = [], stacks: String...) = #externalMacro(module: "sRoutingMacros", type: "RouteCoordinator")
+@attached(extension, conformances: SRRouteCoordinatorType, ObservableObject, names: named(SRRootRoute), named(SRNavStack), named(SRTabItem), named(SRRootRouter))
+public macro sRouteCoordinator(tabs: [String] = [], stacks: String...) = #externalMacro(module: "sRoutingMacros", type: "RouteCoordinatorMacro")
 
 /// Generate a `ViewModifier` of navigation destinations that observing routes
 @attached(member, names: named(path), arbitrary)

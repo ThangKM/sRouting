@@ -24,13 +24,9 @@ struct RouterModifier<Route>: ViewModifier where Route: SRRoute {
     private var dismissAllEmitter: SRDismissAllEmitter?
     
     @Environment(\.openWindow) private var openWindow
-    @Environment(\.openURL) private var openURL
     @Environment(\.scenePhase) private var scenePhase
     @Environment(\.dismiss) private var dismissAction
-    #if os(macOS)
-    @Environment(\.openDocument) private var openDocument
-    #endif
-    
+
     /// Active state of a full screen presentation
     @State private(set) var isActivePresent: Bool = false
     /// Active state of a sheet presentation
@@ -38,7 +34,7 @@ struct RouterModifier<Route>: ViewModifier where Route: SRRoute {
     /// Active state of a alert
     @State private(set) var isActiveAlert: Bool = false
     /// Active state of action sheet
-    @State private(set) var isActiveActionSheet: Bool = false
+    @State private(set) var isActiveDialog: Bool = false
 
     /// The destination screen from transition
     @MainActor
@@ -48,7 +44,7 @@ struct RouterModifier<Route>: ViewModifier where Route: SRRoute {
 
     @MainActor
     private var alertTitle: LocalizedStringKey {
-        router.transition.alert?.title ?? ""
+        router.transition.alert?.titleKey ?? ""
     }
     
     @MainActor
@@ -60,11 +56,27 @@ struct RouterModifier<Route>: ViewModifier where Route: SRRoute {
     private var alertMessage: some View {
         router.transition.alert?.message
     }
-    #if canImport(UIKit)
+    
+    #if os(iOS) || os(tvOS)
     /// The ActionSheet from transaction
     @MainActor
-    private var actionSheet: ActionSheet? {
-        router.transition.actionSheet?()
+    private var dialogTitleKey: LocalizedStringKey {
+        router.transition.confirmationDialog?.titleKey ?? ""
+    }
+    
+    @MainActor
+    private var dialogTitleVisibility: Visibility {
+        router.transition.confirmationDialog?.titleVisibility ?? .hidden
+    }
+    
+    @MainActor
+    private var dialogActions: some View {
+        router.transition.confirmationDialog?.actions
+    }
+    
+    @MainActor
+    private var dialogMessage: some View {
+        router.transition.confirmationDialog?.message
     }
     #endif
     
@@ -101,6 +113,9 @@ struct RouterModifier<Route>: ViewModifier where Route: SRRoute {
                     updateActiveState(from: newValue)
                 }
             })
+            .onAppear() {
+                router.resetTransition()
+            }
         #else
         content
             .fullScreenCover(isPresented: $isActivePresent) {
@@ -119,12 +134,13 @@ struct RouterModifier<Route>: ViewModifier where Route: SRRoute {
             }, message: {
                 alertMessage
             })
-            .actionSheet(isPresented: $isActiveActionSheet, content: {
-               if let actionSheet {
-                   actionSheet
-               } else {
-                   ActionSheet(title: Text("Action Sheet not found!"))
-               }
+            .confirmationDialog(dialogTitleKey,
+                                isPresented: $isActiveDialog,
+                                titleVisibility: dialogTitleVisibility,
+                                actions: {
+                dialogActions
+            }, message: {
+                dialogMessage
             })
             .onChange(of: dismissAllEmitter?.dismissAllSignal, { oldValue, newValue in
                 resetActiveState()
@@ -139,6 +155,9 @@ struct RouterModifier<Route>: ViewModifier where Route: SRRoute {
                     updateActiveState(from: newValue)
                 }
             })
+            .onAppear() {
+                router.resetTransition()
+            }
         #endif
     }
 }
@@ -152,7 +171,7 @@ extension RouterModifier {
         isActivePresent = false
         isActiveAlert = false
         isActiveSheet = false
-        isActiveActionSheet = false
+        isActiveDialog = false
     }
     
     /// Observe the transition change from router
@@ -169,14 +188,16 @@ extension RouterModifier {
             isActiveSheet = true
         case .alert:
             isActiveAlert = true
-        case .actionSheet:
-            isActiveActionSheet = true
+        case .confirmationDialog:
+            isActiveDialog = true
         case .dismiss:
             dismissAction()
         case .selectTab:
             tabbarSelection?.select(tag: transition.tabIndex ?? .zero)
         case .dismissAll:
             dismissAllEmitter?.dismissAll()
+        case .dismissCoordinator:
+            dismissAllEmitter?.dismissCoordinator()
         case .pop:
             navigationPath?.pop()
         case .popToRoot:
@@ -186,58 +207,10 @@ extension RouterModifier {
             navigationPath?.pop(to: route)
         case .openWindow:
             openWindow(transition: transition.windowTransition)
-        case .openURL:
-            openURL(from: transition.windowTransition)
-        #if os(macOS)
-        case .openDocument:
-            openDoc(transition: transition.windowTransition)
-        #endif
-                    
         case .none: break
         }
         
         tests?.didChangeTransition?(self)
-    }
-    
-    #if os(macOS)
-    @MainActor
-    private func openDoc(transition: SRWindowTransition?) {
-        guard let transition,
-              let url = transition.url
-        else { return }
-        
-        guard tests == nil else {
-            tests?.didOpenDoc?(url)
-            return
-        }
-        
-        Task {
-            do {
-                try await openDocument(at: url)
-                transition.errorHandler?(.none)
-            } catch {
-                transition.errorHandler?(error)
-            }
-        }
-    }
-    #endif
-    
-    @MainActor
-    private func openURL(from transition: SRWindowTransition?) {
-        guard let windowTransition = transition,
-              let url = windowTransition.url
-        else { return }
-        
-        guard tests == nil else {
-            tests?.didOpenURL?(url)
-            return
-        }
-        
-        if let acception = windowTransition.acception {
-            openURL(url, completion: acception)
-        } else {
-            openURL(url)
-        }
     }
     
     @MainActor

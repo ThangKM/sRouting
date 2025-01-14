@@ -34,13 +34,15 @@ enum SRTransitionKind: String, CaseIterable, Sendable {
     /// Show alert
     case alert
     /// Show actions sheet on iOS & iPad
-    case actionSheet
+    case confirmationDialog
     /// Present a  screen
     case sheet
     /// Dismiss(pop) screen
     case dismiss
     /// Dismiss to root screen
     case dismissAll
+    /// Dismiss the presenting coordinator
+    case dismissCoordinator
     /// Naivation pop action
     case pop
     /// Navigation pop to screen action
@@ -49,12 +51,7 @@ enum SRTransitionKind: String, CaseIterable, Sendable {
     case popToRoot
     /// Open window
     case openWindow
-    /// Open URL
-    case openURL
-    #if os(macOS)
-    /// Open file
-    case openDocument
-    #endif
+
     init(with triggerType: SRTriggerType) {
         switch triggerType {
         case .push: self = .push
