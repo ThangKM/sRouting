@@ -249,10 +249,6 @@ extension RouterModifier {
     }
 }
 
-#if os(macOS)
-extension OpenDocumentAction: @unchecked Sendable { }
-#endif
-
 extension View {
     
     /// Observe router transitions
