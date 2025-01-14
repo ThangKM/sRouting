@@ -27,6 +27,42 @@ struct TypeTests {
         #expect(error.localizedDescription == error.description)
         #expect(SRRoutingError.errorDomain == "com.srouting")
     }
+    
+    @Test
+    func testSRAlertRoute() {
+        let route = TestErrorRoute.timeOut
+        #expect(route.titleKey != nil)
+        #expect(route.message != nil)
+        #expect(route.actions != nil)
+    }
+    
+    @Test
+    func testDefaultAlertRoute() {
+        let route = AlertEmptyRoute()
+        #expect(route.titleKey != nil)
+        #expect(route.message != nil)
+        #expect(route.actions != nil)
+    }
+    
+    #if os(iOS)
+    @Test
+    func testDialog() async throws {
+        let route = TestDialog.confirmOK
+        #expect(route.titleKey != nil)
+        #expect(route.message != nil)
+        #expect(route.actions != nil)
+        #expect(route.titleVisibility == .visible)
+    }
+    
+    @Test
+    func testDefaultDialog() async throws {
+        let route = ConfirmationDialogEmptyRoute()
+        #expect(route.titleKey != nil)
+        #expect(route.message != nil)
+        #expect(route.actions != nil)
+        #expect(route.titleVisibility == .hidden)
+    }
+    #endif
 }
 
 
