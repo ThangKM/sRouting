@@ -113,6 +113,9 @@ struct RouterModifier<Route>: ViewModifier where Route: SRRoute {
                     updateActiveState(from: newValue)
                 }
             })
+            .onAppear() {
+                router.resetTransition()
+            }
         #else
         content
             .fullScreenCover(isPresented: $isActivePresent) {
@@ -152,6 +155,9 @@ struct RouterModifier<Route>: ViewModifier where Route: SRRoute {
                     updateActiveState(from: newValue)
                 }
             })
+            .onAppear() {
+                router.resetTransition()
+            }
         #endif
     }
 }

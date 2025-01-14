@@ -126,4 +126,10 @@ public final class SRRouter<Route> where Route: SRRoute {
     public func openWindow(windowTrans: SRWindowTransition) {
         transition = .init(with: .openWindow, windowTransition: windowTrans)
     }
+    
+    /// Reset the transition to release anything the route holds.
+    internal func resetTransition() {
+        guard transition != .none else { return }
+        transition = .none
+    }
 }
