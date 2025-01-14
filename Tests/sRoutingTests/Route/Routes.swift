@@ -59,7 +59,7 @@ enum TestRoute: SRRoute {
 }
 
 @sRouteCoordinator(stacks: "testStack")
-struct Coordinator { }
+final class Coordinator { }
 
 @sRouteObserver(TestRoute.self)
 struct RouteObserver: ViewModifier { }

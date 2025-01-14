@@ -68,16 +68,16 @@ router.trigger(to: .home, with: .present) {
 struct RouteObserver: ViewModifier { }
 
 @sRouteCoordinator(tabs: ["homeItem", "settingItem"], stacks: "home", "setting")
-struct AppCoordinator { }
+final class AppCoordinator { }
 
 struct TestApp: App {
     
-    let appCoordinator: AppCoordinator
-    @StateObject var tabselection: SRTabbarSelection
+    @StateObject private var appCoordinator: AppCoordinator
+    @StateObject private var tabselection: SRTabbarSelection
     
     init() {
         let coordinator = AppCoordinator()
-        appCoordinator = coordinator
+        _appCoordinator = .init(wrappedValue: coordinator)
         _tabselection = .init(wrappedValue: coordinator.tabSelection)
     }
     
