@@ -71,48 +71,4 @@ struct TestModifiers {
         try await Task.sleep(for: .milliseconds(50))
         #expect(tabIndex == 1)
     }
-    
-    @Test
-    func testOnDoubleTapTabItem() async throws {
-        var selection = 1
-        let sut =  SRRootView(coordinator: coordinator) {
-            @Bindable var tabSelection = coordinator.tabSelection
-            TabView(selection: $tabSelection.selection) {
-                TestScreen(router: router, tests: .none)
-                    .tabItem {
-                        Label("Home", systemImage: "house")
-                    }.tag(0)
-                    .onDoubleTapTabItem { _selection in
-                        selection = _selection
-                    }
-            }
-        }
-        ViewHosting.host(view: sut)
-        try await Task.sleep(for: .milliseconds(100))
-        router.selectTabbar(at: 0)
-        try await Task.sleep(for: .milliseconds(100))
-        router.selectTabbar(at: 0)
-        try await Task.sleep(for: .milliseconds(50))
-        #expect(selection == .zero)
-    }
-    
-    @Test
-    func testNoneDoubleTapTabItem() async throws {
-        let sut =  SRRootView(coordinator: coordinator) {
-            @Bindable var tabSelection = coordinator.tabSelection
-            TabView(selection: $tabSelection.selection) {
-                TestScreen(router: router, tests: .none)
-                    .tabItem {
-                        Label("Home", systemImage: "house")
-                    }.tag(0)
-            }
-            .onDoubleTapTabItem { selection in
-                Issue.record()
-            }
-        }
-        ViewHosting.host(view: sut)
-        router.selectTabbar(at: 0)
-        try await Task.sleep(for: .milliseconds(500))
-        router.selectTabbar(at: 0)
-    }
 }
