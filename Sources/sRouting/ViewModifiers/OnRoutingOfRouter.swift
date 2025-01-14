@@ -114,6 +114,9 @@ struct RouterModifier<Route>: ViewModifier where Route: SRRoute {
                     updateActiveState(from: newValue)
                 }
             })
+            .onAppear() {
+                router.resetTransition()
+            }
             #if DEBUG
             .task {
                 assert(_tabbarSelection.presence, "Missing setup `SRRootView` from view hierarchy!")
@@ -159,6 +162,9 @@ struct RouterModifier<Route>: ViewModifier where Route: SRRoute {
                     updateActiveState(from: newValue)
                 }
             })
+            .onAppear() {
+                router.resetTransition()
+            }
             #if DEBUG
             .task {
                 assert(_tabbarSelection.presence, "Missing setup `SRRootView` from view hierarchy!")
