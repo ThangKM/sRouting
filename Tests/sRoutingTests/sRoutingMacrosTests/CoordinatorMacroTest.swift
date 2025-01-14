@@ -22,11 +22,11 @@ final class CoordinatorMacroTest: XCTestCase {
     func testCoordinatorMacroImp() async throws {
         assertMacroExpansion("""
         @sRouteCoordinator(tabs: ["homeItem", "settingItem"], stacks: "home", "setting")
-        struct Coordinator { 
+        class Coordinator { 
         
         }
         """, expandedSource: """
-        struct Coordinator { 
+        class Coordinator { 
 
             @MainActor let rootRouter = SRRouter(AnyRoute.self)
 
@@ -166,12 +166,16 @@ final class CoordinatorMacroTest: XCTestCase {
                 case setting
             }
         }
+        
+        extension Coordinator: Foundation.ObservableObject {
+
+        }
         """, macros:testMacros)
     }
     
     func testNoneStructOrClassImp() async throws {
         
-        let dianosSpec = DiagnosticSpec(message: SRMacroError.structOrClass.description, line: 1, column: 1,severity: .error)
+        let dianosSpec = DiagnosticSpec(message: SRMacroError.onlyClass.description, line: 1, column: 1,severity: .error)
         
         assertMacroExpansion("""
         @sRouteCoordinator(tabs: ["homeItem", "settingItem"], stacks: "home", "setting")
@@ -191,10 +195,10 @@ final class CoordinatorMacroTest: XCTestCase {
         
         assertMacroExpansion("""
         @sRouteCoordinator(tabs: [], stacks: "")
-        struct Coordinator {
+        class Coordinator {
         }
         """, expandedSource:"""
-        struct Coordinator {
+        class Coordinator {
         }
         """,
         diagnostics: [dianosSpec, dianosSpec],
@@ -207,10 +211,10 @@ final class CoordinatorMacroTest: XCTestCase {
         
         assertMacroExpansion("""
         @sRouteCoordinator(tabs: ["home","home"], stacks: "home")
-        struct Coordinator {
+        class Coordinator {
         }
         """, expandedSource:"""
-        struct Coordinator {
+        class Coordinator {
         }
         """,
         diagnostics: [dianosSpec, dianosSpec],
@@ -223,10 +227,10 @@ final class CoordinatorMacroTest: XCTestCase {
         
         assertMacroExpansion("""
         @sRouteCoordinator(tabs: ["home", "setting"], stacks: "home", "setting", "home")
-        struct Coordinator {
+        class Coordinator {
         }
         """, expandedSource:"""
-        struct Coordinator {
+        class Coordinator {
         }
         """,
         diagnostics: [dianosSpec, dianosSpec],

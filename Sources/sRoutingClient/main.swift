@@ -99,11 +99,11 @@ router.show(dialog: .testConfirmation)
 struct RouteObserver { }
 
 @sRouteCoordinator(tabs: ["homeItem", "settingItem"], stacks: "home", "setting")
-struct AppCoordinator { }
+final class AppCoordinator { }
 
 struct TestApp: App {
     
-    let coordinator = AppCoordinator()
+    @StateObject var coordinator = AppCoordinator()
     
     var body: some Scene {
         WindowGroup {

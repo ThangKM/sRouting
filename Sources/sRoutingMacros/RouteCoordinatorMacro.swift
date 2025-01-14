@@ -22,8 +22,7 @@ package struct RouteCoordinatorMacro: MemberMacro {
                                  in context: some MacroExpansionContext) throws -> [DeclSyntax] {
         
         guard declaration.kind == SwiftSyntax.SyntaxKind.classDecl
-                || declaration.kind == SwiftSyntax.SyntaxKind.structDecl
-        else { throw SRMacroError.structOrClass }
+        else { throw SRMacroError.onlyClass }
         let arguments = try Self._arguments(of: node)
         
         var result: [DeclSyntax] = []
@@ -148,8 +147,7 @@ extension RouteCoordinatorMacro: ExtensionMacro {
     ) throws -> [ExtensionDeclSyntax] {
         
         guard declaration.kind == SwiftSyntax.SyntaxKind.classDecl
-                || declaration.kind == SwiftSyntax.SyntaxKind.structDecl
-        else { throw SRMacroError.structOrClass }
+        else { throw SRMacroError.onlyClass }
 
         let arguments = try Self._arguments(of: node)
 
@@ -173,7 +171,7 @@ extension RouteCoordinatorMacro: ExtensionMacro {
             }
         }
         
-        let decl: DeclSyntax = """
+        let declCoordinator: DeclSyntax = """
             extension \(raw: type.trimmedDescription): sRouting.SRRouteCoordinatorType {
                 enum SRRootRoute: SRRoute {
                     case resetAll
@@ -229,9 +227,16 @@ extension RouteCoordinatorMacro: ExtensionMacro {
                 }
             }
             """
-        let ext = decl.cast(ExtensionDeclSyntax.self)
         
-        return [ext]
+        let declObservableObject: DeclSyntax = """
+        extension \(raw: type.trimmedDescription): Foundation.ObservableObject {
+        
+        }
+        """
+        
+        let extCoordinator = declCoordinator.cast(ExtensionDeclSyntax.self)
+        let extObservableObject = declObservableObject.cast(ExtensionDeclSyntax.self)
+        return [extCoordinator, extObservableObject]
     }
 }
 
