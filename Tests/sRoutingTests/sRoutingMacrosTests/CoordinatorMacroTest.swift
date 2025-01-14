@@ -86,8 +86,6 @@ final class CoordinatorMacroTest: XCTestCase {
                     rootRouter.trigger(to: AnyRoute(route: route), with: .sheet)
                 case .window(let windowTrans):
                     rootRouter.openWindow(windowTrans: windowTrans)
-                case .open(let url):
-                    rootRouter.openURL(at: url, completion: nil)
                 #if os(iOS)
                 case .present(let route):
                     rootRouter.trigger(to: .init(route: route), with: .present)
@@ -120,7 +118,6 @@ final class CoordinatorMacroTest: XCTestCase {
                 case push(route: any SRRoute, into: SRNavStack)
                 case sheet(any SRRoute)
                 case window(SRWindowTransition)
-                case open(url: URL)
                 #if os(iOS)
                 case present(any SRRoute)
                 #endif
@@ -149,8 +146,6 @@ final class CoordinatorMacroTest: XCTestCase {
                         } else {
                             return "rootroute.window"
                         }
-                    case .open(let url):
-                        return "rootroute.openurl.\\(url.absoluteString)"
                     case .popToRoot:
                         return "rootroute.popToRoot"
                     #if os(iOS)

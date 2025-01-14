@@ -51,12 +51,7 @@ enum SRTransitionKind: String, CaseIterable, Sendable {
     case popToRoot
     /// Open window
     case openWindow
-    /// Open URL
-    case openURL
-    #if os(macOS)
-    /// Open file
-    case openDocument
-    #endif
+
     init(with triggerType: SRTriggerType) {
         switch triggerType {
         case .push: self = .push
