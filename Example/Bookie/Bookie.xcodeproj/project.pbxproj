@@ -227,10 +227,10 @@
 		379D3462268D024800903D92 /* Bookie */ = {
 			isa = PBXGroup;
 			children = (
-				3732440A26957BD7007DE034 /* MockData */,
 				379D3463268D024800903D92 /* BookieApp.swift */,
 				3741026F26943AE600C8DF44 /* Info.plist */,
 				379D3467268D024A00903D92 /* Assets.xcassets */,
+				3732440A26957BD7007DE034 /* MockData */,
 				373244442695FC8C007DE034 /* Prototype */,
 				3741025F26942F2F00C8DF44 /* Routes */,
 				374102762694437000C8DF44 /* Views */,

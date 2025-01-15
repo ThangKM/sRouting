@@ -6,3 +6,8 @@ xcuserdata/
 DerivedData/
 .swiftpm/
 .docc-build
+*.xcodeproj/*
+!*.xcodeproj/project.pbxproj
+!*.xcodeproj/xcshareddata/
+!*.xcworkspace/xcshareddata/
+!*.xcworkspace/contents.xcworkspacedata
