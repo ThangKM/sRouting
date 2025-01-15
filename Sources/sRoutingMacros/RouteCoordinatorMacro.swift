@@ -21,8 +21,13 @@ package struct RouteCoordinatorMacro: MemberMacro {
                                  providingMembersOf declaration: some DeclGroupSyntax,
                                  in context: some MacroExpansionContext) throws -> [DeclSyntax] {
         
-        guard declaration.kind == SwiftSyntax.SyntaxKind.classDecl
+        guard let classDecl = declaration.as(ClassDeclSyntax.self), declaration.kind == SwiftSyntax.SyntaxKind.classDecl
         else { throw SRMacroError.onlyClass }
+        
+        let attributes = classDecl.attributes.compactMap({ $0.as(AttributeSyntax.self) })
+        guard attributes.first(where: { $0.attributeName.trimmedDescription == "Observable" }) != .none
+        else { throw SRMacroError.missingObservable }
+        
         let arguments = try Self._arguments(of: node)
         
         var result: [DeclSyntax] = []
@@ -227,16 +232,8 @@ extension RouteCoordinatorMacro: ExtensionMacro {
                 }
             }
             """
-        
-        let declObservableObject: DeclSyntax = """
-        extension \(raw: type.trimmedDescription): Foundation.ObservableObject {
-        
-        }
-        """
-        
         let extCoordinator = declCoordinator.cast(ExtensionDeclSyntax.self)
-        let extObservableObject = declObservableObject.cast(ExtensionDeclSyntax.self)
-        return [extCoordinator, extObservableObject]
+        return [extCoordinator]
     }
 }
 

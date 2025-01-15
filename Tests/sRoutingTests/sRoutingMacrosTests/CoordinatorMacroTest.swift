@@ -22,10 +22,12 @@ final class CoordinatorMacroTest: XCTestCase {
     func testCoordinatorMacroImp() async throws {
         assertMacroExpansion("""
         @sRouteCoordinator(tabs: ["homeItem", "settingItem"], stacks: "home", "setting")
+        @Observable
         class Coordinator { 
         
         }
         """, expandedSource: """
+        @Observable
         class Coordinator { 
 
             @MainActor let rootRouter = SRRouter(AnyRoute.self)
@@ -166,10 +168,6 @@ final class CoordinatorMacroTest: XCTestCase {
                 case setting
             }
         }
-        
-        extension Coordinator: Foundation.ObservableObject {
-
-        }
         """, macros:testMacros)
     }
     
@@ -179,9 +177,11 @@ final class CoordinatorMacroTest: XCTestCase {
         
         assertMacroExpansion("""
         @sRouteCoordinator(tabs: ["homeItem", "settingItem"], stacks: "home", "setting")
+        @Observable
         enum Coordinator {
         }
         """, expandedSource:"""
+        @Observable
         enum Coordinator {
         }
         """,
@@ -195,9 +195,11 @@ final class CoordinatorMacroTest: XCTestCase {
         
         assertMacroExpansion("""
         @sRouteCoordinator(tabs: [], stacks: "")
+        @Observable
         class Coordinator {
         }
         """, expandedSource:"""
+        @Observable
         class Coordinator {
         }
         """,
@@ -211,9 +213,11 @@ final class CoordinatorMacroTest: XCTestCase {
         
         assertMacroExpansion("""
         @sRouteCoordinator(tabs: ["home","home"], stacks: "home")
+        @Observable
         class Coordinator {
         }
         """, expandedSource:"""
+        @Observable
         class Coordinator {
         }
         """,
@@ -223,17 +227,94 @@ final class CoordinatorMacroTest: XCTestCase {
     
     func testStackDuplicationArgsImp() async throws {
         
-        let dianosSpec = DiagnosticSpec(message: SRMacroError.duplication.description, line: 1, column: 1,severity: .error)
+        let dianosSpec = DiagnosticSpec(message: SRMacroError.duplication.description, line: 2, column: 1,severity: .error)
         
         assertMacroExpansion("""
+        @Observable
         @sRouteCoordinator(tabs: ["home", "setting"], stacks: "home", "setting", "home")
+        class Coordinator {
+        }
+        """, expandedSource:"""
+        @Observable
+        class Coordinator {
+        }
+        """,
+        diagnostics: [dianosSpec, dianosSpec],
+        macros: testMacros)
+    }
+    
+    func testMissingObservableMacro() async throws {
+        
+        let dianosSpec = DiagnosticSpec(message: SRMacroError.missingObservable.description, line: 1, column: 1,severity: .error)
+        
+        assertMacroExpansion("""
+        @sRouteCoordinator(tabs: ["home", "setting"], stacks: "home", "setting")
         class Coordinator {
         }
         """, expandedSource:"""
         class Coordinator {
         }
+
+        extension Coordinator: sRouting.SRRouteCoordinatorType {
+            enum SRRootRoute: SRRoute {
+                case resetAll
+                case dismissAll
+                case popToRoot(of: SRNavStack)
+                case select(tabItem: SRTabItem)
+                case push(route: any SRRoute, into: SRNavStack)
+                case sheet(any SRRoute)
+                case window(SRWindowTransition)
+                #if os(iOS)
+                case present(any SRRoute)
+                #endif
+
+                var screen: some View {
+                   fatalError("sRouting.SRRootRoute doesn't have screen")
+                }
+
+                var path: String {
+                    switch self {
+                    case .resetAll:
+                        return "rootroute.resetall"
+                    case .dismissAll:
+                        return "rootroute.dismissall"
+                    case .select:
+                        return "rootroute.selecttab"
+                    case .push(let route, _):
+                        return "rootroute.push.\\(route.path)"
+                    case .sheet(let route):
+                        return "rootroute.sheet.\\(route.path)"
+                    case .window(let transition):
+                        if let id = transition.windowId {
+                            return "rootroute.window.\\(id)"
+                        } else if let value = transition.windowValue {
+                            return "rootroute.window.\\(value.hashValue)"
+                        } else {
+                            return "rootroute.window"
+                        }
+                    case .popToRoot:
+                        return "rootroute.popToRoot"
+                    #if os(iOS)
+                    case .present(let route):
+                        return "rootroute.present.\\(route.path)"
+                    #endif
+                    }
+                }
+            }
+
+            enum SRTabItem: Int, Sendable {
+                case home
+                case setting
+            }
+
+            enum SRNavStack: String, Sendable {
+                case home
+                case setting
+            }
+        }
+
         """,
-        diagnostics: [dianosSpec, dianosSpec],
+        diagnostics: [dianosSpec],
         macros: testMacros)
     }
 }

@@ -149,11 +149,11 @@ struct RouterModifierTests {
     @Test
     func testOnDoubleTap() async throws {
         
-        var selection = -1
+        let selection = ValueBox(value: -1)
         let tabManager = SRTabbarSelection()
         let sut = Text("")
                     .onDoubleTapTabItem { value in
-                        selection = value
+                        selection.update(with: value)
                     }
                     .environment(tabManager)
         ViewHosting.host(view: sut)
@@ -162,7 +162,7 @@ struct RouterModifierTests {
         try await Task.sleep(for:.milliseconds(100))
         tabManager.select(tag: 0)
         try await Task.sleep(for:.milliseconds(50))
-        #expect(selection == .zero)
+        #expect(selection.value == .zero)
     }
     
     @Test
@@ -275,5 +275,17 @@ fileprivate final class ActionBox {
     
     func execute() {
         action()
+    }
+}
+
+fileprivate final class ValueBox<T> {
+    
+    private(set) var value : T
+    init(value: T) {
+        self.value = value
+    }
+    
+    func update(with value: T) {
+        self.value = value
     }
 }
