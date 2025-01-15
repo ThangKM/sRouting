@@ -11,9 +11,8 @@ import sRouting
 struct HomeScreen: View {
     
     @State private var router = SRRouter(HomeRoute.self)
-    @State private var store = HomeStore()
     @State private var state = HomeState()
-    
+    @StateObject private var store = HomeStore()
     @Environment(MockBookService.self) private var bookService
     
 
