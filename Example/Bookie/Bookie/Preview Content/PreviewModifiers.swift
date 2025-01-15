@@ -10,11 +10,11 @@ import SwiftUI
 @available(iOS 18.0, *)
 struct MockBookPreviewModifier: PreviewModifier {
     
-    static func makeSharedContext() async throws -> MockBookData {
-        MockBookData()
+    static func makeSharedContext() async throws -> MockBookService {
+        MockBookService()
     }
     
-    func body(content: Content, context: MockBookData) -> some View {
+    func body(content: Content, context: MockBookService) -> some View {
         content.environment(context)
     }
     
@@ -25,7 +25,7 @@ struct HomeStatePreviewModifier: PreviewModifier {
     
     static func makeSharedContext() async throws -> HomeScreen.HomeState {
         let state = HomeScreen.HomeState()
-        state.updateAllBooks(books: MockBookData().books)
+        state.updateAllBooks(books: MockBookService().books)
         return state
     }
     

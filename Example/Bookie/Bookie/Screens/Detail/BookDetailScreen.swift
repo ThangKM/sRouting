@@ -13,7 +13,7 @@ struct BookDetailScreen: View {
     @State private var router = SRRouter(HomeRoute.self)
     @State private var store = DetailStore()
     @State private var state: DetailState
-    @Environment(MockBookData.self) private var mockData
+    @Environment(MockBookService.self) private var bookService
     
     init(state: DetailState) {
         _state = .init(initialValue: state)
@@ -72,7 +72,7 @@ struct BookDetailScreen: View {
         .foregroundColor(.accentColor)
         .task {
             store.binding(state: state)
-            store.binding(mockData: mockData)
+            store.binding(bookService: bookService)
         }
         .onDisappear {
             store.receive(action: .saveBook)
@@ -83,7 +83,7 @@ struct BookDetailScreen: View {
 @available(iOS 18.0, *)
 #Preview(traits: .modifier(MockBookPreviewModifier())) {
     
-    @Previewable @Environment(MockBookData.self) var mockData
+    @Previewable @Environment(MockBookService.self) var mockData
     
     BookDetailScreen(state: .init(book: mockData.books.first!))
 }

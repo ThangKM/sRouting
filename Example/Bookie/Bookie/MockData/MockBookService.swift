@@ -10,7 +10,7 @@ import Observation
 import SwiftUI
 
 @Observable
-final class MockBookData {
+final class MockBookService {
     
     private(set) var books: [BookModel] = [
         .init(id: 1,
@@ -38,7 +38,7 @@ Hannibal is a novel by American author Thomas Harris, published in 1999. It is t
 }
 
 
-extension MockBookData {
+extension MockBookService {
     func updateBook(book: BookModel) {
         guard  let old = books.first(where: { $0.id == book.id }),
                let index = books.firstIndex(of: old)

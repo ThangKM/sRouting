@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		3732440C26957BEF007DE034 /* MockBookData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3732440B26957BEF007DE034 /* MockBookData.swift */; };
+		3732440C26957BEF007DE034 /* MockBookService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3732440B26957BEF007DE034 /* MockBookService.swift */; };
 		373244432695E2C9007DE034 /* BookDetailStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 373244422695E2C9007DE034 /* BookDetailStore.swift */; };
 		373244462695FCC6007DE034 /* EmptyObjectType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 373244452695FCC6007DE034 /* EmptyObjectType.swift */; };
 		3741025E26942F2400C8DF44 /* StartScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3741025D26942F2400C8DF44 /* StartScreen.swift */; };
@@ -52,7 +52,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		3732440B26957BEF007DE034 /* MockBookData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockBookData.swift; sourceTree = "<group>"; };
+		3732440B26957BEF007DE034 /* MockBookService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockBookService.swift; sourceTree = "<group>"; };
 		373244422695E2C9007DE034 /* BookDetailStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookDetailStore.swift; sourceTree = "<group>"; };
 		373244452695FCC6007DE034 /* EmptyObjectType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmptyObjectType.swift; sourceTree = "<group>"; };
 		3741025D26942F2400C8DF44 /* StartScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StartScreen.swift; sourceTree = "<group>"; };
@@ -111,7 +111,7 @@
 		3732440A26957BD7007DE034 /* MockData */ = {
 			isa = PBXGroup;
 			children = (
-				3732440B26957BEF007DE034 /* MockBookData.swift */,
+				3732440B26957BEF007DE034 /* MockBookService.swift */,
 			);
 			path = MockData;
 			sourceTree = "<group>";
@@ -437,7 +437,7 @@
 				37A5A0BD2D3824C300C3D1E6 /* ViewStore.swift in Sources */,
 				374102672694308200C8DF44 /* BookDetailScreen.swift in Sources */,
 				3741027A269459F300C8DF44 /* BookieNavigationView.swift in Sources */,
-				3732440C26957BEF007DE034 /* MockBookData.swift in Sources */,
+				3732440C26957BEF007DE034 /* MockBookService.swift in Sources */,
 				374102782694590200C8DF44 /* HomeRoute.swift in Sources */,
 				37E7DD912D3841800067211B /* PreviewModifiers.swift in Sources */,
 				3741027326943C7200C8DF44 /* FontModifier.swift in Sources */,

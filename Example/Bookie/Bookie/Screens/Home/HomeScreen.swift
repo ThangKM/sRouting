@@ -14,7 +14,7 @@ struct HomeScreen: View {
     @State private var store = HomeStore()
     @State private var state = HomeState()
     
-    @Environment(MockBookData.self) private var mockData
+    @Environment(MockBookService.self) private var bookService
     
 
     var body: some View {
@@ -33,7 +33,7 @@ struct HomeScreen: View {
                 ListBookBody(state: state, router: router)
             }
             .refreshable {
-                store.receive(action: .updateAllBooks(books: mockData.books))
+                store.receive(action: .fetchAllBooks)
             }
             
         }
@@ -43,13 +43,14 @@ struct HomeScreen: View {
              }
              
          })
-         .onChange(of: mockData.books) { _, newValue in
-             store.receive(action: .updateAllBooks(books: newValue))
+         .onChange(of: bookService.books) { _, _ in
+             store.receive(action: .fetchAllBooks)
              store.receive(action: .findBooks(text: state.seachText))
          }
          .task {
              store.binding(state: state)
-             store.receive(action: .updateAllBooks(books: mockData.books))
+             store.binding(bookService: bookService)
+             store.receive(action: .fetchAllBooks)
          }
     }
 }

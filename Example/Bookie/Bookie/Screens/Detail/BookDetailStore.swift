@@ -45,21 +45,21 @@ extension BookDetailScreen {
     final class DetailStore: ViewStore {
         
         private weak var state: DetailState?
-        private weak var mockData: MockBookData?
+        private weak var bookService: MockBookService?
         
         func binding(state: DetailState) {
             self.state = state
         }
         
-        func binding(mockData: MockBookData) {
-            self.mockData = mockData
+        func binding(bookService: MockBookService) {
+            self.bookService = bookService
         }
         
         func receive(action: DetailAction) {
             switch action {
             case .saveBook:
                 guard let book = state?.book else { return }
-                mockData?.updateBook(book: book)
+                bookService?.updateBook(book: book)
             }
         }
     }

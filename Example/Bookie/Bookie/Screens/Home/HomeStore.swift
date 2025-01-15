@@ -33,7 +33,7 @@ extension HomeScreen {
     }
     
     enum HomeAction: Sendable {
-        case updateAllBooks(books: [BookModel])
+        case fetchAllBooks
         case findBooks(text: String)
     }
 }
@@ -44,15 +44,20 @@ extension HomeScreen {
     final class HomeStore: ViewStore {
         
         private weak var state: HomeState?
-
+        private weak var bookService: MockBookService?
+        
         func binding(state: HomeState) {
             self.state = state
         }
         
+        func binding(bookService: MockBookService) {
+            self.bookService = bookService
+        }
+        
         func receive(action: HomeAction) {
             switch action {
-            case .updateAllBooks(let books):
-                state?.updateAllBooks(books: books)
+            case .fetchAllBooks:
+                state?.updateAllBooks(books: bookService?.books ?? [])
             case .findBooks(let text):
                 _findBooks(withText: text)
             }
