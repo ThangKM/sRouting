@@ -10,9 +10,6 @@ import sRouting
 
 struct BookieNavigationView<Content, Route>: View where Content: View, Route: SRRoute {
     
-    @Environment(\.dismiss)
-    private var dismissAction
-    
     let title: String
     let router: SRRouter<Route>
     let isBackType: Bool
@@ -48,10 +45,10 @@ struct BookieNavigationView<Content, Route>: View where Content: View, Route: SR
                     .padding(.horizontal)
                     
                 content
-                    .onRouting(of: router)
                 Spacer()
             }
         }
+        .onRouting(of: router)
         .background(Color("backgournd.EEECFF"))
         .edgesIgnoringSafeArea(.bottom)
         .navigationBarHidden(true)

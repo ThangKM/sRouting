@@ -8,7 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		3732440C26957BEF007DE034 /* MockBookData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3732440B26957BEF007DE034 /* MockBookData.swift */; };
-		373244432695E2C9007DE034 /* BookDetailViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 373244422695E2C9007DE034 /* BookDetailViewModel.swift */; };
+		373244432695E2C9007DE034 /* BookDetailStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 373244422695E2C9007DE034 /* BookDetailStore.swift */; };
 		373244462695FCC6007DE034 /* EmptyObjectType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 373244452695FCC6007DE034 /* EmptyObjectType.swift */; };
 		3741025E26942F2400C8DF44 /* StartScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3741025D26942F2400C8DF44 /* StartScreen.swift */; };
 		3741026126942F4300C8DF44 /* AppRoute.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3741026026942F4300C8DF44 /* AppRoute.swift */; };
@@ -20,14 +20,14 @@
 		374102752694436800C8DF44 /* RandomBubbleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 374102742694436800C8DF44 /* RandomBubbleView.swift */; };
 		374102782694590200C8DF44 /* HomeRoute.swift in Sources */ = {isa = PBXBuildFile; fileRef = 374102772694590200C8DF44 /* HomeRoute.swift */; };
 		3741027A269459F300C8DF44 /* BookieNavigationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37410279269459F300C8DF44 /* BookieNavigationView.swift */; };
-		3741027C26945DDC00C8DF44 /* HomeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3741027B26945DDC00C8DF44 /* HomeViewModel.swift */; };
+		3741027C26945DDC00C8DF44 /* HomeStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3741027B26945DDC00C8DF44 /* HomeStore.swift */; };
 		379D3464268D024800903D92 /* BookieApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 379D3463268D024800903D92 /* BookieApp.swift */; };
 		379D3468268D024A00903D92 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 379D3467268D024A00903D92 /* Assets.xcassets */; };
 		379D346B268D024A00903D92 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 379D346A268D024A00903D92 /* Preview Assets.xcassets */; };
 		379D3475268D024A00903D92 /* BookieTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 379D3474268D024A00903D92 /* BookieTests.swift */; };
 		379D347F268D024A00903D92 /* BookieUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 379D347E268D024A00903D92 /* BookieUITests.swift */; };
+		37A5A0BD2D3824C300C3D1E6 /* ViewStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37A5A0BC2D3824BE00C3D1E6 /* ViewStore.swift */; };
 		37AAE7AA26948818007EA3B6 /* BookCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37AAE7A926948818007EA3B6 /* BookCell.swift */; };
-		37AAE7AF2695670D007EA3B6 /* AppRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37AAE7AE2695670D007EA3B6 /* AppRouter.swift */; };
 		37AAE7B226956D9B007EA3B6 /* RatingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37AAE7B126956D9B007EA3B6 /* RatingView.swift */; };
 		37AAE7B426957226007EA3B6 /* BookModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37AAE7B326957226007EA3B6 /* BookModel.swift */; };
 		37D887072CA1A40900316FC7 /* sRouting in Frameworks */ = {isa = PBXBuildFile; productRef = 37D887062CA1A40900316FC7 /* sRouting */; };
@@ -52,7 +52,7 @@
 
 /* Begin PBXFileReference section */
 		3732440B26957BEF007DE034 /* MockBookData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockBookData.swift; sourceTree = "<group>"; };
-		373244422695E2C9007DE034 /* BookDetailViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookDetailViewModel.swift; sourceTree = "<group>"; };
+		373244422695E2C9007DE034 /* BookDetailStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookDetailStore.swift; sourceTree = "<group>"; };
 		373244452695FCC6007DE034 /* EmptyObjectType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmptyObjectType.swift; sourceTree = "<group>"; };
 		3741025D26942F2400C8DF44 /* StartScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StartScreen.swift; sourceTree = "<group>"; };
 		3741026026942F4300C8DF44 /* AppRoute.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppRoute.swift; sourceTree = "<group>"; };
@@ -65,7 +65,7 @@
 		374102742694436800C8DF44 /* RandomBubbleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RandomBubbleView.swift; sourceTree = "<group>"; };
 		374102772694590200C8DF44 /* HomeRoute.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeRoute.swift; sourceTree = "<group>"; };
 		37410279269459F300C8DF44 /* BookieNavigationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookieNavigationView.swift; sourceTree = "<group>"; };
-		3741027B26945DDC00C8DF44 /* HomeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewModel.swift; sourceTree = "<group>"; };
+		3741027B26945DDC00C8DF44 /* HomeStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeStore.swift; sourceTree = "<group>"; };
 		379D3460268D024800903D92 /* Bookie.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Bookie.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		379D3463268D024800903D92 /* BookieApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookieApp.swift; sourceTree = "<group>"; };
 		379D3467268D024A00903D92 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -74,8 +74,8 @@
 		379D3474268D024A00903D92 /* BookieTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookieTests.swift; sourceTree = "<group>"; };
 		379D347A268D024A00903D92 /* BookieUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = BookieUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		379D347E268D024A00903D92 /* BookieUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookieUITests.swift; sourceTree = "<group>"; };
+		37A5A0BC2D3824BE00C3D1E6 /* ViewStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewStore.swift; sourceTree = "<group>"; };
 		37AAE7A926948818007EA3B6 /* BookCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookCell.swift; sourceTree = "<group>"; };
-		37AAE7AE2695670D007EA3B6 /* AppRouter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppRouter.swift; sourceTree = "<group>"; };
 		37AAE7B126956D9B007EA3B6 /* RatingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RatingView.swift; sourceTree = "<group>"; };
 		37AAE7B326957226007EA3B6 /* BookModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -117,6 +117,7 @@
 		373244442695FC8C007DE034 /* Prototype */ = {
 			isa = PBXGroup;
 			children = (
+				37A5A0BC2D3824BE00C3D1E6 /* ViewStore.swift */,
 				373244452695FCC6007DE034 /* EmptyObjectType.swift */,
 			);
 			path = Prototype;
@@ -154,7 +155,7 @@
 			children = (
 				37AAE7A8269487E7007EA3B6 /* Views */,
 				374102642694307800C8DF44 /* HomeScreen.swift */,
-				3741027B26945DDC00C8DF44 /* HomeViewModel.swift */,
+				3741027B26945DDC00C8DF44 /* HomeStore.swift */,
 			);
 			path = Home;
 			sourceTree = "<group>";
@@ -163,7 +164,7 @@
 			isa = PBXGroup;
 			children = (
 				374102662694308200C8DF44 /* BookDetailScreen.swift */,
-				373244422695E2C9007DE034 /* BookDetailViewModel.swift */,
+				373244422695E2C9007DE034 /* BookDetailStore.swift */,
 			);
 			path = Detail;
 			sourceTree = "<group>";
@@ -228,7 +229,6 @@
 			children = (
 				3732440A26957BD7007DE034 /* MockData */,
 				379D3463268D024800903D92 /* BookieApp.swift */,
-				37AAE7AE2695670D007EA3B6 /* AppRouter.swift */,
 				3741026F26943AE600C8DF44 /* Info.plist */,
 				379D3467268D024A00903D92 /* Assets.xcassets */,
 				373244442695FC8C007DE034 /* Prototype */,
@@ -350,7 +350,7 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
 				LastSwiftUpdateCheck = 1300;
-				LastUpgradeCheck = 1610;
+				LastUpgradeCheck = 1620;
 				TargetAttributes = {
 					379D345F268D024800903D92 = {
 						CreatedOnToolsVersion = 13.0;
@@ -424,16 +424,16 @@
 				37AAE7B426957226007EA3B6 /* BookModel.swift in Sources */,
 				37AAE7AA26948818007EA3B6 /* BookCell.swift in Sources */,
 				374102652694307800C8DF44 /* HomeScreen.swift in Sources */,
-				3741027C26945DDC00C8DF44 /* HomeViewModel.swift in Sources */,
+				3741027C26945DDC00C8DF44 /* HomeStore.swift in Sources */,
 				374102752694436800C8DF44 /* RandomBubbleView.swift in Sources */,
-				373244432695E2C9007DE034 /* BookDetailViewModel.swift in Sources */,
+				373244432695E2C9007DE034 /* BookDetailStore.swift in Sources */,
 				379D3464268D024800903D92 /* BookieApp.swift in Sources */,
 				373244462695FCC6007DE034 /* EmptyObjectType.swift in Sources */,
 				3741025E26942F2400C8DF44 /* StartScreen.swift in Sources */,
 				3741026126942F4300C8DF44 /* AppRoute.swift in Sources */,
+				37A5A0BD2D3824C300C3D1E6 /* ViewStore.swift in Sources */,
 				374102672694308200C8DF44 /* BookDetailScreen.swift in Sources */,
 				3741027A269459F300C8DF44 /* BookieNavigationView.swift in Sources */,
-				37AAE7AF2695670D007EA3B6 /* AppRouter.swift in Sources */,
 				3732440C26957BEF007DE034 /* MockBookData.swift in Sources */,
 				374102782694590200C8DF44 /* HomeRoute.swift in Sources */,
 				3741027326943C7200C8DF44 /* FontModifier.swift in Sources */,
@@ -477,6 +477,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
@@ -539,6 +540,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";

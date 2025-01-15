@@ -15,10 +15,7 @@ struct StartScreen: View {
     
     @Environment(\.dismiss)
     private var dismissAction
-    
-    @Environment(AppRouter.self)
-    private var appRouter
-    
+
     var body: some View {
         ZStack {
     
@@ -62,7 +59,6 @@ struct StartScreen: View {
                 Spacer()
                 
                 Button {
-                    appRouter.rootRoute = .homeScreen
                     didTutorial = true
                 } label: {
                     Text("Start")

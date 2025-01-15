@@ -7,6 +7,7 @@
 
 import Foundation
 import Observation
+import SwiftUI
 
 @Observable
 final class MockBookData {
@@ -44,4 +45,16 @@ extension MockBookData {
         else { return }
         books[index] = book
     }
+}
+
+struct MockBookPreviewProvider: PreviewModifier {
+    
+    static func makeSharedContext() async throws -> MockBookData {
+        MockBookData()
+    }
+    
+    func body(content: Content, context: MockBookData) -> some View {
+        content.environment(context)
+    }
+    
 }

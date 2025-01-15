@@ -10,41 +10,39 @@ import sRouting
 
 struct BookDetailScreen: View {
     
-    @State
-    private var viewModel: BookDetailViewModel = .init()
+    @State private var router = SRRouter(HomeRoute.self)
+    @State private var store = DetailStore()
+    @State private var state: DetailState
+    @Environment(MockBookData.self) private var mockData
     
-    @State
-    private var router = SRRouter(HomeRoute.self)
-    
-    @Environment(MockBookData.self)
-    private var mockData
-    
-    let book: BookModel
+    init(state: DetailState) {
+        _state = .init(initialValue: state)
+    }
     
     var body: some View {
-        BookieNavigationView(title: viewModel.book.name,
+        BookieNavigationView(title: state.book.name,
                              router: router,
                              isBackType: true) {
             GeometryReader { geo in
                 ScrollView {
                     LazyVStack(alignment: .leading) {
                         HStack(spacing: 10) {
-                            Image(viewModel.book.imageName.isEmpty
+                            Image(state.book.imageName.isEmpty
                                   ? "image.default"
-                                  : viewModel.book.imageName)
+                                  : state.book.imageName)
                                 .resizable()
                                 .frame(width: 130, height: 203)
                                 .scaledToFit()
                                 .clipShape(RoundedRectangle(cornerRadius: 8))
                             
                             VStack(alignment: .leading, spacing: 12) {
-                                Text(viewModel.book.name)
+                                Text(state.book.name)
                                     .abeeFont(size: 20, style: .italic)
-                                Text(viewModel.book.author)
+                                Text(state.book.author)
                                     .abeeFont(size: 16, style: .italic)
                                 HStack(alignment:.center ,spacing: 3) {
                                     Text("Rating:")
-                                    Text("\(viewModel.book.rating)")
+                                    Text("\(state.book.rating)")
                                     Image(systemName:"star.fill")
                                 }
                                 .abeeFont(size: 12, style: .italic)
@@ -52,7 +50,7 @@ struct BookDetailScreen: View {
                         }
                         .padding(.horizontal)
                         
-                        Text(viewModel.book.description)
+                        Text(state.book.description)
                             .abeeFont(size: 14, style: .italic)
                             .padding()
                         
@@ -60,7 +58,7 @@ struct BookDetailScreen: View {
                         
                         VStack(spacing: 8) {
                             Text("TAP TO ADD RATING")
-                            RatingView(rating: $viewModel.book.rating, enableEditing: true)
+                            RatingView(rating: $state.rating, enableEditing: true)
                             
                         }
                         .frame(maxWidth: .infinity)
@@ -72,11 +70,20 @@ struct BookDetailScreen: View {
             }
         }
         .foregroundColor(.accentColor)
-        .onAppear {
-            viewModel.updateBook(book)
+        .task {
+            store.binding(state: state)
+            store.binding(mockData: mockData)
         }
         .onDisappear {
-            mockData.updateBook(book: viewModel.book)
+            store.receive(action: .saveBook)
         }
     }
+}
+
+@available(iOS 18.0, *)
+#Preview(traits: .modifier(MockBookPreviewProvider())) {
+    
+    @Previewable @Environment(MockBookData.self) var mockData
+    
+    BookDetailScreen(state: .init(book: mockData.books.first!))
 }

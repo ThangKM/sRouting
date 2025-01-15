@@ -16,7 +16,8 @@ enum HomeRoute: SRRoute {
     
     var screen: some View {
         switch self {
-        case .bookDetailScreen(let book): BookDetailScreen(book: book)
+        case .bookDetailScreen(let book):
+            BookDetailScreen(state: .init(book: book))
         }
     }
 }

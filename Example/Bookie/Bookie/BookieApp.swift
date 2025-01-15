@@ -19,19 +19,32 @@ struct RouteObserver { }
 struct BookieApp: App {
 
     @State private var appCoordinator = AppCoordinator()
-    @State var appRouter = AppRouter()
-    @State var data = MockBookData()
+    @State private var data = MockBookData()
+    
+    @AppStorage("didTutorial")
+    private var didShowTutorial: Bool = false
     
     var body: some Scene {
         WindowGroup {
             SRRootView(coordinator: appCoordinator) {
                 NavigationStack(path: appCoordinator.rootStackPath) {
-                    appRouter.rootRoute.screen
+                    rootScreen
                         .routeObserver(RouteObserver.self)
                 }
             }
             .environment(data)
-            .environment(appRouter)
+        }
+    }
+}
+
+extension BookieApp {
+    
+    @ViewBuilder
+    private var rootScreen: some View {
+        if didShowTutorial {
+            AppRoute.homeScreen.screen
+        } else {
+            AppRoute.startScreen.screen
         }
     }
 }
