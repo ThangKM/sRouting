@@ -199,14 +199,14 @@ extension RouterModifier {
     
     @MainActor
     private func resetRouterTransiton() {
-        guard scenePhase != .background else { return }
+        guard scenePhase != .background || tests != nil else { return }
         router.resetTransition()
     }
     
     /// Reset all active state to false
     @MainActor
-    private func resetActiveState() {
-        guard scenePhase != .background else { return }
+    func resetActiveState() {
+        guard scenePhase != .background || tests != nil else { return }
         isActivePresent = false
         isActiveAlert = false
         isActiveSheet = false
@@ -272,10 +272,6 @@ extension RouterModifier {
         }
     }
 }
-
-#if os(macOS)
-extension OpenDocumentAction: @unchecked Sendable { }
-#endif
 
 extension View {
     

@@ -10,7 +10,6 @@ import sRouting
 import SwiftUI
 import Observation
 
-#if canImport(UIKit)
 enum AppConfirmationDialog: SRConfirmationDialogRoute {
     case testConfirmation
     
@@ -31,7 +30,6 @@ enum AppConfirmationDialog: SRConfirmationDialogRoute {
         .visible
     }
 }
-#endif
 
 enum AppAlerts: SRAlertRoute {
     
@@ -58,9 +56,7 @@ enum AppAlerts: SRAlertRoute {
 enum HomeRoute: SRRoute {
 
     typealias AlertRoute = AppAlerts
-    #if canImport(UIKit)
     typealias ConfirmationDialogRoute = AppConfirmationDialog
-    #endif
     
     case home
     case detail(String)
@@ -90,10 +86,7 @@ router.trigger(to: .home, with: .sheet) {
 }
 
 router.show(alert: .lossConnection)
-
-#if canImport(UIKit)
 router.show(dialog: .testConfirmation)
-#endif
 
 @sRouteObserver(HomeRoute.self, SettingRoute.self)
 struct RouteObserver { }

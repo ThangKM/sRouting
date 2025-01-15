@@ -177,9 +177,80 @@ struct RouterModifierTests {
         try await Task.sleep(for: .milliseconds(10))
         #expect(isActive)
     }
-                                                       
+    
+    @Test
+    func testResetRouterTransitionByAlert() async throws {
+        var action: ActionBox?
+        
+        let sut = TestScreen(router: router, tests: .init(didChangeTransition: { view in
+            action = .init(action: {
+                view.resetActiveState()
+            })
+        }))
+        ViewHosting.host(view: sut)
+        try await Task.sleep(for: .milliseconds(10))
+        router.show(alert: .timeOut)
+        try await Task.sleep(for: .milliseconds(10))
+        action?.execute()
+        try await Task.sleep(for: .milliseconds(10))
+        #expect(router.transition == .none)
+    }
+    
+    @Test
+    func testResetRouterTransitionBySheet() async throws {
+        var action: ActionBox?
+        
+        let sut = TestScreen(router: router, tests: .init(didChangeTransition: { view in
+            action = .init(action: {
+                view.resetActiveState()
+            })
+        }))
+        ViewHosting.host(view: sut)
+        try await Task.sleep(for: .milliseconds(10))
+        router.trigger(to: .home, with: .sheet)
+        try await Task.sleep(for: .milliseconds(10))
+        action?.execute()
+        try await Task.sleep(for: .milliseconds(10))
+        #expect(router.transition == .none)
+    }
+    
+    @Test
+    func testResetRouterTransitionByDialog() async throws {
+        var action: ActionBox?
+        
+        let sut = TestScreen(router: router, tests: .init(didChangeTransition: { view in
+            action = .init(action: {
+                view.resetActiveState()
+            })
+        }))
+        ViewHosting.host(view: sut)
+        try await Task.sleep(for: .milliseconds(10))
+        router.show(dialog: .confirmOK)
+        try await Task.sleep(for: .milliseconds(10))
+        action?.execute()
+        try await Task.sleep(for: .milliseconds(10))
+        #expect(router.transition == .none)
+    }
+    
     #if os(iOS) || os(tvOS)
     @Test
+    func testResetRouterTransitionByPresent() async throws {
+        var action: ActionBox?
+        
+        let sut = TestScreen(router: router, tests: .init(didChangeTransition: { view in
+            action = .init(action: {
+                view.resetActiveState()
+            })
+        }))
+        ViewHosting.host(view: sut)
+        try await Task.sleep(for: .milliseconds(10))
+        router.trigger(to: .home, with: .present)
+        try await Task.sleep(for: .milliseconds(10))
+        action?.execute()
+        try await Task.sleep(for: .milliseconds(10))
+        #expect(router.transition == .none)
+    }
+    
     func testActivePresent() async throws {
         var isActive = false
         let sut = TestScreen(router: router, tests: .init(didChangeTransition: { view in
@@ -193,4 +264,16 @@ struct RouterModifierTests {
     }
     
     #endif
+}
+
+fileprivate final class ActionBox {
+    
+    let action : () -> Void
+    init(action: @escaping () -> Void) {
+        self.action = action
+    }
+    
+    func execute() {
+        action()
+    }
 }
