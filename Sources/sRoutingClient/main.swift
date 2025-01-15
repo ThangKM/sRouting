@@ -92,11 +92,12 @@ router.show(dialog: .testConfirmation)
 struct RouteObserver { }
 
 @sRouteCoordinator(tabs: ["homeItem", "settingItem"], stacks: "home", "setting")
+@Observable
 final class AppCoordinator { }
 
 struct TestApp: App {
     
-    @StateObject var coordinator = AppCoordinator()
+    @State private var coordinator = AppCoordinator()
     
     var body: some Scene {
         WindowGroup {

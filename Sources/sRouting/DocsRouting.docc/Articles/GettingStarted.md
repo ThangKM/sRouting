@@ -41,6 +41,7 @@ Declaring a coordinator:
 
 ```swift
 @sRouteCoordinator(tabs: ["home", "setting"], stacks: "home", "setting")
+@Observable
 final class AppCoordinator { }
 ```
 
@@ -57,8 +58,7 @@ Setup Your App:
 @main
 struct BookieApp: App { 
     
-    @StateObject 
-    private var coordinator = AppCoordinator()
+    @State private var coordinator = AppCoordinator()
     ...
     var body: some Scene {
 
