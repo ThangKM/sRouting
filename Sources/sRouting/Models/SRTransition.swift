@@ -20,7 +20,6 @@ where Route: SRRoute {
     private(set) var popToRoute: (any SRRoute)?
     private(set) var windowTransition: SRWindowTransition?
     
-    #if os(iOS) || os(tvOS)
     private(set) var confirmationDialog: Route.ConfirmationDialogRoute?
     
     init(with route: Route.ConfirmationDialogRoute?, and transaction: WithTransaction? = .none) {
@@ -29,7 +28,6 @@ where Route: SRRoute {
         self.confirmationDialog = route
         self.transaction = transaction
     }
-    #endif
     
     init(with type: SRTransitionKind, and transaction: WithTransaction? = .none) {
         self.type = type

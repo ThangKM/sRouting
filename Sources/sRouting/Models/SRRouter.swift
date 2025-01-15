@@ -17,13 +17,14 @@ public final class SRRouter<Route>: ObservableObject where Route: SRRoute {
     private(set) var transition: SRTransition<Route> = .none
     
     public init(_ route: Route.Type) { }
+
     
-    #if os(iOS) || os(tvOS)
+    /// Show confirmation dialog
+    /// - Parameter dialog: ``ConfirmationDialogRoute``
     public func show(dialog: Route.ConfirmationDialogRoute) {
         transition = .init(with: dialog)
     }
-    #endif
-    
+
     /// Select tabbar item at index
     /// - Parameter index: Index of tabbar item
     ///

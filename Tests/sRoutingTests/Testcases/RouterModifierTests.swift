@@ -130,8 +130,7 @@ struct RouterModifierTests {
         #expect(paths.count == 1)
         #expect(path.contains("home"))
     }
-                                                          
-    #if os(iOS) || os(tvOS)
+                                                        
     @Test
     func testActiveActionSheet() async throws {
         var isActive = false
@@ -145,6 +144,7 @@ struct RouterModifierTests {
         #expect(isActive)
     }
     
+    #if os(iOS) || os(tvOS)
     @Test
     func testActivePresent() async throws {
         var isActive = false

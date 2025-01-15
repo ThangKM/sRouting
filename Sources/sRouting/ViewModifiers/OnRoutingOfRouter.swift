@@ -57,8 +57,7 @@ struct RouterModifier<Route>: ViewModifier where Route: SRRoute {
     private var alertMessage: some View {
         router.transition.alert?.message
     }
-        
-    #if os(iOS) || os(tvOS)
+    
     /// The ActionSheet from transaction
     @MainActor
     private var dialogTitleKey: LocalizedStringKey {
@@ -79,7 +78,6 @@ struct RouterModifier<Route>: ViewModifier where Route: SRRoute {
     private var dialogMessage: some View {
         router.transition.confirmationDialog?.message
     }
-    #endif
     
     ///Action test holder
     private let tests: UnitTestActions<Self>?
@@ -101,6 +99,14 @@ struct RouterModifier<Route>: ViewModifier where Route: SRRoute {
             }, message: {
                 alertMessage
             })
+            .confirmationDialog(dialogTitleKey,
+                                isPresented: $isActiveDialog,
+                                titleVisibility: dialogTitleVisibility,
+                                actions: {
+                dialogActions
+            }, message: {
+                dialogMessage
+            })
             .onReceive(dismissAllEmitter.$dismissAllSignal, perform: { _ in
                 resetActiveState()
             })
@@ -113,6 +119,18 @@ struct RouterModifier<Route>: ViewModifier where Route: SRRoute {
                 } else {
                     updateActiveState(from: newValue)
                 }
+            })
+            .onChange(of: isActiveAlert, perform: { newValue in
+                guard !newValue else { return }
+                resetRouterTransition()
+            })
+            .onChange(of: isActiveSheet, perform: { newValue in
+                guard !newValue else { return }
+                resetRouterTransition()
+            })
+            .onChange(of: isActiveDialog, perform: { newValue in
+                guard !newValue else { return }
+                resetRouterTransition()
             })
             .onAppear() {
                 router.resetTransition()
@@ -162,6 +180,22 @@ struct RouterModifier<Route>: ViewModifier where Route: SRRoute {
                     updateActiveState(from: newValue)
                 }
             })
+            .onChange(of: isActiveAlert, perform: { newValue in
+                guard !newValue else { return }
+                resetRouterTransition()
+            })
+            .onChange(of: isActiveSheet, perform: { newValue in
+                guard !newValue else { return }
+                resetRouterTransition()
+            })
+            .onChange(of: isActiveDialog, perform: { newValue in
+                guard !newValue else { return }
+                resetRouterTransition()
+            })
+            .onChange(of: isActivePresent, perform: { newValue in
+                guard !newValue else { return }
+                resetRouterTransition()
+            })
             .onAppear() {
                 router.resetTransition()
             }
@@ -177,10 +211,16 @@ struct RouterModifier<Route>: ViewModifier where Route: SRRoute {
 
 extension RouterModifier {
     
+    @MainActor
+    private func resetRouterTransition() {
+        guard scenePhase != .background else { return }
+        router.resetTransition()
+    }
+    
     /// Reset all active state to false
     @MainActor
     private func resetActiveState() {
-        guard scenePhase == .active else { return }
+        guard scenePhase != .background else { return }
         isActivePresent = false
         isActiveAlert = false
         isActiveSheet = false

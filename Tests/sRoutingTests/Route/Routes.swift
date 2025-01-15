@@ -16,7 +16,6 @@ enum TestErrorRoute: SRAlertRoute {
     var message: some View { Text("Time out!") }
 }
 
-#if os(iOS)
 enum TestDialog: SRConfirmationDialogRoute {
     case confirmOK
     var titleKey: LocalizedStringKey { "Confirm" }
@@ -32,14 +31,11 @@ enum TestDialog: SRConfirmationDialogRoute {
     var message: some View { Text("Your question?") }
     var titleVisibility: Visibility { .visible }
 }
-#endif
 
 enum TestRoute: SRRoute {
     
     typealias AlertRoute = TestErrorRoute
-    #if os(iOS)
     typealias ConfirmationDialogRoute = TestDialog
-    #endif
     
     var path: String {
         switch self {
