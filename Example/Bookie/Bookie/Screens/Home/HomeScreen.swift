@@ -107,28 +107,14 @@ extension HomeScreen {
     }
 }
 
-private struct StatePreviewProvider: PreviewModifier {
-    
-    static func makeSharedContext() async throws -> HomeScreen.HomeState {
-        let state = HomeScreen.HomeState()
-        state.updateAllBooks(books: MockBookData().books)
-        return state
-    }
-    
-    func body(content: Content, context: HomeScreen.HomeState) -> some View {
-        content.environment(context)
-    }
-    
-}
-
 //MARK: - Preview
 @available(iOS 18.0, *)
-#Preview(traits: .modifier(MockBookPreviewProvider())) {
+#Preview(traits: .modifier(MockBookPreviewModifier())) {
     HomeScreen()
 }
 
 @available(iOS 18.0, *)
-#Preview(traits: .modifier(StatePreviewProvider())) {
+#Preview(traits: .modifier(HomeStatePreviewModifier())) {
     
     @Previewable @State var router = SRRouter(HomeRoute.self)
     @Previewable @Environment(HomeScreen.HomeState.self) var state
@@ -139,7 +125,7 @@ private struct StatePreviewProvider: PreviewModifier {
 }
 
 @available(iOS 18.0, *)
-#Preview(traits: .modifier(StatePreviewProvider())) {
+#Preview(traits: .modifier(HomeStatePreviewModifier())) {
     
     @Previewable @Environment(HomeScreen.HomeState.self) var state
     VStack {

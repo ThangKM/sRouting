@@ -46,15 +46,3 @@ extension MockBookData {
         books[index] = book
     }
 }
-
-struct MockBookPreviewProvider: PreviewModifier {
-    
-    static func makeSharedContext() async throws -> MockBookData {
-        MockBookData()
-    }
-    
-    func body(content: Content, context: MockBookData) -> some View {
-        content.environment(context)
-    }
-    
-}

@@ -31,6 +31,7 @@
 		37AAE7B226956D9B007EA3B6 /* RatingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37AAE7B126956D9B007EA3B6 /* RatingView.swift */; };
 		37AAE7B426957226007EA3B6 /* BookModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37AAE7B326957226007EA3B6 /* BookModel.swift */; };
 		37D887072CA1A40900316FC7 /* sRouting in Frameworks */ = {isa = PBXBuildFile; productRef = 37D887062CA1A40900316FC7 /* sRouting */; };
+		37E7DD912D3841800067211B /* PreviewModifiers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37E7DD902D3841790067211B /* PreviewModifiers.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -78,6 +79,7 @@
 		37AAE7A926948818007EA3B6 /* BookCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookCell.swift; sourceTree = "<group>"; };
 		37AAE7B126956D9B007EA3B6 /* RatingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RatingView.swift; sourceTree = "<group>"; };
 		37AAE7B326957226007EA3B6 /* BookModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookModel.swift; sourceTree = "<group>"; };
+		37E7DD902D3841790067211B /* PreviewModifiers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreviewModifiers.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -246,6 +248,7 @@
 		379D3469268D024A00903D92 /* Preview Content */ = {
 			isa = PBXGroup;
 			children = (
+				37E7DD902D3841790067211B /* PreviewModifiers.swift */,
 				379D346A268D024A00903D92 /* Preview Assets.xcassets */,
 			);
 			path = "Preview Content";
@@ -436,6 +439,7 @@
 				3741027A269459F300C8DF44 /* BookieNavigationView.swift in Sources */,
 				3732440C26957BEF007DE034 /* MockBookData.swift in Sources */,
 				374102782694590200C8DF44 /* HomeRoute.swift in Sources */,
+				37E7DD912D3841800067211B /* PreviewModifiers.swift in Sources */,
 				3741027326943C7200C8DF44 /* FontModifier.swift in Sources */,
 				37AAE7B226956D9B007EA3B6 /* RatingView.swift in Sources */,
 			);

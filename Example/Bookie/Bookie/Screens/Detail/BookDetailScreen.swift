@@ -81,7 +81,7 @@ struct BookDetailScreen: View {
 }
 
 @available(iOS 18.0, *)
-#Preview(traits: .modifier(MockBookPreviewProvider())) {
+#Preview(traits: .modifier(MockBookPreviewModifier())) {
     
     @Previewable @Environment(MockBookData.self) var mockData
     
