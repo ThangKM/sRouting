@@ -44,7 +44,6 @@ struct TypeTests {
         #expect(route.actions != nil)
     }
     
-    #if os(iOS)
     @Test
     func testDialog() async throws {
         let route = TestDialog.confirmOK
@@ -62,7 +61,6 @@ struct TypeTests {
         #expect(route.actions != nil)
         #expect(route.titleVisibility == .hidden)
     }
-    #endif
 }
 
 

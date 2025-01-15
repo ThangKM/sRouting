@@ -7,13 +7,17 @@
 
 import Testing
 import SwiftUI
+import ViewInspector
 
 @testable import sRouting
 
 
 @Suite("Test SRTransition initializers")
+@MainActor
 struct TestInitializers {
 
+    let coordinator = Coordinator()
+    
     @Test
     func testInitialTransitionWithSelectTab() {
         let sut = SRTransition<TestRoute>(selectTab: 0)
@@ -80,5 +84,14 @@ struct TestInitializers {
         SRTriggerType.allCases.forEach { type in
             #expect(type.description == "TriggerType - \(type)")
         }
+    }
+    
+    @Test
+    func testInitialNavigaitonStack() async {
+        let sut = NavigationStack(path: coordinator.testStackPath) {
+            Text("screen")
+                .routeObserver(RouteObserver.self)
+        }
+        ViewHosting.host(view: sut)
     }
 }
