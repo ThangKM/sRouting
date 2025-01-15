@@ -8,7 +8,6 @@
 import SwiftUI
 
 //MARK: - SRConfirmationDialogRoute
-#if os(iOS) || os(tvOS)
 public protocol SRConfirmationDialogRoute: Sendable {
     
     associatedtype Message: View
@@ -31,8 +30,6 @@ public struct ConfirmationDialogEmptyRoute: SRConfirmationDialogRoute {
     public var actions: some View { Button("OK"){ } }
     public var titleVisibility: Visibility = .hidden
 }
-
-#endif
 
 //MARK: - SRAlertRoute
 public protocol SRAlertRoute: Sendable {
@@ -63,10 +60,8 @@ public protocol SRRoute: Hashable, Codable, Sendable {
     
     associatedtype Screen: View
     associatedtype AlertRoute: SRAlertRoute
-    #if os(iOS) || os(tvOS)
     associatedtype ConfirmationDialogRoute: SRConfirmationDialogRoute
-    #endif
-    
+
     var path: String { get }
 
     /// Screen builder
@@ -79,11 +74,9 @@ extension SRRoute {
     /// Provide default type for the ``AlertRoute``
     public typealias AlertRoute = AlertEmptyRoute
     
-    #if os(iOS) || os(tvOS)
     /// Provide default type for the ``ConfirmationDialogEmptyRoute``
     public typealias ConfirmationDialogRoute = ConfirmationDialogEmptyRoute
-    #endif
-    
+
     /// Provide full path when self is a child route.
     public var fullPath: String {
         String(describing: Self.self) + "." + path

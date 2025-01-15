@@ -164,8 +164,7 @@ struct RouterModifierTests {
         try await Task.sleep(for:.milliseconds(50))
         #expect(selection == .zero)
     }
-                                                          
-    #if os(iOS) || os(tvOS)
+    
     @Test
     func testActiveActionSheet() async throws {
         var isActive = false
@@ -178,7 +177,8 @@ struct RouterModifierTests {
         try await Task.sleep(for: .milliseconds(10))
         #expect(isActive)
     }
-    
+                                                       
+    #if os(iOS) || os(tvOS)
     @Test
     func testActivePresent() async throws {
         var isActive = false

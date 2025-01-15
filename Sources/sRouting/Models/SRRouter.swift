@@ -30,12 +30,11 @@ public final class SRRouter<Route> where Route: SRRoute {
     
     public init(_ route: Route.Type) { }
     
-    #if os(iOS) || os(tvOS)
+    /// Show confirmation dialog
+    /// - Parameter dialog: ``ConfirmationDialogRoute``
     public func show(dialog: Route.ConfirmationDialogRoute) {
         transition = .init(with: dialog)
     }
-    #endif
-    
     /// Select tabbar item at index
     /// - Parameter index: Index of tabbar item
     ///
