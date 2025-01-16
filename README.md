@@ -93,7 +93,8 @@ Setup Your App:
 
 ```swift
 @main
-struct BookieApp: App { 
+struct BookieApp: App {
+
     @State private var coordinator = AppCoordinator()
     ...
     var body: some Scene {
@@ -142,7 +143,7 @@ enum HomeRoute: SRRoute {
 
 struct HomeScreen: View {
 
-    @State var homeRouter = SRRouter(HomeRoute.self)
+    @State private var homeRouter = SRRouter(HomeRoute.self)
 
     var body: some View {
         VStack { 
