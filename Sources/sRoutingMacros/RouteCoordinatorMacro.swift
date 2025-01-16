@@ -21,12 +21,8 @@ package struct RouteCoordinatorMacro: MemberMacro {
                                  providingMembersOf declaration: some DeclGroupSyntax,
                                  in context: some MacroExpansionContext) throws -> [DeclSyntax] {
         
-        guard let classDecl = declaration.as(ClassDeclSyntax.self), declaration.kind == SwiftSyntax.SyntaxKind.classDecl
+        guard declaration.kind == SwiftSyntax.SyntaxKind.classDecl
         else { throw SRMacroError.onlyClass }
-        
-        let attributes = classDecl.attributes.compactMap({ $0.as(AttributeSyntax.self) })
-        guard attributes.first(where: { $0.attributeName.trimmedDescription == "Observable" }) != .none
-        else { throw SRMacroError.missingObservable }
         
         let arguments = try Self._arguments(of: node)
         

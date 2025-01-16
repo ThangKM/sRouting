@@ -41,7 +41,6 @@ Declaring a coordinator:
 
 ```swift
 @sRouteCoordinator(tabs: ["home", "setting"], stacks: "home", "setting")
-@Observable
 final class AppCoordinator { }
 ```
 
