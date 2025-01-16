@@ -10,12 +10,8 @@ import sRouting
 
 struct StartScreen: View {
     
-    @AppStorage("didTutorial")
-    private var didTutorial: Bool = false
+    let startAction: AsyncActionPut<Bool>
     
-    @Environment(\.dismiss)
-    private var dismissAction
-
     var body: some View {
         ZStack {
     
@@ -59,7 +55,9 @@ struct StartScreen: View {
                 Spacer()
                 
                 Button {
-                    didTutorial = true
+                    Task {
+                        try await startAction.execute(true)
+                    }
                 } label: {
                     Text("Start")
                         .foregroundColor(.accentColor)
@@ -74,5 +72,7 @@ struct StartScreen: View {
 }
 
 #Preview {
-    StartScreen()
+    StartScreen(startAction: .init({ _ in
+        
+    }))
 }

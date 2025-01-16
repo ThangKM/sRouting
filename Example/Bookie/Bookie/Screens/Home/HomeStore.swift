@@ -28,7 +28,9 @@ extension HomeScreen {
         }
         
         func updateBooks(books: [BookModel]) {
-            self.books = books
+            withAnimation {
+                self.books = books
+            }
         }
     }
     

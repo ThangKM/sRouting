@@ -12,7 +12,7 @@ struct HomeScreen: View {
     
     @State private var router = SRRouter(HomeRoute.self)
     @State private var state = HomeState()
-    @StateObject private var store = HomeStore()
+    @State private var store = HomeStore()
     @Environment(MockBookService.self) private var bookService
     
 
@@ -37,10 +37,7 @@ struct HomeScreen: View {
             
         }
          .onChange(of: state.seachText, { oldValue, newValue in
-             withAnimation {
-                 store.receive(action: .findBooks(text: newValue))
-             }
-             
+             store.receive(action: .findBooks(text: newValue))
          })
          .onChange(of: bookService.books) { _, _ in
              store.receive(action: .fetchAllBooks)
@@ -57,18 +54,27 @@ struct HomeScreen: View {
 //MARK: - SearchBody
 extension HomeScreen {
     
+    enum FocusField: String {
+        case searchText
+    }
+    
     fileprivate struct SearchBody: View {
         
         @Bindable var state: HomeState
+        @FocusState private var focus: FocusField?
         
         var body: some View {
             Group {
                 HStack {
+                    
                     Image(systemName: "magnifyingglass")
                         .opacity(0.4)
+                    
                     TextField("Search books", text: $state.seachText)
+                        .focused($focus, equals: .searchText)
                         .keyboardType(.webSearch)
                         .abeeFont(size: 14, style: .italic)
+                        
                     Spacer()
                 }
                 .padding(.horizontal)
@@ -78,6 +84,9 @@ extension HomeScreen {
             .background(Color.white)
             .clipShape(RoundedRectangle(cornerRadius: 8))
             .padding(.horizontal)
+            .onTapGesture {
+                focus = .searchText
+            }
         }
     }
 }

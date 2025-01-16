@@ -40,12 +40,21 @@ extension BookieApp {
         
         @AppStorage("didTutorial")
         private var didShowTutorial: Bool = false
-        
+
         var body: some View {
             if didShowTutorial {
                 AppRoute.homeScreen.screen
+                    .transition(.asymmetric(insertion: .scale(scale: 0.2), removal: .scale(scale: 0.2)).combined(with: .opacity))
+                    .animation(.easeInOut(duration: 1), value: 1)
             } else {
-                AppRoute.startScreen.screen
+                AppRoute.startScreen(startAction: .init({@MainActor didStart in
+                    withAnimation {
+                        didShowTutorial = didStart
+                    }
+                }))
+                .screen
+                    .transition(.asymmetric(insertion: .scale(scale: 0.2), removal: .scale(scale: 0.2)).combined(with: .opacity))
+                    .animation(.easeInOut(duration: 1), value: 1)
             }
         }
     }

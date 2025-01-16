@@ -11,7 +11,7 @@ import sRouting
 
 enum AppRoute: SRRoute {
     
-    case startScreen
+    case startScreen(startAction: AsyncActionPut<Bool>)
     case homeScreen
     
     var path: String {
@@ -23,7 +23,7 @@ enum AppRoute: SRRoute {
     
     var screen: some View {
         switch self {
-        case .startScreen: StartScreen()
+        case .startScreen(let action): StartScreen(startAction: action)
         case .homeScreen: HomeScreen()
         }
     }
