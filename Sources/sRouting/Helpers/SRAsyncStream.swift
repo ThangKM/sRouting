@@ -7,7 +7,7 @@
 
 import Foundation
 
-actor SRAsyncStream<Value> where Value: Sendable {
+public actor SRAsyncStream<Value> where Value: Sendable {
     
     typealias Continuation = AsyncStream<Value>.Continuation
     
@@ -15,13 +15,13 @@ actor SRAsyncStream<Value> where Value: Sendable {
     private let defaultValue: Value
     private(set) var currenValue: Value
     
-    init(defaultValue: Value) {
+    public init(defaultValue: Value) {
         self.currenValue = defaultValue
         self.defaultValue = defaultValue
     }
     
     /// Events stream
-    var stream: AsyncStream<Value> {
+    public var stream: AsyncStream<Value> {
         AsyncStream { continuation in
             append(continuation)
         }
@@ -31,16 +31,16 @@ actor SRAsyncStream<Value> where Value: Sendable {
         continuations.append(continuation)
     }
     
-    func emit(_ value: Value) {
+    public func emit(_ value: Value) {
         currenValue = value
         continuations.forEach({ $0.yield(currenValue) })
     }
     
-    func reset() {
+    public func reset() {
         emit(defaultValue)
     }
     
-    func finish() {
+    public func finish() {
         currenValue = defaultValue
         continuations.forEach({ $0.finish() })
         continuations.removeAll()
@@ -49,12 +49,12 @@ actor SRAsyncStream<Value> where Value: Sendable {
 
 extension SRAsyncStream where Value == Int {
     
-    func increase() {
+    public func increase() {
         currenValue += 1
         emit(currenValue)
     }
     
-    func decrease() {
+    public func decrease() {
         currenValue -= 1
         emit(currenValue)
     }

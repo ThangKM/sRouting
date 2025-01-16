@@ -7,20 +7,30 @@
 
 import Foundation
 
-actor CancelBag {
+public actor CancelBag {
 
-    private var cancellers: [String:Canceller] = .init()
+    private var cancellers: [String:Canceller]
     
-    func cancelAll() {
+    public init() {
+        cancellers = .init()
+    }
+    
+    public func cancelAll() {
         let runningTasks = cancellers.values.filter({ !$0.isCancelled })
         runningTasks.forEach{ $0.cancel() }
         cancellers.removeAll()
     }
     
-    func cancel(forIdentifier identifier: String) {
+    public func cancel(forIdentifier identifier: String) {
         guard let task = cancellers[identifier] else { return }
         task.cancel()
         cancellers.removeValue(forKey: identifier)
+    }
+    
+    nonisolated public func cancelAllInTask() {
+        Task(priority: .high) {
+            await cancelAll()
+        }
     }
     
     private func store(_ canceller: Canceller) {
@@ -32,12 +42,6 @@ actor CancelBag {
     nonisolated fileprivate func append(canceller: Canceller) {
         Task(priority: .high) {
             await store(canceller)
-        }
-    }
-    
-    nonisolated func cancelAllInTask() {
-        Task(priority: .high) {
-            await cancelAll()
         }
     }
 }
@@ -59,12 +63,12 @@ private struct Canceller: Identifiable, Sendable {
 
 extension Task {
     
-    func store(in bag: CancelBag) {
+    public func store(in bag: CancelBag) {
         let canceller = Canceller(self)
         bag.append(canceller: canceller)
     }
     
-    func store(in bag: CancelBag, withIdentifier identifier: String) {
+    public func store(in bag: CancelBag, withIdentifier identifier: String) {
         let canceller = Canceller(self, identifier: identifier)
         bag.append(canceller: canceller)
     }
