@@ -46,7 +46,6 @@ extension HomeScreen {
     final class HomeStore: ViewStore {
         
         private weak var state: HomeState?
-        
         private weak var bookService: MockBookService?
         
         func binding(state: HomeState) {

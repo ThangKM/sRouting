@@ -33,7 +33,7 @@ struct RandomBubbleView: View {
         .opacity(hidden ? 0 : 1)
         .onAppear {
             Task {
-                try await Task.sleep(for: .milliseconds(800))
+                try await Task.sleep(for: .milliseconds(400))
                 withAnimation {
                     hidden.toggle()
                 }

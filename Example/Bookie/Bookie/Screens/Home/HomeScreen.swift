@@ -15,7 +15,6 @@ struct HomeScreen: View {
     @State private var store = HomeStore()
     @Environment(MockBookService.self) private var bookService
     
-
     var body: some View {
         BookieNavigationView(title: "My Book List",
                              router: router,
