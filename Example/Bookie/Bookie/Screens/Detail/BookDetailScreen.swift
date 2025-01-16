@@ -13,6 +13,7 @@ struct BookDetailScreen: View {
     @State private var router = SRRouter(HomeRoute.self)
     @State private var state: DetailState
     @State private var store = DetailStore()
+    
     @Environment(MockBookService.self) private var bookService
     
     init(state: DetailState) {

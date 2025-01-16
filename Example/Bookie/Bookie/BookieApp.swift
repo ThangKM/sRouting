@@ -8,7 +8,6 @@
 import SwiftUI
 import sRouting
 
-@Observable
 @sRouteCoordinator(stacks: "rootStack")
 final class AppCoordinator { }
 
@@ -38,20 +37,23 @@ extension BookieApp {
     
     private struct RootScreen: View {
         
-        @AppStorage("didTutorial")
-        private var didShowTutorial: Bool = false
-
+        @State private var startHome = false
+        
+        private var showHomeAcion: AsyncActionPut<Bool> {
+            .init { @MainActor value in
+                withAnimation {
+                    startHome = value
+                }
+            }
+        }
+        
         var body: some View {
-            if didShowTutorial {
+            if startHome {
                 AppRoute.homeScreen.screen
-                    .transition(.asymmetric(insertion: .scale(scale: 0.2), removal: .scale(scale: 0.2)).combined(with: .opacity))
+                    .transition(.asymmetric(insertion: .scale(scale: 3), removal: .scale(scale: 0.2)).combined(with: .opacity))
                     .animation(.easeInOut(duration: 1), value: 1)
             } else {
-                AppRoute.startScreen(startAction: .init({@MainActor didStart in
-                    withAnimation {
-                        didShowTutorial = didStart
-                    }
-                }))
+                AppRoute.startScreen(startAction: showHomeAcion)
                 .screen
                     .transition(.asymmetric(insertion: .scale(scale: 0.2), removal: .scale(scale: 0.2)).combined(with: .opacity))
                     .animation(.easeInOut(duration: 1), value: 1)
