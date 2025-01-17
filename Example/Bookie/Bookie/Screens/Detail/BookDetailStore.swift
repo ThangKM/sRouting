@@ -42,7 +42,7 @@ extension BookDetailScreen {
 //MARK: - DetailStore
 extension BookDetailScreen {
     
-    final class DetailStore: ViewStore {
+    final class DetailStore: ActionStore {
         
         private weak var state: DetailState?
         private weak var bookService: MockBookService?

@@ -43,7 +43,7 @@ extension HomeScreen {
 //MARK: - HomeStore
 extension HomeScreen {
     
-    final class HomeStore: ViewStore {
+    final class HomeStore: ActionStore {
         
         private weak var state: HomeState?
         private weak var bookService: MockBookService?
