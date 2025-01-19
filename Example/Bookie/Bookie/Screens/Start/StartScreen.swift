@@ -14,25 +14,45 @@ struct StartScreen: View {
     
     var body: some View {
         ZStack {
-    
-            GeometryReader { geo in
-                VStack {
-                    RandomBubbleView(bubbles: [[Color("orgrian.FEB665"), Color("purple.F66EB4")],
-                                               [Color("cyan.2DEEF9"), Color("purple.F66EB4")],
-                                              ], minWidth: 40, maxWidth: 120)
-                        .opacity(.random(in: 0.5...0.7))
-                        .frame(width: geo.size.width , height: geo.size.height / 2)
-                    
-                    Spacer()
-                    
-                    RandomBubbleView(bubbles: [[Color("cyan.2DEEF9"), Color("purple.F66EB4")]], minWidth: 200, maxWidth: 300)
+            BackgroundBubleBody()
+            MainBody(startAction: startAction)
+        }
+        .navigationBarHidden(true)
+    }
+}
 
-                        .opacity(.random(in: 0.1...0.3))
-                        .frame(width: geo.size.width, height: 100)
-                }
+//MARK: - BackgroundBubleBody
+extension StartScreen {
+    
+    fileprivate struct BackgroundBubleBody: View {
+        
+        var body: some View {
+            VStack {
+                RandomBubbleView(bubbles: [[Color("orgrian.FEB665"), Color("purple.F66EB4")],
+                                           [Color("cyan.2DEEF9"), Color("purple.F66EB4")],
+                                          ], minWidth: 40, maxWidth: 120)
+                    .opacity(.random(in: 0.5...0.7))
+                    .containerRelativeFrame(.vertical, count: 5, span: 2, spacing: .zero)
+                
+                Spacer()
+                    .containerRelativeFrame(.vertical, count: 5, span: 1, spacing: .zero)
+                
+                RandomBubbleView(bubbles: [[Color("cyan.2DEEF9"), Color("purple.F66EB4")]], minWidth: 200, maxWidth: 300)
+                    .opacity(.random(in: 0.1...0.3))
+                    .containerRelativeFrame(.vertical, count: 5, span: 2, spacing: .zero)
             }
-            .ignoresSafeArea()
-            
+        }
+    }
+}
+
+//MARK: - MainBody
+extension StartScreen {
+    
+    fileprivate struct MainBody: View {
+        
+        let startAction: AsyncActionPut<Bool>
+        
+        var body: some View {
             VStack(alignment: .center) {
                 
                 Spacer()
@@ -64,15 +84,23 @@ struct StartScreen: View {
                         .underline()
                         .abeeFont(size: 16, style: .italic)
                 }.padding(.init(top: 30, leading: 0, bottom: 30, trailing: 0))
-                
             }
         }
-        .navigationBarHidden(true)
     }
+}
+    
+#Preview {
+    StartScreen(startAction: .init({ _ in
+        
+    }))
 }
 
 #Preview {
-    StartScreen(startAction: .init({ _ in
+    StartScreen.BackgroundBubleBody()
+}
+
+#Preview {
+    StartScreen.MainBody(startAction: .init({ _ in
         
     }))
 }

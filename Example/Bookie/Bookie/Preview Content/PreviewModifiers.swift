@@ -34,3 +34,17 @@ struct HomeStatePreviewModifier: PreviewModifier {
     }
     
 }
+
+@available(iOS 18.0, *)
+struct DetailStatePreviewModifier: PreviewModifier {
+    
+    static func makeSharedContext() async throws -> BookDetailScreen.DetailState {
+        let state = BookDetailScreen.DetailState(book: MockBookService().books.first ?? .empty)
+        return state
+    }
+    
+    func body(content: Content, context: BookDetailScreen.DetailState) -> some View {
+        content.environment(context)
+    }
+    
+}

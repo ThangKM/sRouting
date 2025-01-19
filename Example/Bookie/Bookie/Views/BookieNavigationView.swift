@@ -48,7 +48,6 @@ struct BookieNavigationView<Content, Route>: View where Content: View, Route: SR
                 Spacer()
             }
         }
-        .onRouting(of: router)
         .background(Color("backgournd.EEECFF"))
         .edgesIgnoringSafeArea(.bottom)
         .navigationBarHidden(true)

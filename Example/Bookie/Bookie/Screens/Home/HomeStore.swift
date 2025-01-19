@@ -37,6 +37,7 @@ extension HomeScreen {
     enum HomeAction: Sendable {
         case fetchAllBooks
         case findBooks(text: String)
+        case gotoDetail(book: BookModel)
     }
 }
 
@@ -47,21 +48,27 @@ extension HomeScreen {
         
         private weak var state: HomeState?
         private weak var bookService: MockBookService?
+        private weak var router: SRRouter<HomeRoute>?
         
         func binding(state: HomeState) {
             self.state = state
         }
         
-        func binding(bookService: MockBookService) {
+        func binding(bookService: MockBookService, router: SRRouter<HomeRoute>) {
             self.bookService = bookService
+            self.router = router
         }
         
         func receive(action: HomeAction) {
+            assert((state != nil && bookService != nil && router != nil) || EnvironmentRunner.current == .livePreview, "Need binding state, router and book service")
+            
             switch action {
             case .fetchAllBooks:
                 state?.updateAllBooks(books: bookService?.books ?? [])
             case .findBooks(let text):
                 _findBooks(withText: text)
+            case .gotoDetail(let book):
+                router?.trigger(to: .bookDetailScreen(book: book), with: .allCases.randomElement() ?? .push)
             }
         }
     }

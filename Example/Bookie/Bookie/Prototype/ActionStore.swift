@@ -17,4 +17,3 @@ protocol ActionStore {
     
     func binding(state: State)
 }
-

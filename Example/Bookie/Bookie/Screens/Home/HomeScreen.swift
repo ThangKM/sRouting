@@ -18,7 +18,8 @@ struct HomeScreen: View {
     var body: some View {
         BookieNavigationView(title: "My Book List",
                              router: router,
-                             isBackType: false) {
+                             isBackType: false)
+        {
             VStack {
                 
                 SearchBody(state: state)
@@ -28,24 +29,25 @@ struct HomeScreen: View {
                     .padding()
                     .frame(maxWidth: .infinity, alignment: .leading)
                 
-                ListBookBody(state: state, router: router)
+                ListBookBody(state: state, store: store)
             }
             .refreshable {
                 store.receive(action: .fetchAllBooks)
             }
             
         }
-         .onChange(of: state.seachText, { oldValue, newValue in
+        .onRouting(of: router)
+        .onChange(of: state.seachText, { oldValue, newValue in
              store.receive(action: .findBooks(text: newValue))
          })
-         .onChange(of: bookService.books) { _, _ in
+        .onChange(of: bookService.books) { _, _ in
              store.receive(action: .fetchAllBooks)
              store.receive(action: .findBooks(text: state.seachText))
          }
-         .task {
-             store.binding(state: state)
-             store.binding(bookService: bookService)
-             store.receive(action: .fetchAllBooks)
+        .task {
+            store.binding(state: state)
+            store.binding(bookService: bookService, router: router)
+            store.receive(action: .fetchAllBooks)
          }
     }
 }
@@ -63,21 +65,19 @@ extension HomeScreen {
         @FocusState private var focus: FocusField?
         
         var body: some View {
-            Group {
-                HStack {
+            HStack {
+                
+                Image(systemName: "magnifyingglass")
+                    .opacity(0.4)
+                
+                TextField("Search books", text: $state.seachText)
+                    .focused($focus, equals: .searchText)
+                    .keyboardType(.webSearch)
+                    .abeeFont(size: 14, style: .italic)
                     
-                    Image(systemName: "magnifyingglass")
-                        .opacity(0.4)
-                    
-                    TextField("Search books", text: $state.seachText)
-                        .focused($focus, equals: .searchText)
-                        .keyboardType(.webSearch)
-                        .abeeFont(size: 14, style: .italic)
-                        
-                    Spacer()
-                }
-                .padding(.horizontal)
+                Spacer()
             }
+            .padding(.horizontal)
             .frame(height: 48)
             .frame(maxWidth: .infinity)
             .background(Color.white)
@@ -96,13 +96,13 @@ extension HomeScreen {
     fileprivate struct ListBookBody: View {
         
         let state: HomeState
-        let router: SRRouter<HomeRoute>
+        let store: HomeStore
         
         var body: some View {
             List(state.books) { book in
                 BookCell(book: book)
                     .onTapGesture {
-                        router.trigger(to: .bookDetailScreen(book: book), with: .allCases.randomElement() ?? .push)
+                        store.receive(action: .gotoDetail(book: book))
                     }
                 
             }
@@ -115,21 +115,22 @@ extension HomeScreen {
     }
 }
 
-//MARK: - Preview
 @available(iOS 18.0, *)
 #Preview(traits: .modifier(MockBookPreviewModifier())) {
-    HomeScreen()
+    RootPreview {
+        HomeScreen()
+    }
 }
 
+//MARK: - Preview
 @available(iOS 18.0, *)
 #Preview(traits: .modifier(HomeStatePreviewModifier())) {
     
-    @Previewable @State var router = SRRouter(HomeRoute.self)
     @Previewable @Environment(HomeScreen.HomeState.self) var state
-
-    BookieNavigationView(title: "List Books", router: router, isBackType: false) {
-        HomeScreen.ListBookBody(state: state, router: router)
-    }
+    @Previewable @State var store = HomeScreen.HomeStore()
+    
+    HomeScreen.ListBookBody(state: state, store: store)
+        .background(Color.gray)
 }
 
 @available(iOS 18.0, *)

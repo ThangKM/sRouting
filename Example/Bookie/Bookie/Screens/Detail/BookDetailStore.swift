@@ -56,6 +56,7 @@ extension BookDetailScreen {
         }
         
         func receive(action: DetailAction) {
+            assert(EnvironmentRunner.current == .livePreview || (state != nil && bookService != nil), "Missing binding state or book service")
             switch action {
             case .saveBook:
                 guard let book = state?.book else { return }
