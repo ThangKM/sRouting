@@ -52,8 +52,6 @@ public struct AlertEmptyRoute: SRAlertRoute {
     public var actions: some View { Button("OK"){ } }
 }
 
-
-
 //MARK: - SRRoute
 /// Protocol to build screens for the route.
 public protocol SRRoute: Hashable, Codable, Sendable {
@@ -83,7 +81,7 @@ extension SRRoute {
     }
     
     public static func == (lhs: Self, rhs: Self) -> Bool {
-        return lhs.path == rhs.path
+        lhs.path == rhs.path
     }
     
     public func hash(into hasher: inout Hasher) {

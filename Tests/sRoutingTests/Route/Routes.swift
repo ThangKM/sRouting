@@ -53,7 +53,6 @@ enum TestRoute: SRRoute {
     }
 }
 
-@Observable
 @sRouteCoordinator(stacks: "testStack")
 final class Coordinator { }
 
