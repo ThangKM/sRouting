@@ -14,7 +14,6 @@ public final class SRNavigationPath {
     
     internal var stack: [String] = []
     
-    @ObservationIgnored
     internal var navPath: NavigationPath {
         get {
             access(keyPath: \.navPath)
