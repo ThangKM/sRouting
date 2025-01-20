@@ -10,14 +10,23 @@ import sRouting
 
 struct StartScreen: View {
     
-    let startAction: AsyncActionPut<Bool>
+    @State private var store: StartStore
+    @State private var state = StartState()
+    @State private var router = SRRouter(AppAlertsRoute.self)
+
+    init(store: StartStore) {
+        self._store = .init(initialValue: store)
+    }
     
     var body: some View {
         ZStack {
             BackgroundBubleBody()
-            MainBody(startAction: startAction)
+            MainBody(state: state, store: store)
         }
         .navigationBarHidden(true)
+        .task {
+            store.binding(state: state, router: router)
+        }
     }
 }
 
@@ -50,7 +59,8 @@ extension StartScreen {
     
     fileprivate struct MainBody: View {
         
-        let startAction: AsyncActionPut<Bool>
+        let state: StartState
+        let store: StartStore
         
         var body: some View {
             VStack(alignment: .center) {
@@ -75,24 +85,25 @@ extension StartScreen {
                 Spacer()
                 
                 Button {
-                    Task {
-                        try await startAction.execute(true)
-                    }
+                    store.receive(action: .startAction)
                 } label: {
                     Text("Start")
                         .foregroundColor(.accentColor)
                         .underline()
                         .abeeFont(size: 16, style: .italic)
-                }.padding(.init(top: 30, leading: 0, bottom: 30, trailing: 0))
+                }
+                .disabled(state.isLoading)
+                .padding(.init(top: 30, leading: 0, bottom: 30, trailing: 0))
             }
         }
     }
 }
-    
-#Preview {
-    StartScreen(startAction: .init({ _ in
+
+@available(iOS 18.0, *)
+#Preview(traits: .modifier(PersistentContainerPreviewModifier())) {
+    StartScreen(store: .init(showHomeAction: .init({ _ in
         
-    }))
+    })))
 }
 
 #Preview {
@@ -100,7 +111,7 @@ extension StartScreen {
 }
 
 #Preview {
-    StartScreen.MainBody(startAction: .init({ _ in
+    StartScreen.MainBody(state: .init(), store: .init(showHomeAction: .init({ _ in
         
-    }))
+    })))
 }

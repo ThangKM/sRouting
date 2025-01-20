@@ -7,6 +7,7 @@
 
 import SwiftUI
 import sRouting
+import SwiftData
 
 @sRouteCoordinator(stacks: "rootStack")
 @Observable
@@ -19,7 +20,6 @@ struct RouteObserver { }
 struct BookieApp: App {
 
     @State private var appCoordinator = AppCoordinator()
-    @State private var bookService = MockBookService()
 
     var body: some Scene {
         WindowGroup {
@@ -29,7 +29,7 @@ struct BookieApp: App {
                         .routeObserver(RouteObserver.self)
                 }
             }
-            .environment(bookService)
+            .modelContainer(Database.shared.container)
         }
     }
 }

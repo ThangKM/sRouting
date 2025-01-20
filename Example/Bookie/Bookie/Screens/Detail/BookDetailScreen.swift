@@ -13,9 +13,7 @@ struct BookDetailScreen: View {
     @State private var router = SRRouter(HomeRoute.self)
     @State private var state: DetailState
     @State private var store = DetailStore()
-    
-    @Environment(MockBookService.self) private var bookService
-    
+
     init(state: DetailState) {
         _state = .init(initialValue: state)
     }
@@ -53,7 +51,6 @@ struct BookDetailScreen: View {
         .foregroundColor(.accentColor)
         .task {
             store.binding(state: state)
-            store.binding(bookService: bookService)
         }
     }
 }

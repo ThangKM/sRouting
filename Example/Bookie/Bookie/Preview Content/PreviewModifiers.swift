@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import SwiftData
 
 @available(iOS 18.0, *)
 struct MockBookPreviewModifier: PreviewModifier {
@@ -47,4 +48,26 @@ struct DetailStatePreviewModifier: PreviewModifier {
         content.environment(context)
     }
     
+}
+
+
+@available(iOS 18.0, *)
+struct PersistentContainerPreviewModifier: PreviewModifier {
+    
+    static func makeSharedContext() async throws -> ModelContainer {
+        let container = Database.shared.container
+        try await makeMockData(container: container)
+        return container
+    }
+    
+    func body(content: Content, context: ModelContainer) -> some View {
+        content.modelContainer(context)
+    }
+    
+    @PersistentActor
+    static private func makeMockData(container: ModelContainer) async throws {
+        let books = MockBookService().books
+        let models = books.map({ BookPersistent(book: $0) })
+        try await persistentWriteTransaction(models: models, useContext: .init(container))
+    }
 }

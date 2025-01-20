@@ -7,13 +7,15 @@
 
 import SwiftUI
 import sRouting
+import SwiftData
 
 struct HomeScreen: View {
     
     @State private var router = SRRouter(HomeRoute.self)
     @State private var state = HomeState()
     @State private var store = HomeStore()
-    @Environment(MockBookService.self) private var bookService
+
+    @Query var book: [BookPersistent]
     
     var body: some View {
         BookieNavigationView(title: "My Book List",
@@ -32,22 +34,16 @@ struct HomeScreen: View {
                 ListBookBody(state: state, store: store)
             }
             .refreshable {
-                store.receive(action: .fetchAllBooks)
+                store.receive(action: .fetchAllBooks(isRefresh: true))
             }
-            
         }
         .onRouting(of: router)
         .onChange(of: state.seachText, { oldValue, newValue in
              store.receive(action: .findBooks(text: newValue))
          })
-        .onChange(of: bookService.books) { _, _ in
-             store.receive(action: .fetchAllBooks)
-             store.receive(action: .findBooks(text: state.seachText))
-         }
         .task {
-            store.binding(state: state)
-            store.binding(bookService: bookService, router: router)
-            store.receive(action: .fetchAllBooks)
+            store.binding(state: state, router: router)
+            store.receive(action: .fetchAllBooks(isRefresh: false))
          }
     }
 }
@@ -116,7 +112,7 @@ extension HomeScreen {
 }
 
 @available(iOS 18.0, *)
-#Preview(traits: .modifier(MockBookPreviewModifier())) {
+#Preview(traits: .modifier(PersistentContainerPreviewModifier())) {
     RootPreview {
         HomeScreen()
     }
@@ -134,9 +130,9 @@ extension HomeScreen {
 }
 
 @available(iOS 18.0, *)
-#Preview(traits: .modifier(HomeStatePreviewModifier())) {
+#Preview {
     
-    @Previewable @Environment(HomeScreen.HomeState.self) var state
+    @Previewable @State var state = HomeScreen.HomeState()
     VStack {
         HomeScreen.SearchBody(state: state)
             

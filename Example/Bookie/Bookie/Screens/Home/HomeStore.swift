@@ -7,12 +7,17 @@
 
 import SwiftUI
 import sRouting
+import SwiftData
 
 //MARK: - HomeState
 extension HomeScreen {
     
     @Observable @MainActor
     final class HomeState {
+        
+        init() {
+            print("init HomeState")
+        }
         
         var seachText: String = ""
         
@@ -32,10 +37,14 @@ extension HomeScreen {
                 self.books = books
             }
         }
+        
+        deinit {
+            print("Deinit HomeState")
+        }
     }
     
     enum HomeAction: Sendable {
-        case fetchAllBooks
+        case fetchAllBooks(isRefresh: Bool)
         case findBooks(text: String)
         case gotoDetail(book: BookModel)
     }
@@ -47,28 +56,24 @@ extension HomeScreen {
     final class HomeStore: ActionStore {
         
         private weak var state: HomeState?
-        private weak var bookService: MockBookService?
         private weak var router: SRRouter<HomeRoute>?
-        
-        func binding(state: HomeState) {
+        private lazy var bookService: BookService = .init()
+
+        func binding(state: HomeState, router: SRRouter<HomeRoute>) {
             self.state = state
-        }
-        
-        func binding(bookService: MockBookService, router: SRRouter<HomeRoute>) {
-            self.bookService = bookService
             self.router = router
         }
         
         func receive(action: HomeAction) {
-            assert((state != nil && bookService != nil && router != nil) || EnvironmentRunner.current == .livePreview, "Need binding state, router and book service")
+            assert((state != nil && router != nil) || EnvironmentRunner.current == .livePreview, "Need binding state, router and book service")
             
             switch action {
-            case .fetchAllBooks:
-                state?.updateAllBooks(books: bookService?.books ?? [])
+            case .fetchAllBooks(let isRefresh):
+                _fetchAllBooks(isRefresh: isRefresh)
             case .findBooks(let text):
                 _findBooks(withText: text)
             case .gotoDetail(let book):
-                router?.trigger(to: .bookDetailScreen(book: book), with: .allCases.randomElement() ?? .push)
+                router?.trigger(to: .bookDetailScreen(book: book), with: .push)
             }
         }
     }
@@ -87,6 +92,15 @@ extension HomeScreen.HomeStore {
         let books =  state?.allBooks.filter { $0.name.lowercased().contains(text.lowercased())
             || $0.author.lowercased().contains(text.lowercased()) } ?? []
         state?.updateBooks(books: books)
+    }
+    
+    private func _fetchAllBooks(isRefresh: Bool) {
+        guard let state else { return }
+        guard isRefresh || state.allBooks.isEmpty else { return }
+        Task {
+            let books = try await bookService.fetchAllBooks()
+            state.updateAllBooks(books: books)
+        }
     }
 }
 

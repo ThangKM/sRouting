@@ -45,24 +45,29 @@ extension BookDetailScreen {
     final class DetailStore: ActionStore {
         
         private weak var state: DetailState?
-        private weak var bookService: MockBookService?
+        private lazy var bookService = BookService()
         
         func binding(state: DetailState) {
             self.state = state
         }
-        
-        func binding(bookService: MockBookService) {
-            self.bookService = bookService
-        }
-        
+    
         func receive(action: DetailAction) {
-            assert(EnvironmentRunner.current == .livePreview || (state != nil && bookService != nil), "Missing binding state or book service")
+            assert(state != nil, "Missing binding state or book service")
             switch action {
             case .saveBook:
                 guard let book = state?.book else { return }
-                bookService?.updateBook(book: book)
+                _saveBook(book)
             }
         }
     }
 }
 
+
+extension BookDetailScreen.DetailStore {
+    
+    func _saveBook(_ book: BookModel) {
+        Task {
+            try await bookService.updateBook(book)
+        }
+    }
+}

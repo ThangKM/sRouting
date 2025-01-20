@@ -14,6 +14,24 @@ struct BookModel: Identifiable, Sendable {
     let author :String
     let description: String
     var rating: Int
+    
+    init (id: Int, name: String, imageName: String, author: String, description: String, rating: Int) {
+        self.id = id
+        self.name = name
+        self.imageName = imageName
+        self.author = author
+        self.description = description
+        self.rating = rating
+    }
+    
+    init(persistentModel: BookPersistent) {
+        self.id = persistentModel.id
+        self.name = persistentModel.name
+        self.imageName = persistentModel.imageName
+        self.author = persistentModel.author
+        self.description = persistentModel.bookDescription
+        self.rating = persistentModel.rating
+    }
 }
 
 extension BookModel: Equatable {

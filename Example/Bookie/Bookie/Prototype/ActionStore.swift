@@ -11,9 +11,6 @@ import Foundation
 protocol ActionStore {
     
     associatedtype Action: Sendable
-    associatedtype State: Sendable
     
     func receive(action: Action)
-    
-    func binding(state: State)
 }

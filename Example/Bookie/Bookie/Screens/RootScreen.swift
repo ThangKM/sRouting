@@ -26,8 +26,8 @@ struct RootScreen: View {
                 .transition(.asymmetric(insertion: .scale(scale: 3), removal: .scale(scale: 0.2)).combined(with: .opacity))
                 .animation(.easeInOut(duration: 1), value: 1)
         } else {
-            AppRoute.startScreen(startAction: showHomeAcion)
-            .screen
+            AppRoute.startScreen(store: .init(showHomeAction: showHomeAcion))
+                .screen
                 .transition(.asymmetric(insertion: .scale(scale: 0.2), removal: .scale(scale: 0.2)).combined(with: .opacity))
                 .animation(.easeInOut(duration: 1), value: 1)
         }
