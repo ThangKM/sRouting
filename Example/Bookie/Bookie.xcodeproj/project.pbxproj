@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		37073F2E2D3ED822001A2C24 /* TextLoadingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37073F2D2D3ED814001A2C24 /* TextLoadingView.swift */; };
 		3732440C26957BEF007DE034 /* MockBookService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3732440B26957BEF007DE034 /* MockBookService.swift */; };
 		373244432695E2C9007DE034 /* BookDetailStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 373244422695E2C9007DE034 /* BookDetailStore.swift */; };
 		373244462695FCC6007DE034 /* EmptyObjectType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 373244452695FCC6007DE034 /* EmptyObjectType.swift */; };
@@ -61,6 +62,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		37073F2D2D3ED814001A2C24 /* TextLoadingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextLoadingView.swift; sourceTree = "<group>"; };
 		3732440B26957BEF007DE034 /* MockBookService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockBookService.swift; sourceTree = "<group>"; };
 		373244422695E2C9007DE034 /* BookDetailStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookDetailStore.swift; sourceTree = "<group>"; };
 		373244452695FCC6007DE034 /* EmptyObjectType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmptyObjectType.swift; sourceTree = "<group>"; };
@@ -219,6 +221,7 @@
 		374102762694437000C8DF44 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				37073F2D2D3ED814001A2C24 /* TextLoadingView.swift */,
 				374102742694436800C8DF44 /* RandomBubbleView.swift */,
 				37410279269459F300C8DF44 /* BookieNavigationView.swift */,
 				37AAE7B126956D9B007EA3B6 /* RatingView.swift */,
@@ -477,6 +480,7 @@
 			files = (
 				37AAE7B426957226007EA3B6 /* BookModel.swift in Sources */,
 				37AAE7AA26948818007EA3B6 /* BookCell.swift in Sources */,
+				37073F2E2D3ED822001A2C24 /* TextLoadingView.swift in Sources */,
 				3761E8232D3D87DD00E491BC /* BookPersistent.swift in Sources */,
 				3775E7742D3D74A800763E8E /* RootPreview.swift in Sources */,
 				374102652694307800C8DF44 /* HomeScreen.swift in Sources */,

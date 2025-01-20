@@ -59,7 +59,7 @@ extension StartScreen {
     
     fileprivate struct MainBody: View {
         
-        let state: StartState
+        @Bindable var state: StartState
         let store: StartStore
         
         var body: some View {
@@ -87,7 +87,7 @@ extension StartScreen {
                 Button {
                     store.receive(action: .startAction)
                 } label: {
-                    Text("Start")
+                    TextLoadingView(isLoading: state.isLoading, text: "Start")
                         .foregroundColor(.accentColor)
                         .underline()
                         .abeeFont(size: 16, style: .italic)

@@ -22,7 +22,7 @@ extension HomeScreen {
         
         private(set) var books: [BookModel] = []
         
-        private var backupBooks: [BookModel] = []
+        private(set) var backupBooks: [BookModel] = []
         
         func appendAllBooks(books: [BookModel]) {
             self.books.append(contentsOf: books)
@@ -50,6 +50,10 @@ extension HomeScreen {
         
         func updateDataCanLoadMore(_ canLoadMore: Bool) {
             self.dataCanLoadMore = canLoadMore
+        }
+        
+        func replaceBackupBooks(books: [BookModel]) {
+            backupBooks = books
         }
     }
     
@@ -171,7 +175,10 @@ extension HomeScreen.HomeStore {
     nonisolated private func _updateBooks(from ids: [PersistentIdentifier]) async  {
         let books = (try? await bookService.books(from: ids)) ?? []
         guard !books.isEmpty else { return }
+        
         var allBooks = (await state?.books) ?? []
+        var backupBooks = (await state?.backupBooks) ?? []
+        
         guard !allBooks.isEmpty else { return }
         for book in books {
             if let index = await state?.books.firstIndex(where: { $0.id == book.id}) {
@@ -179,11 +186,14 @@ extension HomeScreen.HomeStore {
             } else {
                 allBooks.insert(book, at: .zero)
             }
+            guard !backupBooks.isEmpty else { continue }
+            if let index = await state?.backupBooks.firstIndex(where: { $0.id == book.id}) {
+                backupBooks[index] = book
+            } else {
+                backupBooks.insert(book, at: .zero)
+            }
         }
         await state?.replaceBooks(books: allBooks)
-        if await !(state?.seachText ?? "").isEmpty {
-            await _findBooks(withText: state?.seachText ?? "")
-        }
     }
 }
 

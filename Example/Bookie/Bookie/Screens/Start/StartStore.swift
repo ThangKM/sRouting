@@ -67,7 +67,7 @@ extension StartScreen.StartStore {
                     try await showHomeAction.execute(true)
                     return
                 }
-                try await bookService.generateBooks(count: 3000)
+                try await bookService.generateBooks(count: 5000)
                 try await showHomeAction.execute(true)
             } catch {
                 router?.show(alert: .failedSyncBooks)
