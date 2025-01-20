@@ -44,6 +44,7 @@ struct HomeScreen: View {
         .task {
             store.binding(state: state, router: router)
             store.receive(action: .firstFetchBooks)
+            state.updateDataCanLoadMore(true)
          }
     }
 }
@@ -96,6 +97,7 @@ extension HomeScreen {
         
         var body: some View {
             List {
+
                 ForEach(state.books) { book in
                     BookCell(book: book)
                         .onTapGesture {
@@ -103,7 +105,7 @@ extension HomeScreen {
                         }
                 }
 
-                if !state.nothingToLoadMore && state.seachText.isEmpty {
+                if state.dataCanLoadMore && state.seachText.isEmpty {
                     ProgressView()
                         .foregroundColor(.black)
                         .frame(maxWidth: .infinity, maxHeight: 20)

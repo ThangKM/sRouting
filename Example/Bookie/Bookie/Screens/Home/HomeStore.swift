@@ -17,7 +17,8 @@ extension HomeScreen {
         
         var seachText: String = ""
         
-        private(set) var nothingToLoadMore: Bool = true
+        @ObservationIgnored
+        private(set) var dataCanLoadMore: Bool = false
         
         private(set) var books: [BookModel] = []
         
@@ -47,8 +48,8 @@ extension HomeScreen {
             self.books = books
         }
         
-        func updateNothingToLoadMore(nothingToLoadMore: Bool) {
-            self.nothingToLoadMore = nothingToLoadMore
+        func updateDataCanLoadMore(_ canLoadMore: Bool) {
+            self.dataCanLoadMore = canLoadMore
         }
     }
     
@@ -135,11 +136,12 @@ extension HomeScreen.HomeStore {
             } else {
                 state?.appendAllBooks(books: books)
             }
-            state?.updateNothingToLoadMore(nothingToLoadMore: books.count < fetchPagingService.limit)
+            state?.updateDataCanLoadMore(books.count >= fetchPagingService.limit)
         }
     }
     
     private func _refreshBooks() {
+        
         fetchPagingService.reset()
         _fetchPagingBooks()
     }
@@ -179,8 +181,9 @@ extension HomeScreen.HomeStore {
             }
         }
         await state?.replaceBooks(books: allBooks)
-        await state?.updateNothingToLoadMore(nothingToLoadMore: false)
-        await _findBooks(withText: state?.seachText ?? "")
+        if await !(state?.seachText ?? "").isEmpty {
+            await _findBooks(withText: state?.seachText ?? "")
+        }
     }
 }
 
