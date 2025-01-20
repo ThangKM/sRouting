@@ -20,7 +20,7 @@ func databaseWriteTransaction(models: [any PersistentModel],
             }
             try context.save()
             let ids = batch.map(\.persistentModelID)
-            await DatabaseActor.shared.produce(changes: .updated(ids))
+            await DatabaseActor.shared.produce(changes: .addNewOrUpdate(ids))
             let count = await DatabaseActor.jobCount
             if count > 1 {
                 try await Task.sleep(for: .milliseconds(300))
@@ -32,7 +32,7 @@ func databaseWriteTransaction(models: [any PersistentModel],
         }
         try context.save()
         let ids = models.map(\.persistentModelID)
-        await DatabaseActor.shared.produce(changes: .updated(ids))
+        await DatabaseActor.shared.produce(changes: .addNewOrUpdate(ids))
     }
 }
 
@@ -136,12 +136,11 @@ fileprivate final class DatabaseQueue: @unchecked Sendable {
     }
 }
 
-//MARK: - Helper
-
+//MARK: - Helpers
 extension DatabaseActor {
+    
     enum DidSaveChangesResult: Sendable {
-        case updated([PersistentIdentifier])
-        case inserted([PersistentIdentifier])
+        case addNewOrUpdate([PersistentIdentifier])
         case deleted([PersistentIdentifier])
     }
 }
@@ -178,3 +177,5 @@ extension Array {
         }
     }
 }
+
+

@@ -8,25 +8,13 @@
 import SwiftUI
 import SwiftData
 
-@available(iOS 18.0, *)
-struct MockBookPreviewModifier: PreviewModifier {
-    
-    static func makeSharedContext() async throws -> MockBookService {
-        MockBookService()
-    }
-    
-    func body(content: Content, context: MockBookService) -> some View {
-        content.environment(context)
-    }
-    
-}
 
 @available(iOS 18.0, *)
 struct HomeStatePreviewModifier: PreviewModifier {
     
     static func makeSharedContext() async throws -> HomeScreen.HomeState {
         let state = HomeScreen.HomeState()
-        state.updateAllBooks(books: MockBookService().books)
+        state.replaceBooks(books: MockBookService.shared.books)
         return state
     }
     
@@ -40,7 +28,7 @@ struct HomeStatePreviewModifier: PreviewModifier {
 struct DetailStatePreviewModifier: PreviewModifier {
     
     static func makeSharedContext() async throws -> BookDetailScreen.DetailState {
-        let state = BookDetailScreen.DetailState(book: MockBookService().books.first ?? .empty)
+        let state = BookDetailScreen.DetailState(book: MockBookService.shared.book)
         return state
     }
     
@@ -55,7 +43,7 @@ struct DetailStatePreviewModifier: PreviewModifier {
 struct PersistentContainerPreviewModifier: PreviewModifier {
     
     static func makeSharedContext() async throws -> ModelContainer {
-        let container = Database.shared.container
+        let container = DatabaseProvider.shared.container
         try await makeMockData(container: container)
         return container
     }
@@ -66,7 +54,7 @@ struct PersistentContainerPreviewModifier: PreviewModifier {
     
     @DatabaseActor
     static private func makeMockData(container: ModelContainer) async throws {
-        let books = MockBookService().books
+        let books = MockBookService.shared.books
         let models = books.map({ BookPersistent(book: $0) })
         try await databaseWriteTransaction(models: models, useContext: .init(container))
     }

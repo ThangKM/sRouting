@@ -1,5 +1,5 @@
 //
-//  Database.swift
+//  DatabaseProvider.swift
 //  Bookie
 //
 //  Created by Thang Kieu on 20/1/25.
@@ -8,9 +8,9 @@
 import Foundation
 import SwiftData
 
-final class Database: Sendable {
+final class DatabaseProvider: Sendable {
     
-    static let shared = Database()
+    static let shared = DatabaseProvider()
     let container: ModelContainer
     
     private init() {

@@ -50,7 +50,7 @@ extension StartScreen {
             assert(EnvironmentRunner.current == .livePreview || (state != nil && router != nil), "Missing binding state, router or running on live preview")
             switch action {
             case .startAction:
-                _synchronizeBookIfNeeded()
+                _generateBooksIfNeeded()
             }
         }
     }
@@ -59,7 +59,7 @@ extension StartScreen {
 
 extension StartScreen.StartStore {
     
-    func _synchronizeBookIfNeeded() {
+    func _generateBooksIfNeeded() {
         Task {
             state?.updateLoading(true)
             do {
@@ -67,7 +67,7 @@ extension StartScreen.StartStore {
                     try await showHomeAction.execute(true)
                     return
                 }
-                try await bookService.synchronizeBooksFromMockData()
+                try await bookService.generateBooks(count: 3000)
                 try await showHomeAction.execute(true)
             } catch {
                 router?.show(alert: .failedSyncBooks)

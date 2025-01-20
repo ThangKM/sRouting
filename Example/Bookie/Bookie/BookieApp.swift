@@ -29,7 +29,7 @@ struct BookieApp: App {
                         .routeObserver(RouteObserver.self)
                 }
             }
-            .modelContainer(Database.shared.container)
+            .modelContainer(DatabaseProvider.shared.container)
         }
     }
 }

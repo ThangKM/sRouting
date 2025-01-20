@@ -91,8 +91,7 @@ extension BookDetailScreen {
 }
 
 @available(iOS 18.0, *)
-#Preview(traits: .modifier(DetailStatePreviewModifier()),
-         .modifier(MockBookPreviewModifier())) {
+#Preview(traits: .modifier(DetailStatePreviewModifier())) {
     
     @Previewable @Environment(BookDetailScreen.DetailState.self) var state
     BookDetailScreen(state: state)

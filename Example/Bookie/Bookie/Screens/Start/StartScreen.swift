@@ -83,7 +83,7 @@ extension StartScreen {
                 }
                 
                 Spacer()
-                
+
                 Button {
                     store.receive(action: .startAction)
                 } label: {

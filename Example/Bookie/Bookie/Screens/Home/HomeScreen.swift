@@ -34,7 +34,7 @@ struct HomeScreen: View {
                 ListBookBody(state: state, store: store)
             }
             .refreshable {
-                store.receive(action: .fetchAllBooks(isRefresh: true))
+                store.receive(action: .refreshBooks)
             }
         }
         .onRouting(of: router)
@@ -43,7 +43,7 @@ struct HomeScreen: View {
          })
         .task {
             store.binding(state: state, router: router)
-            store.receive(action: .fetchAllBooks(isRefresh: false))
+            store.receive(action: .firstFetchBooks)
          }
     }
 }
@@ -95,12 +95,22 @@ extension HomeScreen {
         let store: HomeStore
         
         var body: some View {
-            List(state.books) { book in
-                BookCell(book: book)
-                    .onTapGesture {
-                        store.receive(action: .gotoDetail(book: book))
-                    }
-                
+            List {
+                ForEach(state.books) { book in
+                    BookCell(book: book)
+                        .onTapGesture {
+                            store.receive(action: .gotoDetail(book: book))
+                        }
+                }
+
+                if !state.nothingToLoadMore && state.seachText.isEmpty {
+                    ProgressView()
+                        .foregroundColor(.black)
+                        .frame(maxWidth: .infinity, maxHeight: 20)
+                        .onAppear() {
+                            store.receive(action: .loadmoreBooks)
+                        }
+                }
             }
             .listRowSpacing(15)
             .scrollContentBackground(.hidden)

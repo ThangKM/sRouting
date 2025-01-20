@@ -17,26 +17,45 @@ extension HomeScreen {
         
         var seachText: String = ""
         
+        private(set) var nothingToLoadMore: Bool = true
+        
         private(set) var books: [BookModel] = []
         
-        @ObservationIgnored
-        private(set) var allBooks: [BookModel] = []
+        private var backupBooks: [BookModel] = []
         
-        func updateAllBooks(books: [BookModel]) {
-            self.allBooks = books
-            guard self.books.isEmpty else { return }
+        func appendAllBooks(books: [BookModel]) {
+            self.books.append(contentsOf: books)
+        }
+        
+        func repaceAndBackupListBooks(books: [BookModel]) {
+            if backupBooks.isEmpty {
+                backupBooks = self.books
+                self.books = books
+            } else {
+                withAnimation {
+                    self.books = books
+                }
+            }
+        }
+        
+        func restoreListBooks() {
+            self.books = backupBooks
+            backupBooks = []
+        }
+        
+        func replaceBooks(books: [BookModel]) {
             self.books = books
         }
         
-        func updateBooks(books: [BookModel]) {
-            withAnimation {
-                self.books = books
-            }
+        func updateNothingToLoadMore(nothingToLoadMore: Bool) {
+            self.nothingToLoadMore = nothingToLoadMore
         }
     }
     
     enum HomeAction: Sendable {
-        case fetchAllBooks(isRefresh: Bool)
+        case firstFetchBooks
+        case refreshBooks
+        case loadmoreBooks
         case findBooks(text: String)
         case gotoDetail(book: BookModel)
     }
@@ -51,6 +70,7 @@ extension HomeScreen {
         private weak var router: SRRouter<HomeRoute>?
         private let cancelBag = CancelBag()
         private var didObserveChanges: Bool = false
+        private lazy var fetchPagingService: FetchPagingService<BookPersistent> = .init(sortBy: [.init(\.id, order: .forward)])
         nonisolated private lazy var bookService: BookService = .init()
         
         func binding(state: HomeState, router: SRRouter<HomeRoute>) {
@@ -60,11 +80,16 @@ extension HomeScreen {
         }
         
         func receive(action: HomeAction) {
-            assert((state != nil && router != nil) || EnvironmentRunner.current == .livePreview, "Need binding state, router and book service")
+            assert((state != nil && router != nil) || EnvironmentRunner.current == .livePreview,
+                   "Need binding state, router and book service")
             
             switch action {
-            case .fetchAllBooks(let isRefresh):
-                _fetchAllBooks(isRefresh: isRefresh)
+            case .refreshBooks:
+                _refreshBooks()
+            case .loadmoreBooks:
+                _loadmoreBooks()
+            case .firstFetchBooks:
+                _firstFetchAllBooks()
             case .findBooks(let text):
                 _findBooks(withText: text)
             case .gotoDetail(let book):
@@ -84,22 +109,44 @@ extension HomeScreen.HomeStore {
     private func _findBooks(withText text: String) {
         
         guard !text.isEmpty else {
-            state?.updateBooks(books: state?.allBooks ?? [])
+            state?.restoreListBooks()
             return
         }
         
-        let books =  state?.allBooks.filter { $0.name.lowercased().contains(text.lowercased())
-            || $0.author.lowercased().contains(text.lowercased()) } ?? []
-        state?.updateBooks(books: books)
+        Task {
+            let books = try await bookService.searchBooks(query: text)
+            state?.repaceAndBackupListBooks(books: books)
+        }
     }
     
-    private func _fetchAllBooks(isRefresh: Bool) {
-        guard let state else { return }
-        guard isRefresh || state.allBooks.isEmpty else { return }
+    private func _firstFetchAllBooks() {
+        guard let state, state.books.isEmpty else { return }
+        _refreshBooks()
+    }
+    
+    private func _fetchPagingBooks() {
+        let offset = fetchPagingService.offset
         Task {
-            let books = try await bookService.fetchAllBooks()
-            state.updateAllBooks(books: books)
+            let books = try await bookService.fetchAllBooks(offset: offset,
+                                                            limit: fetchPagingService.limit,
+                                                            sortBy: fetchPagingService.sortBy)
+            if offset == .zero {
+                state?.replaceBooks(books: books)
+            } else {
+                state?.appendAllBooks(books: books)
+            }
+            state?.updateNothingToLoadMore(nothingToLoadMore: books.count < fetchPagingService.limit)
         }
+    }
+    
+    private func _refreshBooks() {
+        fetchPagingService.reset()
+        _fetchPagingBooks()
+    }
+    
+    private func _loadmoreBooks() {
+        fetchPagingService.nextPage()
+        _fetchPagingBooks()
     }
     
     private func _observeBookChanges() {
@@ -111,7 +158,7 @@ extension HomeScreen.HomeStore {
             try Task.checkCancellation()
             for await result in stream {
                 switch result {
-                case .updated(let ids):
+                case .addNewOrUpdate(let ids):
                     await self._updateBooks(from: ids)
                 default: break
                 }
@@ -122,14 +169,17 @@ extension HomeScreen.HomeStore {
     nonisolated private func _updateBooks(from ids: [PersistentIdentifier]) async  {
         let books = (try? await bookService.books(from: ids)) ?? []
         guard !books.isEmpty else { return }
-        var allBooks = (await state?.allBooks) ?? []
+        var allBooks = (await state?.books) ?? []
         guard !allBooks.isEmpty else { return }
         for book in books {
-            if let index = await state?.allBooks.firstIndex(where: { $0.id == book.id}) {
+            if let index = await state?.books.firstIndex(where: { $0.id == book.id}) {
                 allBooks[index] = book
+            } else {
+                allBooks.insert(book, at: .zero)
             }
         }
-        await state?.updateAllBooks(books: allBooks)
+        await state?.replaceBooks(books: allBooks)
+        await state?.updateNothingToLoadMore(nothingToLoadMore: false)
         await _findBooks(withText: state?.seachText ?? "")
     }
 }

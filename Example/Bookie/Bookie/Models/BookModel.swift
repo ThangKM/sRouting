@@ -8,7 +8,7 @@
 import Foundation
 
 struct BookModel: Identifiable, Sendable {
-    let id: Int
+    var id: Int
     let name: String
     let imageName: String
     let author :String
@@ -31,17 +31,6 @@ struct BookModel: Identifiable, Sendable {
         self.author = persistentModel.author
         self.description = persistentModel.bookDescription
         self.rating = persistentModel.rating
-    }
-}
-
-extension BookModel: Equatable {
-    static func == (lhs: BookModel, rhs: BookModel) -> Bool {
-        return lhs.id == rhs.id &&
-        lhs.name == rhs.name &&
-        lhs.imageName == rhs.imageName &&
-        lhs.author == rhs.author &&
-        lhs.description == rhs.description &&
-        lhs.rating == rhs.rating
     }
 }
 

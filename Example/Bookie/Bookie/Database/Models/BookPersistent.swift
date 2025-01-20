@@ -49,4 +49,17 @@ extension BookPersistent {
     static func fetchById(_ id: Int) -> FetchDescriptor<BookPersistent> {
         .init(predicate: #Predicate { $0.id == id })
     }
+    
+    static func fetch(offset: Int, limit: Int, sortBy: [SortDescriptor<BookPersistent>]) -> FetchDescriptor<BookPersistent> {
+        var fetchDescriptor = fetchAll
+        fetchDescriptor.fetchOffset = offset
+        fetchDescriptor.fetchLimit = limit
+        fetchDescriptor.sortBy = sortBy
+        return fetchDescriptor
+    }
+    
+    static func searchBook(query: String) -> FetchDescriptor<BookPersistent> {
+        .init(predicate: #Predicate { $0.name.localizedStandardContains(query)
+            || $0.author.localizedStandardContains(query) })
+    }
 }
