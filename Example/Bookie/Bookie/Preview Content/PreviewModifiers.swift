@@ -64,10 +64,10 @@ struct PersistentContainerPreviewModifier: PreviewModifier {
         content.modelContainer(context)
     }
     
-    @PersistentActor
+    @DatabaseActor
     static private func makeMockData(container: ModelContainer) async throws {
         let books = MockBookService().books
         let models = books.map({ BookPersistent(book: $0) })
-        try await persistentWriteTransaction(models: models, useContext: .init(container))
+        try await databaseWriteTransaction(models: models, useContext: .init(container))
     }
 }

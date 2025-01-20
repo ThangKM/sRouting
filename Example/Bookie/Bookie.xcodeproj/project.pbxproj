@@ -25,6 +25,7 @@
 		3761E8232D3D87DD00E491BC /* BookPersistent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3761E8222D3D87AD00E491BC /* BookPersistent.swift */; };
 		3761E8252D3D91D900E491BC /* BookService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3761E8242D3D91D400E491BC /* BookService.swift */; };
 		3761E8282D3D959700E491BC /* StartStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3761E8272D3D959300E491BC /* StartStore.swift */; };
+		3761E82A2D3E48D900E491BC /* DatabaseActor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3761E8292D3E48D600E491BC /* DatabaseActor.swift */; };
 		3775E7722D3D672E00763E8E /* EnvironmentRunner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3775E7712D3D671300763E8E /* EnvironmentRunner.swift */; };
 		3775E7742D3D74A800763E8E /* RootPreview.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3775E7732D3D749D00763E8E /* RootPreview.swift */; };
 		3775E7762D3D79DA00763E8E /* RootScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3775E7752D3D79D700763E8E /* RootScreen.swift */; };
@@ -78,6 +79,7 @@
 		3761E8222D3D87AD00E491BC /* BookPersistent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookPersistent.swift; sourceTree = "<group>"; };
 		3761E8242D3D91D400E491BC /* BookService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookService.swift; sourceTree = "<group>"; };
 		3761E8272D3D959300E491BC /* StartStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StartStore.swift; sourceTree = "<group>"; };
+		3761E8292D3E48D600E491BC /* DatabaseActor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatabaseActor.swift; sourceTree = "<group>"; };
 		3775E7712D3D671300763E8E /* EnvironmentRunner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EnvironmentRunner.swift; sourceTree = "<group>"; };
 		3775E7732D3D749D00763E8E /* RootPreview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootPreview.swift; sourceTree = "<group>"; };
 		3775E7752D3D79D700763E8E /* RootScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootScreen.swift; sourceTree = "<group>"; };
@@ -227,6 +229,7 @@
 			children = (
 				3761E8212D3D87A700E491BC /* Models */,
 				3761E81F2D3D852E00E491BC /* Database.swift */,
+				3761E8292D3E48D600E491BC /* DatabaseActor.swift */,
 			);
 			path = Database;
 			sourceTree = "<group>";
@@ -481,6 +484,7 @@
 				3761E8252D3D91D900E491BC /* BookService.swift in Sources */,
 				379D3464268D024800903D92 /* BookieApp.swift in Sources */,
 				373244462695FCC6007DE034 /* EmptyObjectType.swift in Sources */,
+				3761E82A2D3E48D900E491BC /* DatabaseActor.swift in Sources */,
 				3741025E26942F2400C8DF44 /* StartScreen.swift in Sources */,
 				3741026126942F4300C8DF44 /* AppRoute.swift in Sources */,
 				3775E7762D3D79DA00763E8E /* RootScreen.swift in Sources */,
