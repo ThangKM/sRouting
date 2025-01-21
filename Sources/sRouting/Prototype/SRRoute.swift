@@ -17,10 +17,10 @@ public protocol SRConfirmationDialogRoute: Sendable {
     
     var titleVisibility: Visibility { get }
     
-    @ViewBuilder
+    @ViewBuilder @MainActor
     var message: Message { get }
     
-    @ViewBuilder
+    @ViewBuilder @MainActor
     var actions: Actions { get }
 }
 
@@ -39,10 +39,10 @@ public protocol SRAlertRoute: Sendable {
     
     var titleKey: LocalizedStringKey { get }
     
-    @ViewBuilder
+    @ViewBuilder @MainActor
     var message: Message { get }
     
-    @ViewBuilder
+    @ViewBuilder @MainActor
     var actions: Actions { get }
 }
 
