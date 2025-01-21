@@ -33,7 +33,7 @@ final class BookService {
     
     func updateBook(_ book: BookModel) async throws {
         let context = ModelContext(container)
-        let books = try context.fetch(BookPersistent.fetchById(book.id))
+        let books = try context.fetch(BookPersistent.fetchByBookId(book.id))
         guard let persistentBook = books.first else {
             return
         }
@@ -45,9 +45,8 @@ final class BookService {
         try await databaseWriteTransaction(models: [persistentBook], useContext: context)
     }
     
-    func books(from ids: [PersistentIdentifier]) async throws -> [BookModel] {
+    func books(fromPersistentIdentifiers ids: [PersistentIdentifier]) -> [BookModel] {
         let context = ModelContext(container)
-        
         var books = [BookModel]()
         for id in ids {
             guard let book = context.model(for: id) as? BookPersistent
@@ -57,7 +56,18 @@ final class BookService {
         return books
     }
     
-    func searchBooks(query: String) async throws -> [BookModel] {
+    func deleteBooks(byPersistentIdentifiers ids: [PersistentIdentifier]) async throws {
+        let context = ModelContext(container)
+        var books = [BookPersistent]()
+        for id in ids {
+            guard let book = context.model(for: id) as? BookPersistent
+            else { continue }
+            books.append(book)
+        }
+        try await databaseDeleteTransaction(models: books, useContext: context)
+    }
+    
+    func searchBooks(query: String) throws -> [BookModel] {
         let context = ModelContext(container)
         let books = try context.fetch(BookPersistent.searchBook(query: query))
         let result = books.map { BookModel(persistentModel: $0) }

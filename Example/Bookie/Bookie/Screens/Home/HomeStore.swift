@@ -55,14 +55,35 @@ extension HomeScreen {
         func replaceBackupBooks(books: [BookModel]) {
             backupBooks = books
         }
+        
+        func removeBooks(atOffsets offsets: IndexSet) -> [PersistentIdentifier] {
+            guard !offsets.isEmpty && !books.isEmpty else { return [] }
+            let indices = books.indices
+            let willDeleteBooks = offsets.compactMap({
+                indices.contains($0) ? books[$0] : nil
+            })
+            let persistentIds = willDeleteBooks.compactMap(\.persistentIdentifier)
+            books.remove(atOffsets: offsets)
+            return persistentIds
+        }
+        
+        func removeBooks(byPersistentIdentifiers ids: [PersistentIdentifier]) {
+            withAnimation {
+                books.removeAll(where: {
+                    guard let id = $0.persistentIdentifier else { return false }
+                    return ids.contains(id)
+                })
+            }
+        }
     }
     
     enum HomeAction: Sendable {
         case firstFetchBooks
         case refreshBooks
         case loadmoreBooks
-        case findBooks(text: String)
+        case searchBookBy(text: String)
         case gotoDetail(book: BookModel)
+        case swipeDelete(atOffsets: IndexSet)
     }
 }
 
@@ -75,7 +96,7 @@ extension HomeScreen {
         private weak var router: SRRouter<HomeRoute>?
         private let cancelBag = CancelBag()
         private var didObserveChanges: Bool = false
-        private lazy var fetchPagingService: FetchPagingService<BookPersistent> = .init(sortBy: [.init(\.id, order: .forward)])
+        private lazy var fetchPagingService: FetchPagingService<BookPersistent> = .init(sortBy: [.init(\.bookId, order: .forward)])
         nonisolated private lazy var bookService: BookService = .init()
         
         func binding(state: HomeState, router: SRRouter<HomeRoute>) {
@@ -89,14 +110,16 @@ extension HomeScreen {
                    "Need binding state, router and book service")
             
             switch action {
+            case .swipeDelete(let offsets):
+                _deleteBooks(atOffsets: offsets)
             case .refreshBooks:
                 _refreshBooks()
             case .loadmoreBooks:
                 _loadmoreBooks()
             case .firstFetchBooks:
                 _firstFetchAllBooks()
-            case .findBooks(let text):
-                _findBooks(withText: text)
+            case .searchBookBy(let text):
+                _searchBooks(byText: text)
             case .gotoDetail(let book):
                 router?.trigger(to: .bookDetailScreen(book: book), with: .allCases.randomElement() ?? .push)
             }
@@ -111,7 +134,15 @@ extension HomeScreen {
 //MARK: - Private Jobs
 extension HomeScreen.HomeStore {
     
-    private func _findBooks(withText text: String) {
+    private func _deleteBooks(atOffsets offsets: IndexSet) {
+        let persistentIds = state?.removeBooks(atOffsets: offsets) ?? []
+        guard !persistentIds.isEmpty else { return }
+        Task {
+            try await bookService.deleteBooks(byPersistentIdentifiers: persistentIds)
+        }
+    }
+    
+    private func _searchBooks(byText text: String) {
         
         guard !text.isEmpty else {
             state?.restoreListBooks()
@@ -145,7 +176,6 @@ extension HomeScreen.HomeStore {
     }
     
     private func _refreshBooks() {
-        
         fetchPagingService.reset()
         _fetchPagingBooks()
     }
@@ -154,26 +184,31 @@ extension HomeScreen.HomeStore {
         fetchPagingService.nextPage()
         _fetchPagingBooks()
     }
+}
+
+//MARK: - Observe BookPersistent Changes
+extension HomeScreen.HomeStore {
     
     private func _observeBookChanges() {
         guard !didObserveChanges else { return }
         didObserveChanges = true
         Task.detached {[weak self] in
             guard let self else { return }
-            let stream = await DatabaseActor.shared.stream
+            let stream = await DatabaseActor.shared.changesStream
             try Task.checkCancellation()
             for await result in stream {
                 switch result {
                 case .addNewOrUpdate(let ids):
-                    await self._updateBooks(from: ids)
-                default: break
+                    await self._observeAddNewOrUpdate(from: ids)
+                case .deleted(let ids):
+                    await self._observeDelete(from: ids)
                 }
             }
         }.store(in: cancelBag, withIdentifier: "HommeStore.observeBookChanges")
     }
     
-    nonisolated private func _updateBooks(from ids: [PersistentIdentifier]) async  {
-        let books = (try? await bookService.books(from: ids)) ?? []
+    nonisolated private func _observeAddNewOrUpdate(from ids: [PersistentIdentifier]) async  {
+        let books = await bookService.books(fromPersistentIdentifiers: ids)
         guard !books.isEmpty else { return }
         
         var allBooks = (await state?.books) ?? []
@@ -181,13 +216,13 @@ extension HomeScreen.HomeStore {
         
         guard !allBooks.isEmpty else { return }
         for book in books {
-            if let index = await state?.books.firstIndex(where: { $0.id == book.id}) {
+            if let index = await state?.books.firstIndex(where: { $0.bookId == book.bookId}) {
                 allBooks[index] = book
             } else {
                 allBooks.insert(book, at: .zero)
             }
             guard !backupBooks.isEmpty else { continue }
-            if let index = await state?.backupBooks.firstIndex(where: { $0.id == book.id}) {
+            if let index = await state?.backupBooks.firstIndex(where: { $0.bookId == book.bookId}) {
                 backupBooks[index] = book
             } else {
                 backupBooks.insert(book, at: .zero)
@@ -195,5 +230,8 @@ extension HomeScreen.HomeStore {
         }
         await state?.replaceBooks(books: allBooks)
     }
+    
+    nonisolated private func _observeDelete(from ids: [PersistentIdentifier]) async  {
+        await state?.removeBooks(byPersistentIdentifiers: ids)
+    }
 }
-

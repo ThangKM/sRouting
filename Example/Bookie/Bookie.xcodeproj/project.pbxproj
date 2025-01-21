@@ -128,14 +128,6 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		3732440A26957BD7007DE034 /* MockData */ = {
-			isa = PBXGroup;
-			children = (
-				3732440B26957BEF007DE034 /* MockBookService.swift */,
-			);
-			path = MockData;
-			sourceTree = "<group>";
-		};
 		373244442695FC8C007DE034 /* Prototype */ = {
 			isa = PBXGroup;
 			children = (
@@ -250,6 +242,7 @@
 		3761E8262D3D91DE00E491BC /* Services */ = {
 			isa = PBXGroup;
 			children = (
+				3732440B26957BEF007DE034 /* MockBookService.swift */,
 				37B40E6E2D3EADE200E1E86D /* FetchPagingService.swift */,
 				3761E8242D3D91D400E491BC /* BookService.swift */,
 			);
@@ -285,7 +278,6 @@
 				379D3467268D024A00903D92 /* Assets.xcassets */,
 				3761E81E2D3D851F00E491BC /* Database */,
 				3761E8262D3D91DE00E491BC /* Services */,
-				3732440A26957BD7007DE034 /* MockData */,
 				373244442695FC8C007DE034 /* Prototype */,
 				3741025F26942F2F00C8DF44 /* Routes */,
 				374102762694437000C8DF44 /* Views */,

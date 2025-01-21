@@ -36,7 +36,7 @@ struct BookCell: View {
 
 #Preview {
     List {
-        BookCell(book: .init(id: 1,
+        BookCell(book: .init(bookId: 1,
                              name: "Book Title",
                              imageName: "",
                              author: "Developer",

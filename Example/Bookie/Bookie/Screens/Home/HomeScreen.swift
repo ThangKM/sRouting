@@ -15,8 +15,6 @@ struct HomeScreen: View {
     @State private var state = HomeState()
     @State private var store = HomeStore()
 
-    @Query var book: [BookPersistent]
-    
     var body: some View {
         BookieNavigationView(title: "My Book List",
                              router: router,
@@ -39,7 +37,7 @@ struct HomeScreen: View {
         }
         .onRouting(of: router)
         .onChange(of: state.seachText, { oldValue, newValue in
-             store.receive(action: .findBooks(text: newValue))
+             store.receive(action: .searchBookBy(text: newValue))
          })
         .task {
             store.binding(state: state, router: router)
@@ -103,6 +101,9 @@ extension HomeScreen {
                         .onTapGesture {
                             store.receive(action: .gotoDetail(book: book))
                         }
+                }
+                .onDelete { indexSet in
+                    store.receive(action: .swipeDelete(atOffsets: indexSet))
                 }
 
                 if state.dataCanLoadMore && state.seachText.isEmpty {

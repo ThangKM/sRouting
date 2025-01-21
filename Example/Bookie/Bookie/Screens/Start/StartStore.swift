@@ -61,18 +61,19 @@ extension StartScreen.StartStore {
     
     func _generateBooksIfNeeded() {
         Task {
-            state?.updateLoading(true)
             do {
                 guard await bookService.isDatabaseEmpty() else {
                     try await showHomeAction.execute(true)
                     return
                 }
+                state?.updateLoading(true)
                 try await bookService.generateBooks(count: 5000)
+                state?.updateLoading(false)
                 try await showHomeAction.execute(true)
             } catch {
                 router?.show(alert: .failedSyncBooks)
+                state?.updateLoading(false)
             }
-            state?.updateLoading(false)
         }
     }
 }

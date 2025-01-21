@@ -34,12 +34,24 @@ struct BookDetailScreen: View {
                     Divider()
                     
                     VStack(spacing: 8) {
+                        
                         Text("TAP TO ADD RATING")
+                            .abeeFont(size: 20, style: .italic)
+                        
                         RatingView(rating: $state.rating, enableEditing: true)
                         
+                        Spacer(minLength: 40)
+                        
+                        Button("Delete") {
+                            store.receive(action: .deleteBook)
+                        }
+                        .abeeFont(size: 15, style: .regular)
+                        .tint(Color.pink)
+                        .foregroundStyle(.white)
+                        .buttonStyle(.borderedProminent)
+                        .disabled(state.isLoading)
                     }
                     .frame(maxWidth: .infinity)
-                    .abeeFont(size: 20, style: .italic)
                     .padding()
                 }
             }
@@ -50,7 +62,7 @@ struct BookDetailScreen: View {
         })
         .foregroundColor(.accentColor)
         .task {
-            store.binding(state: state)
+            store.binding(state: state, router: router)
         }
     }
 }

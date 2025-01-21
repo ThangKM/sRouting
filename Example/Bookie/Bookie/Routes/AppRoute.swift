@@ -29,6 +29,7 @@ enum AppRoute: SRRoute {
     }
 }
 
+//MARK: - AppAlertErrors
 enum AppAlertErrors: SRAlertRoute, CustomNSError, CustomStringConvertible  {
     
     case failedSyncBooks
@@ -43,7 +44,7 @@ enum AppAlertErrors: SRAlertRoute, CustomNSError, CustomStringConvertible  {
     
     var description: String {
         switch self {
-        case .failedSyncBooks: return "Failed Sync Books!"
+        case .failedSyncBooks: return "Failed to generate Books!"
         }
     }
 
@@ -81,4 +82,38 @@ struct AppAlertsRoute: SRRoute {
         return EmptyView()
     }
     
+}
+
+//MARK: - Confirmation Dialog
+
+enum AppConfirmationDialog: SRConfirmationDialogRoute {
+
+    case delete(confirmedAction: @Sendable @MainActor () -> Void)
+    
+    var titleKey: LocalizedStringKey {
+        switch self {
+        case .delete: return "Delete"
+        }
+    }
+    
+    var titleVisibility: Visibility {
+        switch self {
+        case .delete: return .visible
+        }
+    }
+    
+    var actions: some View {
+        switch self {
+        case .delete(let action):
+            Button("YES", role: .destructive, action:  action)
+        }
+    }
+    
+    var message: some View {
+        switch self {
+        case .delete:
+            Text("Are you sure you want to delete this item?")
+                .abeeFont(size: 13, style: .regular)
+        }
+    }
 }

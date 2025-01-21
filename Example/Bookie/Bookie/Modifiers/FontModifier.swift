@@ -32,7 +32,8 @@ struct FontModifier: ViewModifier {
 }
 
 extension View {
-    func abeeFont(size: CGFloat, style: FontModifier.Style) -> some View {
+    
+    nonisolated func abeeFont(size: CGFloat, style: FontModifier.Style) -> some View {
         self.modifier(FontModifier(size: size, style: style))
     }
 }

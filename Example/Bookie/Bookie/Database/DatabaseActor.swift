@@ -36,15 +36,25 @@ func databaseWriteTransaction(models: [any PersistentModel],
     }
 }
 
+@DatabaseActor
+func databaseDeleteTransaction(models: [any PersistentModel],
+                               useContext context: ModelContext) async throws {
+    for model in models {
+        guard !model.isDeleted else { continue }
+        context.delete(model)
+    }
+    try context.save()
+    let ids = models.map( \.persistentModelID)
+    await DatabaseActor.shared.produce(changes: .deleted(ids))
+}
 
 //MARK: - DatabaseActor
 @globalActor
 public actor DatabaseActor {
     
-    typealias Continuation = AsyncStream<DidSaveChangesResult>.Continuation
-    
-    static public let shared = DatabaseActor()
+    public static let shared = DatabaseActor()
     private static let executer = DatabseExecutor()
+    private let producer = ProduceStream()
     
     public nonisolated var unownedExecutor: UnownedSerialExecutor {
         Self.sharedUnownedExecutor
@@ -54,48 +64,25 @@ public actor DatabaseActor {
         executer.asUnownedSerialExecutor()
     }
     
-    private var continuations: [String:Continuation] = [:]
-
-    /// Events stream
-    var stream: AsyncStream<DidSaveChangesResult> {
-        AsyncStream { continuation in
-            append(continuation)
-        }
-    }
-    
     static var jobCount: Int {
         get async {
             await executer.jobCounter.jobCount
         }
     }
-    
+
     private init() { }
+}
+
+extension DatabaseActor {
     
-    private func append(_ continuation: Continuation) {
-        let key = UUID().uuidString
-        continuation.onTermination  = {[weak self] _ in
-            self?.onTermination(forKey: key)
-        }
-        continuations.updateValue(continuation, forKey: key)
-    }
-    
-    private func removeContinuation(forKey key: String) {
-        continuations.removeValue(forKey: key)
-    }
-    
-    nonisolated private func onTermination(forKey key: String) {
-        Task(priority: .high) {
-            await removeContinuation(forKey: key)
+    nonisolated var changesStream: AsyncStream<DidSaveChangesResult> {
+        get async {
+            await producer.stream
         }
     }
     
-    func produce(changes: DidSaveChangesResult) {
-        continuations.values.forEach({ $0.yield(changes) })
-    }
-    
-    func finishChangesStream() {
-        continuations.values.forEach({ $0.finish() })
-        continuations.removeAll()
+    nonisolated func produce(changes: DidSaveChangesResult) async {
+        await producer.produce(changes: changes)
     }
 }
 
@@ -132,6 +119,49 @@ fileprivate final class DatabaseQueue: @unchecked Sendable {
         queue.async {[weak self] in
             work()
             self?.counter.decrease()
+        }
+    }
+}
+
+//MARK: - Produce Stream
+fileprivate actor ProduceStream {
+    
+    typealias Element = DatabaseActor.DidSaveChangesResult
+    typealias Continuation = AsyncStream<Element>.Continuation
+    
+    private var continuations: [String:Continuation] = [:]
+
+    /// Events stream
+    var stream: AsyncStream<Element> {
+        AsyncStream { continuation in
+            append(continuation)
+        }
+    }
+
+    private func append(_ continuation: Continuation) {
+        let key = UUID().uuidString
+        continuation.onTermination  = {[weak self] _ in
+            self?.onTermination(forKey: key)
+        }
+        continuations.updateValue(continuation, forKey: key)
+    }
+    
+    private func removeContinuation(forKey key: String) {
+        continuations.removeValue(forKey: key)
+    }
+
+    func produce(changes: Element) {
+        continuations.values.forEach({ $0.yield(changes) })
+    }
+
+    func finishChangesStream() {
+        continuations.values.forEach({ $0.finish() })
+        continuations.removeAll()
+    }
+    
+    nonisolated private func onTermination(forKey key: String) {
+        Task(priority: .high) {
+            await removeContinuation(forKey: key)
         }
     }
 }

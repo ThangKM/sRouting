@@ -12,7 +12,7 @@ import Foundation
 final class BookPersistent {
 
     @Attribute(.unique)
-    var id: Int
+    var bookId: Int
     @Attribute(.spotlight)
     var name: String
     var imageName: String
@@ -21,17 +21,8 @@ final class BookPersistent {
     var bookDescription: String
     var rating: Int
     
-    init(id: Int, name: String, imageName: String, author: String, bookDescription: String, rating: Int) {
-        self.id = id
-        self.name = name
-        self.imageName = imageName
-        self.author = author
-        self.bookDescription = bookDescription
-        self.rating = rating
-    }
-    
     init (book: BookModel) {
-        self.id = book.id
+        self.bookId = book.bookId
         self.name = book.name
         self.imageName = book.imageName
         self.author = book.author
@@ -40,14 +31,14 @@ final class BookPersistent {
     }
 }
 
-//MARK: - Fetch Descriptor
+//MARK: - FetchDescriptors
 extension BookPersistent {
     static var fetchAll: FetchDescriptor<BookPersistent> {
         .init()
     }
     
-    static func fetchById(_ id: Int) -> FetchDescriptor<BookPersistent> {
-        .init(predicate: #Predicate { $0.id == id })
+    static func fetchByBookId(_ id: Int) -> FetchDescriptor<BookPersistent> {
+        .init(predicate: #Predicate { $0.bookId == id })
     }
     
     static func fetch(offset: Int, limit: Int, sortBy: [SortDescriptor<BookPersistent>]) -> FetchDescriptor<BookPersistent> {
