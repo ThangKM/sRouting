@@ -12,6 +12,7 @@ import Foundation
 func databaseWriteTransaction(models: [any PersistentModel],
                               useContext context: ModelContext) async throws {
     
+    assert(context.createtor == "DatabaseActor", "use ModelContext.isolatedContext to create the context with DatabaseActor isolation")
     if models.count > 1300 {
         let batches = models.chunked(into: 1000)
         for batch in batches {
@@ -39,6 +40,7 @@ func databaseWriteTransaction(models: [any PersistentModel],
 @DatabaseActor
 func databaseDeleteTransaction(models: [any PersistentModel],
                                useContext context: ModelContext) async throws {
+    assert(context.createtor == "DatabaseActor", "use ModelContext.isolatedContext to create the context with DatabaseActor isolation")
     for model in models {
         guard !model.isDeleted else { continue }
         context.delete(model)
@@ -69,7 +71,7 @@ public actor DatabaseActor {
             await executer.jobCounter.jobCount
         }
     }
-
+    
     private init() { }
 }
 
@@ -208,4 +210,29 @@ extension Array {
     }
 }
 
-
+extension ModelContext {
+    
+    static var isolatedContext: ModelContext {
+        DatabaseActor.assertIsolated("Handle ModelContext outside of DatabaseActor, Use @DatabaseActor to islolated the flow")
+        let context = ModelContext(DatabaseProvider.shared.container)
+        context.createtor = "DatabaseActor"
+        return context
+    }
+    
+    struct AsociationKey {
+        nonisolated(unsafe) static var creatorKey: UInt8 = 0
+    }
+    
+    fileprivate var createtor: String? {
+        get {
+            objc_getAssociatedObject(self, &AsociationKey.creatorKey) as? String
+        }
+        
+        set {
+            objc_setAssociatedObject(self,
+                                     &AsociationKey.creatorKey,
+                                     newValue,
+                                     .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
+        }
+    }
+}

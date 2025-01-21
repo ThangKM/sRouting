@@ -13,9 +13,9 @@ final class FetchPagingService<T> where T: PersistentModel {
     
     private(set) var offset: Int = .zero
     
-    nonisolated let limit: Int
+    let limit: Int
     
-    nonisolated let sortBy: [SortDescriptor<T>]
+    let sortBy: [SortDescriptor<T>]
     
     init(offset: Int = .zero, limit: Int = 20, sortBy: [SortDescriptor<T>]) {
         self.offset = offset
