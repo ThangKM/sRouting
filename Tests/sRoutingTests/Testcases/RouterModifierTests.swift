@@ -26,6 +26,7 @@ struct RouterModifierTests {
             waiter.fulfill()
         }))
         ViewHosting.host(view: sut)
+        try await Task.sleep(for: .milliseconds(10))
         router.trigger(to: .emptyScreen, with: .sheet)
         try await waiter.waiting()
         #expect(isActive)
@@ -41,6 +42,7 @@ struct RouterModifierTests {
         }))
         
         ViewHosting.host(view: sut)
+        try await Task.sleep(for: .milliseconds(10))
         router.show(alert: .timeOut)
         try await waiter.waiting()
         #expect(isActive)
@@ -56,6 +58,7 @@ struct RouterModifierTests {
         }))
         
         ViewHosting.host(view: sut)
+        try await Task.sleep(for: .milliseconds(10))
         router.dismissAll()
         try await waiter.waiting()
         #expect(!isActive)
@@ -74,6 +77,7 @@ struct RouterModifierTests {
         }
         
         ViewHosting.host(view: sut)
+        try await Task.sleep(for: .milliseconds(10))
         router.dismissCoordinator()
         try await waiter.waiting()
         #expect(isEnter)
@@ -90,6 +94,7 @@ struct RouterModifierTests {
             }
         }
         ViewHosting.host(view: sut)
+        try await Task.sleep(for: .milliseconds(10))
         router.trigger(to: .emptyScreen, with: .push)
         try await waiter.waiting()
         #expect(pathCount == 1)
