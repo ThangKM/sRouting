@@ -74,12 +74,6 @@ public actor DatabaseActor {
         executer.asUnownedSerialExecutor()
     }
     
-    static var jobCount: Int {
-        get async {
-            await executer.jobCounter.jobCount
-        }
-    }
-    
     private init() { }
 }
 
@@ -101,10 +95,6 @@ fileprivate final class DatabseExecutor: SerialExecutor {
     
     private let queue = DatabaseQueue()
     
-    var jobCounter: JobCounter {
-        queue.counter
-    }
-    
     func enqueue(_ job: consuming ExecutorJob) {
         let unownedJob = UnownedJob(job)
         let executer = asUnownedSerialExecutor()
@@ -121,14 +111,11 @@ fileprivate final class DatabseExecutor: SerialExecutor {
 //MARK: - DatabaseQueue
 fileprivate final class DatabaseQueue: @unchecked Sendable {
     
-    let counter = JobCounter()
     private let queue =  DispatchQueue(label: "com.database.DatabaseActor")
     
     func asyncJob(execute work: @escaping @Sendable @convention(block) () -> Void) {
-        counter.increase()
-        queue.async {[weak self] in
+        queue.async {
             work()
-            self?.counter.decrease()
         }
     }
 }
@@ -188,39 +175,6 @@ extension DatabaseActor {
         case insertedIdentifiers([PersistentIdentifier])
         case deletedIdentifiers([PersistentIdentifier])
         case updatedIdentifiers([PersistentIdentifier])
-    }
-}
-
-fileprivate actor JobCounter {
-    
-    private(set) var jobCount: Int = 0
-    
-    private func _inscrease() {
-        jobCount += 1
-    }
-    
-    private func _descrease() {
-        jobCount -= 1
-    }
-    
-    nonisolated func increase() {
-        Task(priority: .high) {
-            await _inscrease()
-        }
-    }
-    
-    nonisolated func decrease() {
-        Task(priority: .high) {
-            await _descrease()
-        }
-    }
-}
-
-extension Array {
-    fileprivate func chunked(into size: Int) -> [[Element]] {
-        return stride(from: 0, to: count, by: size).map {
-            Array(self[$0 ..< Swift.min($0 + size, count)])
-        }
     }
 }
 
