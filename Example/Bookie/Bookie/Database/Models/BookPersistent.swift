@@ -13,16 +13,22 @@ final class BookPersistent {
 
     @Attribute(.unique)
     var bookId: Int
-    @Attribute(.spotlight)
     var name: String
     var imageName: String
-    @Attribute(.spotlight)
     var author :String
     var bookDescription: String
     var rating: Int
     
     init (book: BookModel) {
         self.bookId = book.bookId
+        self.name = book.name
+        self.imageName = book.imageName
+        self.author = book.author
+        self.bookDescription = book.description
+        self.rating = book.rating
+    }
+    
+    func update(with book: BookModel) {
         self.name = book.name
         self.imageName = book.imageName
         self.author = book.author
@@ -52,5 +58,19 @@ extension BookPersistent {
     static func searchBook(query: String) -> FetchDescriptor<BookPersistent> {
         .init(predicate: #Predicate { $0.name.localizedStandardContains(query)
             || $0.author.localizedStandardContains(query) })
+    }
+    
+    static func fetchByBookIds(_ ids: Set<Int>) -> FetchDescriptor<BookPersistent> {
+        .init(predicate: #Predicate { ids.contains($0.bookId) })
+    }
+    
+    static func fetchByIdentifiers(_ identifiers: Set<PersistentIdentifier>) -> FetchDescriptor<BookPersistent> {
+        .init(predicate: #Predicate { identifiers.contains($0.persistentModelID) })
+    }
+    
+    static func existBookIds(_ ids: Set<Int>) -> FetchDescriptor<BookPersistent> {
+        var descriptor = FetchDescriptor<BookPersistent>(predicate: #Predicate { ids.contains($0.bookId) })
+        descriptor.propertiesToFetch = [\.bookId]
+        return descriptor
     }
 }

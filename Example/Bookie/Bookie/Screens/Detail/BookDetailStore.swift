@@ -43,6 +43,7 @@ extension BookDetailScreen {
     enum DetailAction: Sendable {
         case deleteBook
         case saveBook
+        case stressTest
     }
 }
 
@@ -69,6 +70,8 @@ extension BookDetailScreen {
                 _saveBook(book)
             case .deleteBook:
                 _confirmDeleteBook()
+            case .stressTest:
+                _stressTest()
             }
         }
     }
@@ -76,6 +79,12 @@ extension BookDetailScreen {
 
 //MARK: - Private Jobs
 extension BookDetailScreen.DetailStore {
+    
+    func _stressTest() {
+        Task {
+            try await bookService.generateBooks(count: 12_000)
+        }
+    }
     
     func _saveBook(_ book: BookModel) {
         Task {

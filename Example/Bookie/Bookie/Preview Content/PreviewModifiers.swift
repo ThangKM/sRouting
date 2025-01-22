@@ -56,6 +56,6 @@ struct PersistentContainerPreviewModifier: PreviewModifier {
     static private func makeMockData(container: ModelContainer) async throws {
         let books = MockBookService.shared.books
         let models = books.map({ BookPersistent(book: $0) })
-        try await databaseWriteTransaction(models: models, useContext: .init(container))
+        try await databaseInsertTransaction(models: models, useContext: .init(container))
     }
 }

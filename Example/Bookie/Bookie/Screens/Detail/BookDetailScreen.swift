@@ -40,7 +40,16 @@ struct BookDetailScreen: View {
                         
                         RatingView(rating: $state.rating, enableEditing: true)
                         
-                        Spacer(minLength: 40)
+                        Spacer(minLength: 20)
+                        
+//                        Button("Stress Testing") {
+//                            store.receive(action: .stressTest)
+//                        }
+//                        .abeeFont(size: 15, style: .regular)
+//                        .tint(Color.pink)
+//                        .foregroundStyle(.white)
+//                        .buttonStyle(.borderedProminent)
+//                        .disabled(state.isLoading)
                         
                         Button("Delete") {
                             store.receive(action: .deleteBook)

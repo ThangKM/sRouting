@@ -7,47 +7,55 @@
 
 import SwiftData
 import Foundation
+import sRouting
 
 @DatabaseActor
-func databaseWriteTransaction(models: [any PersistentModel],
+func databaseInsertTransaction(models: [any PersistentModel],
                               useContext context: ModelContext) async throws {
-    
+    guard let lastModel = models.last else { return }
     assert(context.createtor == "DatabaseActor", "use ModelContext.isolatedContext to create the context with DatabaseActor isolation")
-    if models.count > 1300 {
-        let batches = models.chunked(into: 1000)
-        for batch in batches {
-            for model in batch {
-                context.insert(model)
-            }
-            try context.save()
-            let ids = batch.map(\.persistentModelID)
-            await DatabaseActor.shared.produce(changes: .addNewOrUpdate(ids))
-            let count = await DatabaseActor.jobCount
-            if count > 1 {
-                try await Task.sleep(for: .milliseconds(300))
-            }
-        }
-    } else {
-        for model in models {
+    
+    let count = models.count
+    var insertedModels: [any PersistentModel] = .init()
+    
+    for model in models {
+        autoreleasepool {
             context.insert(model)
+            insertedModels.append(model)
         }
-        try context.save()
-        let ids = models.map(\.persistentModelID)
-        await DatabaseActor.shared.produce(changes: .addNewOrUpdate(ids))
+        if insertedModels.count >= 1000 || model.persistentModelID == lastModel.persistentModelID {
+            try context.save()
+            let insertedIds = insertedModels.map(\.persistentModelID)
+            await DatabaseActor.shared.produce(changes: .insertedIdentifiers(insertedIds))
+            insertedModels.removeAll()
+        }
+        try? await prevent_huge_loop(count: count)
     }
+}
+
+@DatabaseActor
+func databaseUpdateTransaction(models: [any PersistentModel],
+                               useContext context: ModelContext) async throws {
+    guard !models.isEmpty else { return }
+    assert(context.createtor == "DatabaseActor", "use ModelContext.isolatedContext to create the context with DatabaseActor isolation")
+    try context.save()
+    let ids = models.map(\.persistentModelID)
+    await DatabaseActor.shared.produce(changes: .updatedIdentifiers(ids))
 }
 
 @DatabaseActor
 func databaseDeleteTransaction(models: [any PersistentModel],
                                useContext context: ModelContext) async throws {
+    guard !models.isEmpty else { return }
     assert(context.createtor == "DatabaseActor", "use ModelContext.isolatedContext to create the context with DatabaseActor isolation")
+
     for model in models {
         guard !model.isDeleted else { continue }
         context.delete(model)
     }
+    let ids = models.map(\.persistentModelID)
+    await DatabaseActor.shared.produce(changes: .deletedIdentifiers(ids))
     try context.save()
-    let ids = models.map( \.persistentModelID)
-    await DatabaseActor.shared.produce(changes: .deleted(ids))
 }
 
 //MARK: - DatabaseActor
@@ -56,7 +64,7 @@ public actor DatabaseActor {
     
     public static let shared = DatabaseActor()
     private static let executer = DatabseExecutor()
-    private let producer = ProduceStream()
+    private let changesProducer = ProduceStream()
     
     public nonisolated var unownedExecutor: UnownedSerialExecutor {
         Self.sharedUnownedExecutor
@@ -77,14 +85,14 @@ public actor DatabaseActor {
 
 extension DatabaseActor {
     
-    nonisolated var changesStream: AsyncStream<DidSaveChangesResult> {
+    nonisolated var changesStream: AsyncStream<PersistentModelChangesResult> {
         get async {
-            await producer.stream
+            await changesProducer.stream
         }
     }
     
-    nonisolated func produce(changes: DidSaveChangesResult) async {
-        await producer.produce(changes: changes)
+    nonisolated fileprivate func produce(changes: PersistentModelChangesResult) async {
+        await changesProducer.produce(changes: changes)
     }
 }
 
@@ -128,18 +136,32 @@ fileprivate final class DatabaseQueue: @unchecked Sendable {
 //MARK: - Produce Stream
 fileprivate actor ProduceStream {
     
-    typealias Element = DatabaseActor.DidSaveChangesResult
+    typealias Element = DatabaseActor.PersistentModelChangesResult
     typealias Continuation = AsyncStream<Element>.Continuation
     
     private var continuations: [String:Continuation] = [:]
-
+    private let cancelBag = CancelBag()
+    
     /// Events stream
     var stream: AsyncStream<Element> {
         AsyncStream { continuation in
             append(continuation)
         }
     }
+    
+    deinit {
+        cancelBag.cancelAllInTask()
+    }
 
+    func produce(changes: Element) {
+        continuations.values.forEach({ $0.yield(changes) })
+    }
+
+    func finishChangesStream() {
+        continuations.values.forEach({ $0.finish() })
+        continuations.removeAll()
+    }
+    
     private func append(_ continuation: Continuation) {
         let key = UUID().uuidString
         continuation.onTermination  = {[weak self] _ in
@@ -152,15 +174,6 @@ fileprivate actor ProduceStream {
         continuations.removeValue(forKey: key)
     }
 
-    func produce(changes: Element) {
-        continuations.values.forEach({ $0.yield(changes) })
-    }
-
-    func finishChangesStream() {
-        continuations.values.forEach({ $0.finish() })
-        continuations.removeAll()
-    }
-    
     nonisolated private func onTermination(forKey key: String) {
         Task(priority: .high) {
             await removeContinuation(forKey: key)
@@ -171,9 +184,10 @@ fileprivate actor ProduceStream {
 //MARK: - Helpers
 extension DatabaseActor {
     
-    enum DidSaveChangesResult: Sendable {
-        case addNewOrUpdate([PersistentIdentifier])
-        case deleted([PersistentIdentifier])
+    enum PersistentModelChangesResult: Sendable {
+        case insertedIdentifiers([PersistentIdentifier])
+        case deletedIdentifiers([PersistentIdentifier])
+        case updatedIdentifiers([PersistentIdentifier])
     }
 }
 
@@ -235,4 +249,9 @@ extension ModelContext {
                                      .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
         }
     }
+}
+
+func prevent_huge_loop(count: Int) async throws {
+    guard count > 10_000 else { return }
+    try await Task.sleep(for: .microseconds(5))
 }

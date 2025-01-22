@@ -48,6 +48,16 @@ extension HomeScreen {
             self.books = books
         }
         
+        func insertBook(_ book: BookModel) async {
+            if seachText.isEmpty {
+                withAnimation {
+                    self.books.insert(book, at: 0)
+                }
+            } else {
+                self.backupBooks.insert(book, at: 0)
+            }
+        }
+        
         func updateDataCanLoadMore(_ canLoadMore: Bool) {
             self.dataCanLoadMore = canLoadMore
         }
@@ -150,7 +160,7 @@ extension HomeScreen.HomeStore {
         }
         
         Task {
-            let books = try await bookService.searchBooks(query: text)
+            let books = try  await bookService.searchBooks(query: text)
             state?.repaceAndBackupListBooks(books: books)
         }
     }
@@ -196,18 +206,30 @@ extension HomeScreen.HomeStore {
             guard let self else { return }
             let stream = await DatabaseActor.shared.changesStream
             try Task.checkCancellation()
-            for await result in stream {
-                switch result {
-                case .addNewOrUpdate(let ids):
-                    await self._observeAddNewOrUpdate(from: ids)
-                case .deleted(let ids):
-                    await self._observeDelete(from: ids)
+            for await changes in stream {
+                switch changes {
+                case .insertedIdentifiers(let ids):
+                    await self._observeInserted(from: ids)
+                case .deletedIdentifiers(let ids):
+                    await self._observeDeleted(from: ids)
+                case .updatedIdentifiers(let ids):
+                    await self._observeUpdated(from: ids)
                 }
             }
         }.store(in: cancelBag, withIdentifier: "HommeStore.observeBookChanges")
     }
     
-    nonisolated private func _observeAddNewOrUpdate(from ids: [PersistentIdentifier]) async  {
+    nonisolated private func _observeInserted(from ids: [PersistentIdentifier]) async  {
+        guard !ids.isEmpty else { return }
+        let books = await bookService.books(fromPersistentIdentifiers: ids)
+        guard !books.isEmpty else { return }
+        for book in books {
+            await state?.insertBook(book)
+        }
+    }
+    
+    nonisolated private func _observeUpdated(from ids: [PersistentIdentifier]) async  {
+        guard !ids.isEmpty else { return }
         let books = await bookService.books(fromPersistentIdentifiers: ids)
         guard !books.isEmpty else { return }
         
@@ -218,20 +240,18 @@ extension HomeScreen.HomeStore {
         for book in books {
             if let index = await state?.books.firstIndex(where: { $0.bookId == book.bookId}) {
                 allBooks[index] = book
-            } else {
-                allBooks.insert(book, at: .zero)
             }
             guard !backupBooks.isEmpty else { continue }
             if let index = await state?.backupBooks.firstIndex(where: { $0.bookId == book.bookId}) {
                 backupBooks[index] = book
-            } else {
-                backupBooks.insert(book, at: .zero)
             }
         }
         await state?.replaceBooks(books: allBooks)
+        await state?.replaceBackupBooks(books: backupBooks)
     }
     
-    nonisolated private func _observeDelete(from ids: [PersistentIdentifier]) async  {
+    nonisolated private func _observeDeleted(from ids: [PersistentIdentifier]) async  {
+        guard !ids.isEmpty else { return }
         await state?.removeBooks(byPersistentIdentifiers: ids)
     }
 }
