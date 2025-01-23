@@ -17,6 +17,8 @@ public protocol SRConfirmationDialogRoute: Sendable {
     
     var titleVisibility: Visibility { get }
     
+    var stringMessage: LocalizedStringKey { get }
+    
     @ViewBuilder @MainActor
     var message: Message { get }
     
@@ -25,8 +27,10 @@ public protocol SRConfirmationDialogRoute: Sendable {
 }
 
 public struct ConfirmationDialogEmptyRoute: SRConfirmationDialogRoute {
+
     public var titleKey: LocalizedStringKey { "" }
-    public var message: some View { Text("Default Confirmation Dialog!") }
+    public var stringMessage: LocalizedStringKey { "Default Confirmation Dialog!" }
+    public var message: some View { Text(stringMessage) }
     public var actions: some View { Button("OK"){ } }
     public var titleVisibility: Visibility = .hidden
 }

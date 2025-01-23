@@ -11,14 +11,21 @@ import SwiftUI
 import Observation
 
 enum AppConfirmationDialog: SRConfirmationDialogRoute {
+    
+   
+    
     case testConfirmation
     
     var titleKey: LocalizedStringKey {
         "This is Title"
     }
     
+    var stringMessage: LocalizedStringKey {
+        "This is Message"
+    }
+    
     var message: some View {
-        Text("This is Message")
+        Text(stringMessage)
     }
     
     var actions: some View {
