@@ -13,6 +13,9 @@ struct DialogRouterModifier<Route>: ViewModifier where Route: SRRoute {
     private let router: SRRouter<Route>
     @Environment(\.scenePhase) private var scenePhase
     
+    ///Action test holder
+    private let tests: UnitTestActions<Self>?
+    
     /// Active state of action sheet
     @State private(set) var isActiveDialog: Bool = false
   
@@ -36,9 +39,10 @@ struct DialogRouterModifier<Route>: ViewModifier where Route: SRRoute {
         router.transition.confirmationDialog?.message
     }
     
-    init(router: SRRouter<Route>, dialog: Route.ConfirmationDialogRoute) {
+    init(router: SRRouter<Route>, dialog: Route.ConfirmationDialogRoute, tests: UnitTestActions<Self>? = nil) {
         self.router = router
         self.dialogRoute = dialog
+        self.tests = tests
     }
     
     func body(content: Content) -> some View {
@@ -58,6 +62,7 @@ struct DialogRouterModifier<Route>: ViewModifier where Route: SRRoute {
                         && UIDevice.current.userInterfaceIdiom == .pad
                         && newValue.confirmationDialog?.stringMessage == dialogRoute.stringMessage else { return }
                 isActiveDialog = true
+                tests?.didChangeTransition?(self)
             })
             .onChange(of: isActiveDialog, { oldValue, newValue in
                 guard oldValue && !newValue else { return }
@@ -73,9 +78,16 @@ struct DialogRouterModifier<Route>: ViewModifier where Route: SRRoute {
 }
  
 extension DialogRouterModifier {
+    /// Reset all active state to false
+    @MainActor
+    func resetActiveState() {
+        guard scenePhase != .background || tests != nil else { return }
+        isActiveDialog = false
+    }
+    
     @MainActor
     private func resetRouterTransiton() {
-        guard scenePhase != .background else { return }
+        guard scenePhase != .background || tests != nil else { return }
         router.resetTransition()
     }
 }
@@ -89,5 +101,17 @@ extension View {
     /// - Returns: `some View`
     public func onDialogRouting<Route: SRRoute>(of router: SRRouter<Route>, for dialog: Route.ConfirmationDialogRoute) -> some View {
         self.modifier(DialogRouterModifier(router: router, dialog: dialog))
+    }
+    
+    
+    /// Show confirmation dialog on iPad at the anchor view (on test purpose).
+    /// - Parameters:
+    ///   - router: ``SRRouter``
+    ///   - dialog: ``ConfirmationDialogEmptyRoute``
+    /// - Returns: `some View`
+    func onDialogRouting<Route: SRRoute>(of router: SRRouter<Route>,
+                                         for dialog: Route.ConfirmationDialogRoute,
+                                         tests: UnitTestActions<DialogRouterModifier<Route>>?) -> some View {
+        self.modifier(DialogRouterModifier(router: router, dialog: dialog, tests: tests))
     }
 }

@@ -23,3 +23,13 @@ struct TestScreen: View {
 }
 
 
+struct DialogScreen: View {
+    
+    let router: SRRouter<TestRoute>
+    let tests: UnitTestActions<DialogRouterModifier<TestRoute>>?
+    
+    var body: some View {
+        Text("DialogScreen.Text")
+            .onDialogRouting(of: router, for: .confirmOK, tests: tests)
+    }
+}
