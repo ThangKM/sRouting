@@ -42,6 +42,7 @@ struct DialogRouterModifier<Route>: ViewModifier where Route: SRRoute {
     }
     
     func body(content: Content) -> some View {
+        #if os(iOS)
         if UIDevice.current.userInterfaceIdiom == .pad {
             content
             .confirmationDialog(dialogTitleKey,
@@ -65,6 +66,9 @@ struct DialogRouterModifier<Route>: ViewModifier where Route: SRRoute {
         } else {
             content
         }
+        #else
+        content
+        #endif
     }
 }
  

@@ -228,11 +228,15 @@ extension RouterModifier {
         case .alert:
             isActiveAlert = true
         case .confirmationDialog:
+            #if os(iOS)
             if UIDevice.current.userInterfaceIdiom == .pad {
                 break
             } else {
                 isActiveDialog = true
             }
+            #else
+            isActiveDialog = true
+            #endif
         case .dismiss:
             dismissAction()
         case .selectTab:
