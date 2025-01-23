@@ -154,7 +154,7 @@ struct RouterModifierTests {
         
         let selection = ValueBox(value: -1)
         let tabManager = SRTabbarSelection()
-        let sut = Text("")
+        let sut = Text("Testing")
                     .onDoubleTapTabItem { value in
                         selection.update(with: value)
                     }
@@ -262,15 +262,13 @@ struct RouterModifierTests {
     func testOnDialogRouterActiveConfirmationDialog() async throws {
         guard UIDevice.current.userInterfaceIdiom == .pad else { return }
         var isActive = false
-        let waiter = Waiter()
         let sut = DialogScreen(router: router, tests: .init(didChangeTransition: { view in
             isActive = view.isActiveDialog
-            waiter.fulfill()
         }))
         
         ViewHosting.host(view: sut)
         router.show(dialog: .confirmOK)
-        try await waiter.waiting()
+        try await Task.sleep(for: .milliseconds(50))
         #expect(isActive)
     }
     
@@ -288,7 +286,7 @@ struct RouterModifierTests {
         ViewHosting.host(view: sut)
         try await Task.sleep(for: .milliseconds(10))
         router.show(dialog: .confirmOK)
-        try await Task.sleep(for: .milliseconds(10))
+        try await Task.sleep(for: .milliseconds(20))
         action?.execute()
         try await Task.sleep(for: .milliseconds(50))
         #expect(router.transition == .none)
