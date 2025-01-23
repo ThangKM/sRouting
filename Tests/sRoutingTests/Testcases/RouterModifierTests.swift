@@ -187,7 +187,9 @@ struct RouterModifierTests {
     
     @Test
     func testActiveConfirmationDialog() async throws {
+        #if os(iOS)
         guard UIDevice.current.userInterfaceIdiom != .pad else { return }
+        #endif
         let waiter = Waiter()
         var isActive: Bool = false
         let sut = TestScreen(router: router, tests: .init(didChangeTransition: { view in
@@ -203,8 +205,9 @@ struct RouterModifierTests {
     
     @Test
     func testResetRouterTransitionByDialog() async throws {
+        #if os(iOS)
         guard UIDevice.current.userInterfaceIdiom != .pad else { return }
-        
+        #endif
         var action: ActionBox?
         let sut = TestScreen(router: router, tests: .init(didChangeTransition: { view in
             action = .init(action: {
@@ -256,6 +259,7 @@ struct RouterModifierTests {
         #expect(router.transition == .none)
     }
 
+    #if os(iOS)
     @Test
     func testOnDialogRouterActiveConfirmationDialog() async throws {
         guard UIDevice.current.userInterfaceIdiom == .pad else { return }
@@ -292,7 +296,6 @@ struct RouterModifierTests {
         #expect(router.transition == .none)
     }
     
-    #if os(iOS)
     @Test
     func testResetRouterTransitionByPresent() async throws {
         var action: ActionBox?
