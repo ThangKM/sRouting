@@ -1,11 +1,11 @@
 //
-//  FetchPagingService.swift
+//  FetchNextToken.swift
 //  Bookie
 //
-//  Created by Thang Kieu on 20/1/25.
+//  Created by Thang Kieu on 24/1/25.
 //
 
-import Foundation
+import SwiftUI
 import SwiftData
 
 extension FetchDescriptor {

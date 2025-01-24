@@ -28,7 +28,6 @@ struct BookCell: View {
         }
         .padding()
         .frame(height: 147)
-        .background(Color.white)
         .clipShape(RoundedRectangle(cornerRadius: 12))
     }
 }

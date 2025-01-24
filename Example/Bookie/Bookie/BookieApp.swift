@@ -10,7 +10,6 @@ import sRouting
 import SwiftData
 
 @sRouteCoordinator(stacks: "rootStack")
-@Observable
 final class AppCoordinator { }
 
 @sRouteObserver(AppRoute.self, HomeRoute.self)

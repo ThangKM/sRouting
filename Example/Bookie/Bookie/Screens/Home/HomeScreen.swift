@@ -62,6 +62,7 @@ extension HomeScreen {
             HStack {
                 
                 Image(systemName: "magnifyingglass")
+                    .foregroundColor(Color("purple.F66EB4"))
                     .opacity(0.4)
                 
                 TextField("Search books", text: $state.seachText)
@@ -74,7 +75,7 @@ extension HomeScreen {
             .padding(.horizontal)
             .frame(height: 48)
             .frame(maxWidth: .infinity)
-            .background(Color.white)
+            .background(.ultraThinMaterial)
             .clipShape(RoundedRectangle(cornerRadius: 8))
             .padding(.horizontal)
             .onTapGesture {
