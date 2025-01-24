@@ -98,7 +98,7 @@ enum AppConfirmationDialog: SRConfirmationDialogRoute {
     
     var identifier: LocalizedStringKey {
         switch self {
-        case .delete(let confirmedAction):
+        case .delete(_):
             "Are you sure you want to delete this item?"
         }
     }
