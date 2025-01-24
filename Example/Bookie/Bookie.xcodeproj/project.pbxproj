@@ -40,7 +40,9 @@
 		37AAE7B226956D9B007EA3B6 /* RatingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37AAE7B126956D9B007EA3B6 /* RatingView.swift */; };
 		37AAE7B426957226007EA3B6 /* BookModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37AAE7B326957226007EA3B6 /* BookModel.swift */; };
 		37B40E6F2D3EADED00E1E86D /* FetchPagingService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37B40E6E2D3EADE200E1E86D /* FetchPagingService.swift */; };
-		37D887072CA1A40900316FC7 /* sRouting in Frameworks */ = {isa = PBXBuildFile; productRef = 37D887062CA1A40900316FC7 /* sRouting */; };
+		37B61ADA2D4273D7005195C4 /* HomeState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37B61AD92D4273D3005195C4 /* HomeState.swift */; };
+		37B61ADD2D42B097005195C4 /* sRouting in Frameworks */ = {isa = PBXBuildFile; productRef = 37B61ADC2D42B097005195C4 /* sRouting */; };
+		37B61AE02D42B0BC005195C4 /* sRouting in Frameworks */ = {isa = PBXBuildFile; productRef = 37B61ADF2D42B0BC005195C4 /* sRouting */; };
 		37E7DD912D3841800067211B /* PreviewModifiers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37E7DD902D3841790067211B /* PreviewModifiers.swift */; };
 /* End PBXBuildFile section */
 
@@ -99,6 +101,7 @@
 		37AAE7B126956D9B007EA3B6 /* RatingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RatingView.swift; sourceTree = "<group>"; };
 		37AAE7B326957226007EA3B6 /* BookModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookModel.swift; sourceTree = "<group>"; };
 		37B40E6E2D3EADE200E1E86D /* FetchPagingService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FetchPagingService.swift; sourceTree = "<group>"; };
+		37B61AD92D4273D3005195C4 /* HomeState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeState.swift; sourceTree = "<group>"; };
 		37E7DD902D3841790067211B /* PreviewModifiers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreviewModifiers.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -107,7 +110,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				37D887072CA1A40900316FC7 /* sRouting in Frameworks */,
+				37B61ADD2D42B097005195C4 /* sRouting in Frameworks */,
+				37B61AE02D42B0BC005195C4 /* sRouting in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -169,8 +173,8 @@
 		374102622694306500C8DF44 /* Home */ = {
 			isa = PBXGroup;
 			children = (
-				37AAE7A8269487E7007EA3B6 /* Views */,
 				374102642694307800C8DF44 /* HomeScreen.swift */,
+				37B61AD92D4273D3005195C4 /* HomeState.swift */,
 				3741027B26945DDC00C8DF44 /* HomeStore.swift */,
 			);
 			path = Home;
@@ -213,6 +217,7 @@
 		374102762694437000C8DF44 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				37AAE7A926948818007EA3B6 /* BookCell.swift */,
 				37073F2D2D3ED814001A2C24 /* TextLoadingView.swift */,
 				374102742694436800C8DF44 /* RandomBubbleView.swift */,
 				37410279269459F300C8DF44 /* BookieNavigationView.swift */,
@@ -316,14 +321,6 @@
 			path = BookieUITests;
 			sourceTree = "<group>";
 		};
-		37AAE7A8269487E7007EA3B6 /* Views */ = {
-			isa = PBXGroup;
-			children = (
-				37AAE7A926948818007EA3B6 /* BookCell.swift */,
-			);
-			path = Views;
-			sourceTree = "<group>";
-		};
 		37AAE7B026956D7B007EA3B6 /* Models */ = {
 			isa = PBXGroup;
 			children = (
@@ -349,7 +346,8 @@
 			);
 			name = Bookie;
 			packageProductDependencies = (
-				37D887062CA1A40900316FC7 /* sRouting */,
+				37B61ADC2D42B097005195C4 /* sRouting */,
+				37B61ADF2D42B0BC005195C4 /* sRouting */,
 			);
 			productName = Bookie;
 			productReference = 379D3460268D024800903D92 /* Bookie.app */;
@@ -424,7 +422,7 @@
 			);
 			mainGroup = 379D3457268D024800903D92;
 			packageReferences = (
-				37D887052CA1A40900316FC7 /* XCRemoteSwiftPackageReference "sRouting" */,
+				37B61ADE2D42B0BC005195C4 /* XCRemoteSwiftPackageReference "sRouting" */,
 			);
 			productRefGroup = 379D3461268D024800903D92 /* Products */;
 			projectDirPath = "";
@@ -492,6 +490,7 @@
 				37B40E6F2D3EADED00E1E86D /* FetchPagingService.swift in Sources */,
 				374102672694308200C8DF44 /* BookDetailScreen.swift in Sources */,
 				3775E7722D3D672E00763E8E /* EnvironmentRunner.swift in Sources */,
+				37B61ADA2D4273D7005195C4 /* HomeState.swift in Sources */,
 				3741027A269459F300C8DF44 /* BookieNavigationView.swift in Sources */,
 				3732440C26957BEF007DE034 /* MockBookService.swift in Sources */,
 				374102782694590200C8DF44 /* HomeRoute.swift in Sources */,
@@ -859,20 +858,24 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		37D887052CA1A40900316FC7 /* XCRemoteSwiftPackageReference "sRouting" */ = {
+		37B61ADE2D42B0BC005195C4 /* XCRemoteSwiftPackageReference "sRouting" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "git@github.com:ThangKM/sRouting.git";
 			requirement = {
 				kind = upToNextMajorVersion;
-				minimumVersion = 1.0.0;
+				minimumVersion = 1.1.12;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		37D887062CA1A40900316FC7 /* sRouting */ = {
+		37B61ADC2D42B097005195C4 /* sRouting */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 37D887052CA1A40900316FC7 /* XCRemoteSwiftPackageReference "sRouting" */;
+			productName = sRouting;
+		};
+		37B61ADF2D42B0BC005195C4 /* sRouting */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 37B61ADE2D42B0BC005195C4 /* XCRemoteSwiftPackageReference "sRouting" */;
 			productName = sRouting;
 		};
 /* End XCSwiftPackageProductDependency section */

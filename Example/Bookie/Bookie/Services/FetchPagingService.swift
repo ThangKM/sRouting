@@ -8,26 +8,45 @@
 import Foundation
 import SwiftData
 
-@MainActor
-final class FetchPagingService<T> where T: PersistentModel {
+extension FetchDescriptor {
     
-    private(set) var offset: Int = .zero
+    func next(previousItemCount count: Int) -> FetchDescriptor<T>? {
+        guard let offset = fetchOffset, fetchLimit != nil
+        else { return nil }
+        var nextToken = self
+        nextToken.fetchOffset = offset + count
+        return nextToken
+    }
+}
+
+struct FetchNextToken<T>: Sendable where T: PersistentModel {
     
-    let limit: Int
+    let identifier: String
+    let descriptor: FetchDescriptor<T>
     
-    let sortBy: [SortDescriptor<T>]
-    
-    init(offset: Int = .zero, limit: Int = 20, sortBy: [SortDescriptor<T>]) {
-        self.offset = offset
-        self.limit = limit
-        self.sortBy = sortBy
+    init?(identifier: String, descriptor: FetchDescriptor<T>?) {
+        guard let descriptor else { return nil }
+        self.identifier = identifier
+        self.descriptor = descriptor
     }
     
-    func nextPage() {
-        offset += limit
+    init(identifier: String, descriptor: FetchDescriptor<T>) {
+        self.identifier = identifier
+        self.descriptor = descriptor
     }
     
-    func reset() {
-        offset = .zero
+    func validate(for identifier: String) -> FetchNextToken<T>? {
+        guard self.identifier == identifier else { return nil }
+        return self
+    }
+}
+
+struct FetchResult<Transformed, Origin>: Sendable where Transformed: Sendable, Origin: PersistentModel {
+    let models: [Transformed]
+    let nextToken: FetchNextToken<Origin>?
+    
+    init(models: [Transformed] = [], nextToken: FetchNextToken<Origin>? = .none) {
+        self.models = models
+        self.nextToken = nextToken
     }
 }

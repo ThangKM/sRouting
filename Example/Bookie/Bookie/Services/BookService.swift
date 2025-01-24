@@ -21,11 +21,21 @@ final class BookService {
         try await _addNewOrUpdate(fromBooks: books)
     }
     
-    func fetchAllBooks(offset: Int, limit: Int, sortBy: [SortDescriptor<BookPersistent>]) async throws -> [BookModel] {
+    func fetchAllBooks(nextToken: FetchNextToken<BookPersistent>?) async throws -> FetchResult<BookModel, BookPersistent> {
         let context = ModelContext.isolatedContext
-        let books = try context.fetch(BookPersistent.fetch(offset: offset, limit: limit, sortBy: sortBy))
+        let descriptor: FetchDescriptor<BookPersistent>
+        if let nextToken {
+            descriptor = nextToken.descriptor
+        } else {
+            descriptor = BookPersistent.fetch(offset: .zero, limit: 20, sortBy: [.init(\.bookId, order: .forward)])
+        }
+        try Task.checkCancellation()
+        let books = try context.fetch(descriptor)
         let models = books.map { BookModel(persistentModel: $0) }
-        return models
+        let result = FetchResult(models: models, nextToken: .init(identifier: "fetchAllBooks",
+                                                                  descriptor: descriptor.next(previousItemCount: books.count)))
+        try Task.checkCancellation()
+        return result
     }
     
     func updateBook(_ book: BookModel) async throws {
@@ -61,10 +71,21 @@ final class BookService {
         try await databaseDeleteTransaction(models: books, useContext: context)
     }
     
-    func searchBooks(query: String) throws -> [BookModel] {
+    func searchBooks(query: String, nextToken: FetchNextToken<BookPersistent>?) throws -> FetchResult<BookModel, BookPersistent> {
+        guard !query.isEmpty else { return .init() }
         let context = ModelContext.isolatedContext
-        let books = try context.fetch(BookPersistent.searchBook(query: query))
-        let result = books.map { BookModel(persistentModel: $0) }
+        let descriptor: FetchDescriptor<BookPersistent>
+        if let nextToken {
+            descriptor = nextToken.descriptor
+        } else {
+            descriptor = BookPersistent.searchBook(query: query)
+        }
+        try Task.checkCancellation()
+        let books = try context.fetch(descriptor)
+        let sendableModel = books.map { BookModel(persistentModel: $0) }
+        let nextDescriptor = descriptor.next(previousItemCount: books.count)
+        let result = FetchResult(models: sendableModel, nextToken: .init(identifier: query, descriptor: nextDescriptor))
+        try Task.checkCancellation()
         return result
     }
 }

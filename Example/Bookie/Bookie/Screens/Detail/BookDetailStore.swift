@@ -82,7 +82,7 @@ extension BookDetailScreen.DetailStore {
     
     func _stressTest() {
         Task {
-            try await bookService.generateBooks(count: 12_000)
+            try await bookService.generateBooks(count: 100_000)
         }
     }
     

@@ -54,6 +54,7 @@ struct BookDetailScreen: View {
                         Button("Delete") {
                             store.receive(action: .deleteBook)
                         }
+                        .onDialogRouting(of: router, for: .delete(confirmedAction: { }))
                         .abeeFont(size: 15, style: .regular)
                         .tint(Color.pink)
                         .foregroundStyle(.white)

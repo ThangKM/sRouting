@@ -42,7 +42,6 @@ struct HomeScreen: View {
         .task {
             store.binding(state: state, router: router)
             store.receive(action: .firstFetchBooks)
-            state.updateDataCanLoadMore(true)
          }
     }
 }
@@ -92,27 +91,27 @@ extension HomeScreen {
         
         let state: HomeState
         let store: HomeStore
-        
+
         var body: some View {
             List {
-
                 ForEach(state.books) { book in
                     BookCell(book: book)
                         .onTapGesture {
                             store.receive(action: .gotoDetail(book: book))
+                        }
+                        .onAppear() {
+                            guard book == state.books.last && !state.isLoadingMore else { return }
+                            store.receive(action: .loadmoreBooks)
                         }
                 }
                 .onDelete { indexSet in
                     store.receive(action: .swipeDelete(atOffsets: indexSet))
                 }
 
-                if state.dataCanLoadMore && state.seachText.isEmpty {
+                if state.isLoadingMore {
                     ProgressView()
                         .foregroundColor(.black)
                         .frame(maxWidth: .infinity, maxHeight: 20)
-                        .onAppear() {
-                            store.receive(action: .loadmoreBooks)
-                        }
                 }
             }
             .listRowSpacing(15)

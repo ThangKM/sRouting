@@ -26,7 +26,6 @@ extension StartScreen {
     }
 }
 
-
 extension StartScreen {
     
     final class StartStore: ActionStore {
@@ -67,7 +66,7 @@ extension StartScreen.StartStore {
                     return
                 }
                 state?.updateLoading(true)
-                try await bookService.generateBooks(count: 5000)
+                try await bookService.generateBooks(count: 55)
                 state?.updateLoading(false)
                 try await showHomeAction.execute(true)
             } catch {

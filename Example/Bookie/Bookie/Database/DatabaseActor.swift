@@ -13,7 +13,8 @@ import sRouting
 func databaseInsertTransaction(models: [any PersistentModel],
                               useContext context: ModelContext) async throws {
     guard let lastModel = models.last else { return }
-    assert(context.createtor == "DatabaseActor", "use ModelContext.isolatedContext to create the context with DatabaseActor isolation")
+    assert(context.createtor == "DatabaseActor" || EnvironmentRunner.current == .livePreview,
+           "use ModelContext.isolatedContext to create the context with DatabaseActor isolation")
     
     let count = models.count
     var insertedModels: [any PersistentModel] = .init()
@@ -37,7 +38,8 @@ func databaseInsertTransaction(models: [any PersistentModel],
 func databaseUpdateTransaction(models: [any PersistentModel],
                                useContext context: ModelContext) async throws {
     guard !models.isEmpty else { return }
-    assert(context.createtor == "DatabaseActor", "use ModelContext.isolatedContext to create the context with DatabaseActor isolation")
+    assert(context.createtor == "DatabaseActor" || EnvironmentRunner.current == .livePreview,
+           "use ModelContext.isolatedContext to create the context with DatabaseActor isolation")
     try context.save()
     let ids = models.map(\.persistentModelID)
     await DatabaseActor.shared.produce(changes: .updatedIdentifiers(ids))
@@ -47,7 +49,8 @@ func databaseUpdateTransaction(models: [any PersistentModel],
 func databaseDeleteTransaction(models: [any PersistentModel],
                                useContext context: ModelContext) async throws {
     guard !models.isEmpty else { return }
-    assert(context.createtor == "DatabaseActor", "use ModelContext.isolatedContext to create the context with DatabaseActor isolation")
+    assert(context.createtor == "DatabaseActor" || EnvironmentRunner.current == .livePreview,
+           "use ModelContext.isolatedContext to create the context with DatabaseActor isolation")
 
     for model in models {
         guard !model.isDeleted else { continue }

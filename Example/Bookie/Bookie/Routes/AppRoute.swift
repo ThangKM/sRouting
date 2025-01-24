@@ -96,6 +96,12 @@ enum AppConfirmationDialog: SRConfirmationDialogRoute {
         }
     }
     
+    var identifier: LocalizedStringKey {
+        switch self {
+        case .delete(let confirmedAction):
+            "Are you sure you want to delete this item?"
+        }
+    }
     var titleVisibility: Visibility {
         switch self {
         case .delete: return .visible
@@ -112,7 +118,7 @@ enum AppConfirmationDialog: SRConfirmationDialogRoute {
     var message: some View {
         switch self {
         case .delete:
-            Text("Are you sure you want to delete this item?")
+            Text(identifier)
                 .abeeFont(size: 13, style: .regular)
         }
     }

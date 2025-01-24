@@ -38,6 +38,24 @@ struct BookModel: Identifiable, Sendable {
     }
 }
 
+extension BookModel: Hashable {
+    
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(bookId)
+        hasher.combine(persistentIdentifier)
+    }
+    
+    static func == (lhs: BookModel, rhs: BookModel) -> Bool {
+        return lhs.bookId == rhs.bookId &&
+        lhs.persistentIdentifier == rhs.persistentIdentifier &&
+        lhs.name == rhs.name &&
+        lhs.imageName == rhs.imageName &&
+        lhs.author == rhs.author &&
+        lhs.description == rhs.description &&
+        lhs.rating == rhs.rating
+    }
+}
+
 extension BookModel: EmptyObjectType {
     
     static var empty: BookModel {
