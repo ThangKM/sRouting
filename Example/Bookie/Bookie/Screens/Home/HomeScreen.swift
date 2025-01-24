@@ -26,7 +26,7 @@ struct HomeScreen: View {
 
                 Text("BOOKS REVIEWED BY YOU")
                     .abeeFont(size: 12, style: .italic)
-                    .padding()
+                    .padding(.all, 12)
                     .frame(maxWidth: .infinity, alignment: .leading)
                 
                 ListBookBody(state: state, store: store)

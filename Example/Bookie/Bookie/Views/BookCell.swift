@@ -15,20 +15,21 @@ struct BookCell: View {
         HStack {
             Image(book.imageName.isEmpty ? "image.default" : book.imageName)
                 .resizable()
-                .aspectRatio(contentMode: .fit)
-                .frame(width: 109, alignment: .leading)
-                .clipped()
+                .aspectRatio(contentMode: .fill)
+                .frame(width: 90, height: 120)
+                .cornerRadius(6)
+            
             VStack(alignment: .leading) {
                 Text(book.name)
                 Text(book.author)
                 Spacer()
                 RatingView(rating: .constant(book.rating), enableEditing: false)
             }
+            .frame(height: 120)
             Spacer()
         }
-        .padding()
-        .frame(height: 147)
-        .clipShape(RoundedRectangle(cornerRadius: 12))
+        .frame(maxWidth: .infinity)
+        .contentShape(.rect)
     }
 }
 
