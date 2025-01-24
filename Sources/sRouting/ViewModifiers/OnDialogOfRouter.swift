@@ -60,7 +60,7 @@ struct DialogRouterModifier<Route>: ViewModifier where Route: SRRoute {
             .onChange(of: router.transition, { oldValue, newValue in
                 guard newValue.type == .confirmationDialog
                         && UIDevice.current.userInterfaceIdiom == .pad
-                        && newValue.confirmationDialog?.stringMessage == dialogRoute.stringMessage else { return }
+                        && newValue.confirmationDialog == dialogRoute else { return }
                 isActiveDialog = true
                 tests?.didChangeTransition?(self)
             })

@@ -20,12 +20,12 @@ enum AppConfirmationDialog: SRConfirmationDialogRoute {
         "This is Title"
     }
     
-    var stringMessage: LocalizedStringKey {
+    var identifier: LocalizedStringKey {
         "This is Message"
     }
     
     var message: some View {
-        Text(stringMessage)
+        Text(identifier)
     }
     
     var actions: some View {
