@@ -8,7 +8,7 @@
 import SwiftUI
 
 //MARK: - SRConfirmationDialogRoute
-public protocol SRConfirmationDialogRoute: Sendable {
+public protocol SRConfirmationDialogRoute: Sendable, Equatable {
     
     associatedtype Message: View
     associatedtype Actions: View
@@ -17,7 +17,7 @@ public protocol SRConfirmationDialogRoute: Sendable {
     
     var titleVisibility: Visibility { get }
     
-    var stringMessage: LocalizedStringKey { get }
+    var identifier: LocalizedStringKey { get }
     
     @ViewBuilder @MainActor
     var message: Message { get }
@@ -26,11 +26,17 @@ public protocol SRConfirmationDialogRoute: Sendable {
     var actions: Actions { get }
 }
 
+extension SRConfirmationDialogRoute {
+    public static func == (lhs: Self, rhs: Self) -> Bool {
+        lhs.identifier == rhs.identifier
+    }
+}
+
 public struct ConfirmationDialogEmptyRoute: SRConfirmationDialogRoute {
 
     public var titleKey: LocalizedStringKey { "" }
-    public var stringMessage: LocalizedStringKey { "Default Confirmation Dialog!" }
-    public var message: some View { Text(stringMessage) }
+    public var identifier: LocalizedStringKey { "Default Confirmation Dialog!" }
+    public var message: some View { Text(identifier) }
     public var actions: some View { Button("OK"){ } }
     public var titleVisibility: Visibility = .hidden
 }
