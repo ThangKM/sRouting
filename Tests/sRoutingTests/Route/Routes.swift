@@ -18,6 +18,7 @@ enum TestErrorRoute: SRAlertRoute {
 enum TestDialog: SRConfirmationDialogRoute {
     case confirmOK
     var titleKey: LocalizedStringKey { "Confirm" }
+    var stringMessage: LocalizedStringKey { "Your question?" }
     var actions: some View {
         VStack {
             Button("OK") {
@@ -27,7 +28,7 @@ enum TestDialog: SRConfirmationDialogRoute {
             }
         }
     }
-    var message: some View { Text("Your question?") }
+    var message: some View { Text(stringMessage) }
     var titleVisibility: Visibility { .visible }
 }
 
@@ -53,7 +54,6 @@ enum TestRoute: SRRoute {
     }
 }
 
-@Observable
 @sRouteCoordinator(stacks: "testStack")
 final class Coordinator { }
 

@@ -6,7 +6,7 @@
 [![codecov.io](https://codecov.io/gh/ThangKM/sRouting/branch/main/graphs/badge.svg?branch=main)](https://codecov.io/github/ThangKM/sRouting?branch=main)
 [![Swift Package Manager compatible](https://img.shields.io/badge/Swift%20Package%20Manager-compatible-brightgreen.svg)](https://github.com/apple/swift-package-manager)
 
-The lightweight navigation framework for SwiftUI.
+The navigation framework for SwiftUI.
 
 ## Overview
 
@@ -33,19 +33,22 @@ Specify `https://github.com/ThangKM/sRouting.git` as the `sRouting` package link
 
 ![](https://github.com/ThangKM/sRouting/blob/main/Sources/sRouting/DocsRouting.docc/Resources/Bookie/SectionOne/bookie_add_srouting.png)
 
+## 🌀 Example: 
+Explore the example brach: [Example](https://github.com/ThangKM/sRouting/tree/example)
+
 ## 🏃‍♂️ Getting Started with sRouting
 
 Set up the `SRRootView` and interact with macros.
 
 ## Overview
 
-Create your root view using ``SRRootView``.
-Declare your ``SRRoute``.
+Create your root view using `SRRootView`.
+Declare your `SRRoute`.
 Learn about macros and ViewModifers.
 
 ### Create a Route
 
-To create a route, we must adhere to the ``SRRoute`` Protocol.
+To create a route, we must adhere to the `SRRoute` Protocol.
 
 ```swift
 enum HomeRoute: SRRoute {
@@ -57,8 +60,8 @@ enum HomeRoute: SRRoute {
     
     var path: String { 
         swich self {
-            case .pastry: return "pastry"
-            case .cake: return "cake"
+            case .pastry: return \"pastry\"
+            case .cake: return \"cake\"
         }
     }
 
@@ -194,7 +197,7 @@ router.dismiss()
 ```
 
 To dismiss to root view we use the `dismissAll()` function.
-Required the root view is a ``SRRootView``
+Required the root view is a `SRRootView`
 
 ```swift
 router.dismissAll()

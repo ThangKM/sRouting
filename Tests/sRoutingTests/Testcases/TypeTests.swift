@@ -11,9 +11,10 @@ import SwiftUI
 @testable import sRouting
 
 @Suite("Test AnyRoute and SRRoutingError")
+@MainActor
 struct TypeTests {
     
-    @Test @MainActor
+    @Test
     func testAnyRoute() {
         let route = AnyRoute(route: TestRoute.home)
         #expect(route.screen != nil)

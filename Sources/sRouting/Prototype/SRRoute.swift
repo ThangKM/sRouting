@@ -17,16 +17,20 @@ public protocol SRConfirmationDialogRoute: Sendable {
     
     var titleVisibility: Visibility { get }
     
-    @ViewBuilder
+    var stringMessage: LocalizedStringKey { get }
+    
+    @ViewBuilder @MainActor
     var message: Message { get }
     
-    @ViewBuilder
+    @ViewBuilder @MainActor
     var actions: Actions { get }
 }
 
 public struct ConfirmationDialogEmptyRoute: SRConfirmationDialogRoute {
+
     public var titleKey: LocalizedStringKey { "" }
-    public var message: some View { Text("Default Confirmation Dialog!") }
+    public var stringMessage: LocalizedStringKey { "Default Confirmation Dialog!" }
+    public var message: some View { Text(stringMessage) }
     public var actions: some View { Button("OK"){ } }
     public var titleVisibility: Visibility = .hidden
 }
@@ -39,10 +43,10 @@ public protocol SRAlertRoute: Sendable {
     
     var titleKey: LocalizedStringKey { get }
     
-    @ViewBuilder
+    @ViewBuilder @MainActor
     var message: Message { get }
     
-    @ViewBuilder
+    @ViewBuilder @MainActor
     var actions: Actions { get }
 }
 
@@ -51,8 +55,6 @@ public struct AlertEmptyRoute: SRAlertRoute {
     public var message: some View { Text("Default Alert!") }
     public var actions: some View { Button("OK"){ } }
 }
-
-
 
 //MARK: - SRRoute
 /// Protocol to build screens for the route.
@@ -83,7 +85,7 @@ extension SRRoute {
     }
     
     public static func == (lhs: Self, rhs: Self) -> Bool {
-        return lhs.path == rhs.path
+        lhs.path == rhs.path
     }
     
     public func hash(into hasher: inout Hasher) {
