@@ -151,12 +151,13 @@ struct RouterModifierTests {
     
     @Test
     func testOnDoubleTap() async throws {
-        
+        let waiter = Waiter()
         let selection = ValueBox(value: -1)
         let tabManager = SRTabbarSelection()
         let sut = Text("Testing")
                     .onDoubleTapTabItem { value in
                         selection.update(with: value)
+                        waiter.fulfill()
                     }
                     .environment(tabManager)
         ViewHosting.host(view: sut)
@@ -164,7 +165,7 @@ struct RouterModifierTests {
         tabManager.select(tag: 0)
         try await Task.sleep(for:.milliseconds(100))
         tabManager.select(tag: 0)
-        try await Task.sleep(for:.milliseconds(100))
+        try await waiter.waiting()
         #expect(selection.value == .zero)
     }
     
