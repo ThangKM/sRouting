@@ -12,8 +12,6 @@ import Observation
 
 enum AppConfirmationDialog: SRConfirmationDialogRoute {
     
-   
-    
     case testConfirmation
     
     var titleKey: LocalizedStringKey {
