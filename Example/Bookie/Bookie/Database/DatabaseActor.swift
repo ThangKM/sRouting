@@ -190,6 +190,10 @@ extension ModelContext {
         return context
     }
     
+    static var fetchContext: ModelContext {
+        ModelContext(DatabaseProvider.shared.container)
+    }
+    
     struct AsociationKey {
         nonisolated(unsafe) static var creatorKey: UInt8 = 0
     }

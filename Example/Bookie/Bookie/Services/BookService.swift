@@ -7,22 +7,18 @@
 import SwiftData
 import Foundation
 
-@DatabaseActor
-final class BookService {
+
+//MARK: - Fetch Only
+final class BookService: Sendable {
     
-    func isDatabaseEmpty() -> Bool {
-        let context = ModelContext.isolatedContext
+    func isDatabaseEmpty() async -> Bool {
+        let context = ModelContext.fetchContext
         let count = (try? context.fetchCount(BookPersistent.fetchAll)) ?? .zero
         return count == .zero
     }
     
-    func generateBooks(count: Int) async throws {
-        let books = await MockBookService.shared.generateBooks(count: count)
-        try await _addNewOrUpdate(fromBooks: books)
-    }
-    
     func fetchAllBooks(nextToken: FetchNextToken<BookPersistent>?) async throws -> FetchResult<BookModel, BookPersistent> {
-        let context = ModelContext.isolatedContext
+        let context = ModelContext.fetchContext
         let descriptor: FetchDescriptor<BookPersistent>
         if let nextToken {
             descriptor = nextToken.descriptor
@@ -38,42 +34,16 @@ final class BookService {
         return result
     }
     
-    func updateBook(_ book: BookModel) async throws {
-        let context = ModelContext.isolatedContext
-        let books = try context.fetch(BookPersistent.fetchByBookId(book.id))
-        guard let persistentBook = books.first else {
-            return
-        }
-        persistentBook.rating = book.rating
-        persistentBook.name = book.name
-        persistentBook.author = book.author
-        persistentBook.bookDescription = book.description
-        persistentBook.imageName = book.imageName
-        
-        try await databaseUpdateTransaction(models: [persistentBook], useContext: context)
-    }
-    
-    func books(fromPersistentIdentifiers ids: [PersistentIdentifier]) -> [BookModel] {
-        let context = ModelContext.isolatedContext
+    func books(fromPersistentIdentifiers ids: [PersistentIdentifier]) async -> [BookModel] {
+        let context = ModelContext.fetchContext
         let bookPersistents = (try? context.fetch(BookPersistent.fetchByIdentifiers(ids.unique()))) ?? []
         let books = bookPersistents.map({ BookModel(persistentModel: $0) })
         return books
     }
     
-    func deleteBooks(byPersistentIdentifiers ids: [PersistentIdentifier]) async throws {
-        let context = ModelContext.isolatedContext
-        var books = [BookPersistent]()
-        for id in ids {
-            guard let book = context.model(for: id) as? BookPersistent
-            else { continue }
-            books.append(book)
-        }
-        try await databaseDeleteTransaction(models: books, useContext: context)
-    }
-    
-    func searchBooks(query: String, nextToken: FetchNextToken<BookPersistent>?) throws -> FetchResult<BookModel, BookPersistent> {
+    func searchBooks(query: String, nextToken: FetchNextToken<BookPersistent>?) async throws -> FetchResult<BookModel, BookPersistent> {
         guard !query.isEmpty else { return .init() }
-        let context = ModelContext.isolatedContext
+        let context = ModelContext.fetchContext
         let descriptor: FetchDescriptor<BookPersistent>
         if let nextToken {
             descriptor = nextToken.descriptor
@@ -90,8 +60,44 @@ final class BookService {
     }
 }
 
+//MARK: - Make Changes
 extension BookService {
     
+    @DatabaseActor
+    func generateBooks(count: Int) async throws {
+        let books = await MockBookService.shared.generateBooks(count: count)
+        try await _addNewOrUpdate(fromBooks: books)
+    }
+    
+    @DatabaseActor
+    func deleteBooks(byPersistentIdentifiers ids: [PersistentIdentifier]) async throws {
+        let context = ModelContext.isolatedContext
+        var books = [BookPersistent]()
+        for id in ids {
+            guard let book = context.model(for: id) as? BookPersistent
+            else { continue }
+            books.append(book)
+        }
+        try await databaseDeleteTransaction(models: books, useContext: context)
+    }
+    
+    @DatabaseActor
+    func updateBook(_ book: BookModel) async throws {
+        let context = ModelContext.isolatedContext
+        let books = try context.fetch(BookPersistent.fetchByBookId(book.id))
+        guard let persistentBook = books.first else {
+            return
+        }
+        persistentBook.rating = book.rating
+        persistentBook.name = book.name
+        persistentBook.author = book.author
+        persistentBook.bookDescription = book.description
+        persistentBook.imageName = book.imageName
+        
+        try await databaseUpdateTransaction(models: [persistentBook], useContext: context)
+    }
+    
+    @DatabaseActor
     private func _addNewOrUpdate(fromBooks books: [BookModel]) async throws {
        
         let context = ModelContext.isolatedContext
