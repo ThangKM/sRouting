@@ -16,7 +16,7 @@ func databaseInsertTransaction(models: [any PersistentModel],
     assert(context.createtor == "DatabaseActor" || EnvironmentRunner.current == .livePreview,
            "use ModelContext.isolatedContext to create the context with DatabaseActor isolation")
     
-    let count = models.count
+    var count = models.count
     var insertedModels: [any PersistentModel] = .init()
     
     for model in models {
@@ -30,6 +30,7 @@ func databaseInsertTransaction(models: [any PersistentModel],
             await DatabaseActor.shared.produce(changes: .insertedIdentifiers(insertedIds))
             insertedModels.removeAll()
         }
+        count -= 1
         try? await prevent_huge_loop(count: count)
     }
 }
@@ -56,9 +57,9 @@ func databaseDeleteTransaction(models: [any PersistentModel],
         guard !model.isDeleted else { continue }
         context.delete(model)
     }
+    try context.save()
     let ids = models.map(\.persistentModelID)
     await DatabaseActor.shared.produce(changes: .deletedIdentifiers(ids))
-    try context.save()
 }
 
 //MARK: - DatabaseActor
