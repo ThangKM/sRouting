@@ -13,7 +13,7 @@ enum HomeRoute: SRRoute {
     typealias AlertRoute = AppAlertErrors
     typealias ConfirmationDialogRoute = AppConfirmationDialog
     
-    case bookDetailScreen(book: BookModel)
+    case bookDetailScreen(book: BookPersistent.SendableType)
     
     var path: String { "detailScreen" }
     

@@ -7,8 +7,9 @@
 
 import SwiftData
 import Foundation
+import ModelSendable
 
-@Model
+@Model @ModelSendable(name: "BookModel")
 final class BookPersistent {
 
     @Attribute(.unique)
@@ -18,22 +19,51 @@ final class BookPersistent {
     var author :String
     var bookDescription: String
     var rating: Int
+    var raingMapping: [Int: Int] = [Int: Int]()
     
-    init (book: BookModel) {
-        self.bookId = book.bookId
-        self.name = book.name
-        self.imageName = book.imageName
-        self.author = book.author
-        self.bookDescription = book.description
-        self.rating = book.rating
+    init(bookId: Int,
+         name: String,
+         imageName: String,
+         author: String,
+         bookDescription: String,
+         rating: Int) {
+        self.bookId = bookId
+        self.name = name
+        self.imageName = imageName
+        self.author = author
+        self.bookDescription = bookDescription
+        self.rating = rating
+        self.raingMapping = [bookId: rating]
     }
     
-    func update(with book: BookModel) {
-        self.name = book.name
-        self.imageName = book.imageName
-        self.author = book.author
-        self.bookDescription = book.description
-        self.rating = book.rating
+    init(sendable: BookModel) {
+        self.bookId = sendable.bookId
+        self.name = sendable.name
+        self.imageName = sendable.imageName
+        self.author = sendable.author
+        self.bookDescription = sendable.bookDescription
+        self.rating = sendable.rating
+        self.raingMapping = sendable.raingMapping
+    }
+}
+
+extension BookPersistent.BookModel: Hashable, Identifiable {
+    
+    var id: Int { bookId }
+    
+    static func == (lhs: BookPersistent.BookModel, rhs: BookPersistent.BookModel) -> Bool {
+        return lhs.persistentIdentifier == rhs.persistentIdentifier &&
+        lhs.bookId == rhs.bookId &&
+        lhs.name == rhs.name &&
+        lhs.imageName == rhs.imageName &&
+        lhs.author == rhs.author &&
+        lhs.bookDescription == rhs.bookDescription &&
+        lhs.rating == rhs.rating
+    }
+    
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(persistentIdentifier)
+        hasher.combine(bookId)
     }
 }
 

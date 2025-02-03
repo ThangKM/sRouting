@@ -17,7 +17,7 @@ final class BookService: Sendable {
         return count == .zero
     }
     
-    func fetchAllBooks(nextToken: FetchNextToken<BookPersistent>?) async throws -> FetchResult<BookModel, BookPersistent> {
+    func fetchAllBooks(nextToken: FetchNextToken<BookPersistent>?) async throws -> FetchResult<BookPersistent> {
         let context = ModelContext.fetchContext
         let descriptor: FetchDescriptor<BookPersistent>
         if let nextToken {
@@ -27,21 +27,21 @@ final class BookService: Sendable {
         }
         try Task.checkCancellation()
         let books = try context.fetch(descriptor)
-        let models = books.map { BookModel(persistentModel: $0) }
+        let models = books.map(\.sendable)
         let result = FetchResult(models: models, nextToken: .init(identifier: "fetchAllBooks",
                                                                   descriptor: descriptor.next(previousItemCount: books.count)))
         try Task.checkCancellation()
         return result
     }
     
-    func books(fromPersistentIdentifiers ids: [PersistentIdentifier]) async -> [BookModel] {
+    func books(fromPersistentIdentifiers ids: [PersistentIdentifier]) async -> [BookPersistent.SendableType] {
         let context = ModelContext.fetchContext
         let bookPersistents = (try? context.fetch(BookPersistent.fetchByIdentifiers(ids.unique()))) ?? []
-        let books = bookPersistents.map({ BookModel(persistentModel: $0) })
+        let books = bookPersistents.map(\.sendable)
         return books
     }
     
-    func searchBooks(query: String, nextToken: FetchNextToken<BookPersistent>?) async throws -> FetchResult<BookModel, BookPersistent> {
+    func searchBooks(query: String, nextToken: FetchNextToken<BookPersistent>?) async throws -> FetchResult<BookPersistent> {
         guard !query.isEmpty else { return .init() }
         let context = ModelContext.fetchContext
         let descriptor: FetchDescriptor<BookPersistent>
@@ -52,7 +52,7 @@ final class BookService: Sendable {
         }
         try Task.checkCancellation()
         let books = try context.fetch(descriptor)
-        let sendableModel = books.map { BookModel(persistentModel: $0) }
+        let sendableModel = books.map(\.sendable)
         let nextDescriptor = descriptor.next(previousItemCount: books.count)
         let result = FetchResult(models: sendableModel, nextToken: .init(identifier: query, descriptor: nextDescriptor))
         try Task.checkCancellation()
@@ -82,23 +82,18 @@ extension BookService {
     }
     
     @DatabaseActor
-    func updateBook(_ book: BookModel) async throws {
+    func updateBook(_ book: BookPersistent.SendableType) async throws {
         let context = ModelContext.isolatedContext
-        let books = try context.fetch(BookPersistent.fetchByBookId(book.id))
+        let books = try context.fetch(BookPersistent.fetchByBookId(book.bookId))
         guard let persistentBook = books.first else {
             return
         }
-        persistentBook.rating = book.rating
-        persistentBook.name = book.name
-        persistentBook.author = book.author
-        persistentBook.bookDescription = book.description
-        persistentBook.imageName = book.imageName
-        
+        persistentBook.update(from: book)
         try await databaseUpdateTransaction(models: [persistentBook], useContext: context)
     }
     
     @DatabaseActor
-    private func _addNewOrUpdate(fromBooks books: [BookModel]) async throws {
+    private func _addNewOrUpdate(fromBooks books: [BookPersistent.SendableType]) async throws {
        
         let context = ModelContext.isolatedContext
         let bookIds = books.map(\.bookId).unique()
@@ -108,9 +103,9 @@ extension BookService {
         for book in books {
             autoreleasepool {
                 if let model = updateModels.first(where: { book.bookId == $0.bookId }) {
-                    model.update(with: book)
+                    model.update(from: book)
                 } else {
-                    insertModels.append(.init(book: book))
+                    insertModels.append(.init(sendable: book))
                 }
             }
             try? await prevent_huge_loop(count: count)

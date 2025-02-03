@@ -3,14 +3,13 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 55;
+	objectVersion = 60;
 	objects = {
 
 /* Begin PBXBuildFile section */
 		37073F2E2D3ED822001A2C24 /* TextLoadingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37073F2D2D3ED814001A2C24 /* TextLoadingView.swift */; };
 		3732440C26957BEF007DE034 /* MockBookService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3732440B26957BEF007DE034 /* MockBookService.swift */; };
 		373244432695E2C9007DE034 /* BookDetailStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 373244422695E2C9007DE034 /* BookDetailStore.swift */; };
-		373244462695FCC6007DE034 /* EmptyObjectType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 373244452695FCC6007DE034 /* EmptyObjectType.swift */; };
 		373E28172D43892600E1CADE /* FetchNextToken.swift in Sources */ = {isa = PBXBuildFile; fileRef = 373E28162D43892000E1CADE /* FetchNextToken.swift */; };
 		3741025E26942F2400C8DF44 /* StartScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3741025D26942F2400C8DF44 /* StartScreen.swift */; };
 		3741026126942F4300C8DF44 /* AppRoute.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3741026026942F4300C8DF44 /* AppRoute.swift */; };
@@ -39,10 +38,10 @@
 		37A5A0BD2D3824C300C3D1E6 /* ActionStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37A5A0BC2D3824BE00C3D1E6 /* ActionStore.swift */; };
 		37AAE7AA26948818007EA3B6 /* BookCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37AAE7A926948818007EA3B6 /* BookCell.swift */; };
 		37AAE7B226956D9B007EA3B6 /* RatingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37AAE7B126956D9B007EA3B6 /* RatingView.swift */; };
-		37AAE7B426957226007EA3B6 /* BookModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37AAE7B326957226007EA3B6 /* BookModel.swift */; };
 		37B61ADA2D4273D7005195C4 /* HomeState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37B61AD92D4273D3005195C4 /* HomeState.swift */; };
 		37B61ADD2D42B097005195C4 /* sRouting in Frameworks */ = {isa = PBXBuildFile; productRef = 37B61ADC2D42B097005195C4 /* sRouting */; };
 		37B61AE02D42B0BC005195C4 /* sRouting in Frameworks */ = {isa = PBXBuildFile; productRef = 37B61ADF2D42B0BC005195C4 /* sRouting */; };
+		37D1A7A02D50E3A900FD69C4 /* ModelSendable in Frameworks */ = {isa = PBXBuildFile; productRef = 37D1A79F2D50E3A900FD69C4 /* ModelSendable */; };
 		37E7DD912D3841800067211B /* PreviewModifiers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37E7DD902D3841790067211B /* PreviewModifiers.swift */; };
 /* End PBXBuildFile section */
 
@@ -67,7 +66,6 @@
 		37073F2D2D3ED814001A2C24 /* TextLoadingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextLoadingView.swift; sourceTree = "<group>"; };
 		3732440B26957BEF007DE034 /* MockBookService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockBookService.swift; sourceTree = "<group>"; };
 		373244422695E2C9007DE034 /* BookDetailStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookDetailStore.swift; sourceTree = "<group>"; };
-		373244452695FCC6007DE034 /* EmptyObjectType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmptyObjectType.swift; sourceTree = "<group>"; };
 		373E28162D43892000E1CADE /* FetchNextToken.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FetchNextToken.swift; sourceTree = "<group>"; };
 		3741025D26942F2400C8DF44 /* StartScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StartScreen.swift; sourceTree = "<group>"; };
 		3741026026942F4300C8DF44 /* AppRoute.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppRoute.swift; sourceTree = "<group>"; };
@@ -100,7 +98,6 @@
 		37A5A0BC2D3824BE00C3D1E6 /* ActionStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActionStore.swift; sourceTree = "<group>"; };
 		37AAE7A926948818007EA3B6 /* BookCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookCell.swift; sourceTree = "<group>"; };
 		37AAE7B126956D9B007EA3B6 /* RatingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RatingView.swift; sourceTree = "<group>"; };
-		37AAE7B326957226007EA3B6 /* BookModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookModel.swift; sourceTree = "<group>"; };
 		37B61AD92D4273D3005195C4 /* HomeState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeState.swift; sourceTree = "<group>"; };
 		37E7DD902D3841790067211B /* PreviewModifiers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreviewModifiers.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -111,6 +108,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				37B61ADD2D42B097005195C4 /* sRouting in Frameworks */,
+				37D1A7A02D50E3A900FD69C4 /* ModelSendable in Frameworks */,
 				37B61AE02D42B0BC005195C4 /* sRouting in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -136,7 +134,6 @@
 			isa = PBXGroup;
 			children = (
 				37A5A0BC2D3824BE00C3D1E6 /* ActionStore.swift */,
-				373244452695FCC6007DE034 /* EmptyObjectType.swift */,
 			);
 			path = Prototype;
 			sourceTree = "<group>";
@@ -324,7 +321,6 @@
 			isa = PBXGroup;
 			children = (
 				373E28162D43892000E1CADE /* FetchNextToken.swift */,
-				37AAE7B326957226007EA3B6 /* BookModel.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -348,6 +344,7 @@
 			packageProductDependencies = (
 				37B61ADC2D42B097005195C4 /* sRouting */,
 				37B61ADF2D42B0BC005195C4 /* sRouting */,
+				37D1A79F2D50E3A900FD69C4 /* ModelSendable */,
 			);
 			productName = Bookie;
 			productReference = 379D3460268D024800903D92 /* Bookie.app */;
@@ -423,6 +420,7 @@
 			mainGroup = 379D3457268D024800903D92;
 			packageReferences = (
 				37B61ADE2D42B0BC005195C4 /* XCRemoteSwiftPackageReference "sRouting" */,
+				37D1A79E2D50E20700FD69C4 /* XCLocalSwiftPackageReference "ModelSendable" */,
 			);
 			productRefGroup = 379D3461268D024800903D92 /* Products */;
 			projectDirPath = "";
@@ -468,7 +466,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				37AAE7B426957226007EA3B6 /* BookModel.swift in Sources */,
 				37AAE7AA26948818007EA3B6 /* BookCell.swift in Sources */,
 				37073F2E2D3ED822001A2C24 /* TextLoadingView.swift in Sources */,
 				3761E8232D3D87DD00E491BC /* BookPersistent.swift in Sources */,
@@ -481,7 +478,6 @@
 				373244432695E2C9007DE034 /* BookDetailStore.swift in Sources */,
 				3761E8252D3D91D900E491BC /* BookService.swift in Sources */,
 				379D3464268D024800903D92 /* BookieApp.swift in Sources */,
-				373244462695FCC6007DE034 /* EmptyObjectType.swift in Sources */,
 				3761E82A2D3E48D900E491BC /* DatabaseActor.swift in Sources */,
 				3741025E26942F2400C8DF44 /* StartScreen.swift in Sources */,
 				3741026126942F4300C8DF44 /* AppRoute.swift in Sources */,
@@ -857,13 +853,20 @@
 		};
 /* End XCConfigurationList section */
 
+/* Begin XCLocalSwiftPackageReference section */
+		37D1A79E2D50E20700FD69C4 /* XCLocalSwiftPackageReference "ModelSendable" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = ModelSendable;
+		};
+/* End XCLocalSwiftPackageReference section */
+
 /* Begin XCRemoteSwiftPackageReference section */
 		37B61ADE2D42B0BC005195C4 /* XCRemoteSwiftPackageReference "sRouting" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "git@github.com:ThangKM/sRouting.git";
 			requirement = {
 				kind = upToNextMajorVersion;
-				minimumVersion = 1.1.12;
+				minimumVersion = 1.0.0;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */
@@ -877,6 +880,10 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 37B61ADE2D42B0BC005195C4 /* XCRemoteSwiftPackageReference "sRouting" */;
 			productName = sRouting;
+		};
+		37D1A79F2D50E3A900FD69C4 /* ModelSendable */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = ModelSendable;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

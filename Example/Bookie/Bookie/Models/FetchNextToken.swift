@@ -7,6 +7,7 @@
 
 import SwiftUI
 import SwiftData
+import ModelSendable
 
 extension FetchDescriptor {
     
@@ -41,11 +42,11 @@ struct FetchNextToken<T>: Sendable where T: PersistentModel {
     }
 }
 
-struct FetchResult<Transformed, Origin>: Sendable where Transformed: Sendable, Origin: PersistentModel {
-    let models: [Transformed]
-    let nextToken: FetchNextToken<Origin>?
+struct FetchResult<T>: Sendable where T: ModelSendableType, T: PersistentModel {
+    let models: [T.SendableType]
+    let nextToken: FetchNextToken<T>?
     
-    init(models: [Transformed] = [], nextToken: FetchNextToken<Origin>? = .none) {
+    init(models: [T.SendableType] = [], nextToken: FetchNextToken<T>? = .none) {
         self.models = models
         self.nextToken = nextToken
     }

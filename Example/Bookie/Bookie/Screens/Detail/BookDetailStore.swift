@@ -29,9 +29,9 @@ extension BookDetailScreen {
         private(set) var isLoading = false
         
         @ObservationIgnored
-        private(set) var book: BookModel
+        private(set) var book: BookPersistent.SendableType
         
-        init(book: BookModel) {
+        init(book: BookPersistent.SendableType) {
             self.book = book
         }
         
@@ -86,7 +86,7 @@ extension BookDetailScreen.DetailStore {
         }
     }
     
-    func _saveBook(_ book: BookModel) {
+    func _saveBook(_ book: BookPersistent.SendableType) {
         Task {
             try await bookService.updateBook(book)
         }

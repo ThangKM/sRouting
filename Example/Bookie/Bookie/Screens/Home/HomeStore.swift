@@ -17,7 +17,7 @@ extension HomeScreen {
         case refreshBooks
         case loadmoreBooks
         case searchBookBy(text: String)
-        case gotoDetail(book: BookModel)
+        case gotoDetail(book: BookPersistent.SendableType)
         case swipeDelete(atOffsets: IndexSet)
     }
 }

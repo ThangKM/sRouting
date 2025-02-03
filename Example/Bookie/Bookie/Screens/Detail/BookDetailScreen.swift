@@ -27,7 +27,7 @@ struct BookDetailScreen: View {
                     
                     BookHeaderBody(state: state)
                     
-                    Text(state.book.description)
+                    Text(state.book.bookDescription)
                         .abeeFont(size: 14, style: .italic)
                         .padding()
                     
@@ -50,7 +50,7 @@ struct BookDetailScreen: View {
 //                        .foregroundStyle(.white)
 //                        .buttonStyle(.borderedProminent)
 //                        .disabled(state.isLoading)
-                        
+//                        
                         Button("Delete") {
                             store.receive(action: .deleteBook)
                         }

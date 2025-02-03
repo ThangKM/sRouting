@@ -9,7 +9,7 @@ import SwiftUI
 
 struct BookCell: View {
     
-    let book: BookModel
+    let book: BookPersistent.SendableType
     
     var body: some View {
         HStack {
@@ -36,11 +36,8 @@ struct BookCell: View {
 
 #Preview {
     List {
-        BookCell(book: .init(bookId: 1,
-                             name: "Book Title",
-                             imageName: "",
-                             author: "Developer",
-                             description: "testing",
-                             rating: 3))
+        BookCell(book: BookPersistent(bookId: -1, name: "name",
+                                      imageName: "", author: "author",
+                                      bookDescription: "description", rating: 4).sendable)
     }
 }

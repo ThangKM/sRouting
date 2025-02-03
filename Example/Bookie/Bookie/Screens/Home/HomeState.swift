@@ -32,11 +32,11 @@ extension HomeScreen {
             }
         }
         
-        private(set) var books: [BookModel] = []
+        private(set) var books: [BookPersistent.SendableType] = []
         private(set) var isLoadingMore: Bool = false
         
         @ObservationIgnored
-        private(set) var backupBooks: [BookModel] = []
+        private(set) var backupBooks: [BookPersistent.SendableType] = []
     }
 }
 
@@ -47,11 +47,11 @@ extension HomeScreen.HomeState {
         self.isLoadingMore = isLoadingMore
     }
     
-    func appendAllBooks(books: [BookModel]) {
+    func appendAllBooks(books: [BookPersistent.SendableType]) {
         self.books.append(contentsOf: books)
     }
     
-    func repaceAndBackupListBooks(books: [BookModel]) {
+    func repaceAndBackupListBooks(books: [BookPersistent.SendableType]) {
         
         switch true {
         case backupBooks.isEmpty && !books.isEmpty && !_searchText.isEmpty: // backup list before show search result
@@ -67,11 +67,11 @@ extension HomeScreen.HomeState {
         }
     }
     
-    func replaceBooks(books: [BookModel]) {
+    func replaceBooks(books: [BookPersistent.SendableType]) {
         self.books = books
     }
     
-    func insertNewBoosk(_ books: [BookModel]) {
+    func insertNewBoosk(_ books: [BookPersistent.SendableType]) {
         guard !books.isEmpty else { return }
         if _searchText.isEmpty {
             withAnimation {
@@ -82,7 +82,7 @@ extension HomeScreen.HomeState {
         }
     }
     
-    func updateBooks(_ books: [BookModel]) {
+    func updateBooks(_ books: [BookPersistent.SendableType]) {
         
         let displayBooks = self.books
         let backup = self.backupBooks
@@ -112,8 +112,7 @@ extension HomeScreen.HomeState {
     func removeBooks(byPersistentIdentifiers ids: [PersistentIdentifier]) {
         withAnimation {
             books.removeAll(where: {
-                guard let id = $0.persistentIdentifier else { return false }
-                return ids.contains(id)
+                ids.contains($0.persistentIdentifier)
             })
         }
     }

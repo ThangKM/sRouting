@@ -1,22 +1,22 @@
 {
-  "originHash" : "2387c9d28bd36207f0a81b74e32114afb0d0716b29e23c66272d787d278cd3c0",
+  "originHash" : "ac5d6f8647b3fbf7caf05de1815b975254aa7ffe6a9b77ba625ab907eaed7b49",
   "pins" : [
     {
       "identity" : "srouting",
       "kind" : "remoteSourceControl",
       "location" : "git@github.com:ThangKM/sRouting.git",
       "state" : {
-        "revision" : "3b9e61b792a43ff3175b3c7ef264c228ccd3ac93",
-        "version" : "1.1.13"
+        "revision" : "bb717614deb5df05e81252be1acd3a220727336c",
+        "version" : "1.1.14"
       }
     },
     {
       "identity" : "swift-syntax",
       "kind" : "remoteSourceControl",
-      "location" : "https://github.com/apple/swift-syntax.git",
+      "location" : "https://github.com/swiftlang/swift-syntax.git",
       "state" : {
-        "revision" : "64889f0c732f210a935a0ad7cda38f77f876262d",
-        "version" : "509.1.1"
+        "revision" : "0687f71944021d616d34d922343dcef086855920",
+        "version" : "600.0.1"
       }
     }
   ],
