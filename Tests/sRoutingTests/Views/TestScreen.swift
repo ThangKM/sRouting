@@ -33,3 +33,15 @@ struct DialogScreen: View {
             .onDialogRouting(of: router, for: .confirmOK, tests: tests)
     }
 }
+
+
+struct PopoverScreen: View {
+    
+    let router: SRRouter<TestRoute>
+    let tests: UnitTestActions<OnPopoverOfRouter<TestRoute>>?
+    
+    var body: some View {
+        Text("DialogScreen.Text")
+            .onPopoverRouting(of: router, for: .testPopover, tests: tests)
+    }
+}

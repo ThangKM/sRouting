@@ -257,8 +257,110 @@ struct RouterModifierTests {
         try await Task.sleep(for: .milliseconds(10))
         #expect(router.transition == .none)
     }
+    
+    #if os(macOS)
+    @Test
+    func testRouterActivePopover_Pad() async throws {
+        var isActive = false
+        let sut = PopoverScreen(router: router, tests: .init(didChangeTransition: { view in
+            isActive = view.isActivePopover
+        }))
+        
+        ViewHosting.host(view: sut)
+        router.show(popover: .testPopover)
+        try await Task.sleep(for: .milliseconds(50))
+        #expect(isActive)
+    }
+    
+    @Test
+    func testResetRouterTransitionByPopover_Pad() async throws {
+        var action: ActionBox?
+        let waiter = Waiter()
+        let sut = PopoverScreen(router: router, tests: .init(didChangeTransition: { view in
+            action = .init(action: {
+                view.resetActiveState()
+                waiter.fulfill()
+            })
+        }))
+        ViewHosting.host(view: sut)
+        try await Task.sleep(for: .milliseconds(10))
+        router.show(popover: .testPopover)
+        try await Task.sleep(for: .milliseconds(20))
+        action?.execute()
+        try await Task.sleep(for: .milliseconds(50))
+        #expect(router.transition == .none)
+    }
+    #endif
 
     #if os(iOS)
+    @Test
+    func testActivePopover_Phone() async throws {
+        guard UIDevice.current.userInterfaceIdiom == .phone else { return }
+        let waiter = Waiter()
+        var isActive: Bool = false
+        let sut = TestScreen(router: router, tests: .init(didChangeTransition: { view in
+            isActive = view.isActivePopover
+            waiter.fulfill()
+        }))
+        
+        ViewHosting.host(view: sut)
+        router.show(popover: .testPopover)
+        try await waiter.waiting()
+        #expect(isActive)
+    }
+    
+    @Test
+    func testResetRouterTransitionByPopover_Phone() async throws {
+        guard UIDevice.current.userInterfaceIdiom == .phone else { return }
+        var action: ActionBox?
+        let sut = TestScreen(router: router, tests: .init(didChangeTransition: { view in
+            action = .init(action: {
+                view.resetActiveState()
+            })
+        }))
+        ViewHosting.host(view: sut)
+        try await Task.sleep(for: .milliseconds(10))
+        router.show(popover: .testPopover)
+        try await Task.sleep(for: .milliseconds(10))
+        action?.execute()
+        try await Task.sleep(for: .milliseconds(10))
+        #expect(router.transition == .none)
+    }
+    
+    @Test
+    func testRouterActivePopover_Pad() async throws {
+        guard UIDevice.current.userInterfaceIdiom == .pad else { return }
+        var isActive = false
+        let sut = PopoverScreen(router: router, tests: .init(didChangeTransition: { view in
+            isActive = view.isActivePopover
+        }))
+        
+        ViewHosting.host(view: sut)
+        router.show(popover: .testPopover)
+        try await Task.sleep(for: .milliseconds(50))
+        #expect(isActive)
+    }
+    
+    @Test
+    func testResetRouterTransitionByPopover_Pad() async throws {
+        guard UIDevice.current.userInterfaceIdiom == .pad else { return }
+        var action: ActionBox?
+        let waiter = Waiter()
+        let sut = PopoverScreen(router: router, tests: .init(didChangeTransition: { view in
+            action = .init(action: {
+                view.resetActiveState()
+                waiter.fulfill()
+            })
+        }))
+        ViewHosting.host(view: sut)
+        try await Task.sleep(for: .milliseconds(10))
+        router.show(popover: .testPopover)
+        try await Task.sleep(for: .milliseconds(20))
+        action?.execute()
+        try await Task.sleep(for: .milliseconds(50))
+        #expect(router.transition == .none)
+    }
+    
     @Test
     func testOnDialogRouterActiveConfirmationDialog() async throws {
         guard UIDevice.current.userInterfaceIdiom == .pad else { return }

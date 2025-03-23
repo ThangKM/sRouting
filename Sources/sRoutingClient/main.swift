@@ -10,6 +10,17 @@ import sRouting
 import SwiftUI
 import Observation
 
+enum AppPopover: SRPopoverRoute {
+    
+    case testPopover
+    
+    var identifier: String { "indentifier" }
+    
+    var content: some View {
+        Text("Hello, World!")
+    }
+}
+
 enum AppConfirmationDialog: SRConfirmationDialogRoute {
     
     case testConfirmation
@@ -62,6 +73,7 @@ enum HomeRoute: SRRoute {
 
     typealias AlertRoute = AppAlerts
     typealias ConfirmationDialogRoute = AppConfirmationDialog
+    typealias PopoverRoute = AppPopover
     
     case home
     case detail(String)
@@ -92,6 +104,7 @@ router.trigger(to: .home, with: .sheet) {
 
 router.show(alert: .lossConnection)
 router.show(dialog: .testConfirmation)
+router.show(popover: .testPopover)
 
 @sRouteObserver(HomeRoute.self, SettingRoute.self)
 struct RouteObserver { }
