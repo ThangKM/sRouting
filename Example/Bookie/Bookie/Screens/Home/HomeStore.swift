@@ -9,9 +9,10 @@ import SwiftUI
 import sRouting
 import SwiftData
 
-//MARK: - HomeAction
+
 extension HomeScreen {
     
+    //MARK: - HomeAction
     enum HomeAction: Sendable {
         case firstFetchBooks
         case refreshBooks
@@ -20,16 +21,13 @@ extension HomeScreen {
         case gotoDetail(book: BookPersistent.SendableType)
         case swipeDelete(atOffsets: IndexSet)
     }
-}
 
-//MARK: - HomeStore
-extension HomeScreen {
-    
     enum DisplayMode {
         case list
         case search
     }
     
+    //MARK: - HomeStore
     final class HomeStore: ActionStore {
         
         private weak var state: HomeState?
@@ -43,6 +41,7 @@ extension HomeScreen {
         private var displayMode: DisplayMode = .list
         
         func binding(state: HomeState, router: SRRouter<HomeRoute>) {
+            guard self.state == nil || self.router == nil else { return }
             self.state = state
             self.router = router
             _observeBookChanges()

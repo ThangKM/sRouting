@@ -22,11 +22,14 @@
 		374102782694590200C8DF44 /* HomeRoute.swift in Sources */ = {isa = PBXBuildFile; fileRef = 374102772694590200C8DF44 /* HomeRoute.swift */; };
 		3741027A269459F300C8DF44 /* BookieNavigationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37410279269459F300C8DF44 /* BookieNavigationView.swift */; };
 		3741027C26945DDC00C8DF44 /* HomeStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3741027B26945DDC00C8DF44 /* HomeStore.swift */; };
+		37564C4F2D905CFA00F6C037 /* sRouting in Frameworks */ = {isa = PBXBuildFile; productRef = 37564C4E2D905CFA00F6C037 /* sRouting */; };
 		3761E8202D3D853200E491BC /* DatabaseProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3761E81F2D3D852E00E491BC /* DatabaseProvider.swift */; };
 		3761E8232D3D87DD00E491BC /* BookPersistent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3761E8222D3D87AD00E491BC /* BookPersistent.swift */; };
 		3761E8252D3D91D900E491BC /* BookService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3761E8242D3D91D400E491BC /* BookService.swift */; };
 		3761E8282D3D959700E491BC /* StartStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3761E8272D3D959300E491BC /* StartStore.swift */; };
 		3761E82A2D3E48D900E491BC /* DatabaseActor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3761E8292D3E48D600E491BC /* DatabaseActor.swift */; };
+		377442C32D5F22FC00CE83AD /* DatabaseQuery.swift in Sources */ = {isa = PBXBuildFile; fileRef = 377442C22D5F22E600CE83AD /* DatabaseQuery.swift */; };
+		377442C62D5F246400CE83AD /* BookPersistent+Queries.swift in Sources */ = {isa = PBXBuildFile; fileRef = 377442C52D5F245600CE83AD /* BookPersistent+Queries.swift */; };
 		3775E7722D3D672E00763E8E /* EnvironmentRunner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3775E7712D3D671300763E8E /* EnvironmentRunner.swift */; };
 		3775E7742D3D74A800763E8E /* RootPreview.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3775E7732D3D749D00763E8E /* RootPreview.swift */; };
 		3775E7762D3D79DA00763E8E /* RootScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3775E7752D3D79D700763E8E /* RootScreen.swift */; };
@@ -40,7 +43,6 @@
 		37AAE7B226956D9B007EA3B6 /* RatingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37AAE7B126956D9B007EA3B6 /* RatingView.swift */; };
 		37B61ADA2D4273D7005195C4 /* HomeState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37B61AD92D4273D3005195C4 /* HomeState.swift */; };
 		37B61ADD2D42B097005195C4 /* sRouting in Frameworks */ = {isa = PBXBuildFile; productRef = 37B61ADC2D42B097005195C4 /* sRouting */; };
-		37B61AE02D42B0BC005195C4 /* sRouting in Frameworks */ = {isa = PBXBuildFile; productRef = 37B61ADF2D42B0BC005195C4 /* sRouting */; };
 		37D1A7A02D50E3A900FD69C4 /* ModelSendable in Frameworks */ = {isa = PBXBuildFile; productRef = 37D1A79F2D50E3A900FD69C4 /* ModelSendable */; };
 		37E7DD912D3841800067211B /* PreviewModifiers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37E7DD902D3841790067211B /* PreviewModifiers.swift */; };
 /* End PBXBuildFile section */
@@ -84,6 +86,8 @@
 		3761E8242D3D91D400E491BC /* BookService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookService.swift; sourceTree = "<group>"; };
 		3761E8272D3D959300E491BC /* StartStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StartStore.swift; sourceTree = "<group>"; };
 		3761E8292D3E48D600E491BC /* DatabaseActor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatabaseActor.swift; sourceTree = "<group>"; };
+		377442C22D5F22E600CE83AD /* DatabaseQuery.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatabaseQuery.swift; sourceTree = "<group>"; };
+		377442C52D5F245600CE83AD /* BookPersistent+Queries.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BookPersistent+Queries.swift"; sourceTree = "<group>"; };
 		3775E7712D3D671300763E8E /* EnvironmentRunner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EnvironmentRunner.swift; sourceTree = "<group>"; };
 		3775E7732D3D749D00763E8E /* RootPreview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootPreview.swift; sourceTree = "<group>"; };
 		3775E7752D3D79D700763E8E /* RootScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootScreen.swift; sourceTree = "<group>"; };
@@ -108,8 +112,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				37B61ADD2D42B097005195C4 /* sRouting in Frameworks */,
+				37564C4F2D905CFA00F6C037 /* sRouting in Frameworks */,
 				37D1A7A02D50E3A900FD69C4 /* ModelSendable in Frameworks */,
-				37B61AE02D42B0BC005195C4 /* sRouting in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -226,9 +230,12 @@
 		3761E81E2D3D851F00E491BC /* Database */ = {
 			isa = PBXGroup;
 			children = (
+				377442C42D5F244D00CE83AD /* Queries */,
 				3761E8212D3D87A700E491BC /* Models */,
+				377442C22D5F22E600CE83AD /* DatabaseQuery.swift */,
 				3761E81F2D3D852E00E491BC /* DatabaseProvider.swift */,
 				3761E8292D3E48D600E491BC /* DatabaseActor.swift */,
+				373E28162D43892000E1CADE /* FetchNextToken.swift */,
 			);
 			path = Database;
 			sourceTree = "<group>";
@@ -248,6 +255,14 @@
 				3761E8242D3D91D400E491BC /* BookService.swift */,
 			);
 			path = Services;
+			sourceTree = "<group>";
+		};
+		377442C42D5F244D00CE83AD /* Queries */ = {
+			isa = PBXGroup;
+			children = (
+				377442C52D5F245600CE83AD /* BookPersistent+Queries.swift */,
+			);
+			path = Queries;
 			sourceTree = "<group>";
 		};
 		379D3457268D024800903D92 = {
@@ -283,7 +298,6 @@
 				3741025F26942F2F00C8DF44 /* Routes */,
 				374102762694437000C8DF44 /* Views */,
 				3741025B26942EDA00C8DF44 /* Screens */,
-				37AAE7B026956D7B007EA3B6 /* Models */,
 				3741027126943C5200C8DF44 /* Modifiers */,
 				3741026A269438F700C8DF44 /* Resources */,
 				379D3469268D024A00903D92 /* Preview Content */,
@@ -317,14 +331,6 @@
 			path = BookieUITests;
 			sourceTree = "<group>";
 		};
-		37AAE7B026956D7B007EA3B6 /* Models */ = {
-			isa = PBXGroup;
-			children = (
-				373E28162D43892000E1CADE /* FetchNextToken.swift */,
-			);
-			path = Models;
-			sourceTree = "<group>";
-		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -343,8 +349,8 @@
 			name = Bookie;
 			packageProductDependencies = (
 				37B61ADC2D42B097005195C4 /* sRouting */,
-				37B61ADF2D42B0BC005195C4 /* sRouting */,
 				37D1A79F2D50E3A900FD69C4 /* ModelSendable */,
+				37564C4E2D905CFA00F6C037 /* sRouting */,
 			);
 			productName = Bookie;
 			productReference = 379D3460268D024800903D92 /* Bookie.app */;
@@ -419,8 +425,8 @@
 			);
 			mainGroup = 379D3457268D024800903D92;
 			packageReferences = (
-				37B61ADE2D42B0BC005195C4 /* XCRemoteSwiftPackageReference "sRouting" */,
 				37D1A79E2D50E20700FD69C4 /* XCLocalSwiftPackageReference "ModelSendable" */,
+				37564C4D2D905CFA00F6C037 /* XCRemoteSwiftPackageReference "sRouting" */,
 			);
 			productRefGroup = 379D3461268D024800903D92 /* Products */;
 			projectDirPath = "";
@@ -479,6 +485,7 @@
 				3761E8252D3D91D900E491BC /* BookService.swift in Sources */,
 				379D3464268D024800903D92 /* BookieApp.swift in Sources */,
 				3761E82A2D3E48D900E491BC /* DatabaseActor.swift in Sources */,
+				377442C32D5F22FC00CE83AD /* DatabaseQuery.swift in Sources */,
 				3741025E26942F2400C8DF44 /* StartScreen.swift in Sources */,
 				3741026126942F4300C8DF44 /* AppRoute.swift in Sources */,
 				3775E7762D3D79DA00763E8E /* RootScreen.swift in Sources */,
@@ -487,6 +494,7 @@
 				374102672694308200C8DF44 /* BookDetailScreen.swift in Sources */,
 				3775E7722D3D672E00763E8E /* EnvironmentRunner.swift in Sources */,
 				37B61ADA2D4273D7005195C4 /* HomeState.swift in Sources */,
+				377442C62D5F246400CE83AD /* BookPersistent+Queries.swift in Sources */,
 				3741027A269459F300C8DF44 /* BookieNavigationView.swift in Sources */,
 				3732440C26957BEF007DE034 /* MockBookService.swift in Sources */,
 				374102782694590200C8DF44 /* HomeRoute.swift in Sources */,
@@ -861,24 +869,24 @@
 /* End XCLocalSwiftPackageReference section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		37B61ADE2D42B0BC005195C4 /* XCRemoteSwiftPackageReference "sRouting" */ = {
+		37564C4D2D905CFA00F6C037 /* XCRemoteSwiftPackageReference "sRouting" */ = {
 			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "git@github.com:ThangKM/sRouting.git";
+			repositoryURL = "https://github.com/ThangKM/sRouting.git";
 			requirement = {
 				kind = upToNextMajorVersion;
-				minimumVersion = 1.0.0;
+				minimumVersion = 1.1.15;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		37B61ADC2D42B097005195C4 /* sRouting */ = {
+		37564C4E2D905CFA00F6C037 /* sRouting */ = {
 			isa = XCSwiftPackageProductDependency;
+			package = 37564C4D2D905CFA00F6C037 /* XCRemoteSwiftPackageReference "sRouting" */;
 			productName = sRouting;
 		};
-		37B61ADF2D42B0BC005195C4 /* sRouting */ = {
+		37B61ADC2D42B097005195C4 /* sRouting */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 37B61ADE2D42B0BC005195C4 /* XCRemoteSwiftPackageReference "sRouting" */;
 			productName = sRouting;
 		};
 		37D1A79F2D50E3A900FD69C4 /* ModelSendable */ = {

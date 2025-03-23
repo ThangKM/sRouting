@@ -11,9 +11,11 @@ import Foundation
 //MARK: - Fetch Only
 final class BookService: Sendable {
     
+    let queries = BookPersistent.Query()
+    
     func isDatabaseEmpty() async -> Bool {
         let context = ModelContext.fetchContext
-        let count = (try? context.fetchCount(BookPersistent.fetchAll)) ?? .zero
+        let count = (try? context.fetchCount(queries.fetchAll)) ?? .zero
         return count == .zero
     }
     
@@ -23,7 +25,7 @@ final class BookService: Sendable {
         if let nextToken {
             descriptor = nextToken.descriptor
         } else {
-            descriptor = BookPersistent.fetch(offset: .zero, limit: 20, sortBy: [.init(\.bookId, order: .forward)])
+            descriptor = queries.fetch(offset: .zero, limit: 20, sortBy: [.init(\.bookId, order: .forward)])
         }
         try Task.checkCancellation()
         let books = try context.fetch(descriptor)
@@ -36,7 +38,7 @@ final class BookService: Sendable {
     
     func books(fromPersistentIdentifiers ids: [PersistentIdentifier]) async -> [BookPersistent.SendableType] {
         let context = ModelContext.fetchContext
-        let bookPersistents = (try? context.fetch(BookPersistent.fetchByIdentifiers(ids.unique()))) ?? []
+        let bookPersistents = (try? context.fetch(queries.fetchByIdentifiers(ids.unique()))) ?? []
         let books = bookPersistents.map(\.sendable)
         return books
     }
@@ -48,7 +50,7 @@ final class BookService: Sendable {
         if let nextToken {
             descriptor = nextToken.descriptor
         } else {
-            descriptor = BookPersistent.searchBook(query: query)
+            descriptor = queries.searchBook(query: query)
         }
         try Task.checkCancellation()
         let books = try context.fetch(descriptor)
@@ -84,7 +86,7 @@ extension BookService {
     @DatabaseActor
     func updateBook(_ book: BookPersistent.SendableType) async throws {
         let context = ModelContext.isolatedContext
-        let books = try context.fetch(BookPersistent.fetchByBookId(book.bookId))
+        let books = try context.fetch(queries.fetchByBookId(book.bookId))
         guard let persistentBook = books.first else {
             return
         }
@@ -97,7 +99,7 @@ extension BookService {
        
         let context = ModelContext.isolatedContext
         let bookIds = books.map(\.bookId).unique()
-        let updateModels = try context.fetch(BookPersistent.fetchByBookIds(bookIds))
+        let updateModels = try context.fetch(queries.fetchByBookIds(bookIds))
         var insertModels: [BookPersistent] = []
         let count = books.count
         for book in books {
