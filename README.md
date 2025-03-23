@@ -59,9 +59,9 @@ enum HomeRoute: SRRoute {
     case cake
     
     var path: String { 
-        swich self {
-            case .pastry: return \"pastry\"
-            case .cake: return \"cake\"
+        switch self {
+            case .pastry: return "pastry"
+            case .cake: return "cake"
         }
     }
 

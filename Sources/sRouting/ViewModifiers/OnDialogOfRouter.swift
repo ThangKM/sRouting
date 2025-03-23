@@ -97,7 +97,7 @@ extension View {
     /// Show confirmation dialog on iPad at the anchor view.
     /// - Parameters:
     ///   - router: ``SRRouter``
-    ///   - dialog: ``ConfirmationDialogEmptyRoute``
+    ///   - dialog: ``SRConfirmationDialogRoute``
     /// - Returns: `some View`
     public func onDialogRouting<Route: SRRoute>(of router: SRRouter<Route>, for dialog: Route.ConfirmationDialogRoute) -> some View {
         self.modifier(DialogRouterModifier(router: router, dialog: dialog))
@@ -107,7 +107,7 @@ extension View {
     /// Show confirmation dialog on iPad at the anchor view (on test purpose).
     /// - Parameters:
     ///   - router: ``SRRouter``
-    ///   - dialog: ``ConfirmationDialogEmptyRoute``
+    ///   - dialog: ``SRConfirmationDialogRoute``
     /// - Returns: `some View`
     func onDialogRouting<Route: SRRoute>(of router: SRRouter<Route>,
                                          for dialog: Route.ConfirmationDialogRoute,

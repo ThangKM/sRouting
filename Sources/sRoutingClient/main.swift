@@ -18,7 +18,7 @@ enum AppConfirmationDialog: SRConfirmationDialogRoute {
         "This is Title"
     }
     
-    var identifier: LocalizedStringKey {
+    var identifier: String {
         "This is Message"
     }
     

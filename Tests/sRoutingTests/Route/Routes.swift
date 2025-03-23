@@ -18,7 +18,7 @@ enum TestErrorRoute: SRAlertRoute {
 enum TestDialog: SRConfirmationDialogRoute {
     case confirmOK
     var titleKey: LocalizedStringKey { "Confirm" }
-    var identifier: LocalizedStringKey { "Your question?" }
+    var identifier: String { "Your question?" }
     var actions: some View {
         VStack {
             Button("OK") {
