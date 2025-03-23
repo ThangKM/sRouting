@@ -62,11 +62,18 @@ struct OnPopoverOfRouter<Route>: ViewModifier where Route: SRRoute {
             popoverContent
         })
         .onChange(of: router.transition, { oldValue, newValue in
+            #if os(iOS)
             guard newValue.type == .popover
                     && UIDevice.current.userInterfaceIdiom == .pad
                     && newValue.popover == popoverRoute else { return }
             isActivePopover = true
             tests?.didChangeTransition?(self)
+            #else
+            guard newValue.type == .popover
+                    && newValue.popover == popoverRoute else { return }
+            isActivePopover = true
+            tests?.didChangeTransition?(self)
+            #endif
         })
         .onChange(of: isActivePopover, { oldValue, newValue in
             guard oldValue && !newValue else { return }
