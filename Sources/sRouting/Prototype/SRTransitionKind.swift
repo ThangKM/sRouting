@@ -35,6 +35,8 @@ enum SRTransitionKind: String, CaseIterable, Sendable {
     case alert
     /// Show actions sheet on iOS & iPad
     case confirmationDialog
+    /// Show actions popover on iOS & iPad
+    case popover
     /// Present a  screen
     case sheet
     /// Dismiss(pop) screen

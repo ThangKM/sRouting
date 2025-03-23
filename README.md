@@ -54,14 +54,16 @@ To create a route, we must adhere to the `SRRoute` Protocol.
 enum HomeRoute: SRRoute {
 
     typealias AlertRoute = YourAlertRoute // Optional declarations
+    typealias ConfirmationDialogRoute = YourConfirmationDialogRoute // Optional declarations
+    typealias PopoverRoute = YourPopoverRoute // Optional declarations
     
     case pastry
     case cake
     
     var path: String { 
-        swich self {
-            case .pastry: return \"pastry\"
-            case .cake: return \"cake\"
+        switch self {
+            case .pastry: return "pastry"
+            case .cake: return "cake"
         }
     }
 

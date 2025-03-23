@@ -7,6 +7,36 @@
 
 import SwiftUI
 
+//MARK: - SRPopoverRoute
+public protocol SRPopoverRoute: Sendable, Equatable {
+    
+    associatedtype Content: View
+    
+    var identifier: String { get }
+    var attachmentAnchor: PopoverAttachmentAnchor { get }
+    var arrowEdge: Edge? { get }
+    
+    @ViewBuilder @MainActor
+    var content: Content { get }
+}
+
+extension SRPopoverRoute {
+    public static func == (lhs: Self, rhs: Self) -> Bool {
+        lhs.identifier == rhs.identifier
+    }
+}
+
+extension SRPopoverRoute {
+    
+    public var attachmentAnchor: PopoverAttachmentAnchor { .rect(.bounds) }
+    public var arrowEdge: Edge? { .none }
+}
+
+public struct PopoverEmptyRoute: SRPopoverRoute {
+    public var identifier: String { "default popover route" }
+    public var content: some View { Text("Defualt Popover") }
+}
+
 //MARK: - SRConfirmationDialogRoute
 public protocol SRConfirmationDialogRoute: Sendable, Equatable {
     
@@ -17,7 +47,7 @@ public protocol SRConfirmationDialogRoute: Sendable, Equatable {
     
     var titleVisibility: Visibility { get }
     
-    var identifier: LocalizedStringKey { get }
+    var identifier: String { get }
     
     @ViewBuilder @MainActor
     var message: Message { get }
@@ -35,7 +65,7 @@ extension SRConfirmationDialogRoute {
 public struct ConfirmationDialogEmptyRoute: SRConfirmationDialogRoute {
 
     public var titleKey: LocalizedStringKey { "" }
-    public var identifier: LocalizedStringKey { "Default Confirmation Dialog!" }
+    public var identifier: String { "Default Confirmation Dialog!" }
     public var message: some View { Text(identifier) }
     public var actions: some View { Button("OK"){ } }
     public var titleVisibility: Visibility = .hidden
@@ -69,7 +99,8 @@ public protocol SRRoute: Hashable, Codable, Sendable {
     associatedtype Screen: View
     associatedtype AlertRoute: SRAlertRoute
     associatedtype ConfirmationDialogRoute: SRConfirmationDialogRoute
-
+    associatedtype PopoverRoute: SRPopoverRoute
+    
     var path: String { get }
 
     /// Screen builder
@@ -79,12 +110,17 @@ public protocol SRRoute: Hashable, Codable, Sendable {
 
 extension SRRoute {
     
-    /// Provide default type for the ``AlertRoute``
+    /// Provide default type for the ``SRAlertRoute``
     public typealias AlertRoute = AlertEmptyRoute
     
-    /// Provide default type for the ``ConfirmationDialogEmptyRoute``
+    /// Provide default type for the ``SRConfirmationDialogRoute``
     public typealias ConfirmationDialogRoute = ConfirmationDialogEmptyRoute
 
+    /// Provide default type for the ``SRPopoverRoute``
+    public typealias PopoverRoute = PopoverEmptyRoute
+    
+    public var transaction: SwiftUI.Transaction? { .none }
+    
     /// Provide full path when self is a child route.
     public var fullPath: String {
         String(describing: Self.self) + "." + path

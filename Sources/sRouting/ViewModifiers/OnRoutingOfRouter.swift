@@ -35,7 +35,9 @@ struct RouterModifier<Route>: ViewModifier where Route: SRRoute {
     @State private(set) var isActiveAlert: Bool = false
     /// Active state of action sheet
     @State private(set) var isActiveDialog: Bool = false
-
+    /// Active state of popover
+    @State private(set) var isActivePopover: Bool = false
+    
     /// The destination screen from transition
     @MainActor
     private var destinationView: some View {
@@ -77,6 +79,21 @@ struct RouterModifier<Route>: ViewModifier where Route: SRRoute {
         router.transition.confirmationDialog?.message
     }
 
+    @MainActor
+    private var popoverAnchor: PopoverAttachmentAnchor {
+        router.transition.popover?.attachmentAnchor ?? .rect(.bounds)
+    }
+    
+    @MainActor
+    private var popoverEdge: Edge? {
+        router.transition.popover?.arrowEdge
+    }
+    
+    @MainActor
+    private var popoverContent: some View {
+        router.transition.popover?.content
+    }
+    
     ///Action test holder
     private let tests: UnitTestActions<Self>?
     
@@ -159,6 +176,12 @@ struct RouterModifier<Route>: ViewModifier where Route: SRRoute {
             }, message: {
                 dialogMessage
             })
+            .popover(isPresented: $isActivePopover,
+                     attachmentAnchor: popoverAnchor,
+                     arrowEdge: popoverEdge,
+                     content: {
+                popoverContent
+            })
             .onChange(of: dismissAllEmitter?.dismissAllSignal, { oldValue, newValue in
                 resetActiveState()
             })
@@ -188,6 +211,10 @@ struct RouterModifier<Route>: ViewModifier where Route: SRRoute {
                 guard oldValue && !newValue else { return }
                 resetRouterTransiton()
             })
+            .onChange(of: isActivePopover, { oldValue, newValue in
+                guard oldValue && !newValue else { return }
+                resetRouterTransiton()
+            })
             .onAppear() {
                 resetRouterTransiton()
             }
@@ -211,6 +238,7 @@ extension RouterModifier {
         isActiveAlert = false
         isActiveSheet = false
         isActiveDialog = false
+        isActivePopover = false
     }
     
     /// Observe the transition change from router
@@ -236,6 +264,16 @@ extension RouterModifier {
             }
             #else
             isActiveDialog = true
+            #endif
+        case .popover:
+            #if os(iOS)
+            if UIDevice.current.userInterfaceIdiom == .pad {
+                break
+            } else {
+                isActivePopover = true
+            }
+            #else
+            break
             #endif
         case .dismiss:
             dismissAction()
