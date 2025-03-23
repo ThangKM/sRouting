@@ -122,12 +122,6 @@ struct RouterModifier<Route>: ViewModifier where Route: SRRoute {
             }, message: {
                 dialogMessage
             })
-            .popover(isPresented: $isActivePopover,
-                     attachmentAnchor: popoverAnchor,
-                     arrowEdge: popoverEdge,
-                     content: {
-                popoverContent
-            })
             .onChange(of: dismissAllEmitter?.dismissAllSignal, { oldValue, newValue in
                 resetActiveState()
             })
@@ -150,10 +144,6 @@ struct RouterModifier<Route>: ViewModifier where Route: SRRoute {
                 resetRouterTransiton()
             })
             .onChange(of: isActiveDialog, { oldValue, newValue in
-                guard oldValue && !newValue else { return }
-                resetRouterTransiton()
-            })
-            .onChange(of: isActivePopover, { oldValue, newValue in
                 guard oldValue && !newValue else { return }
                 resetRouterTransiton()
             })
@@ -283,7 +273,7 @@ extension RouterModifier {
                 isActivePopover = true
             }
             #else
-            isActivePopover = true
+            break
             #endif
         case .dismiss:
             dismissAction()

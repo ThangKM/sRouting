@@ -43,30 +43,35 @@ struct OnPopoverOfRouter<Route>: ViewModifier where Route: SRRoute {
     func body(content: Content) -> some View {
         #if os(iOS)
         if UIDevice.current.userInterfaceIdiom == .pad {
-            content
-            .popover(isPresented: $isActivePopover,
-                     attachmentAnchor: popoverAnchor,
-                     arrowEdge: popoverEdge,
-                     content: {
-                popoverContent
-            })
-            .onChange(of: router.transition, { oldValue, newValue in
-                guard newValue.type == .popover
-                        && UIDevice.current.userInterfaceIdiom == .pad
-                        && newValue.popover == popoverRoute else { return }
-                isActivePopover = true
-                tests?.didChangeTransition?(self)
-            })
-            .onChange(of: isActivePopover, { oldValue, newValue in
-                guard oldValue && !newValue else { return }
-                resetRouterTransiton()
-            })
+            main(content: content)
         } else {
             content
         }
         #else
-        content
+        main(content: content)
         #endif
+    }
+    
+    @ViewBuilder
+    private func main(content: Content) -> some View {
+        content
+        .popover(isPresented: $isActivePopover,
+                 attachmentAnchor: popoverAnchor,
+                 arrowEdge: popoverEdge,
+                 content: {
+            popoverContent
+        })
+        .onChange(of: router.transition, { oldValue, newValue in
+            guard newValue.type == .popover
+                    && UIDevice.current.userInterfaceIdiom == .pad
+                    && newValue.popover == popoverRoute else { return }
+            isActivePopover = true
+            tests?.didChangeTransition?(self)
+        })
+        .onChange(of: isActivePopover, { oldValue, newValue in
+            guard oldValue && !newValue else { return }
+            resetRouterTransiton()
+        })
     }
 }
  
