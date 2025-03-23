@@ -13,28 +13,22 @@ public final class SRRouter<Route> where Route: SRRoute {
     public typealias AcceptionCallback = @Sendable (_ accepted: Bool) -> Void
     public typealias ErrorHandler = @Sendable (_ error: Error?) -> Void
     
-    @ObservationIgnored
-    private var _transition: SRTransition<Route> = .none
-
-    private(set) var transition: SRTransition<Route> {
-        get {
-          access(keyPath: \.transition)
-          return _transition
-        }
-        set {
-          withMutation(keyPath: \.transition) {
-            _transition  = newValue
-          }
-        }
-    }
+    private(set) var transition: SRTransition<Route> = .none
     
     public init(_ route: Route.Type) { }
     
     /// Show confirmation dialog
-    /// - Parameter dialog: ``ConfirmationDialogRoute``
+    /// - Parameter dialog: ``SRConfirmationDialogRoute``
     public func show(dialog: Route.ConfirmationDialogRoute) {
         transition = .init(with: dialog)
     }
+    
+    /// Show popover
+    /// - Parameter dialog: ``SRPopoverRoute``
+    public func show(popover: Route.PopoverRoute) {
+        transition = .init(with: popover)
+    }
+    
     /// Select tabbar item at index
     /// - Parameter index: Index of tabbar item
     ///

@@ -15,10 +15,26 @@ enum TestErrorRoute: SRAlertRoute {
     var message: some View { Text("Time out!") }
 }
 
+enum TestPopover: SRPopoverRoute {
+    
+    case testPopover
+    
+    var identifier: String { "Popover identifier" }
+    var content: some View {
+        VStack {
+            Button("OK") {
+                
+            }
+            Button("Cancel") {
+            }
+        }
+    }
+}
+
 enum TestDialog: SRConfirmationDialogRoute {
     case confirmOK
     var titleKey: LocalizedStringKey { "Confirm" }
-    var identifier: LocalizedStringKey { "Your question?" }
+    var identifier: String { "Your question?" }
     var actions: some View {
         VStack {
             Button("OK") {
@@ -36,7 +52,8 @@ enum TestRoute: SRRoute {
     
     typealias AlertRoute = TestErrorRoute
     typealias ConfirmationDialogRoute = TestDialog
-
+    typealias PopoverRoute = TestPopover
+    
     var path: String {
         switch self {
         case .emptyScreen: "empty screen"
