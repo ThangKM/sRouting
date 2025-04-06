@@ -112,15 +112,19 @@ struct RouteObserver { }
 @sRouteCoordinator(tabs: ["homeItem", "settingItem"], stacks: "home", "setting")
 final class AppCoordinator { }
 
+@sRouteCoordinator(stacks: "subcoordinator")
+final class OtherCoordinator { }
+
 struct TestApp: App {
     
     @State private var coordinator = AppCoordinator()
+    @State private var context = SRContext()
     
     var body: some Scene {
         WindowGroup {
-            SRRootView(coordinator: coordinator) {
-                @Bindable var selection = coordinator.tabSelection
-                TabView(selection:$selection.selection) {
+            SRRootView(context: context, coordinator: coordinator) {
+                @Bindable var emitter = coordinator.emitter
+                TabView(selection: $emitter.tabSelection) {
                     NavigationStack(path: coordinator.homePath) {
                         Text("Home")
                             .routeObserver(RouteObserver.self)
@@ -134,8 +138,9 @@ struct TestApp: App {
             }
             .onOpenURL { url in
                 Task {
-                    await coordinator.routing(.resetAll, .select(tabItem: .homeItem),
-                                          .push(route: HomeRoute.detail("testing"), into: .home))
+                    await context.routing(.resetAll,
+                                          .selectTabView(at: .zero),
+                        .push(route: HomeRoute.detail("testing")))
                 }
             }
         }

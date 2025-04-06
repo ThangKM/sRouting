@@ -1,38 +1,31 @@
 //
-//  SRTabbarSelection.swift
+//  SRCoordinatorEmitter.swift
 //
 //
 //  Created by Thang Kieu on 31/03/2024.
 //
 
 import Foundation
+import Observation
 
-/// Tabbar's selection Observation
+/// `Dismiss the coordinator` signal emitter
 @Observable @MainActor
-public final class SRTabbarSelection {
+public final class SRCoordinatorEmitter {
     
-    public var selection: Int {
-        get {
-            access(keyPath: \.selection)
-            return _selection
-        }
-        set {
-            if newValue == _selection {
+    internal var doubleTapTabItemEmmiter: SignalChange = false
+    
+    private(set) var dismissEmiiter: SignalChange = false
+    
+    public var tabSelection: Int = .zero {
+        willSet {
+            if newValue == _tabSelection {
                 _increaseTapCount()
                 _autoCancelTapCount()
             } else {
                 _resetTapCount()
             }
-            withMutation(keyPath: \.selection) {
-                _selection = newValue
-            }
         }
     }
-    
-    internal var doubleTapEmmiter: SignalChange = false
-    
-    @ObservationIgnored
-    private var _selection: Int = .zero
     
     nonisolated private let tapCountStream = SRAsyncStream(defaultValue: 0)
     nonisolated private let cancelBag = CancelBag()
@@ -43,19 +36,25 @@ public final class SRTabbarSelection {
     }
     
     public func select(tag: Int) {
-        selection = tag
+        tabSelection = tag
+    }
+    
+    /// Dismiss the coordinator
+    internal func dismiss() {
+        dismissEmiiter.toggle()
     }
     
     private func _emmitDoubleTap() {
-        doubleTapEmmiter.toggle()
+        doubleTapTabItemEmmiter.toggle()
     }
-    
+
     deinit {
         cancelBag.cancelAllInTask()
     }
 }
 
-extension SRTabbarSelection {
+
+extension SRCoordinatorEmitter {
     
     nonisolated private func _increaseTapCount() {
         Task(priority: .high) {
