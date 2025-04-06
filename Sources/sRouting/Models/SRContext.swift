@@ -97,7 +97,7 @@ extension SRContext {
         case .push(route: let route):
             topCoordinator?.activeNavigation?.push(to: route)
         case .sheet(let route):
-            topCoordinator?.rootRouter.trigger(to: AnyRoute(route: route), with: .sheet)
+            topCoordinator?.rootRouter.trigger(to: .init(route: route), with: .sheet)
         case .window(let windowTrans):
             topCoordinator?.rootRouter.openWindow(windowTrans: windowTrans)
         case .wait(let duration):
