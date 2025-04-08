@@ -140,7 +140,7 @@ struct TestApp: App {
                 Task {
                     await context.routing(.resetAll,
                                           .selectTabView(at: .zero),
-                        .push(route: HomeRoute.detail("testing")))
+                                          .push(route: HomeRoute.detail("testing")))
                 }
             }
         }
