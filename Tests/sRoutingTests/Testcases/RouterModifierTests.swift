@@ -16,6 +16,7 @@ struct RouterModifierTests {
     
     let router = SRRouter(TestRoute.self)
     let coordinator = Coordinator()
+    let context = SRContext()
 
     @Test
     func testActiveAlert() async throws {
@@ -53,9 +54,9 @@ struct RouterModifierTests {
     func testDismissCoordinator() async throws {
         var isEnter = false
         let waiter = Waiter()
-        let sut = SRRootView(coordinator: coordinator) {
+        let sut = SRRootView(context: context, coordinator: coordinator) {
             TestScreen(router: router, tests: nil)
-                .onChange(of: coordinator.dismissAllEmitter.dismissCoordinatorSignal) { oldValue, newValue in
+                .onChange(of: coordinator.emitter.dismissEmiiter) { oldValue, newValue in
                     isEnter = true
                     waiter.fulfill()
                 }

@@ -11,8 +11,8 @@ private typealias OnChangeBlock = @MainActor () -> Void
 
 private struct RootModifier: ViewModifier {
     
-    @Environment(SRDismissAllEmitter.self)
-    private var emitter: SRDismissAllEmitter?
+    @Environment(SRContext.self)
+    private var context: SRContext?
     
     private let onChange: OnChangeBlock
     
@@ -21,7 +21,7 @@ private struct RootModifier: ViewModifier {
     }
     
     func body(content: Content) -> some View {
-        content.onChange(of: emitter?.dismissAllSignal) { oldValue, newValue in
+        content.onChange(of: context?.dismissAllSignal) { oldValue, newValue in
             guard newValue != .none else { return }
             onChange()
         }

@@ -17,11 +17,12 @@ struct TestModifiers {
     
     let router = SRRouter(TestRoute.self)
     let coordinator = Coordinator()
+    let context = SRContext()
     
     @Test
     func testOnDismissAll() async throws {
         var isEnter = false
-        let sut = SRRootView(coordinator: coordinator) {
+        let sut = SRRootView(context: context, coordinator: coordinator) {
             TestScreen(router: router, tests: .none).onDismissAllChange {
                 isEnter.toggle()
             }
@@ -35,7 +36,7 @@ struct TestModifiers {
     @Test
     func testOnNavigationStackChange() async throws {
         var pathCount = 0
-        let sut = SRRootView(coordinator: coordinator) {
+        let sut = SRRootView(context: context, coordinator: coordinator) {
             NavigationStack(path: coordinator.testStackPath) {
                 TestScreen(router: router, tests: .none).onNaviStackChange { oldPaths, newPaths in
                     pathCount = newPaths.count
@@ -51,9 +52,9 @@ struct TestModifiers {
     @Test
     func testOnTabSelectionChange() async throws {
         var tabIndex = 0
-        let sut =  SRRootView(coordinator: coordinator) {
-            @Bindable var tabSelection = coordinator.tabSelection
-            TabView(selection: $tabSelection.selection) {
+        let sut =  SRRootView(context: context, coordinator: coordinator) {
+            @Bindable var emitter = coordinator.emitter
+            TabView(selection: $emitter.tabSelection) {
                 TestScreen(router: router, tests: .none)
                     .tabItem {
                         Label("Home", systemImage: "house")

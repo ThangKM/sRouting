@@ -17,12 +17,13 @@ struct RoutObserver { }
 @main
 struct BookieApp: App {
 
-    let appCoordinator = AppCoordinator()
+    @State var appCoordinator = AppCoordinator()
+    @State var context = SRContext()
     @State var appRouter = AppRouter()
-
+    
     var body: some Scene {
         WindowGroup {
-            SRRootView(coordinator: appCoordinator) {
+            SRRootView(context: context, coordinator: appCoordinator) {
                 NavigationStack(path: appCoordinator.rootStackPath) {
                     appRouter.rootRoute.screen
                         .routeObserver(RoutObserver.self)

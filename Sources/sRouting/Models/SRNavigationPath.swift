@@ -14,26 +14,18 @@ public final class SRNavigationPath {
     
     internal var stack: [String] = []
     
-    internal var navPath: NavigationPath {
-        get {
-            access(keyPath: \.navPath)
-            return _navPath
-        }
-        set {
+    internal var navPath: NavigationPath = .init() {
+        willSet {
             _matchingStack(from: newValue.codable)
-            withMutation(keyPath: \.navPath) {
-                _navPath = newValue
-            }
         }
     }
     
     @ObservationIgnored
-    private var _navPath: NavigationPath = .init()
+    private(set) weak var coordinator: SRRouteCoordinatorType?
     
-    @ObservationIgnored
-    public private(set) var didAppear: Bool = false
-    
-    public init() { }
+    public init(coordinator: SRRouteCoordinatorType? = nil) {
+        self.coordinator = coordinator
+    }
     
     public func pop() {
         guard !navPath.isEmpty else { return }
@@ -57,11 +49,6 @@ public final class SRNavigationPath {
     
     public func push(to route: some SRRoute) {
         navPath.append(route)
-    }
-    
-    internal func stackDidAppear() {
-        guard !didAppear else { return }
-        didAppear = true
     }
     
     private func _matchingStack(from navCodable: NavigationPath.CodableRepresentation?) {
