@@ -10,4 +10,3 @@ import SwiftUI
 internal typealias SignalChange = Bool
 
 public typealias WithTransaction =  @MainActor @Sendable () -> SwiftUI.Transaction
-

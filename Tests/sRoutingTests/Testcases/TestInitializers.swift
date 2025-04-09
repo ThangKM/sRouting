@@ -20,10 +20,10 @@ struct TestInitializers {
     
     @Test
     func testInitialTransitionWithSelectTab() {
-        let sut = SRTransition<TestRoute>(selectTab: 0)
+        let sut = SRTransition<TestRoute>(selectTab: Coordinator.SRTabItem.setting)
         #expect(sut.alert == nil)
         #expect(sut.route == nil)
-        #expect(sut.tabIndex == 0)
+        #expect(sut.tabIndex?.intValue == Coordinator.SRTabItem.setting.intValue)
         #expect(sut.type == .selectTab)
     }
     

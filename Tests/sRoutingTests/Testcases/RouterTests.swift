@@ -25,13 +25,13 @@ struct RouterTests {
         let sut = SRRootView(context: context, coordinator: coordinator) {
             TestScreen(router: router, tests: .none)
                 .onChange(of: router.transition) { oldValue, newValue in
-                    tabIndex = newValue.tabIndex ?? -1
+                    tabIndex = newValue.tabIndex?.intValue ?? -1
                 }
         }
         ViewHosting.host(view: sut)
-        router.selectTabbar(at: 3)
+        router.selectTabbar(at: Coordinator.SRTabItem.setting)
         try await Task.sleep(for: .milliseconds(10))
-        #expect(tabIndex == 3)
+        #expect(tabIndex == Coordinator.SRTabItem.setting.intValue)
     }
     
     @Test

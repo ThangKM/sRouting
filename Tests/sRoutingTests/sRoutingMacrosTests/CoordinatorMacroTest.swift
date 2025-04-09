@@ -65,7 +65,7 @@ final class CoordinatorMacroTest: XCTestCase {
 
         extension Coordinator: sRouting.SRRouteCoordinatorType {
 
-            enum SRTabItem: Int, Sendable {
+            enum SRTabItem: Int, IntRawRepresentable {
                 case homeItem
                 case settingItem
             }

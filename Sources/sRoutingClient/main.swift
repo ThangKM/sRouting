@@ -139,7 +139,7 @@ struct TestApp: App {
             .onOpenURL { url in
                 Task {
                     await context.routing(.resetAll,
-                                          .selectTabView(at: .zero),
+                                          .selectTabView(AppCoordinator.SRTabItem.homeItem),
                                           .push(route: HomeRoute.detail("testing")))
                 }
             }

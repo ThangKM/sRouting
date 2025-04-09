@@ -71,7 +71,7 @@ enum TestRoute: SRRoute {
     }
 }
 
-@sRouteCoordinator(stacks: "testStack")
+@sRouteCoordinator(tabs:["home", "setting"], stacks: "testStack")
 final class Coordinator { }
 
 @sRouteObserver(TestRoute.self)

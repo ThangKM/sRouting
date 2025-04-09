@@ -201,7 +201,7 @@ router.dismissAll()
 To seclect the Tabbar item we use the `selectTabbar(at:)` function.
 
 ```swift
-router.selectTabbar(at:0)
+router.selectTabbar(at: AppCoordinator.SRTabItem.home)
 ```
 
 sRouting also supported pop, pop to root and pop to a target function for the NavigationStack
