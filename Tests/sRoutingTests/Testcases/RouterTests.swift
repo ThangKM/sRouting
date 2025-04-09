@@ -17,11 +17,12 @@ struct RouterTests {
     
     let router = SRRouter(TestRoute.self)
     let coordinator = Coordinator()
+    let context = SRContext()
     
     @Test
     func testSelectTabbarItem() async throws {
         var tabIndex = 0
-        let sut = SRRootView(coordinator: coordinator) {
+        let sut = SRRootView(context: context, coordinator: coordinator) {
             TestScreen(router: router, tests: .none)
                 .onChange(of: router.transition) { oldValue, newValue in
                     tabIndex = newValue.tabIndex ?? -1
@@ -36,7 +37,7 @@ struct RouterTests {
     @Test
     func testTrigger() async throws {
         var transition: SRTransition<TestRoute>?
-        let sut = SRRootView(coordinator: coordinator) {
+        let sut = SRRootView(context: context, coordinator: coordinator) {
             TestScreen(router: router, tests: .none).onChange(of: router.transition) { oldValue, newValue in
                 transition = newValue
             }
@@ -52,7 +53,7 @@ struct RouterTests {
     @Test
     func testShowError() async throws {
         var transition: SRTransition<TestRoute>?
-        let sut = SRRootView(coordinator: coordinator) {
+        let sut = SRRootView(context: context, coordinator: coordinator) {
             TestScreen(router: router, tests: .none).onChange(of: router.transition) { oldValue, newValue in
                 transition = newValue
             }
@@ -67,7 +68,7 @@ struct RouterTests {
     @Test
     func testShowAlert() async throws {
         var transition: SRTransition<TestRoute>?
-        let sut = SRRootView(coordinator: coordinator) {
+        let sut = SRRootView(context: context, coordinator: coordinator) {
             TestScreen(router: router, tests: .none).onChange(of: router.transition) { oldValue, newValue in
                 transition = newValue
             }
@@ -82,7 +83,7 @@ struct RouterTests {
     @Test
     func testDismiss() async throws {
         var transition: SRTransition<TestRoute>?
-        let sut = SRRootView(coordinator: coordinator) {
+        let sut = SRRootView(context: context, coordinator: coordinator) {
             TestScreen(router: router, tests: .none).onChange(of: router.transition) { oldValue, newValue in
                 transition = newValue
             }
@@ -96,7 +97,7 @@ struct RouterTests {
     @Test
     func testDismissAll() async throws {
         var transition: SRTransition<TestRoute>?
-        let sut = SRRootView(coordinator: Coordinator()) {
+        let sut = SRRootView(context: context, coordinator: coordinator) {
             TestScreen(router: router, tests: .none).onChange(of: router.transition) { oldValue, newValue in
                 transition = newValue
             }
@@ -110,7 +111,7 @@ struct RouterTests {
     @Test
     func testPop() async throws {
         var transition: SRTransition<TestRoute>?
-        let sut = SRRootView(coordinator: coordinator) {
+        let sut = SRRootView(context: context, coordinator: coordinator) {
             TestScreen(router: router, tests: .none).onChange(of: router.transition) { oldValue, newValue in
                 transition = newValue
             }
@@ -124,7 +125,7 @@ struct RouterTests {
     @Test
     func testPopToRoot() async throws {
         var transition: SRTransition<TestRoute>?
-        let sut = SRRootView(coordinator: coordinator) {
+        let sut = SRRootView(context: context, coordinator: coordinator) {
             TestScreen(router: router, tests: .none).onChange(of: router.transition) { oldValue, newValue in
                 transition = newValue
             }
@@ -138,7 +139,7 @@ struct RouterTests {
     @Test
     func testPopToRoute() async throws {
         var transition: SRTransition<TestRoute>?
-        let sut = SRRootView(coordinator: coordinator) {
+        let sut = SRRootView(context: context, coordinator: coordinator) {
             TestScreen(router: router, tests: .none).onChange(of: router.transition) { oldValue, newValue in
                 transition = newValue
             }
@@ -153,7 +154,7 @@ struct RouterTests {
     @Test
     func testOpenWindowId() async throws {
         var transition: SRWindowTransition?
-        let sut = SRRootView(coordinator: coordinator) {
+        let sut = SRRootView(context: context, coordinator: coordinator) {
             TestScreen(router: router, tests: .init(didOpenWindow: { tran in
                 transition = tran
             }))
@@ -168,7 +169,7 @@ struct RouterTests {
     @Test
     func testOpenWindowValue() async throws {
         var transition: SRWindowTransition?
-        let sut = SRRootView(coordinator: coordinator) {
+        let sut = SRRootView(context: context, coordinator: coordinator) {
             TestScreen(router: router, tests: .init(didOpenWindow: { tran in
                 transition = tran
             }))
@@ -183,7 +184,7 @@ struct RouterTests {
     @Test
     func testOpenWindowIdAndValue() async throws {
         var transition: SRWindowTransition?
-        let sut = SRRootView(coordinator: coordinator) {
+        let sut = SRRootView(context: context, coordinator: coordinator) {
             TestScreen(router: router, tests: .init(didOpenWindow: { tran in
                 transition = tran
             }))

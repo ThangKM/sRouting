@@ -14,14 +14,14 @@ struct RouterModifier<Route>: ViewModifier where Route: SRRoute {
     /// A  screen's ``Router``
     private let router: SRRouter<Route>
 
-    @Environment(SRTabbarSelection.self)
-    private var tabbarSelection: SRTabbarSelection?
+    @Environment(SRCoordinatorEmitter.self)
+    private var coordinatorEmitter: SRCoordinatorEmitter?
     
     @Environment(SRNavigationPath.self)
     private var navigationPath: SRNavigationPath?
     
-    @Environment(SRDismissAllEmitter.self)
-    private var dismissAllEmitter: SRDismissAllEmitter?
+    @Environment(SRContext.self)
+    private var context: SRContext?
     
     @Environment(\.openWindow) private var openWindow
     @Environment(\.scenePhase) private var scenePhase
@@ -108,6 +108,7 @@ struct RouterModifier<Route>: ViewModifier where Route: SRRoute {
             .sheet(isPresented: $isActiveSheet,
                    content: {
                 destinationView
+                    .environment(context)
             })
             .alert(alertTitle, isPresented: $isActiveAlert, actions: {
                 alertActions
@@ -122,7 +123,7 @@ struct RouterModifier<Route>: ViewModifier where Route: SRRoute {
             }, message: {
                 dialogMessage
             })
-            .onChange(of: dismissAllEmitter?.dismissAllSignal, { oldValue, newValue in
+            .onChange(of: context?.dismissAllSignal, { oldValue, newValue in
                 resetActiveState()
             })
             .onChange(of: router.transition, { oldValue, newValue in
@@ -154,14 +155,12 @@ struct RouterModifier<Route>: ViewModifier where Route: SRRoute {
         content
             .fullScreenCover(isPresented: $isActivePresent) {
                 destinationView
-                .environment(dismissAllEmitter)
-                .environment(tabbarSelection)
+                    .environment(context)
             }
             .sheet(isPresented: $isActiveSheet,
                 content: {
                 destinationView
-                .environment(dismissAllEmitter)
-                .environment(tabbarSelection)
+                    .environment(context)
             })
             .alert(alertTitle, isPresented: $isActiveAlert, actions: {
                 alertActions
@@ -181,8 +180,9 @@ struct RouterModifier<Route>: ViewModifier where Route: SRRoute {
                      arrowEdge: popoverEdge,
                      content: {
                 popoverContent
+                    .environment(context)
             })
-            .onChange(of: dismissAllEmitter?.dismissAllSignal, { oldValue, newValue in
+            .onChange(of: context?.dismissAllSignal, { oldValue, newValue in
                 resetActiveState()
             })
             .onChange(of: router.transition, { oldValue, newValue in
@@ -278,11 +278,11 @@ extension RouterModifier {
         case .dismiss:
             dismissAction()
         case .selectTab:
-            tabbarSelection?.select(tag: transition.tabIndex ?? .zero)
+            coordinatorEmitter?.select(tag: transition.tabIndex ?? .zero)
         case .dismissAll:
-            dismissAllEmitter?.dismissAll()
+            context?.dismissAll()
         case .dismissCoordinator:
-            dismissAllEmitter?.dismissCoordinator()
+            coordinatorEmitter?.dismiss()
         case .pop:
             navigationPath?.pop()
         case .popToRoot:

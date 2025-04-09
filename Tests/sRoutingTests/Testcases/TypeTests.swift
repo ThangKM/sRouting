@@ -17,7 +17,6 @@ struct TypeTests {
     @Test
     func testAnyRoute() {
         let route = AnyRoute(route: TestRoute.home)
-        #expect(route.screen != nil)
         #expect(route.path.contains(TestRoute.home.path))
     }
     
@@ -32,34 +31,26 @@ struct TypeTests {
     @Test
     func testSRAlertRoute() {
         let route = TestErrorRoute.timeOut
-        #expect(route.titleKey != nil)
-        #expect(route.message != nil)
-        #expect(route.actions != nil)
+        #expect(route.titleKey == "Error")
     }
     
     @Test
     func testDefaultAlertRoute() {
         let route = AlertEmptyRoute()
-        #expect(route.titleKey != nil)
-        #expect(route.message != nil)
-        #expect(route.actions != nil)
+        #expect(route.titleKey  == "Alert")
     }
     
     @Test
     func testDialog() async throws {
         let route = TestDialog.confirmOK
-        #expect(route.titleKey != nil)
-        #expect(route.message != nil)
-        #expect(route.actions != nil)
+        #expect(route.titleKey  == "Confirm")
         #expect(route.titleVisibility == .visible)
     }
     
     @Test
     func testDefaultDialog() async throws {
         let route = ConfirmationDialogEmptyRoute()
-        #expect(route.titleKey != nil)
-        #expect(route.message != nil)
-        #expect(route.actions != nil)
+        #expect(route.titleKey == "")
         #expect(route.titleVisibility == .hidden)
     }
 }

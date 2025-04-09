@@ -29,7 +29,7 @@ where Content: View {
         content()
         .environment(path)
         .onAppear(perform: {
-            path.stackDidAppear()
+            path.coordinator?.registerActiveNavigation(path)
         })
     }
 }

@@ -100,27 +100,28 @@ Setup Your App:
 @main
 struct BookieApp: App {
 
+    @State private var context = SRContext()
     @State private var coordinator = AppCoordinator()
     ...
     var body: some Scene {
 
         WindowGroup {
-            SRRootView(coordinator: coordinator) {
-                @Bindable var tabSelection = coordinator.tabSelection
-                TabView(selection: $tabSelection.selection) {
+            SRRootView(context: context, coordinator: coordinator) {
+                @Bindable var emitter = coordinator.emitter
+                TabView(selection: $emitter.tabSelection) {
                     NavigationStack(path: coordinator.homePath) {
                         AppRoute.home.screen
                             .routeObserver(RouteObserver.self)
                     }.tabItem {
                         Label("Home", systemImage: "house")
-                    }.tag(SRTabItem.home.rawValue)
+                    }.tag(AppCoordinator.SRTabItem.home.rawValue)
                     
                     NavigationStack(path: coordinator.settingPath) {
                         AppRoute.setting.screen
                             .routeObserver(RouteObserver.self)
                     }.tabItem {
                         Label("Setting", systemImage: "gear")
-                    }.tag(SRTabItem.setting.rawValue)
+                    }.tag(AppCoordinator.SRTabItem.setting.rawValue)
                 }
                 .onDoubleTapTabItem { ... }
                 .onTabSelectionChange { ... }
@@ -128,7 +129,7 @@ struct BookieApp: App {
             .onOpenURL { url in
                 Task {
                     ...
-                    await coordinator.routing(.resetAll,.select(tabItem: .home),
+                    await context.routing(.resetAll,.select(tabItem: .home),
                                           .push(route: HomeRoute.cake, into: .home))
                 }
             }
@@ -168,6 +169,34 @@ DeepLink:
                               .push(route: HomeRoute.cake, into: .home))
     }
 }
+```
+
+Present a coordinator:
+
+```swift
+@sRouteCoordinator(stacks: "newStack")
+final class OtherFlowCoordinator { }
+
+struct OtherCoordinatorView: View {
+
+    @Environment(SRContext.self) var context
+    @State private var coordinator: OtherFlowCoordinator = .init()
+    
+    var body: some View {
+        SRRootView(context: context, coordinator: coordinator) {
+            NavigationStack(path: coordinator.newStackPath) {
+                content()
+                   .routeObserver(YourRouteObserver.self)
+            }
+        }
+    }
+    ...
+}
+
+...
+...
+
+router.trigger(to: .otherFlowCoordinator, with: .present)
 ```
 
 Push:

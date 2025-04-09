@@ -16,6 +16,7 @@ struct RouterModifierTests {
     
     let router = SRRouter(TestRoute.self)
     let coordinator = Coordinator()
+    let context = SRContext()
 
     @Test
     func testActiveAlert() async throws {
@@ -53,9 +54,9 @@ struct RouterModifierTests {
     func testDismissCoordinator() async throws {
         var isEnter = false
         let waiter = Waiter()
-        let sut = SRRootView(coordinator: coordinator) {
+        let sut = SRRootView(context: context, coordinator: coordinator) {
             TestScreen(router: router, tests: nil)
-                .onChange(of: coordinator.dismissAllEmitter.dismissCoordinatorSignal) { oldValue, newValue in
+                .onChange(of: coordinator.emitter.dismissEmiiter) { oldValue, newValue in
                     isEnter = true
                     waiter.fulfill()
                 }
@@ -190,16 +191,17 @@ struct RouterModifierTests {
         guard UIDevice.current.userInterfaceIdiom != .pad else { return }
         #endif
         let waiter = Waiter()
-        var isActive: Bool = false
+        let box = ValueBox(value: false)
         let sut = TestScreen(router: router, tests: .init(didChangeTransition: { view in
-            isActive = view.isActiveDialog
+            box.update(with: view.isActiveDialog)
             waiter.fulfill()
         }))
         
         ViewHosting.host(view: sut)
+        try await Task.sleep(for: .milliseconds(50))
         router.show(dialog: .confirmOK)
         try await waiter.waiting()
-        #expect(isActive)
+        #expect(box.value)
     }
     
     @Test
@@ -297,16 +299,17 @@ struct RouterModifierTests {
     func testActivePopover_Phone() async throws {
         guard UIDevice.current.userInterfaceIdiom == .phone else { return }
         let waiter = Waiter()
-        var isActive: Bool = false
+        let box = ValueBox(value: false)
         let sut = TestScreen(router: router, tests: .init(didChangeTransition: { view in
-            isActive = view.isActivePopover
+            box.update(with: view.isActivePopover)
             waiter.fulfill()
         }))
         
         ViewHosting.host(view: sut)
+        try await Task.sleep(for: .microseconds(50))
         router.show(popover: .testPopover)
         try await waiter.waiting()
-        #expect(isActive)
+        #expect(box.value)
     }
     
     @Test
