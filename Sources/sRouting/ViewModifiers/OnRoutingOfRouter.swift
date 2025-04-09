@@ -278,7 +278,7 @@ extension RouterModifier {
         case .dismiss:
             dismissAction()
         case .selectTab:
-            coordinatorEmitter?.select(tag: transition.tabIndex ?? .zero)
+            coordinatorEmitter?.select(tag: transition.tabIndex?.intValue ?? .zero)
         case .dismissAll:
             context?.dismissAll()
         case .dismissCoordinator:

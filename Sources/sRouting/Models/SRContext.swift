@@ -25,6 +25,20 @@ public final class SRContext: Sendable {
     public func dismissAll() {
         dismissAllSignal.toggle()
     }
+    
+    public func routing(_ routes: RoutingRoute...,
+                        waitDuration duration: Duration = .milliseconds(600)) async {
+        let routeStream = AsyncStream { continuation in
+            for route in routes {
+                continuation.yield(route)
+            }
+            continuation.finish()
+        }
+        
+        for await route in routeStream {
+            await _routing(for: route, duration: max(duration, .milliseconds(400)))
+        }
+    }
 }
 
 extension SRContext {
@@ -33,7 +47,7 @@ extension SRContext {
         case resetAll
         case dismissAll
         case popToRoot
-        case selectTabView(at: Int)
+        case selectTabView(any IntRawRepresentable)
         case push(route: any SRRoute)
         case sheet(any SRRoute)
         case window(SRWindowTransition)
@@ -92,8 +106,8 @@ extension SRContext {
             dismissAll()
         case .popToRoot:
             topCoordinator?.activeNavigation?.popToRoot()
-        case .selectTabView(let index):
-            topCoordinator?.emitter.select(tag: index)
+        case .selectTabView(let tab):
+            topCoordinator?.emitter.select(tag: tab.intValue)
         case .push(route: let route):
             topCoordinator?.activeNavigation?.push(to: route)
         case .sheet(let route):
@@ -110,20 +124,6 @@ extension SRContext {
         
         guard route.path != RoutingRoute.wait(.zero).path else { return }
         try? await Task.sleep(for: duration)
-    }
-
-    public func routing(_ routes: RoutingRoute...,
-                        waitDuration duration: Duration = .milliseconds(600)) async {
-        let routeStream = AsyncStream { continuation in
-            for route in routes {
-                continuation.yield(route)
-            }
-            continuation.finish()
-        }
-        
-        for await route in routeStream {
-            await _routing(for: route, duration: max(duration, .milliseconds(400)))
-        }
     }
 }
 

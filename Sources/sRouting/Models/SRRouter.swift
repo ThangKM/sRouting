@@ -36,8 +36,8 @@ public final class SRRouter<Route> where Route: SRRoute {
     /// ```swift
     /// router.selectTabbar(at: 0)
     /// ```
-    public func selectTabbar(at index: Int, with transaction: WithTransaction? = .none) {
-        transition = .init(selectTab: index, and: transaction)
+    public func selectTabbar(at tab: any IntRawRepresentable, with transaction: WithTransaction? = .none) {
+        transition = .init(selectTab: tab, and: transaction)
     }
     
     /// Trigger to new screen

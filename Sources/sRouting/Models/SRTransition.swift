@@ -16,7 +16,7 @@ where Route: SRRoute {
     let transaction: WithTransaction?
     private(set) var route: Route?
     private(set) var alert: Route.AlertRoute?
-    private(set) var tabIndex: Int?
+    private(set) var tabIndex: (any IntRawRepresentable)?
     private(set) var popToRoute: (any SRRoute)?
     private(set) var windowTransition: SRWindowTransition?
     private(set) var confirmationDialog: Route.ConfirmationDialogRoute?
@@ -42,10 +42,10 @@ where Route: SRRoute {
         self.transaction = transaction
     }
     
-    init(selectTab index: Int, and transaction: WithTransaction? = .none) {
+    init(selectTab tab: any IntRawRepresentable, and transaction: WithTransaction? = .none) {
         self.type = .selectTab
         self.contextId = TimeIdentifier()
-        self.tabIndex = index
+        self.tabIndex = tab
         self.transaction = transaction
     }
 
@@ -96,7 +96,7 @@ extension SRTransition: Equatable {
             return true
         }
         return lhs.type == rhs.type
-        && lhs.tabIndex == rhs.tabIndex
+        && lhs.tabIndex?.intValue == rhs.tabIndex?.intValue
         && lhs.route == rhs.route
         && lhs.contextId == rhs.contextId
     }

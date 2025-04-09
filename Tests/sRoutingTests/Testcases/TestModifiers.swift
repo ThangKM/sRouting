@@ -68,8 +68,8 @@ struct TestModifiers {
             }
         }
         ViewHosting.host(view: sut)
-        router.selectTabbar(at: 1)
+        router.selectTabbar(at: Coordinator.SRTabItem.setting)
         try await Task.sleep(for: .milliseconds(50))
-        #expect(tabIndex == 1)
+        #expect(tabIndex == Coordinator.SRTabItem.setting.intValue)
     }
 }

@@ -126,7 +126,7 @@ extension RouteCoordinatorMacro: ExtensionMacro {
         let declCoordinator: DeclSyntax = """
             extension \(raw: type.trimmedDescription): sRouting.SRRouteCoordinatorType {
                 
-                enum SRTabItem: Int, Sendable {
+                enum SRTabItem: Int, IntRawRepresentable {
                     \(raw: caseTabItems)
                 }
             
