@@ -6,12 +6,11 @@
 [![codecov.io](https://codecov.io/gh/ThangKM/sRouting/branch/main/graphs/badge.svg?branch=main)](https://codecov.io/github/ThangKM/sRouting?branch=main)
 [![Swift Package Manager compatible](https://img.shields.io/badge/Swift%20Package%20Manager-compatible-brightgreen.svg)](https://github.com/apple/swift-package-manager)
 
-The lightweight navigation framework for SwiftUI.
+The navigation framework for SwiftUI.
 
 ## Overview
 
-sRouting using the native navigation mechanism in SwiftUI.
-It's easy to handle navigation between screens by sRouting.
+sRouting provides a native navigation mechanism that simplifies handling navigation between screens.
 
 ![A sRouting banner.](https://github.com/ThangKM/sRouting/blob/main/Sources/sRouting/DocsRouting.docc/Resources/sRouting/srouting_banner.png)
 
@@ -34,30 +33,35 @@ Specify `https://github.com/ThangKM/sRouting.git` as the `sRouting` package link
 
 ![](https://github.com/ThangKM/sRouting/blob/main/Sources/sRouting/DocsRouting.docc/Resources/Bookie/SectionOne/bookie_add_srouting.png)
 
+## 🌀 Example: 
+Explore the example brach: [Example](https://github.com/ThangKM/sRouting/tree/example)
+
 ## 🏃‍♂️ Getting Started with sRouting
 
-Set up `SRRootView` and work with `sRouter(_:)`
+Set up the `SRRootView` and interact with macros.
 
 ## Overview
 
-Create your root view with ``SRRootView``.
-Declares your ``SRRoute``.
-Working with macros and ViewModifers.
+Create your root view using `SRRootView`.
+Declare your `SRRoute`.
+Learn about macros and ViewModifers.
 
 ### Create a Route
 
-To create a route we have to conform to the ``SRRoute`` Protocol.
+To create a route, we must adhere to the `SRRoute` Protocol.
 
 ```swift
 enum HomeRoute: SRRoute {
 
     typealias AlertRoute = YourAlertRoute // Optional declarations
+    typealias ConfirmationDialogRoute = YourConfirmationDialogRoute // Optional declarations
+    typealias PopoverRoute = YourPopoverRoute // Optional declarations
     
     case pastry
     case cake
     
     var path: String { 
-        swich self {
+        switch self {
             case .pastry: return "pastry"
             case .cake: return "cake"
         }
@@ -74,56 +78,59 @@ enum HomeRoute: SRRoute {
 
 ### Make your Root View
 
-Setup a context and ``SRRootView`` for your app
+Set up a coordinator and ``SRRootView`` for your application.
 
-Declaring Context: 
+Declaring a coordinator: 
 
 ```swift
 @sRouteCoordinator(tabs: ["home", "setting"], stacks: "home", "setting")
-final class Coordinator { }
+final class AppCoordinator { }
 ```
 
 Declaring View of navigation destination:
 
 ```swift
 @sRouteObserver(HomeRoute.self, SettingRoute.self)
-struct RouteObserver: ViewModifier { }
+struct RouteObserver { }
 ```
 
 Setup Your App:
 
 ```swift
 @main
-struct BookieApp: App { 
+struct BookieApp: App {
 
-    @StateObject private var appCoordinator: AppCoordinator
-    @StateObject private var tabselection: SRTabbarSelection
-    
-    init() {
-        let coordinator = AppCoordinator()
-        _appCoordinator = .init(wrappedValue: coordinator)
-        _tabselection = .init(wrappedValue: coordinator.tabSelection)
-    }
-    
+    @State private var context = SRContext()
+    @State private var coordinator = AppCoordinator()
+    ...
     var body: some Scene {
+
         WindowGroup {
-            SRRootView(coordinator: appCoordinator) {
-                TabView(selection:$tabselection.selection) {
-                    NavigationStackView(path: appCoordinator.homePath) {
-                        Text("Home")
+            SRRootView(context: context, coordinator: coordinator) {
+                @Bindable var emitter = coordinator.emitter
+                TabView(selection: $emitter.tabSelection) {
+                    NavigationStack(path: coordinator.homePath) {
+                        AppRoute.home.screen
                             .routeObserver(RouteObserver.self)
-                    }.tag(SRTabItem.homeItem.rawValue)
+                    }.tabItem {
+                        Label("Home", systemImage: "house")
+                    }.tag(AppCoordinator.SRTabItem.home.rawValue)
                     
-                    NavigationStackView(path: appCoordinator.settingPath) {
-                        Text("Setting")
+                    NavigationStack(path: coordinator.settingPath) {
+                        AppRoute.setting.screen
                             .routeObserver(RouteObserver.self)
-                    }.tag(SRTabItem.settingItem.rawValue)
+                    }.tabItem {
+                        Label("Setting", systemImage: "gear")
+                    }.tag(AppCoordinator.SRTabItem.setting.rawValue)
                 }
+                .onDoubleTapTabItem { ... }
+                .onTabSelectionChange { ... }
             }
             .onOpenURL { url in
                 Task {
-                    await appCoordinator.routing(.resetAll, .select(tabItem: .homeItem),
-                                          .push(route: HomeRoute.detail("testing"), into: .home))
+                    ...
+                    await context.routing(.resetAll,.select(tabItem: .home),
+                                          .push(route: HomeRoute.cake))
                 }
             }
         }
@@ -142,7 +149,7 @@ enum HomeRoute: SRRoute {
 
 struct HomeScreen: View {
 
-    @StateObject var homeRouter = SRRouter(HomeRoute.self)
+    @State private var homeRouter = SRRouter(HomeRoute.self)
 
     var body: some View {
         VStack { 
@@ -162,6 +169,34 @@ DeepLink:
                               .push(route: HomeRoute.cake, into: .home))
     }
 }
+```
+
+Present a coordinator:
+
+```swift
+@sRouteCoordinator(stacks: "newStack")
+final class OtherFlowCoordinator { }
+
+struct OtherCoordinatorView: View {
+
+    @Environment(SRContext.self) var context
+    @State private var coordinator: OtherFlowCoordinator = .init()
+    
+    var body: some View {
+        SRRootView(context: context, coordinator: coordinator) {
+            NavigationStack(path: coordinator.newStackPath) {
+                content()
+                   .routeObserver(YourRouteObserver.self)
+            }
+        }
+    }
+    ...
+}
+
+...
+...
+
+router.trigger(to: .otherFlowCoordinator, with: .present)
 ```
 
 Push:
@@ -186,12 +221,6 @@ To show an alert we use the `show(alert:)` function.
 ```swift
  router.show(alert: YourAlertRoute.alert)
 ```
-To show an error message we use the `show(error:and:)` function.
-
-```swift
-router.show(error:NetworkingError.lossConnection)
-```
-
 To dismiss a screen we use the `dismiss()` function.
 
 ```swift
@@ -199,7 +228,7 @@ router.dismiss()
 ```
 
 To dismiss to root view we use the `dismissAll()` function.
-Required the root view is a ``SRRootView``
+Required the root view is a `SRRootView`
 
 ```swift
 router.dismissAll()
@@ -207,7 +236,7 @@ router.dismissAll()
 To seclect the Tabbar item we use the `selectTabbar(at:)` function.
 
 ```swift
-router.selectTabbar(at:0)
+router.selectTabbar(at: AppCoordinator.SRTabItem.home)
 ```
 
 sRouting also supported pop, pop to root and pop to a target function for the NavigationStack

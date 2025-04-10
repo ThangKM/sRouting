@@ -13,7 +13,8 @@ where TargetView: ViewModifier {
     
     typealias ViewReturnAction = (TargetView) -> Void
     typealias DidOpenWindow = (SRWindowTransition) -> Void
-
+    
     var didChangeTransition: ViewReturnAction?
     var didOpenWindow: DidOpenWindow?
+    var tabSelecione: ((Int) -> Void)?
 }

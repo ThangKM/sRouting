@@ -12,7 +12,7 @@ private typealias OnChangeBlock = @MainActor (Int) -> Void
 private struct OnDoubleTapTabItem: ViewModifier {
     
     @EnvironmentObject
-    private var tabSelection: SRTabbarSelection
+    private var coordinatorEmitter: SRCoordinatorEmitter
     
     private let onChange: OnChangeBlock
     
@@ -21,8 +21,8 @@ private struct OnDoubleTapTabItem: ViewModifier {
     }
     
     func body(content: Content) -> some View {
-        content.onReceive(tabSelection.$doubleTapEmmiter.dropFirst().onChanges()) { _ in
-            let selection = tabSelection.selection
+        content.onChange(of: coordinatorEmitter.doubleTapTabItemEmmiter) { _ in
+            let selection = coordinatorEmitter.tabSelection
             onChange(selection)
         }
     }

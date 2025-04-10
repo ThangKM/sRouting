@@ -8,8 +8,13 @@
 import Foundation
 
 @MainActor
-public protocol SRRouteCoordinatorType {
+public protocol SRRouteCoordinatorType: AnyObject {
+    
+    var identifier: String { get }
     var rootRouter: SRRouter<AnyRoute> { get }
-    var dismissAllEmitter: SRDismissAllEmitter { get }
-    var tabSelection: SRTabbarSelection { get }
+    var emitter: SRCoordinatorEmitter { get }
+    var navigationStacks: [SRNavigationPath] { get }
+    var activeNavigation: SRNavigationPath? { get }
+    
+    func registerActiveNavigation(_ navigationPath: SRNavigationPath)
 }

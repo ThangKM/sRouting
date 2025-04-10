@@ -1,0 +1,15 @@
+@Tutorials(name: "MeetsRouting") {
+    @Intro(title: "Meet sRouting") {
+        Create, navigate between screens using sRouting. Get started with sRouting by building the demo app _Bookie_.
+        
+        @Image(source: bookie_meet_banner.png, alt: "user interface of the demo application")
+    }
+    
+    @Chapter(name: "sRouting Essentials") {
+        @Image(source: bookie_intro.png, alt: "Bookie banner")
+        
+        Create a Book app and powers using sRouting.
+        
+        @TutorialReference(tutorial: "doc:Bookie")
+    }
+}

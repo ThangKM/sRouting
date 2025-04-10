@@ -12,7 +12,7 @@ private typealias OnChangeBlock = @MainActor (Int) -> Void
 private struct TabbarModifier: ViewModifier {
     
     @EnvironmentObject
-    private var tabSelection: SRTabbarSelection
+    private var emitter: SRCoordinatorEmitter
     
     private let onChange: OnChangeBlock
     
@@ -21,8 +21,8 @@ private struct TabbarModifier: ViewModifier {
     }
     
     func body(content: Content) -> some View {
-        content.onReceive(tabSelection.$selection.dropFirst().onChanges()) { selection in
-            onChange(selection)
+        content.onChange(of: emitter.tabSelection) { newValue in
+            onChange(newValue)
         }
     }
 }

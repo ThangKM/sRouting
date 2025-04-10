@@ -21,34 +21,36 @@ package struct RouteCoordinatorMacro: MemberMacro {
                                  providingMembersOf declaration: some DeclGroupSyntax,
                                  in context: some MacroExpansionContext) throws -> [DeclSyntax] {
         
-        guard declaration.kind == SwiftSyntax.SyntaxKind.classDecl
+        guard let classDecl = declaration.as(ClassDeclSyntax.self), declaration.kind == SwiftSyntax.SyntaxKind.classDecl
         else { throw SRMacroError.onlyClass }
+        
+        let className = classDecl.name.text.trimmingCharacters(in: .whitespaces)
         let arguments = try Self._arguments(of: node)
         
         var result: [DeclSyntax] = []
         
+        let identifier: DeclSyntax = "let identifier: String"
+        result.append(identifier)
+        
         let rootRouter: DeclSyntax = "@MainActor let rootRouter = SRRouter(AnyRoute.self)"
         result.append(rootRouter)
         
-        let dsaEmiiter: DeclSyntax = "@MainActor let dismissAllEmitter = SRDismissAllEmitter()"
+        let dsaEmiiter: DeclSyntax = "@MainActor let emitter = SRCoordinatorEmitter()"
         result.append(dsaEmiiter)
-        
-        let tabSelection: DeclSyntax = "@MainActor let tabSelection = SRTabbarSelection()"
-        result.append(tabSelection)
         
         let indexLastStack = arguments.stacks.count - 1
         var initStacks = "["
         for (index,stack) in arguments.stacks.enumerated() {
             if index == indexLastStack {
-                initStacks += "SRNavStack.\(stack):SRNavigationPath()"
+                initStacks += "SRNavStack.\(stack):SRNavigationPath(coordinator: self)"
             } else {
-                initStacks += "SRNavStack.\(stack):SRNavigationPath(), "
+                initStacks += "SRNavStack.\(stack):SRNavigationPath(coordinator: self), "
             }
             
         }
         initStacks += "]"
 
-        let navStacks: DeclSyntax = "@MainActor private let navStacks = \(raw: initStacks)"
+        let navStacks: DeclSyntax = "@MainActor private lazy var navStacks = \(raw: initStacks)"
         result.append(navStacks)
         
         for stack in arguments.stacks {
@@ -61,77 +63,27 @@ package struct RouteCoordinatorMacro: MemberMacro {
             result.append(shortPath)
         }
         
+        let navigationStacks: DeclSyntax = "@MainActor var navigationStacks: [SRNavigationPath] { navStacks.map(\\.value) }"
+        result.append(navigationStacks)
+        
+        let activeNavigaiton: DeclSyntax = "@MainActor private(set) var activeNavigation: SRNavigationPath?"
+        result.append(activeNavigaiton)
+        
         let defaultInit: DeclSyntax = """
-        @MainActor init() { }
+        @MainActor init() {
+            self.identifier = \"\(raw: className)\" + \"_\" + UUID().uuidString
+        }
         """
         result.append(defaultInit)
         
-        let navPathFunc: DeclSyntax = """
+        let resgisterFunction: DeclSyntax = """
         @MainActor
-        private func navigationPath(of stackItem: SRNavStack) -> SRNavigationPath {
-            navStacks[stackItem]!
+        func registerActiveNavigation(_ navigationPath: SRNavigationPath) {
+            activeNavigation = navigationPath
         }
         """
-        result.append(navPathFunc)
+        result.append(resgisterFunction)
         
-        let singleRoutingFunc: DeclSyntax = """
-        @MainActor
-        private func _routing(for route: SRRootRoute) async {
-            switch route {
-            case .resetAll:
-                dismissAllEmitter.dismissAll()
-                navStacks.values.forEach({ 
-                    $0.popToRoot()
-                })
-            case .dismissAll:
-                dismissAllEmitter.dismissAll()
-            case .popToRoot(of: let stack):
-                navigationPath(of: stack).popToRoot()
-            case .select(tabItem: let tabItem):
-                tabSelection.select(tag: tabItem.rawValue)
-            case .push(route: let route, into: let stack):
-                let navigation = navigationPath(of: stack)
-                guard navigation.navPath != nil else {
-                   do {
-                    try await Task.sleep(for: .milliseconds(300))
-                   } catch {
-                    print("sRouting.\\(error)")
-                   }
-                   navigation.push(to: route)
-                   try? await Task.sleep(for: .milliseconds(300))
-                   return
-                }
-                navigation.push(to: route)
-                try? await Task.sleep(for: .milliseconds(300))
-            case .sheet(let route):
-                rootRouter.trigger(to: AnyRoute(route: route), with: .sheet)
-            case .window(let windowTrans):
-                rootRouter.openWindow(windowTrans: windowTrans)
-            #if os(iOS)
-            case .present(let route):
-                rootRouter.trigger(to: .init(route: route), with: .present)
-            #endif
-            }
-        }
-        """
-        result.append(singleRoutingFunc)
-        
-        let routingFunc: DeclSyntax = """
-        @MainActor
-        func routing(_ routes: SRRootRoute...) async {
-            let routeStream = AsyncStream { continuation in
-                for route in routes {
-                    continuation.yield(route)
-                }
-                continuation.finish()
-            }
-
-            for await route in routeStream {
-                await _routing(for: route)
-            }
-        }
-        """
-        result.append(routingFunc)
         return result
     }
 }
@@ -172,53 +124,9 @@ extension RouteCoordinatorMacro: ExtensionMacro {
         }
         
         let declCoordinator: DeclSyntax = """
-            extension \(raw: type.trimmedDescription): sRouting.SRRouteCoordinatorType {
-                enum SRRootRoute: SRRoute {
-                    case resetAll
-                    case dismissAll
-                    case popToRoot(of: SRNavStack)
-                    case select(tabItem: SRTabItem)
-                    case push(route: any SRRoute, into: SRNavStack)
-                    case sheet(any SRRoute)
-                    case window(SRWindowTransition)
-                    #if os(iOS)
-                    case present(any SRRoute)
-                    #endif
+            extension \(raw: type.trimmedDescription): Foundation.ObservableObject, sRouting.SRRouteCoordinatorType {
                 
-                    var screen: some View {
-                       fatalError("sRouting.SRRootRoute doesn't have screen")
-                    }
-                
-                    var path: String {
-                        switch self {
-                        case .resetAll:
-                            return "rootroute.resetall"
-                        case .dismissAll:
-                            return "rootroute.dismissall"
-                        case .select:
-                            return "rootroute.selecttab"
-                        case .push(let route,_):
-                            return "rootroute.push.\\(route.path)"
-                        case .sheet(let route): return "rootroute.sheet.\\(route.path)"
-                        case .window(let transition):
-                            if let id = transition.windowId {
-                                return "rootroute.window.\\(id)"
-                            } else if let value = transition.windowValue {
-                                return "rootroute.window.\\(value.hashValue)"
-                            } else {
-                                return "rootroute.window"
-                            }
-                        case .popToRoot:
-                            return "rootroute.popToRoot"
-                        #if os(iOS)
-                        case .present(let route):
-                            return "rootroute.present.\\(route.path)"
-                        #endif
-                        }
-                    }
-                }
-                
-                enum SRTabItem: Int, Sendable {
+                enum SRTabItem: Int, IntRawRepresentable {
                     \(raw: caseTabItems)
                 }
             
@@ -227,15 +135,8 @@ extension RouteCoordinatorMacro: ExtensionMacro {
                 }
             }
             """
-        let declObservable: DeclSyntax = """
-        extension \(raw: type.trimmedDescription): Foundation.ObservableObject { 
-        
-        }
-        """
         let extCoordinator = declCoordinator.cast(ExtensionDeclSyntax.self)
-        let extObservable = declObservable.cast(ExtensionDeclSyntax.self)
-        
-        return [extCoordinator, extObservable]
+        return [extCoordinator]
     }
 }
 

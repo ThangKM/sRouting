@@ -13,11 +13,15 @@ import SwiftUI
 public final class SRNavigationPath: ObservableObject {
     
     @Published
-    var stack: [String] = []
+    internal var stack: [String] = []
     
     public private(set) var navPath: Binding<NavigationPath>?
-
-    public init() { }
+    
+    private(set) weak var coordinator: SRRouteCoordinatorType?
+    
+    public init(coordinator: SRRouteCoordinatorType? = nil) {
+        self.coordinator = coordinator
+    }
     
     public func pop() {
         guard let navPath else { return }
@@ -44,8 +48,12 @@ public final class SRNavigationPath: ObservableObject {
     public func push(to route: some SRRoute) {
         navPath?.wrappedValue.append(route)
     }
+}
+
+//MARK: - Internal
+extension SRNavigationPath {
     
-    internal func matchingStack(from navCodable: NavigationPath.CodableRepresentation?) {
+    func matchingStack(from navCodable: NavigationPath.CodableRepresentation?) {
         
         guard let navCodable else { return }
         guard let data = try? JSONEncoder().encode(navCodable) else { return }
@@ -60,15 +68,7 @@ public final class SRNavigationPath: ObservableObject {
         }
     }
     
-    internal func bindingPath(_ path: Binding<NavigationPath>) {
+    func bindingPath(_ path: Binding<NavigationPath>) {
         navPath = path
-    }
-}
-
-extension Array {
-    fileprivate func chunked(into size: Int) -> [[Element]] {
-        return stride(from: 0, to: count, by: size).map {
-            Array(self[$0 ..< Swift.min($0 + size, count)])
-        }
     }
 }

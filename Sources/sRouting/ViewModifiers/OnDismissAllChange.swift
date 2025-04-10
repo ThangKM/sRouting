@@ -12,7 +12,7 @@ private typealias OnChangeBlock = @MainActor () -> Void
 private struct RootModifier: ViewModifier {
     
     @EnvironmentObject
-    private var emitter: SRDismissAllEmitter
+    private var context: SRContext
     
     private let onChange: OnChangeBlock
     
@@ -21,7 +21,7 @@ private struct RootModifier: ViewModifier {
     }
     
     func body(content: Content) -> some View {
-        content.onReceive(emitter.$dismissAllSignal.dropFirst().onChanges()) { _ in
+        content.onChange(of: context.dismissAllSignal) { _ in
             onChange()
         }
     }

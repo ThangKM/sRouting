@@ -8,7 +8,8 @@
 import SwiftUI
 
 @MainActor
-public final class SRRouter<Route>: ObservableObject where Route: SRRoute {
+public final class SRRouter<Route>: ObservableObject, Sendable
+where Route: SRRoute {
     
     public typealias AcceptionCallback = @Sendable (_ accepted: Bool) -> Void
     public typealias ErrorHandler = @Sendable (_ error: Error?) -> Void
@@ -17,14 +18,19 @@ public final class SRRouter<Route>: ObservableObject where Route: SRRoute {
     private(set) var transition: SRTransition<Route> = .none
     
     public init(_ route: Route.Type) { }
-
     
     /// Show confirmation dialog
-    /// - Parameter dialog: ``ConfirmationDialogRoute``
+    /// - Parameter dialog: ``SRConfirmationDialogRoute``
     public func show(dialog: Route.ConfirmationDialogRoute) {
         transition = .init(with: dialog)
     }
-
+    
+    /// Show popover
+    /// - Parameter dialog: ``SRPopoverRoute``
+    public func show(popover: Route.PopoverRoute) {
+        transition = .init(with: popover)
+    }
+    
     /// Select tabbar item at index
     /// - Parameter index: Index of tabbar item
     ///
@@ -32,8 +38,8 @@ public final class SRRouter<Route>: ObservableObject where Route: SRRoute {
     /// ```swift
     /// router.selectTabbar(at: 0)
     /// ```
-    public func selectTabbar(at index: Int, with transaction: WithTransaction? = .none) {
-        transition = .init(selectTab: index, and: transaction)
+    public func selectTabbar(at tab: any IntRawRepresentable, with transaction: WithTransaction? = .none) {
+        transition = .init(selectTab: tab, and: transaction)
     }
     
     /// Trigger to new screen
@@ -116,6 +122,7 @@ public final class SRRouter<Route>: ObservableObject where Route: SRRoute {
         transition = .init(with: .openWindow, windowTransition: windowTrans)
     }
     
+    /// Reset the transition to release anything the route holds.
     internal func resetTransition() {
         guard transition != .none else { return }
         transition = .none

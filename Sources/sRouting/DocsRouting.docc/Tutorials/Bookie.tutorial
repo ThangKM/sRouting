@@ -1,0 +1,173 @@
+@Tutorial(time: 120) {
+    @Intro(title: "Creating Book App") {
+        This tutorial guides you through building _Bookie_ — an app for using the sRouting.
+        
+        @Image(source: bookie_banner.png, alt: "user interface of the demo application")
+    }
+    
+    @Section(title: "Create the Bookie") {
+        @ContentAndMedia {
+            Create and configure an Xcode project that uses sRouting.
+            @Image(source: bookie_section1_intro.png, alt: "add sRouting into Bookie")
+        }
+        
+        @Steps {
+            @Step {
+                Create a new project using the iOS App template.
+                @Image(source: bookie_create.png, alt: "A screenshot shows xCode's create navigator")
+            }
+            
+            @Step {
+                Enter "Bookie" as the Product Name.
+                @Image(source: bookie_enter_product_name.png, alt: "A screenshot shows xCode's setup product navigator")
+            }
+            
+            @Step {
+                Select "SwiftUI" from the Interface pop-up menu and "SwiftUI App" from the Life Cycle pop-up menu, then click Next. Choose a location to save the Bookie project on your Mac.
+                @Image(source: bookie_save_place.png, alt: "A screenshot shows xCode's save product navigator")
+            }
+            
+            @Step {
+                Add `sRouting` as a dependency to the project.
+                
+                @Image(source: bookie_add_srouting.png, alt:"A screenshot shows the Bookie package in Xcode's navigator.")
+            }
+        }
+    }
+    
+    @Section(title: "Prepare Views, Model and Data") {
+        @ContentAndMedia {
+            Create common Views and a book model
+            @Image(source: section2icon.png, alt: "all bookie screens")
+        }
+        
+        @Steps {
+            @Step {
+                Create SwiftUI View files named: `StartScreen`, `HomeScreen`, `BookDetailScreen`
+            }
+            
+            @Step {
+                Create the protocol `EmptyObjectType`.
+                Instead of using nil to handle default a object we'll use `EmptyObjectType`
+                @Code(name: "EmptyObjectType.swift", file: EmptyObjectType.swift)
+            }
+            
+            @Step {
+                Create a `BookModel` conforms to `Identifiable`, `Equatable`, `EmptyObjectType`
+                to store information of a book.
+                @Code(name: "BookModel.swift", file: BookModel.swift)
+            }
+            
+            @Step {
+                Create a `Observable` to handle mockup data and named `MockBookData` then add your books data.
+                @Code(name: "MockBookData.swift", file: MockBookData.swift)
+            }
+            
+            @Step {
+                Add custom fonts and `FontModifier`
+                @Code(name: "FontModifier.swift", file: FontModifier.swift)
+            }
+        }
+    }
+    
+    @Section(title: "Working with Route") {
+        @ContentAndMedia {
+            Define Routes in Bookie app.
+        }
+        
+        @Steps {
+            
+            @Step {
+                Create the `AppRoute` conforms to `Route`.
+                This route is the root route of the app.
+                @Code(name: "AppRoute.swift", file: AppRoute.swift)
+            }
+            
+            @Step {
+                Create the `AppRouter` that is inherited from `RootRouter`.
+                Define the default root view is `StartScreen`
+                The root router will handle the actions on rootview like: select tabbar item, change root view...
+                @Code(name: "AppRouter.swift", file: AppRouter.swift)
+            }
+            
+            @Step {
+                Setup your root view in `BookieApp`.
+                @Code(name: "BookieApp.swift", file: BookieApp.swift)
+            }
+        }
+    }
+    
+    @Section(title: "Layout the Screens") {
+        @ContentAndMedia {
+            Layout the screens and handle actions
+            @Image(source: bookie_meet_banner.png, alt: "banner")
+        }
+        
+        @Steps {
+            
+            @Step {
+                Create a new SwiftUI View file named `RandomBubbleView`
+                @Code(name: "RandomBubbleView.swift", file: RandomBubbleView.swift) {
+                    @Image(source: randombubleview.png, alt: "screenshoot of RandombubbleView")
+                }
+            }
+            
+            @Step {
+                Create the `RatingView`
+                @Code(name: "RatingView.swift", file: RatingView.swift) {
+                    @Image(source: ratingview.png, alt: "screenshoot of RatingView")
+                }
+            }
+            
+            @Step {
+                Create the `router`  with Route is `AppRoute` in `StartScreen`.
+                Layout the `StartScreen` and `RandomBubbleView`.
+                Change root to home with `AppRouter` when tapping on start button.
+                @Code(name: "StartScreen.swift", file: StartScreen.swift) {
+                    @Image(source: startscreen.jpeg, alt: "start screen screenshoot")
+                }
+            }
+    
+            @Step {
+                Create the custom NavigationView named `BookieNavigationView`.
+                @Code(name: "BookieNavigationView.swift", file: BookieNavigationView.swift) {
+                    @Image(source: bookienavigationview.png, alt: "BookieNavigationView screenshoot")
+                }
+            }
+            
+            @Step {
+                Create a `HomeViewModel` which is inherited from `Router`.
+                HomeViewModel will handle all action on `HomeScreen`.
+                @Code(name: "HomeViewModel.swift", file: HomeViewModel.swift)
+            }
+            
+            @Step {
+                Create a SwiftUI View that will display a book in a list view named "BookCell".
+                @Code(name: "BookCell.swift", file: BookCell.swift) {
+                    @Image(source: bookcell.png, alt: "BookCell screenshoot")
+                }
+            }
+            
+            @Step {
+                Layout `HomeScreen` and handle actions with `HomeViewModel`
+                @Code(name: "HomeScreen.swift", file: HomeScreen.swift) {
+                    @Image(source: homescreen.jpeg, alt: "HomeScreen screenshoot")
+                }
+            }
+            
+            @Step {
+                Create a `BookDetailViewModel` which is inherited from `Router`.
+                HomeViewModel will handle all action on `BookDetailScreen`.
+                @Code(name: "BookDetailViewModel.swift", file: BookDetailViewModel.swift)
+            }
+            
+            @Step {
+                Layout `BookDetailScren` and handle actions with `BookDetailViewModel`.
+                @Code(name: "BookDetailScren.swift", file: BookDetailScreen.swift) {
+                    @Image(source: bookdetailscreen.jpeg, alt: "BookDetailScren screenshoot")
+                }
+            }
+        }
+    }
+        
+}
