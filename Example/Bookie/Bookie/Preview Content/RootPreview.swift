@@ -14,10 +14,12 @@ final class PreviewCoordinator { }
 struct RootPreview<Content>: View where Content: View {
     
     @State private var coordinator = PreviewCoordinator()
+    @State private var context = SRContext()
+    
     let content: () -> Content
     
     var body: some View {
-        SRRootView(coordinator: coordinator) {
+        SRRootView(context: context, coordinator: coordinator) {
             NavigationStack(path: coordinator.rootPreviewStackPath) {
                 content()
                     .routeObserver(RouteObserver.self)

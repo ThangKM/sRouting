@@ -20,6 +20,7 @@ final class BookPersistent {
     var bookDescription: String
     var rating: Int
     var raingMapping: [Int: Int] = [Int: Int]()
+    var newItem: [Int] = []
     
     init(bookId: Int,
          name: String,

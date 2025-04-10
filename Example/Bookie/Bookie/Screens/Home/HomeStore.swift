@@ -34,7 +34,8 @@ extension HomeScreen {
         private weak var router: SRRouter<HomeRoute>?
         private let cancelBag = CancelBag()
         private var didObserveChanges: Bool = false
-        nonisolated private lazy var bookService: BookService = .init()
+        
+        private let bookService: BookService = .init()
         
         private var searchLoadmoreToken: FetchNextToken<BookPersistent>?
         private var loadmoreToken: FetchNextToken<BookPersistent>?

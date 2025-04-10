@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		3700C51F2D951DC400CD13F1 /* RootPreview.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3775E7732D3D749D00763E8E /* RootPreview.swift */; };
+		3700C5202D951DC700CD13F1 /* PreviewModifiers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37E7DD902D3841790067211B /* PreviewModifiers.swift */; };
 		37073F2E2D3ED822001A2C24 /* TextLoadingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37073F2D2D3ED814001A2C24 /* TextLoadingView.swift */; };
 		3732440C26957BEF007DE034 /* MockBookService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3732440B26957BEF007DE034 /* MockBookService.swift */; };
 		373244432695E2C9007DE034 /* BookDetailStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 373244422695E2C9007DE034 /* BookDetailStore.swift */; };
@@ -31,7 +33,6 @@
 		377442C32D5F22FC00CE83AD /* DatabaseQuery.swift in Sources */ = {isa = PBXBuildFile; fileRef = 377442C22D5F22E600CE83AD /* DatabaseQuery.swift */; };
 		377442C62D5F246400CE83AD /* BookPersistent+Queries.swift in Sources */ = {isa = PBXBuildFile; fileRef = 377442C52D5F245600CE83AD /* BookPersistent+Queries.swift */; };
 		3775E7722D3D672E00763E8E /* EnvironmentRunner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3775E7712D3D671300763E8E /* EnvironmentRunner.swift */; };
-		3775E7742D3D74A800763E8E /* RootPreview.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3775E7732D3D749D00763E8E /* RootPreview.swift */; };
 		3775E7762D3D79DA00763E8E /* RootScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3775E7752D3D79D700763E8E /* RootScreen.swift */; };
 		379D3464268D024800903D92 /* BookieApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 379D3463268D024800903D92 /* BookieApp.swift */; };
 		379D3468268D024A00903D92 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 379D3467268D024A00903D92 /* Assets.xcassets */; };
@@ -44,7 +45,6 @@
 		37B61ADA2D4273D7005195C4 /* HomeState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37B61AD92D4273D3005195C4 /* HomeState.swift */; };
 		37B61ADD2D42B097005195C4 /* sRouting in Frameworks */ = {isa = PBXBuildFile; productRef = 37B61ADC2D42B097005195C4 /* sRouting */; };
 		37D1A7A02D50E3A900FD69C4 /* ModelSendable in Frameworks */ = {isa = PBXBuildFile; productRef = 37D1A79F2D50E3A900FD69C4 /* ModelSendable */; };
-		37E7DD912D3841800067211B /* PreviewModifiers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37E7DD902D3841790067211B /* PreviewModifiers.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -472,10 +472,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3700C5202D951DC700CD13F1 /* PreviewModifiers.swift in Sources */,
+				3700C51F2D951DC400CD13F1 /* RootPreview.swift in Sources */,
 				37AAE7AA26948818007EA3B6 /* BookCell.swift in Sources */,
 				37073F2E2D3ED822001A2C24 /* TextLoadingView.swift in Sources */,
 				3761E8232D3D87DD00E491BC /* BookPersistent.swift in Sources */,
-				3775E7742D3D74A800763E8E /* RootPreview.swift in Sources */,
 				373E28172D43892600E1CADE /* FetchNextToken.swift in Sources */,
 				374102652694307800C8DF44 /* HomeScreen.swift in Sources */,
 				3741027C26945DDC00C8DF44 /* HomeStore.swift in Sources */,
@@ -498,7 +499,6 @@
 				3741027A269459F300C8DF44 /* BookieNavigationView.swift in Sources */,
 				3732440C26957BEF007DE034 /* MockBookService.swift in Sources */,
 				374102782694590200C8DF44 /* HomeRoute.swift in Sources */,
-				37E7DD912D3841800067211B /* PreviewModifiers.swift in Sources */,
 				3741027326943C7200C8DF44 /* FontModifier.swift in Sources */,
 				37AAE7B226956D9B007EA3B6 /* RatingView.swift in Sources */,
 			);
@@ -667,7 +667,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_ASSET_PATHS = "\"Bookie/Preview Content\"";
+				DEVELOPMENT_ASSET_PATHS = "Bookie/Preview\\ Content/Preview\\ Assets.xcassets Bookie/Preview\\ Content Bookie/Preview\\ Content/PreviewModifiers.swift Bookie/Preview\\ Content/RootPreview.swift";
 				DEVELOPMENT_TEAM = L9JFTY7GTP;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -703,7 +703,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_ASSET_PATHS = "\"Bookie/Preview Content\"";
+				DEVELOPMENT_ASSET_PATHS = "Bookie/Preview\\ Content/Preview\\ Assets.xcassets Bookie/Preview\\ Content Bookie/Preview\\ Content/PreviewModifiers.swift Bookie/Preview\\ Content/RootPreview.swift";
 				DEVELOPMENT_TEAM = L9JFTY7GTP;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
