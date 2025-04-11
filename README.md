@@ -129,8 +129,9 @@ struct BookieApp: App {
             .onOpenURL { url in
                 Task {
                     ...
-                    await context.routing(.resetAll,.select(tabItem: .home),
-                                          .push(route: HomeRoute.cake, into: .home))
+                    await context.routing(.resetAll,
+                                          .select(tabItem: .home),
+                                          .push(route: HomeRoute.cake))
                 }
             }
         }
@@ -165,8 +166,9 @@ DeepLink:
 .onOpenURL { url in
     Task {
         ...
-        await coordinator.routing(.resetAll,.select(tabItem: .home),
-                              .push(route: HomeRoute.cake, into: .home))
+        await context.routing(.resetAll,
+                              .select(tabItem: .home),
+                              .push(route: HomeRoute.cake))
     }
 }
 ```
