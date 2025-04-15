@@ -48,20 +48,13 @@ enum TestDialog: SRConfirmationDialogRoute {
     var titleVisibility: Visibility { .visible }
 }
 
-enum TestRoute: SRRoute {
+@sRoute
+enum TestRoute {
     
     typealias AlertRoute = TestErrorRoute
     typealias ConfirmationDialogRoute = TestDialog
     typealias PopoverRoute = TestPopover
-    
-    var path: String {
-        switch self {
-        case .emptyScreen: "empty screen"
-        case .home: "home screen"
-        case .setting: "setting screen"
-        }
-    }
-    
+
     case home
     case emptyScreen
     case setting

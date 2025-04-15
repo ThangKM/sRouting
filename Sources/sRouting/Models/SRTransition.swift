@@ -17,7 +17,7 @@ where Route: SRRoute {
     private(set) var route: Route?
     private(set) var alert: Route.AlertRoute?
     private(set) var tabIndex: (any IntRawRepresentable)?
-    private(set) var popToRoute: (any SRRoute)?
+    private(set) var popToPath: (any StringRawRepresentable)?
     private(set) var windowTransition: SRWindowTransition?
     private(set) var confirmationDialog: Route.ConfirmationDialogRoute?
     private(set) var popover: Route.PopoverRoute?
@@ -63,9 +63,9 @@ where Route: SRRoute {
         self.transaction = transaction
     }
     
-    init(popTo route: some SRRoute, and transaction: WithTransaction? = .none) {
+    init(popTo path: some StringRawRepresentable, and transaction: WithTransaction? = .none) {
         self.type = .popToRoute
-        self.popToRoute = route
+        self.popToPath = path
         self.contextId = TimeIdentifier()
         self.transaction = transaction
     }

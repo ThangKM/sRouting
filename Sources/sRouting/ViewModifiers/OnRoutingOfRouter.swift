@@ -288,8 +288,8 @@ extension RouterModifier {
         case .popToRoot:
             navigationPath?.popToRoot()
         case .popToRoute:
-            guard let route = transition.popToRoute else { break }
-            navigationPath?.pop(to: route)
+            guard let path = transition.popToPath else { break }
+            navigationPath?.pop(to: path)
         case .openWindow:
             openWindow(transition: transition.windowTransition)
         case .none: break

@@ -16,30 +16,31 @@ struct NavigationPathTests {
     let path = SRNavigationPath()
     
     @Test
-    func testMatchingStack() {
+    func testMatchingStack() throws {
         path.push(to: TestRoute.home)
         path.push(to: TestRoute.emptyScreen)
-        let homePath = TestRoute.home.fullPath
-        let emptyPath = TestRoute.emptyScreen.fullPath
-        let stack = path.stack.map({ $0.replacingOccurrences(of: "sRoutingTests.", with: "")})
-        #expect(stack == [homePath, emptyPath])
+        let stack = path.stack
+        #expect(stack.count == 2)
+        let firstPath = try #require(stack.first)
+        #expect(firstPath.contains(TestRoute.Paths.home.rawValue))
+        let lastPath = try #require(stack.last)
+        #expect(lastPath.contains(TestRoute.Paths.emptyScreen.rawValue))
     }
     
     @Test
-    func testPopToTarget() {
+    func testPopToTarget() throws {
         path.push(to: TestRoute.emptyScreen)
         path.push(to: TestRoute.home)
         path.push(to: TestRoute.emptyScreen)
         path.push(to: TestRoute.emptyScreen)
         path.push(to: TestRoute.emptyScreen)
         
-        let homePath = TestRoute.home.fullPath
-        let emptyPath = TestRoute.emptyScreen.fullPath
+        path.pop(to: TestRoute.Paths.home)
         
-        path.pop(to: TestRoute.home)
-        
-        let stack = path.stack.map({ $0.replacingOccurrences(of: "sRoutingTests.", with: "")})
-        #expect(stack == [emptyPath, homePath])
+        let stack = path.stack
+        #expect(stack.count == 2)
+        let lastPath = try #require(stack.last)
+        #expect(lastPath.contains(TestRoute.Paths.home.rawValue))
     }
     
     @Test
@@ -55,14 +56,15 @@ struct NavigationPathTests {
     }
     
     @Test
-    func testPop() async throws {
+    func testPop() throws {
         path.push(to: TestRoute.home)
         path.push(to: TestRoute.emptyScreen)
 
         path.pop()
-        let homePath = TestRoute.home.fullPath
-        let stack = path.stack.map({ $0.replacingOccurrences(of: "sRoutingTests.", with: "")})
-        #expect(stack == [homePath])
+        let stack = path.stack
+        let firstPath = try #require(stack.first)
+        #expect(firstPath.contains(TestRoute.Paths.home.stringValue))
+        #expect(stack.count == 1)
     }
 }
 

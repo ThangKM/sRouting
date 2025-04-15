@@ -69,7 +69,8 @@ enum AppAlerts: SRAlertRoute {
     }
 }
 
-enum HomeRoute: SRRoute {
+@sRoute
+enum HomeRoute {
 
     typealias AlertRoute = AppAlerts
     typealias ConfirmationDialogRoute = AppConfirmationDialog
@@ -78,19 +79,14 @@ enum HomeRoute: SRRoute {
     case home
     case detail(String)
     
-    var path: String {
-        return "Home"
-    }
-    
     var screen: some View {
         Text("Hello World")
     }
 }
 
-enum SettingRoute: SRRoute {
+@sRoute
+enum SettingRoute {
     case setting
-    
-    var path: String { "setting" }
     
     var screen: some View { Text("Setting") }
 }

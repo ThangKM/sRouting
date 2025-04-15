@@ -100,7 +100,7 @@ public protocol SRRoute: Hashable, Codable, Sendable {
     associatedtype AlertRoute: SRAlertRoute
     associatedtype ConfirmationDialogRoute: SRConfirmationDialogRoute
     associatedtype PopoverRoute: SRPopoverRoute
-    
+
     var path: String { get }
 
     /// Screen builder
@@ -120,11 +120,6 @@ extension SRRoute {
     public typealias PopoverRoute = PopoverEmptyRoute
     
     public var transaction: SwiftUI.Transaction? { .none }
-    
-    /// Provide full path when self is a child route.
-    public var fullPath: String {
-        String(describing: Self.self) + "." + path
-    }
     
     public static func == (lhs: Self, rhs: Self) -> Bool {
         lhs.path == rhs.path
@@ -147,3 +142,6 @@ extension SRRoute {
     }
 }
 
+public enum EmptyPaths: String, StringRawRepresentable {
+    case none
+}

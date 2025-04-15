@@ -13,17 +13,12 @@ Working with macros and ViewModifers.
 To create a route we have to conform to the ``SRRoute`` Protocol.
 
 ```swift
-enum HomeRoute: SRRoute {
+@sRoute
+enum HomeRoute {
     case pastry
     case cake
     
-    var path: String { 
-        swich self {
-            case .pastry: return "pastry"
-            case .cake: return "cake"
-        }
-    }
-
+    @ViewBuilder @MainActor
     var screen: some View {
         switch self {
             case .pastry: PastryScreen()
@@ -99,7 +94,8 @@ struct BookieApp: App {
 Using the `onRouting(of:)` ViewModifier to observe router transition.
 
 ```swift
-enum HomeRoute: SRRoute {
+@sRoute
+enum HomeRoute {
     case detail
     ...
 }
@@ -211,5 +207,5 @@ router.pop()
 
 router.popToRoot()
 
-router.pop(to: HomeRoute.cake)
+router.pop(to: HomeRoute.Paths.cake)
 ```

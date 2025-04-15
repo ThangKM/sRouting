@@ -12,13 +12,14 @@ import SwiftSyntaxMacros
 @main
 struct sRoutingPlugin: CompilerPlugin {
     let providingMacros: [Macro.Type] = [
-        RouteCoordinatorMacro.self, RouteObserverMacro.self
+        RouteCoordinatorMacro.self, RouteObserverMacro.self, RouteMacro.self
     ]
 }
 
 package enum SRMacroError: Error, CustomStringConvertible, CustomNSError {
     
     case onlyStruct
+    case onlyEnum
     case missingArguments
     case invalidGenericFormat(String)
     case haveToUseMemberAccess
@@ -27,6 +28,8 @@ package enum SRMacroError: Error, CustomStringConvertible, CustomNSError {
     case onlyClass
     case invalidRouteType
     case missingObservable
+    case noneRoutes
+    case redundantConformance
     
     package static var errorDomain: String { "com.srouting.macro" }
     
@@ -50,29 +53,41 @@ package enum SRMacroError: Error, CustomStringConvertible, CustomNSError {
             -507
         case .missingObservable:
             -508
+        case .onlyEnum:
+            -509
+        case .noneRoutes:
+            -510
+        case .redundantConformance:
+            -511
         }
     }
     
     package var description: String {
         switch self {
+        case .onlyEnum:
+            return "Only enums are supported."
         case .onlyStruct:
-            "Only support for struct!"
+            return "Only structs are supported."
         case .missingArguments:
-            "Missing arguments!"
+            return "Missing arguments."
         case .invalidGenericFormat(let name):
-            "Using 'struct \(name)<Content>: View where Content: View' instead of!"
+            return "Use 'struct \(name)<Content>: View where Content: View' instead."
         case .haveToUseMemberAccess:
-            "Using `YourRoute.self` instead of!"
+            return "Use `YourRoute.self` instead."
         case .duplication:
-            "Duplication!"
+            return "Duplicate definition."
         case .structOrClass:
-            "Support for class or struct!"
+            return "Only structs or classes are supported."
         case .onlyClass:
-            "Only support for class!"
+            return "Only classes are supported."
         case .invalidRouteType:
-            "Requires route type conform to SRRoute!"
+            return "Route type must conform to SRRoute."
         case .missingObservable:
-            "Missing @Observable marco!"
+            return "Missing @Observable macro."
+        case .noneRoutes:
+            return "Empty route declaration."
+        case .redundantConformance:
+            return "Redundant conformance to SRRoute."
         }
     }
     
