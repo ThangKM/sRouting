@@ -103,10 +103,10 @@ public final class SRRouter<Route> where Route: SRRoute {
     
     /// Navigation pop to target action.
     /// - Parameters:
-    ///   - route: ``SRRoute``
+    ///   - path: ``SRRoute.PathsType``
     ///   - transaction: `Transaction`
-    public func pop(to route: some SRRoute, with transaction: WithTransaction? = .none) {
-        transition = .init(popTo: route, and: transaction)
+    public func pop(to path: some StringRawRepresentable, with transaction: WithTransaction? = .none) {
+        transition = .init(popTo: path, and: transaction)
     }
     
     /// Opens a window that's associated with the specified transition.

@@ -10,3 +10,8 @@ public macro sRouteCoordinator(tabs: [String] = [], stacks: String...) = #extern
 @attached(member, names: named(path), arbitrary)
 @attached(extension, conformances: SRRouteObserverType)
 public macro sRouteObserver(_ routes: (any SRRoute.Type)...) = #externalMacro(module: "sRoutingMacros", type: "RouteObserverMacro")
+
+
+/// Generate Paths for ``SRRoute``
+@attached(extension, conformances: SRRoute, names: named(PathsType), named(Paths), named(path), arbitrary)
+public macro sRoute() = #externalMacro(module: "sRoutingMacros", type: "RouteMacro")

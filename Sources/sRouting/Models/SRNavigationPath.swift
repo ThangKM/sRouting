@@ -32,9 +32,9 @@ public final class SRNavigationPath {
         navPath.removeLast()
     }
     
-    public func pop(to route: some SRRoute) {
+    public func pop(to path: some StringRawRepresentable) {
         guard navPath.count == stack.count, navPath.count > 1 else { return }
-        guard let index = stack.lastIndex(where: {$0.contains(route.fullPath)})
+        guard let index = stack.lastIndex(where: {$0.contains(path.stringValue)})
         else { return }
         let dropCount = (stack.count - 1) - index
         guard dropCount > 0 && navPath.count >= dropCount else { return }

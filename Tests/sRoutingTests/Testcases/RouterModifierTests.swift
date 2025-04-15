@@ -143,11 +143,11 @@ struct RouterModifierTests {
         try await Task.sleep(for:.milliseconds(50))
         router.trigger(to: .setting, with: .push)
         try await Task.sleep(for:.milliseconds(50))
-        router.pop(to: TestRoute.home)
+        router.pop(to: TestRoute.Paths.home)
         let path = try #require(paths.first)
         try await Task.sleep(for: .milliseconds(10))
         #expect(paths.count == 1)
-        #expect(path.contains("home"))
+        #expect(path.contains(TestRoute.Paths.home.rawValue))
     }
     
 //    @Test

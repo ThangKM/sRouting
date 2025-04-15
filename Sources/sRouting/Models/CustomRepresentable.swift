@@ -11,3 +11,10 @@ where RawValue == Int { }
 extension IntRawRepresentable {
     public var intValue: Int { rawValue }
 }
+
+public protocol StringRawRepresentable: RawRepresentable, CaseIterable, Sendable
+where RawValue == String { }
+
+extension StringRawRepresentable {
+    public var stringValue: String { rawValue }
+}
