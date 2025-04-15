@@ -50,13 +50,11 @@ package struct RouteMacro: ExtensionMacro {
         let declCoordinator: DeclSyntax = """
             extension \(raw: type.trimmedDescription): sRouting.SRRoute {
             
-                typealias PathsType = Paths
-            
                 enum Paths: String, StringRawRepresentable {
                     \(raw: caseItems)
                 }
                 
-                var path: String { 
+                nonisolated var path: String { 
                     switch self {
                     \(raw: casePaths)
                     }

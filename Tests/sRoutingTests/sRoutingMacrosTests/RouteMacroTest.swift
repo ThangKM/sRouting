@@ -37,8 +37,6 @@ final class RouteMacroTest: XCTestCase {
 
         extension HomeRoute: sRouting.SRRoute {
 
-            typealias PathsType = Paths
-
             enum Paths: String, StringRawRepresentable {
                 case message = "hr_message"
                 case home = "hr_home"
@@ -46,7 +44,7 @@ final class RouteMacroTest: XCTestCase {
                 case eventSetting = "hr_eventsetting"
             }
 
-            var path: String {
+            nonisolated var path: String {
                 switch self {
                 case .message:
                     return Paths.message.rawValue

@@ -18,6 +18,7 @@ enum HomeRoute {
     case pastry
     case cake
     
+    @ViewBuilder @MainActor
     var screen: some View {
         switch self {
             case .pastry: PastryScreen()
