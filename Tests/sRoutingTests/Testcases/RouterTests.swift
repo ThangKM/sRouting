@@ -145,10 +145,10 @@ struct RouterTests {
             }
         }
         ViewHosting.host(view: sut)
-        router.pop(to: TestRoute.emptyScreen)
+        router.pop(to: TestRoute.Paths.emptyScreen)
         try await Task.sleep(for: .milliseconds(10))
         #expect(transition?.type == .popToRoute)
-        #expect(transition?.popToRoute != nil)
+        #expect(transition?.popToPath != nil)
     }
     
     @Test

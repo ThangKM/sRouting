@@ -51,7 +51,8 @@ Learn about macros and ViewModifers.
 To create a route, we must adhere to the `SRRoute` Protocol.
 
 ```swift
-enum HomeRoute: SRRoute {
+@sRoute
+enum HomeRoute {
 
     typealias AlertRoute = YourAlertRoute // Optional declarations
     typealias ConfirmationDialogRoute = YourConfirmationDialogRoute // Optional declarations
@@ -60,13 +61,7 @@ enum HomeRoute: SRRoute {
     case pastry
     case cake
     
-    var path: String { 
-        switch self {
-            case .pastry: return "pastry"
-            case .cake: return "cake"
-        }
-    }
-
+    @ViewBuilder @MainActor
     var screen: some View {
         switch self {
             case .pastry: PastryScreen()
@@ -143,7 +138,8 @@ struct BookieApp: App {
 Using the `onRouting(of:)` ViewModifier to observe router transition.
 
 ```swift
-enum HomeRoute: SRRoute {
+@sRoute
+enum HomeRoute {
     case detail
     ...
 }
@@ -248,7 +244,7 @@ router.pop()
 
 router.popToRoot()
 
-router.pop(to: HomeRoute.cake)
+router.pop(to: HomeRoute.Paths.cake)
 ```
 
 ### Conclusion
