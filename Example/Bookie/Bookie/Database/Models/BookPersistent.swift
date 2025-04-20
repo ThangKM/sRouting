@@ -22,6 +22,8 @@ final class BookPersistent {
     var raingMapping: [Int: Int] = [Int: Int]()
     var newItem: [Int] = []
     
+    var abc: Int { bookId }
+    
     init(bookId: Int,
          name: String,
          imageName: String,

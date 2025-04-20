@@ -8,23 +8,19 @@
 import SwiftUI
 import sRouting
 
-
-enum AppRoute: SRRoute {
+@sRoute
+enum AppRoute {
     
     case startScreen(store: StartScreen.StartStore)
     case homeScreen
     
-    var path: String {
-        switch self {
-        case .startScreen: return "startScreen"
-        case .homeScreen: return "homeScreen"
-        }
-    }
-    
+    @ViewBuilder @MainActor
     var screen: some View {
         switch self {
-        case .startScreen(let store): StartScreen(store: store)
-        case .homeScreen: HomeScreen()
+        case .startScreen(let store):
+            StartScreen(store: store)
+        case .homeScreen:
+            HomeScreen()
         }
     }
 }

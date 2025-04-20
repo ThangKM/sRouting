@@ -8,15 +8,15 @@
 import SwiftUI
 import sRouting
 
-enum HomeRoute: SRRoute {
+@sRoute
+enum HomeRoute {
     
     typealias AlertRoute = AppAlertErrors
     typealias ConfirmationDialogRoute = AppConfirmationDialog
     
     case bookDetailScreen(book: BookPersistent.SendableType)
-    
-    var path: String { "detailScreen" }
-    
+
+    @MainActor
     var screen: some View {
         switch self {
         case .bookDetailScreen(let book):

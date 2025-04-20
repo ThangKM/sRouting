@@ -10,6 +10,7 @@
 		3700C51F2D951DC400CD13F1 /* RootPreview.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3775E7732D3D749D00763E8E /* RootPreview.swift */; };
 		3700C5202D951DC700CD13F1 /* PreviewModifiers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37E7DD902D3841790067211B /* PreviewModifiers.swift */; };
 		37073F2E2D3ED822001A2C24 /* TextLoadingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37073F2D2D3ED814001A2C24 /* TextLoadingView.swift */; };
+		3723296A2DB5468E00652789 /* sRouting in Frameworks */ = {isa = PBXBuildFile; productRef = 372329692DB5468E00652789 /* sRouting */; };
 		3732440C26957BEF007DE034 /* MockBookService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3732440B26957BEF007DE034 /* MockBookService.swift */; };
 		373244432695E2C9007DE034 /* BookDetailStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 373244422695E2C9007DE034 /* BookDetailStore.swift */; };
 		373E28172D43892600E1CADE /* FetchNextToken.swift in Sources */ = {isa = PBXBuildFile; fileRef = 373E28162D43892000E1CADE /* FetchNextToken.swift */; };
@@ -24,7 +25,6 @@
 		374102782694590200C8DF44 /* HomeRoute.swift in Sources */ = {isa = PBXBuildFile; fileRef = 374102772694590200C8DF44 /* HomeRoute.swift */; };
 		3741027A269459F300C8DF44 /* BookieNavigationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37410279269459F300C8DF44 /* BookieNavigationView.swift */; };
 		3741027C26945DDC00C8DF44 /* HomeStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3741027B26945DDC00C8DF44 /* HomeStore.swift */; };
-		37564C4F2D905CFA00F6C037 /* sRouting in Frameworks */ = {isa = PBXBuildFile; productRef = 37564C4E2D905CFA00F6C037 /* sRouting */; };
 		3761E8202D3D853200E491BC /* DatabaseProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3761E81F2D3D852E00E491BC /* DatabaseProvider.swift */; };
 		3761E8232D3D87DD00E491BC /* BookPersistent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3761E8222D3D87AD00E491BC /* BookPersistent.swift */; };
 		3761E8252D3D91D900E491BC /* BookService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3761E8242D3D91D400E491BC /* BookService.swift */; };
@@ -43,7 +43,6 @@
 		37AAE7AA26948818007EA3B6 /* BookCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37AAE7A926948818007EA3B6 /* BookCell.swift */; };
 		37AAE7B226956D9B007EA3B6 /* RatingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37AAE7B126956D9B007EA3B6 /* RatingView.swift */; };
 		37B61ADA2D4273D7005195C4 /* HomeState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37B61AD92D4273D3005195C4 /* HomeState.swift */; };
-		37B61ADD2D42B097005195C4 /* sRouting in Frameworks */ = {isa = PBXBuildFile; productRef = 37B61ADC2D42B097005195C4 /* sRouting */; };
 		37D1A7A02D50E3A900FD69C4 /* ModelSendable in Frameworks */ = {isa = PBXBuildFile; productRef = 37D1A79F2D50E3A900FD69C4 /* ModelSendable */; };
 /* End PBXBuildFile section */
 
@@ -111,9 +110,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				37B61ADD2D42B097005195C4 /* sRouting in Frameworks */,
-				37564C4F2D905CFA00F6C037 /* sRouting in Frameworks */,
 				37D1A7A02D50E3A900FD69C4 /* ModelSendable in Frameworks */,
+				3723296A2DB5468E00652789 /* sRouting in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -348,9 +346,8 @@
 			);
 			name = Bookie;
 			packageProductDependencies = (
-				37B61ADC2D42B097005195C4 /* sRouting */,
 				37D1A79F2D50E3A900FD69C4 /* ModelSendable */,
-				37564C4E2D905CFA00F6C037 /* sRouting */,
+				372329692DB5468E00652789 /* sRouting */,
 			);
 			productName = Bookie;
 			productReference = 379D3460268D024800903D92 /* Bookie.app */;
@@ -426,7 +423,7 @@
 			mainGroup = 379D3457268D024800903D92;
 			packageReferences = (
 				37D1A79E2D50E20700FD69C4 /* XCLocalSwiftPackageReference "ModelSendable" */,
-				37564C4D2D905CFA00F6C037 /* XCRemoteSwiftPackageReference "sRouting" */,
+				372329682DB5468E00652789 /* XCRemoteSwiftPackageReference "sRouting" */,
 			);
 			productRefGroup = 379D3461268D024800903D92 /* Products */;
 			projectDirPath = "";
@@ -668,7 +665,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "Bookie/Preview\\ Content/Preview\\ Assets.xcassets Bookie/Preview\\ Content Bookie/Preview\\ Content/PreviewModifiers.swift Bookie/Preview\\ Content/RootPreview.swift";
-				DEVELOPMENT_TEAM = L9JFTY7GTP;
+				DEVELOPMENT_TEAM = "";
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Bookie/Info.plist;
@@ -704,7 +701,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "Bookie/Preview\\ Content/Preview\\ Assets.xcassets Bookie/Preview\\ Content Bookie/Preview\\ Content/PreviewModifiers.swift Bookie/Preview\\ Content/RootPreview.swift";
-				DEVELOPMENT_TEAM = L9JFTY7GTP;
+				DEVELOPMENT_TEAM = "";
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Bookie/Info.plist;
@@ -869,24 +866,20 @@
 /* End XCLocalSwiftPackageReference section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		37564C4D2D905CFA00F6C037 /* XCRemoteSwiftPackageReference "sRouting" */ = {
+		372329682DB5468E00652789 /* XCRemoteSwiftPackageReference "sRouting" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/ThangKM/sRouting.git";
 			requirement = {
 				kind = upToNextMajorVersion;
-				minimumVersion = 1.1.15;
+				minimumVersion = 1.1.17;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		37564C4E2D905CFA00F6C037 /* sRouting */ = {
+		372329692DB5468E00652789 /* sRouting */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 37564C4D2D905CFA00F6C037 /* XCRemoteSwiftPackageReference "sRouting" */;
-			productName = sRouting;
-		};
-		37B61ADC2D42B097005195C4 /* sRouting */ = {
-			isa = XCSwiftPackageProductDependency;
+			package = 372329682DB5468E00652789 /* XCRemoteSwiftPackageReference "sRouting" */;
 			productName = sRouting;
 		};
 		37D1A79F2D50E3A900FD69C4 /* ModelSendable */ = {
