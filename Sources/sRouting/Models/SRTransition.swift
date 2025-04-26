@@ -21,6 +21,14 @@ where Route: SRRoute {
     private(set) var windowTransition: SRWindowTransition?
     private(set) var confirmationDialog: Route.ConfirmationDialogRoute?
     private(set) var popover: Route.PopoverRoute?
+    private(set) var rootRoute: (any SRRoute)?
+    
+    init(switchTo route: some SRRoute, and transaction: WithTransaction? = .none) {
+        self.type = .switchRoot
+        self.contextId = TimeIdentifier()
+        self.rootRoute = route
+        self.transaction = transaction
+    }
     
     init(with route: Route.PopoverRoute?, and transaction: WithTransaction? = .none) {
         self.type = .popover
