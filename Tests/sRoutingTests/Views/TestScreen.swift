@@ -11,10 +11,10 @@ import Testing
 
 @testable import sRouting
 
-struct TestScreen: View {
+struct TestScreen<R>: View where R: SRRoute {
     
-    let router: SRRouter<TestRoute>
-    let tests: UnitTestActions<RouterModifier<TestRoute>>?
+    let router: SRRouter<R>
+    let tests: UnitTestActions<RouterModifier<R>>?
     
     var body: some View {
         Text("TestScreen.Screen.Text")
