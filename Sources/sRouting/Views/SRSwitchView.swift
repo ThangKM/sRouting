@@ -43,7 +43,7 @@ public struct SRSwitchRouteView<R, C>: View where R: SRRoute, C: View {
     @State private var route: R
     let content: (R) -> C
     
-    init(startingWith route: R, @ViewBuilder content: @escaping (R) -> C) {
+    public init(startingWith route: R, @ViewBuilder content: @escaping (R) -> C) {
         self._switcher = .init(initialValue: .init(route: route))
         self._route = .init(initialValue: route)
         self.content = content
