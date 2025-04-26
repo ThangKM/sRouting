@@ -9,22 +9,31 @@ import SwiftUI
 import sRouting
 
 
-enum AppRoute: SRRoute {
+@sRoute
+enum AppRoute {
     
     case startScreen
     case homeScreen
     
-    var path: String {
-        switch self {
-        case .startScreen: return "startscreen"
-        case .homeScreen: return "homescreen"
-        }
-    }
-    
+    @ViewBuilder @MainActor
     var screen: some View {
         switch self {
-        case .startScreen: StartScreen()
-        case .homeScreen: HomeScreen()
+        case .startScreen:
+            StartScreen()
+                .transition(.scale(scale: 0.1).combined(with: .opacity))
+        case .homeScreen:
+            MainScreen()
+                .transition(.opacity)
+        }
+    }
+}
+
+struct MainScreen: View {
+    @Environment(AppCoordinator.self) var coordinator
+    var body: some View {
+        NavigationStack(path: coordinator.rootStackPath) {
+            HomeScreen()
+                .routeObserver(RouteObserver.self)
         }
     }
 }

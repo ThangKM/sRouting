@@ -1,20 +1,25 @@
-# 🏃‍♂️ Getting Started with sRouting
+## 🏃‍♂️ Getting Started with sRouting
 
-Set up `SRRootView` and work with `sRouter(_:)`
+Set up the `SRRootView` and interact with macros.
 
 ## Overview
 
-Create your root view with ``SRRootView``.
-Declares your ``SRRoute``.
-Working with macros and ViewModifers.
+Create your root view using `SRRootView`.
+Declare your `SRRoute`.
+Learn about macros and ViewModifers.
 
 ### Create a Route
 
-To create a route we have to conform to the ``SRRoute`` Protocol.
+To create a route, we must adhere to the `SRRoute` Protocol.
 
 ```swift
 @sRoute
 enum HomeRoute {
+
+    typealias AlertRoute = YourAlertRoute // Optional declarations
+    typealias ConfirmationDialogRoute = YourConfirmationDialogRoute // Optional declarations
+    typealias PopoverRoute = YourPopoverRoute // Optional declarations
+    
     case pastry
     case cake
     
@@ -30,12 +35,13 @@ enum HomeRoute {
 
 ### Make your Root View
 
-Setup a coordinator and ``SRRootView`` for your app
+Set up a coordinator and ``SRRootView`` for your application.
 
 Declaring a coordinator: 
 
 ```swift
 @sRouteCoordinator(tabs: ["home", "setting"], stacks: "home", "setting")
+@Observable
 final class AppCoordinator { }
 ```
 
@@ -49,42 +55,46 @@ struct RouteObserver { }
 Setup Your App:
 
 ```swift
-@main
+@sRoute
+enum AppRoute {
+    
+    case startScreen
+    case homeScreen
+    
+    @ViewBuilder @MainActor
+    var screen: some View {
+        switch self {
+        case .startScreen:
+            StartScreen()
+                .transition(.scale(scale: 0.1).combined(with: .opacity))
+        case .homeScreen:
+            MainScreen()
+                .transition(.opacity)
+        }
+    }
+}
+
+struct MainScreen: View {
+    @Environment(AppCoordinator.self) var coordinator
+    var body: some View {
+        NavigationStack(path: coordinator.homePath) {
+            HomeScreen()
+                .routeObserver(RouteObserver.self)
+        }
+    }
+}
+
 struct BookieApp: App {
 
+    @State private var appCoordinator = AppCoordinator()
     @State private var context = SRContext()
-    @State private var coordinator = AppCoordinator()
-    ...
+    
     var body: some Scene {
-
         WindowGroup {
-            SRRootView(context: context, coordinator: coordinator) {
-                @Bindable var emitter = coordinator.emitter
-                TabView(selection: $emitter.tabSelection) {
-                    NavigationStack(path: coordinator.homePath) {
-                        AppRoute.home.screen
-                            .routeObserver(RouteObserver.self)
-                    }.tabItem {
-                        Label("Home", systemImage: "house")
-                    }.tag(AppCoordinator.SRTabItem.home.rawValue)
-                    
-                    NavigationStack(path: coordinator.settingPath) {
-                        AppRoute.setting.screen
-                            .routeObserver(RouteObserver.self)
-                    }.tabItem {
-                        Label("Setting", systemImage: "gear")
-                    }.tag(AppCoordinator.SRTabItem.setting.rawValue)
-                }
-                .onDoubleTapTabItem { ... }
-                .onTabSelectionChange { ... }
+            SRRootView(context: context, coordinator: appCoordinator) {
+                SRSwitchView(startingWith: AppRoute.startScreen)
             }
-            .onOpenURL { url in
-                Task {
-                    ...
-                    await context.routing(.resetAll,.select(tabItem: .home),
-                                          .push(route: HomeRoute.cake, into: .home))
-                }
-            }
+            .environment(appCoordinator)
         }
     }
 }
@@ -102,7 +112,7 @@ enum HomeRoute {
 
 struct HomeScreen: View {
 
-    @State var homeRouter = SRRouter(HomeRoute.self)
+    @State private var homeRouter = SRRouter(HomeRoute.self)
 
     var body: some View {
         VStack { 
@@ -118,8 +128,9 @@ DeepLink:
 .onOpenURL { url in
     Task {
         ...
-        await coordinator.routing(.resetAll,.select(tabItem: .home),
-                              .push(route: HomeRoute.cake, into: .home))
+        await context.routing(.resetAll,
+                              .select(tabItem: .home),
+                              .push(route: HomeRoute.cake))
     }
 }
 ```
@@ -151,7 +162,10 @@ struct OtherCoordinatorView: View {
 
 router.trigger(to: .otherFlowCoordinator, with: .present)
 ```
-
+Change Root:
+```swift
+router.switchTo(route: AppRoute.homeScreen)
+```
 Push:
 ```swift
 router.trigger(to: .cake, with: .push)
@@ -171,17 +185,9 @@ Sheet:
 router.trigger(to: .cake, with: .sheet)
 ```
 To show an alert we use the `show(alert:)` function.
-
 ```swift
- router.show(alert: .yourAlert)
+ router.show(alert: YourAlertRoute.alert)
 ```
-
-To show an error message we use the `show(error:and:)` function.
-
-```swift
-router.show(error:NetworkingError.lossConnection)
-```
-
 To dismiss a screen we use the `dismiss()` function.
 
 ```swift
@@ -189,7 +195,7 @@ router.dismiss()
 ```
 
 To dismiss to root view we use the `dismissAll()` function.
-Required the root view is a ``SRRootView``
+Required the root view is a `SRRootView`
 
 ```swift
 router.dismissAll()

@@ -106,37 +106,69 @@ router.show(popover: .testPopover)
 struct RouteObserver { }
 
 @sRouteCoordinator(tabs: ["homeItem", "settingItem"], stacks: "home", "setting")
+@Observable
 final class AppCoordinator { }
 
 @sRouteCoordinator(stacks: "subcoordinator")
 final class OtherCoordinator { }
 
-struct TestApp: App {
+@sRoute
+enum AppRoute {
     
-    @State private var coordinator = AppCoordinator()
+    case startScreen
+    case homeScreen
+    
+    @ViewBuilder @MainActor
+    var screen: some View {
+        switch self {
+        case .startScreen:
+            EmptyView()
+                .transition(.scale(scale: 0.1).combined(with: .opacity))
+        case .homeScreen:
+            MainScreen()
+                .transition(.opacity)
+        }
+    }
+}
+
+struct MainScreen: View {
+    @Environment(AppCoordinator.self) var coordinator
+    var body: some View {
+        NavigationStack(path: coordinator.homePath) {
+            EmptyView()
+                .routeObserver(RouteObserver.self)
+        }
+    }
+}
+
+struct BookieApp: App {
+
+    @State private var appCoordinator = AppCoordinator()
     @State private var context = SRContext()
     
     var body: some Scene {
         WindowGroup {
-            SRRootView(context: context, coordinator: coordinator) {
-                @Bindable var emitter = coordinator.emitter
-                TabView(selection: $emitter.tabSelection) {
-                    NavigationStack(path: coordinator.homePath) {
-                        Text("Home")
-                            .routeObserver(RouteObserver.self)
-                    }.tag(AppCoordinator.SRTabItem.homeItem.rawValue)
-                    
-                    NavigationStack(path: coordinator.settingPath) {
-                        Text("Setting")
-                            .routeObserver(RouteObserver.self)
-                    }.tag(AppCoordinator.SRTabItem.settingItem.rawValue)
-                }
+            SRRootView(context: context, coordinator: appCoordinator) {
+                SRSwitchView(startingWith: AppRoute.startScreen)
             }
-            .onOpenURL { url in
-                Task {
-                    await context.routing(.resetAll,
-                                          .selectTabView(AppCoordinator.SRTabItem.homeItem),
-                                          .push(route: HomeRoute.detail("testing")))
+            .environment(appCoordinator)
+        }
+    }
+}
+
+struct BookieApp_OtherSetup: App {
+
+    @State private var appCoordinator = AppCoordinator()
+    @State private var context = SRContext()
+    
+    var body: some Scene {
+        WindowGroup {
+            SRRootView(context: context, coordinator: appCoordinator) {
+                SRSwitchRouteView(startingWith: AppRoute.startScreen) { route in
+                    NavigationStack(path: appCoordinator.homePath) {
+                        route.screen
+                            .routeObserver(RouteObserver.self)
+                    }
                 }
             }
         }

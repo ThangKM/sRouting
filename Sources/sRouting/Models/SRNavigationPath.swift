@@ -23,6 +23,10 @@ public final class SRNavigationPath {
     @ObservationIgnored
     private(set) weak var coordinator: SRRouteCoordinatorType?
     
+    public var pathsCount: Int {
+        navPath.count
+    }
+    
     public init(coordinator: SRRouteCoordinatorType? = nil) {
         self.coordinator = coordinator
     }

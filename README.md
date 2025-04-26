@@ -79,6 +79,7 @@ Declaring a coordinator:
 
 ```swift
 @sRouteCoordinator(tabs: ["home", "setting"], stacks: "home", "setting")
+@Observable
 final class AppCoordinator { }
 ```
 
@@ -92,43 +93,46 @@ struct RouteObserver { }
 Setup Your App:
 
 ```swift
-@main
+@sRoute
+enum AppRoute {
+    
+    case startScreen
+    case homeScreen
+    
+    @ViewBuilder @MainActor
+    var screen: some View {
+        switch self {
+        case .startScreen:
+            StartScreen()
+                .transition(.scale(scale: 0.1).combined(with: .opacity))
+        case .homeScreen:
+            MainScreen()
+                .transition(.opacity)
+        }
+    }
+}
+
+struct MainScreen: View {
+    @Environment(AppCoordinator.self) var coordinator
+    var body: some View {
+        NavigationStack(path: coordinator.homePath) {
+            HomeScreen()
+                .routeObserver(RouteObserver.self)
+        }
+    }
+}
+
 struct BookieApp: App {
 
+    @State private var appCoordinator = AppCoordinator()
     @State private var context = SRContext()
-    @State private var coordinator = AppCoordinator()
-    ...
+    
     var body: some Scene {
-
         WindowGroup {
-            SRRootView(context: context, coordinator: coordinator) {
-                @Bindable var emitter = coordinator.emitter
-                TabView(selection: $emitter.tabSelection) {
-                    NavigationStack(path: coordinator.homePath) {
-                        AppRoute.home.screen
-                            .routeObserver(RouteObserver.self)
-                    }.tabItem {
-                        Label("Home", systemImage: "house")
-                    }.tag(AppCoordinator.SRTabItem.home.rawValue)
-                    
-                    NavigationStack(path: coordinator.settingPath) {
-                        AppRoute.setting.screen
-                            .routeObserver(RouteObserver.self)
-                    }.tabItem {
-                        Label("Setting", systemImage: "gear")
-                    }.tag(AppCoordinator.SRTabItem.setting.rawValue)
-                }
-                .onDoubleTapTabItem { ... }
-                .onTabSelectionChange { ... }
+            SRRootView(context: context, coordinator: appCoordinator) {
+                SRSwitchView(startingWith: AppRoute.startScreen)
             }
-            .onOpenURL { url in
-                Task {
-                    ...
-                    await context.routing(.resetAll,
-                                          .select(tabItem: .home),
-                                          .push(route: HomeRoute.cake))
-                }
-            }
+            .environment(appCoordinator)
         }
     }
 }
@@ -196,7 +200,10 @@ struct OtherCoordinatorView: View {
 
 router.trigger(to: .otherFlowCoordinator, with: .present)
 ```
-
+Change Root:
+```swift
+router.switchTo(route: AppRoute.homeScreen)
+```
 Push:
 ```swift
 router.trigger(to: .cake, with: .push)
@@ -246,9 +253,6 @@ router.popToRoot()
 
 router.pop(to: HomeRoute.Paths.cake)
 ```
-
-### Conclusion
-sRouting is a lightweight framework and flexiable.
 
 ## 📃 License
 
