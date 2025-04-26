@@ -23,6 +23,9 @@ struct RouterModifier<Route>: ViewModifier where Route: SRRoute {
     @Environment(SRContext.self)
     private var context: SRContext?
     
+    @Environment(SwitcherBox.self)
+    private var switcher: SwitcherBox?
+    
     @Environment(\.openWindow) private var openWindow
     @Environment(\.scenePhase) private var scenePhase
     @Environment(\.dismiss) private var dismissAction
@@ -292,6 +295,9 @@ extension RouterModifier {
             navigationPath?.pop(to: path)
         case .openWindow:
             openWindow(transition: transition.windowTransition)
+        case .switchRoot:
+            guard let route = transition.rootRoute else { break }
+            switcher?.switchTo(route: route)
         case .none: break
         }
         

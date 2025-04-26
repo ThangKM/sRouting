@@ -24,7 +24,7 @@ where Input: Sendable, Output: Sendable {
     }
     
     @discardableResult
-    public func execute(_ input: Input) async throws -> Output {
+    public func asyncExecute(_ input: Input) async throws -> Output {
         try await action(input)
     }
 }
@@ -32,16 +32,25 @@ where Input: Sendable, Output: Sendable {
 extension AsyncAction where Input == Void {
     
     @discardableResult
-    public func execute() async throws -> Output {
+    public func asyncExecute() async throws -> Output {
         try await action(Void())
     }
 }
 
 extension AsyncAction where Output == Void {
     
-    public func executeInNewTask(_ input: Input) {
+    public func execute(_ input: Input) {
         Task {
             try await action(input)
+        }
+    }
+}
+
+extension AsyncAction where Output == Void, Input == Void {
+    
+    public func execute() {
+        Task {
+            try await action(Void())
         }
     }
 }

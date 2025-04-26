@@ -17,6 +17,12 @@ public final class SRRouter<Route> where Route: SRRoute {
     
     public init(_ route: Route.Type) { }
     
+    /// Switch root to route
+    /// - Parameter route: Root route
+    public func switchTo(route: some SRRoute) {
+        transition = .init(switchTo: route)
+    }
+    
     /// Show confirmation dialog
     /// - Parameter dialog: ``SRConfirmationDialogRoute``
     public func show(dialog: Route.ConfirmationDialogRoute) {

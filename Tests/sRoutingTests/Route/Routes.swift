@@ -64,6 +64,23 @@ enum TestRoute {
     }
 }
 
+@sRoute
+enum AppRoute {
+    case main(SRRouter<AppRoute>)
+    case login
+    
+    @MainActor @ViewBuilder
+    var screen: some View {
+        switch self {
+        case .main(let route):
+            TestScreen(router: route, tests: nil)
+        case .login:
+            EmptyView()
+        }
+        
+    }
+}
+
 @sRouteCoordinator(tabs:["home", "setting"], stacks: "testStack")
 final class Coordinator { }
 

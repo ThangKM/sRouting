@@ -25,6 +25,8 @@ public enum SRTriggerType: String, CaseIterable, Sendable {
 /// Transition type of navigation that using internal.
 enum SRTransitionKind: String, CaseIterable, Sendable {
     case none
+    /// Switch root routes
+    case switchRoot
     /// Push a screen
     case push
     /// Present full screen

@@ -84,13 +84,6 @@
             }
             
             @Step {
-                Create the `AppRouter` that is inherited from `RootRouter`.
-                Define the default root view is `StartScreen`
-                The root router will handle the actions on rootview like: select tabbar item, change root view...
-                @Code(name: "AppRouter.swift", file: AppRouter.swift)
-            }
-            
-            @Step {
                 Setup your root view in `BookieApp`.
                 @Code(name: "BookieApp.swift", file: BookieApp.swift)
             }
