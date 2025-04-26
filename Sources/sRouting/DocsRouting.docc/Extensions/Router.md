@@ -1,4 +1,4 @@
-# ``sRouting/SRRouterType``
+# ``sRouting/SRRouter``
 
 ## Topics
 
@@ -10,3 +10,6 @@
 - ``show(error:and:)``
 - ``dismiss()``
 - ``dismissAll()``
+- ``show(popover:)``
+- ``show(dialog:)``
+- ``switchTo(route:)``

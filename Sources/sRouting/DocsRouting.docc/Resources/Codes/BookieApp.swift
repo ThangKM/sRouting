@@ -8,29 +8,26 @@
 import SwiftUI
 import sRouting
 
-@sRouteCoordinator(stacks: "rootStack")
-struct AppCoordinator { }
+
+@sRouteCoordinator(stacks: "rootStack") @Observable
+final class AppCoordinator { }
 
 @sRouteObserver(HomeRoute.self)
-struct RoutObserver { }
+struct RouteObserver { }
 
 @main
 struct BookieApp: App {
 
-    @State var appCoordinator = AppCoordinator()
-    @State var context = SRContext()
-    @State var appRouter = AppRouter()
+    @State private var appCoordinator = AppCoordinator()
+    @State private var context = SRContext()
     
     var body: some Scene {
         WindowGroup {
             SRRootView(context: context, coordinator: appCoordinator) {
-                NavigationStack(path: appCoordinator.rootStackPath) {
-                    appRouter.rootRoute.screen
-                        .routeObserver(RoutObserver.self)
-                }
+                SRSwitchView(startingWith: AppRoute.startScreen)
             }
-            .environment(MockBookData())
-            .environment(appRouter)
+            .environment(appCoordinator)
+            .modelContainer(DatabaseProvider.shared.container)
         }
     }
 }
