@@ -96,12 +96,7 @@ extension SRContext {
         
         switch route {
         case .resetAll:
-            dismissAll()
-            coordinators.forEach { coors in
-                coors.coordinator?.navigationStacks.forEach {
-                    $0.popToRoot()
-                }
-            }
+            resetAll()
         case .dismissAll:
             dismissAll()
         case .popToRoot:
@@ -145,6 +140,15 @@ extension SRContext {
     private func cleanCoordinates() {
         guard !coordinators.isEmpty else { return }
         coordinators.removeAll(where: { $0.coordinator == nil })
+    }
+    
+    internal func resetAll() {
+        dismissAll()
+        coordinators.forEach { coors in
+            coors.coordinator?.navigationStacks.forEach {
+                $0.popToRoot()
+            }
+        }
     }
 }
 
