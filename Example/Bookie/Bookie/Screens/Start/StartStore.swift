@@ -61,7 +61,7 @@ extension StartScreen.StartStore {
             await router?.switchTo(route: AppRoute.homeScreen)
             return
         }
-        try await bookService.generateBooks(count: 55)
+        try await bookService.generateBooks(count: 8_888)
         await router?.switchTo(route: AppRoute.homeScreen)
     }
 }

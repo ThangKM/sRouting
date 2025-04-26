@@ -37,7 +37,6 @@
 		377442C32D5F22FC00CE83AD /* DatabaseQuery.swift in Sources */ = {isa = PBXBuildFile; fileRef = 377442C22D5F22E600CE83AD /* DatabaseQuery.swift */; };
 		377442C62D5F246400CE83AD /* BookPersistent+Queries.swift in Sources */ = {isa = PBXBuildFile; fileRef = 377442C52D5F245600CE83AD /* BookPersistent+Queries.swift */; };
 		3775E7722D3D672E00763E8E /* EnvironmentRunner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3775E7712D3D671300763E8E /* EnvironmentRunner.swift */; };
-		3775E7762D3D79DA00763E8E /* RootScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3775E7752D3D79D700763E8E /* RootScreen.swift */; };
 		379D3464268D024800903D92 /* BookieApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 379D3463268D024800903D92 /* BookieApp.swift */; };
 		379D3468268D024A00903D92 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 379D3467268D024A00903D92 /* Assets.xcassets */; };
 		379D346B268D024A00903D92 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 379D346A268D024A00903D92 /* Preview Assets.xcassets */; };
@@ -98,7 +97,6 @@
 		377442C52D5F245600CE83AD /* BookPersistent+Queries.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BookPersistent+Queries.swift"; sourceTree = "<group>"; };
 		3775E7712D3D671300763E8E /* EnvironmentRunner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EnvironmentRunner.swift; sourceTree = "<group>"; };
 		3775E7732D3D749D00763E8E /* RootPreview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootPreview.swift; sourceTree = "<group>"; };
-		3775E7752D3D79D700763E8E /* RootScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootScreen.swift; sourceTree = "<group>"; };
 		379D3460268D024800903D92 /* Bookie.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Bookie.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		379D3463268D024800903D92 /* BookieApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookieApp.swift; sourceTree = "<group>"; };
 		379D3467268D024A00903D92 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -155,7 +153,6 @@
 		3741025B26942EDA00C8DF44 /* Screens */ = {
 			isa = PBXGroup;
 			children = (
-				3775E7752D3D79D700763E8E /* RootScreen.swift */,
 				374102622694306500C8DF44 /* Home */,
 				374102632694306C00C8DF44 /* Detail */,
 				3741025C26942F0500C8DF44 /* Start */,
@@ -505,7 +502,6 @@
 				377442C32D5F22FC00CE83AD /* DatabaseQuery.swift in Sources */,
 				3741025E26942F2400C8DF44 /* StartScreen.swift in Sources */,
 				3741026126942F4300C8DF44 /* AppRoute.swift in Sources */,
-				3775E7762D3D79DA00763E8E /* RootScreen.swift in Sources */,
 				3761E8202D3D853200E491BC /* DatabaseProvider.swift in Sources */,
 				37A5A0BD2D3824C300C3D1E6 /* ActionStore.swift in Sources */,
 				374102672694308200C8DF44 /* BookDetailScreen.swift in Sources */,

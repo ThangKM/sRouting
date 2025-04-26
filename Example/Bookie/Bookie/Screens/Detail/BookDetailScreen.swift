@@ -56,17 +56,26 @@ struct BookDetailScreen: View {
         .bookieNavigation(title: state.book.name)
         .toolbar(content: {
             ToolbarItem(placement: .topBarTrailing) {
-                Image(systemName: "square.and.arrow.up.circle.fill")
-                    .resizable()
-                    .symbolRenderingMode(.palette)
-                    .foregroundStyle(Color.red, Color.white)
-                    .frame(width: 24, height: 24)
-                    .onTapGesture {
+                Menu {
+                    Button {
                         store.receive(action: .deleteAll)
-                        router.switchTo(route: AppRoute.startScreen)
+                        
+                    } label: {
+                        Label("Logout", systemImage: "circle.circle.fill")
                     }
+
+                } label: {
+                    Image(systemName: "square.and.arrow.up.circle.fill")
+                        .resizable()
+                        .symbolRenderingMode(.palette)
+                        .foregroundStyle(Color.red, Color.white)
+                        .frame(width: 24, height: 24)
+                }
+
             }
         })
+        .onShowError($state.displayError)
+        .onShowLoading($state.isLoading)
         .onRouting(of: router)
         .onChange(of: state.rating, { oldValue, newValue in
             store.receive(action: .saveBook)
@@ -117,7 +126,9 @@ extension BookDetailScreen {
 @available(iOS 18.0, *)
 #Preview(traits: .modifier(DetailStatePreviewModifier())) {
     @Previewable @Environment(BookDetailScreen.DetailState.self) var state
-    BookDetailScreen(state: state)
+    NavigationStack {
+        BookDetailScreen(state: state)
+    }
 }
 
 @available(iOS 18.0, *)

@@ -34,11 +34,18 @@ extension BookDetailScreen {
         }
     }
     
-    enum DetailAction: Sendable, ActionLockable {
+    enum DetailAction: Sendable, ActionLockable, LoadingTrackable {
         case deleteBook
         case saveBook
         case stressTest
         case deleteAll
+        
+        var canTrackLoading: Bool {
+            switch self {
+            case .deleteAll: return true
+            default: return false
+            }
+        }
     }
 }
 
@@ -64,17 +71,19 @@ extension BookDetailScreen {
         nonisolated func receive(action: DetailAction) {
             Task {
                 guard await actionLocker.canExecute(action) else { return }
+                await state?.loadingStarted(action: action)
                 switch action {
                 case .saveBook:
                     guard let book = await state?.book else { return }
-                    await _saveBook(book)
+                    try await _saveBook(book)
                 case .deleteBook:
                     await _confirmDeleteBook()
                 case .stressTest:
-                    await _stressTest()
+                    try await _stressTest()
                 case .deleteAll:
-                    await _deleteAllBooks()
+                    try await _deleteAllBooks()
                 }
+                await state?.loadingFinished(action: action)
                 await actionLocker.unlock(action)
             }
         }
@@ -84,21 +93,16 @@ extension BookDetailScreen {
 //MARK: - Private Jobs
 extension BookDetailScreen.DetailStore {
     
-    func _deleteAllBooks() {
-        Task {
-            try await bookService.deleteAll()
-        }
+    func _deleteAllBooks() async throws {
+        try await bookService.deleteAll()
+        await router?.switchTo(route: AppRoute.startScreen)
     }
-    func _stressTest() {
-        Task {
-            try await bookService.generateBooks(count: 100_000)
-        }
+    func _stressTest() async throws {
+        try await bookService.generateBooks(count: 1_000_000)
     }
     
-    func _saveBook(_ book: BookPersistent.SendableType) {
-        Task {
-            try await bookService.updateBook(book)
-        }
+    func _saveBook(_ book: BookPersistent.SendableType) async throws {
+        try await bookService.updateBook(book)
     }
     
     func _confirmDeleteBook() async {
