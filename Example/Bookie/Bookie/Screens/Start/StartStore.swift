@@ -11,45 +11,43 @@ import SwiftData
 
 extension StartScreen {
     
-    @Observable @MainActor
-    final class StartState {
-        
-        private(set) var isLoading: Bool = false
-        
-        func updateLoading(_ loading: Bool) {
-            isLoading = loading
-        }
-    }
-    
-    enum StartAction: Sendable {
+    enum StartAction: Sendable, ActionLockable {
         case startAction
     }
 }
 
 extension StartScreen {
     
-    final class StartStore: ActionStore {
+    actor StartStore: ActionStore {
         
-        private let showHomeAction: AsyncActionPut<Bool>
         private weak var router: SRRouter<AppAlertsRoute>?
-        private weak var state: StartState?
+        private weak var state: ScreenStates?
         
         private lazy var bookService: BookService = .init()
+        private let actionLocker = ActionLocker()
         
-        init(showHomeAction: AsyncActionPut<Bool>) {
-            self.showHomeAction = showHomeAction
-        }
-        
-        func binding(state: StartState, router: SRRouter<AppAlertsRoute>) {
-            self.router = router
+        func binding(state: ScreenStates) {
             self.state = state
         }
         
-        func receive(action: StartAction) {
-            assert(EnvironmentRunner.current == .livePreview || (state != nil && router != nil), "Missing binding state, router or running on live preview")
-            switch action {
-            case .startAction:
-                _generateBooksIfNeeded()
+        func binding(router: SRRouter<AppAlertsRoute>) {
+            self.router = router
+        }
+        
+        nonisolated func receive(action: StartAction) {
+            Task {
+                guard await actionLocker.canExecute(action) else { return }
+                await state?.loadingStarted()
+                do {
+                    switch action {
+                    case .startAction:
+                       try await  _generateBooksIfNeeded()
+                    }
+                } catch {
+                    
+                }
+                await state?.loadingFinished()
+                await actionLocker.unlock(action)
             }
         }
     }
@@ -58,22 +56,13 @@ extension StartScreen {
 
 extension StartScreen.StartStore {
     
-    func _generateBooksIfNeeded() {
-        Task {
-            do {
-                guard await bookService.isDatabaseEmpty() else {
-                    try await showHomeAction.execute(true)
-                    return
-                }
-                state?.updateLoading(true)
-                try await bookService.generateBooks(count: 55)
-                state?.updateLoading(false)
-                try await showHomeAction.execute(true)
-            } catch {
-                router?.show(alert: .failedSyncBooks)
-                state?.updateLoading(false)
-            }
+    func _generateBooksIfNeeded() async throws {
+        guard await bookService.isDatabaseEmpty() else {
+            await router?.switchTo(route: AppRoute.homeScreen)
+            return
         }
+        try await bookService.generateBooks(count: 55)
+        await router?.switchTo(route: AppRoute.homeScreen)
     }
 }
 

@@ -13,7 +13,7 @@ import SwiftData
 extension HomeScreen {
     
     //MARK: - HomeAction
-    enum HomeAction: Sendable {
+    enum HomeAction: Sendable, ActionLockable {
         case firstFetchBooks
         case refreshBooks
         case loadmoreBooks
@@ -22,13 +22,13 @@ extension HomeScreen {
         case swipeDelete(atOffsets: IndexSet)
     }
 
-    enum DisplayMode {
+    enum DisplayMode: Int8 {
         case list
         case search
     }
     
     //MARK: - HomeStore
-    final class HomeStore: ActionStore {
+    actor HomeStore: ActionStore {
         
         private weak var state: HomeState?
         private weak var router: SRRouter<HomeRoute>?
@@ -36,44 +36,53 @@ extension HomeScreen {
         private var didObserveChanges: Bool = false
         
         private let bookService: BookService = .init()
-        
+        private let actionLocker = ActionLocker()
         private var searchLoadmoreToken: FetchNextToken<BookPersistent>?
         private var loadmoreToken: FetchNextToken<BookPersistent>?
         private var displayMode: DisplayMode = .list
         
-        func binding(state: HomeState, router: SRRouter<HomeRoute>) {
-            guard self.state == nil || self.router == nil else { return }
+        func binding(state: HomeState) {
+            guard self.state == nil else { return }
             self.state = state
-            self.router = router
             _observeBookChanges()
         }
         
-        func receive(action: HomeAction) {
-            assert((state != nil && router != nil) || EnvironmentRunner.current == .livePreview,
-                   "Need binding state, router and book service")
-
-            switch action {
-            case .swipeDelete(let offsets):
-                _deleteBooks(atOffsets: offsets)
-            case .refreshBooks where displayMode == .list:
-                _refreshBooks()
-            case .loadmoreBooks where displayMode == .list:
-                _loadmoreBooks()
-            case .loadmoreBooks where displayMode == .search:
-                guard let text = state?.seachText else { break }
-                _searchBooks(byText: text)
-            case .firstFetchBooks:
-                _firstFetchAllBooks()
-            case .searchBookBy(let text):
-                if text.isEmpty {
-                    displayMode = .list
-                } else {
-                    displayMode = .search
+        func binding(router: SRRouter<HomeRoute>) {
+            guard self.router == nil else { return }
+            self.router = router
+        }
+        
+        nonisolated func receive(action: HomeAction) {
+            Task {
+                guard await actionLocker.canExecute(action) else { return }
+                do {
+                    switch action {
+                    case .swipeDelete(let offsets):
+                        try await _deleteBooks(atOffsets: offsets)
+                    case .refreshBooks where await displayMode == .list:
+                        try await _refreshBooks()
+                    case .loadmoreBooks where await displayMode == .list:
+                        try await _loadmoreBooks()
+                    case .loadmoreBooks where await displayMode == .search:
+                        guard let text = await state?.seachText else { break }
+                        await _searchBooks(byText: text)
+                    case .firstFetchBooks:
+                        try await _firstFetchAllBooks()
+                    case .searchBookBy(let text):
+                        if text.isEmpty {
+                            await updateDisplayMode(.list)
+                        } else {
+                            await updateDisplayMode(.search)
+                        }
+                        await _searchBooks(byText: text)
+                    case .gotoDetail(let book):
+                        await router?.trigger(to: .bookDetailScreen(book: book), with: .allCases.randomElement() ?? .push)
+                    default: break
+                    }
+                } catch let error as LocalizedError {
+                    await state?.showError(error)
                 }
-                _searchBooks(byText: text)
-            case .gotoDetail(let book):
-                router?.trigger(to: .bookDetailScreen(book: book), with: .allCases.randomElement() ?? .push)
-            default: break
+                await actionLocker.unlock(action)
             }
         }
         
@@ -86,59 +95,56 @@ extension HomeScreen {
 //MARK: - Private Jobs
 extension HomeScreen.HomeStore {
     
-    private func _deleteBooks(atOffsets offsets: IndexSet) {
-        Task {
-            let persistentIds = state?.removeBooks(atOffsets: offsets) ?? []
-            guard !persistentIds.isEmpty else { return }
-            try await bookService.deleteBooks(byPersistentIdentifiers: persistentIds)
-        }
+    private func updateDisplayMode(_ mode: HomeScreen.DisplayMode) {
+        displayMode = mode
+    }
+    
+    private func _deleteBooks(atOffsets offsets: IndexSet) async throws {
+        let persistentIds = await state?.removeBooks(atOffsets: offsets) ?? []
+        guard !persistentIds.isEmpty else { return }
+        try await bookService.deleteBooks(byPersistentIdentifiers: persistentIds)
     }
     
     private func _searchBooks(byText text: String) {
         Task {
+            try await Task.sleep(for: .milliseconds(300))
             searchLoadmoreToken = searchLoadmoreToken?.validate(for: text)
             let token = searchLoadmoreToken
             let result = try await bookService.searchBooks(query: text, nextToken: searchLoadmoreToken)
             if token != nil {
-                state?.appendAllBooks(books: result.models)
+                await state?.appendAllBooks(books: result.models)
             } else {
-                state?.repaceAndBackupListBooks(books: result.models)
+                await state?.repaceAndBackupListBooks(books: result.models)
             }
             searchLoadmoreToken = result.nextToken
         }.store(in: cancelBag, withIdentifier:#function)
     }
     
-    private func _firstFetchAllBooks() {
-        guard let state, state.books.isEmpty else { return }
-        _refreshBooks()
+    private func _firstFetchAllBooks() async throws {
+        guard let state, await state.books.isEmpty else { return }
+        try await _refreshBooks()
     }
     
-    private func _fetchAllBook(isRefresh: Bool) {
-        Task {
-            do {
-                state?.updateLoadmore(isLoadingMore: !isRefresh)
-                if isRefresh { loadmoreToken = nil }
-                let result = try await bookService.fetchAllBooks(nextToken: loadmoreToken)
-                if isRefresh {
-                    state?.replaceBooks(books: result.models)
-                } else {
-                    state?.appendAllBooks(books: result.models)
-                }
-                loadmoreToken = result.nextToken
-                state?.updateLoadmore(isLoadingMore: false)
-            } catch {
-                state?.updateLoadmore(isLoadingMore: false)
-            }
+    private func _fetchAllBook(isRefresh: Bool) async throws {
+        if isRefresh { loadmoreToken = nil }
+        let result = try await bookService.fetchAllBooks(nextToken: loadmoreToken)
+        if isRefresh {
+            await state?.replaceBooks(books: result.models)
+        } else {
+            await state?.appendAllBooks(books: result.models)
         }
+        loadmoreToken = result.nextToken
     }
     
-    private func _refreshBooks() {
-        _fetchAllBook(isRefresh: true)
+    private func _refreshBooks() async throws {
+        try await _fetchAllBook(isRefresh: true)
     }
     
-    private func _loadmoreBooks() {
+    private func _loadmoreBooks() async throws {
         guard loadmoreToken != nil else { return }
-        _fetchAllBook(isRefresh: false)
+        await state?.updateLoadmore(isLoadingMore: true)
+        try await _fetchAllBook(isRefresh: false)
+        await state?.updateLoadmore(isLoadingMore: false)
     }
 }
 
@@ -149,17 +155,16 @@ extension HomeScreen.HomeStore {
         guard !didObserveChanges else { return }
         didObserveChanges = true
         Task.detached {[weak self] in
-            guard let self else { return }
             let stream = await DatabaseActor.shared.changesStream
             try Task.checkCancellation()
             for await changes in stream {
                 switch changes {
                 case .insertedIdentifiers(let ids):
-                    await self._observeInserted(from: ids)
+                    await self?._observeInserted(from: ids)
                 case .deletedIdentifiers(let ids):
-                    await self._observeDeleted(from: ids)
+                    await self?._observeDeleted(from: ids)
                 case .updatedIdentifiers(let ids):
-                    await self._observeUpdated(from: ids)
+                    await self?._observeUpdated(from: ids)
                 }
             }
         }.store(in: cancelBag, withIdentifier: "HommeStore.observeBookChanges")

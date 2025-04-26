@@ -11,8 +11,8 @@ import SwiftData
 //MARK: - HomeState
 extension HomeScreen {
     
-    @Observable @MainActor
-    final class HomeState {
+    @Observable
+    final class HomeState: ScreenStates {
         
         @ObservationIgnored
         private var _searchText: String = ""

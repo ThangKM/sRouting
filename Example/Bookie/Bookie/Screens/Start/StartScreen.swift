@@ -10,22 +10,21 @@ import sRouting
 
 struct StartScreen: View {
     
-    @State private var store: StartStore
-    @State private var state = StartState()
+    @State private var store: StartStore = .init()
+    @State private var state = ScreenStates()
     @State private var router = SRRouter(AppAlertsRoute.self)
 
-    init(store: StartStore) {
-        self._store = .init(initialValue: store)
-    }
-    
     var body: some View {
         ZStack {
             BackgroundBubleBody()
             MainBody(state: state, store: store)
         }
-        .navigationBarHidden(true)
+        .onShowLoading($state.isLoading)
+        .onShowError($state.displayError)
+        .onRouting(of: router)
         .task {
-            store.binding(state: state, router: router)
+            await store.binding(state: state)
+            await store.binding(router: router)
         }
     }
 }
@@ -59,7 +58,7 @@ extension StartScreen {
     
     fileprivate struct MainBody: View {
         
-        @Bindable var state: StartState
+        @Bindable var state: ScreenStates
         let store: StartStore
         
         var body: some View {
@@ -101,9 +100,7 @@ extension StartScreen {
 
 @available(iOS 18.0, *)
 #Preview(traits: .modifier(PersistentContainerPreviewModifier())) {
-    StartScreen(store: .init(showHomeAction: .init({ _ in
-        
-    })))
+    StartScreen()
 }
 
 #Preview {
@@ -111,7 +108,5 @@ extension StartScreen {
 }
 
 #Preview {
-    StartScreen.MainBody(state: .init(), store: .init(showHomeAction: .init({ _ in
-        
-    })))
+    StartScreen.MainBody(state: .init(), store: .init())
 }

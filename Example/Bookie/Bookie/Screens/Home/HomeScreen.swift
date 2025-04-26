@@ -16,31 +16,28 @@ struct HomeScreen: View {
     @State private var store = HomeStore()
 
     var body: some View {
-        BookieNavigationView(title: "My Book List",
-                             router: router,
-                             isBackType: false)
-        {
-            VStack {
-                
-                SearchBody(state: state)
+        VStack {
+            
+            SearchBody(state: state)
 
-                Text("BOOKS REVIEWED BY YOU")
-                    .abeeFont(size: 12, style: .italic)
-                    .padding(.all, 12)
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                
-                ListBookBody(state: state, store: store)
-            }
-            .refreshable {
-                store.receive(action: .refreshBooks)
-            }
+            Text("BOOKS REVIEWED BY YOU")
+                .abeeFont(size: 12, style: .italic)
+                .padding(.all, 12)
+                .frame(maxWidth: .infinity, alignment: .leading)
+            
+            ListBookBody(state: state, store: store)
+        }
+        .refreshable {
+            store.receive(action: .refreshBooks)
         }
         .onRouting(of: router)
+        .bookieNavigation(title: "My Book List")
         .onChange(of: state.seachText, { oldValue, newValue in
              store.receive(action: .searchBookBy(text: newValue))
          })
         .task {
-            store.binding(state: state, router: router)
+            await store.binding(state: state)
+            await store.binding(router: router)
             store.receive(action: .firstFetchBooks)
          }
     }

@@ -66,6 +66,13 @@ final class BookService: Sendable {
 extension BookService {
     
     @DatabaseActor
+    func deleteAll() async throws {
+        let context = ModelContext.isolatedContext
+        let books = try context.fetch(queries.fetchAll)
+        try await databaseDeleteTransaction(models: books, useContext: context)
+    }
+    
+    @DatabaseActor
     func generateBooks(count: Int) async throws {
         let books = await MockBookService.shared.generateBooks(count: count)
         try await _addNewOrUpdate(fromBooks: books)

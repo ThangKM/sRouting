@@ -11,16 +11,28 @@ import sRouting
 @sRoute
 enum AppRoute {
     
-    case startScreen(store: StartScreen.StartStore)
+    case startScreen
     case homeScreen
     
     @ViewBuilder @MainActor
     var screen: some View {
         switch self {
-        case .startScreen(let store):
-            StartScreen(store: store)
+        case .startScreen:
+            StartScreen()
+                .transition(.scale(scale: 0.1).combined(with: .opacity))
         case .homeScreen:
+            MainScreen()
+                .transition(.opacity)
+        }
+    }
+}
+
+struct MainScreen: View {
+    @Environment(AppCoordinator.self) var coordinator
+    var body: some View {
+        NavigationStack(path: coordinator.rootStackPath) {
             HomeScreen()
+                .routeObserver(RouteObserver.self)
         }
     }
 }

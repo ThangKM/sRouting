@@ -19,60 +19,62 @@ struct BookDetailScreen: View {
     }
     
     var body: some View {
-        BookieNavigationView(title: state.book.name,
-                             router: router,
-                             isBackType: true) {
-            ScrollView {
-                LazyVStack(alignment: .leading) {
-                    
-                    BookHeaderBody(state: state)
-                    
-                    Text(state.book.bookDescription)
-                        .abeeFont(size: 14, style: .italic)
-                        .padding()
-                    
-                    Divider()
-                    
-                    VStack(spacing: 8) {
-                        
-                        Text("TAP TO ADD RATING")
-                            .abeeFont(size: 20, style: .italic)
-                        
-                        RatingView(rating: $state.rating, enableEditing: true)
-                        
-                        Spacer(minLength: 20)
-                        
-//                        Button("Stress Testing") {
-//                            store.receive(action: .stressTest)
-//                        }
-//                        .abeeFont(size: 15, style: .regular)
-//                        .tint(Color.pink)
-//                        .foregroundStyle(.white)
-//                        .buttonStyle(.borderedProminent)
-//                        .disabled(state.isLoading)
-//                        
-                        Button("Delete") {
-                            store.receive(action: .deleteBook)
-                        }
-                        .onDialogRouting(of: router, for: .delete(confirmedAction: { }))
-                        .abeeFont(size: 15, style: .regular)
-                        .tint(Color.pink)
-                        .foregroundStyle(.white)
-                        .buttonStyle(.borderedProminent)
-                        .disabled(state.isLoading)
-                    }
-                    .frame(maxWidth: .infinity)
+        ScrollView {
+            LazyVStack(alignment: .leading) {
+                
+                BookHeaderBody(state: state)
+                
+                Text(state.book.bookDescription)
+                    .abeeFont(size: 14, style: .italic)
                     .padding()
+                
+                Divider()
+                
+                VStack(spacing: 8) {
+                    
+                    Text("TAP TO ADD RATING")
+                        .abeeFont(size: 20, style: .italic)
+                    
+                    RatingView(rating: $state.rating, enableEditing: true)
+                    
+                    Spacer(minLength: 20)
+
+                    Button("Delete") {
+                        store.receive(action: .deleteBook)
+                    }
+                    .onDialogRouting(of: router, for: .delete(confirmedAction: { }))
+                    .abeeFont(size: 15, style: .regular)
+                    .tint(Color.pink)
+                    .foregroundStyle(.white)
+                    .buttonStyle(.borderedProminent)
+                    .disabled(state.isLoading)
                 }
+                .frame(maxWidth: .infinity)
+                .padding()
             }
         }
+        .bookieNavigation(title: state.book.name)
+        .toolbar(content: {
+            ToolbarItem(placement: .topBarTrailing) {
+                Image(systemName: "square.and.arrow.up.circle.fill")
+                    .resizable()
+                    .symbolRenderingMode(.palette)
+                    .foregroundStyle(Color.red, Color.white)
+                    .frame(width: 24, height: 24)
+                    .onTapGesture {
+                        store.receive(action: .deleteAll)
+                        router.switchTo(route: AppRoute.startScreen)
+                    }
+            }
+        })
         .onRouting(of: router)
         .onChange(of: state.rating, { oldValue, newValue in
             store.receive(action: .saveBook)
         })
         .foregroundColor(.accentColor)
         .task {
-            store.binding(state: state, router: router)
+            await store.binding(state: state)
+            await store.binding(router: router)
         }
     }
 }
@@ -114,7 +116,6 @@ extension BookDetailScreen {
 
 @available(iOS 18.0, *)
 #Preview(traits: .modifier(DetailStatePreviewModifier())) {
-    
     @Previewable @Environment(BookDetailScreen.DetailState.self) var state
     BookDetailScreen(state: state)
 }
