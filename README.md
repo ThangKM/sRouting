@@ -122,6 +122,7 @@ struct MainScreen: View {
     }
 }
 
+@main
 struct BookieApp: App {
 
     @State private var appCoordinator = AppCoordinator()
