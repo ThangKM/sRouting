@@ -6,8 +6,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/ThangKM/sRouting.git",
       "state" : {
-        "branch" : "root_switcher",
-        "revision" : "a3838ae3328fb349149a11e02f0508fd235c528f"
+        "revision" : "e392392a42a094194853af0066b2dc830b7abc95",
+        "version" : "1.1.18"
       }
     },
     {

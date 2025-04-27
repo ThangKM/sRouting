@@ -107,7 +107,6 @@ extension HomeScreen.HomeStore {
     
     private func _searchBooks(byText text: String) {
         Task {
-            try await Task.sleep(for: .milliseconds(300))
             searchLoadmoreToken = searchLoadmoreToken?.validate(for: text)
             let token = searchLoadmoreToken
             let result = try await bookService.searchBooks(query: text, nextToken: searchLoadmoreToken)

@@ -3,6 +3,8 @@
 /Packages
 /*.xcodeproj
 xcuserdata/
+*.xcodeproj/xcuserdata/
+*.xcworkspace/xcuserdata/
 DerivedData/
 .swiftpm/
 .docc-build

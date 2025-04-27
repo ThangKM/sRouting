@@ -14,8 +14,8 @@ struct BookDetailScreen: View {
     @State private var state: DetailState
     @State private var store = DetailStore()
 
-    init(state: DetailState) {
-        _state = .init(initialValue: state)
+    init(book: BookPersistent.SendableType) {
+        _state = .init(initialValue: .init(book: book))
     }
     
     var body: some View {
@@ -127,7 +127,7 @@ extension BookDetailScreen {
 #Preview(traits: .modifier(DetailStatePreviewModifier())) {
     @Previewable @Environment(BookDetailScreen.DetailState.self) var state
     NavigationStack {
-        BookDetailScreen(state: state)
+        BookDetailScreen(book: MockBookService.shared.book)
     }
 }
 

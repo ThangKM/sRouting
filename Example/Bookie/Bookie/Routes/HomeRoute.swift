@@ -20,7 +20,7 @@ enum HomeRoute {
     var screen: some View {
         switch self {
         case .bookDetailScreen(let book):
-            BookDetailScreen(state: .init(book: book))
+            BookDetailScreen(book: book)
         }
     }
 }

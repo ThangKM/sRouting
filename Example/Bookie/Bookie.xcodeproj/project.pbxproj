@@ -680,7 +680,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "Bookie/Preview\\ Content/Preview\\ Assets.xcassets Bookie/Preview\\ Content Bookie/Preview\\ Content/PreviewModifiers.swift Bookie/Preview\\ Content/RootPreview.swift";
-				DEVELOPMENT_TEAM = L9JFTY7GTP;
+				DEVELOPMENT_TEAM = "";
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Bookie/Info.plist;
@@ -716,7 +716,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "Bookie/Preview\\ Content/Preview\\ Assets.xcassets Bookie/Preview\\ Content Bookie/Preview\\ Content/PreviewModifiers.swift Bookie/Preview\\ Content/RootPreview.swift";
-				DEVELOPMENT_TEAM = L9JFTY7GTP;
+				DEVELOPMENT_TEAM = "";
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Bookie/Info.plist;
@@ -885,8 +885,8 @@
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/ThangKM/sRouting.git";
 			requirement = {
-				branch = root_switcher;
-				kind = branch;
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.0.0;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */

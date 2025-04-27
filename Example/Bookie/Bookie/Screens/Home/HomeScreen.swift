@@ -54,13 +54,17 @@ extension HomeScreen {
         
         @Bindable var state: HomeState
         @FocusState private var focus: FocusField?
+        @State private var isShowSearchIcon = true
         
         var body: some View {
             HStack {
                 
                 Image(systemName: "magnifyingglass")
                     .foregroundColor(Color("purple.F66EB4"))
-                    .opacity(0.4)
+                    .opacity(isShowSearchIcon ? 0.4 : 0)
+                    .frame(width: isShowSearchIcon ? 24 : 0)
+                    .animation(.easeInOut, value: isShowSearchIcon)
+                    .clipped()
                 
                 TextField("Search books", text: $state.seachText)
                     .focused($focus, equals: .searchText)
@@ -77,6 +81,11 @@ extension HomeScreen {
             .padding(.horizontal)
             .onTapGesture {
                 focus = .searchText
+            }
+            .onChange(of: focus) { oldValue, newValue in
+                withAnimation {
+                    isShowSearchIcon = newValue != .searchText
+                }
             }
         }
     }
