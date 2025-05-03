@@ -71,7 +71,7 @@ package struct RouteCoordinatorMacro: MemberMacro {
         
         let defaultInit: DeclSyntax = """
         @MainActor init() {
-            self.identifier = \"\(raw: className)\" + \"_\" + UUID().uuidString
+            self.identifier = \"\(raw: className)\" + \"_\" + TimeIdentifier.now.id
         }
         """
         result.append(defaultInit)
