@@ -54,7 +54,20 @@ package struct RouteMacro: ExtensionMacro {
             }
         }
         
-        let declCoordinator: DeclSyntax = """
+        let declExtension: DeclSyntax
+        if pathCases.isEmpty {
+            declExtension = """
+            extension \(raw: type.trimmedDescription): sRouting.SRRoute {
+            
+                nonisolated var path: String { 
+                    switch self {
+                    \(raw: casePaths)
+                    }
+                }
+            }
+            """
+        } else {
+            declExtension = """
             extension \(raw: type.trimmedDescription): sRouting.SRRoute {
             
                 enum Paths: String, StringRawRepresentable {
@@ -68,8 +81,10 @@ package struct RouteMacro: ExtensionMacro {
                 }
             }
             """
-        let extCoordinator = declCoordinator.cast(ExtensionDeclSyntax.self)
-        return [extCoordinator]
+        }
+        
+        let result = declExtension.cast(ExtensionDeclSyntax.self)
+        return [result]
     }
 }
 
