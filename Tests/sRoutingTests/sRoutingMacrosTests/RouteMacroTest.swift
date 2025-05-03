@@ -134,11 +134,7 @@ final class RouteMacroTest: XCTestCase {
         }
 
         extension HomeRoute: sRouting.SRRoute {
-
-            enum Paths: String, StringRawRepresentable {
-
-            }
-
+        
             nonisolated var path: String {
                 switch self {
                 case .home(let route):
@@ -167,11 +163,7 @@ final class RouteMacroTest: XCTestCase {
         }
 
         extension HomeRoute: sRouting.SRRoute {
-
-            enum Paths: String, StringRawRepresentable {
-
-            }
-
+        
             nonisolated var path: String {
                 switch self {
                 case .home(let route):
