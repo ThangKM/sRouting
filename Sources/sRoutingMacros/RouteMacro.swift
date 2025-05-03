@@ -122,6 +122,20 @@ package struct SubRouteMacro: PeerMacro {
     package static func expansion(of node: SwiftSyntax.AttributeSyntax,
                                   providingPeersOf declaration: some SwiftSyntax.DeclSyntaxProtocol,
                                   in context: some SwiftSyntaxMacros.MacroExpansionContext) throws -> [SwiftSyntax.DeclSyntax] {
-        []
+        try validate(of: declaration)
+        return []
+    }
+    
+    package static func validate(of declaration: some SwiftSyntax.DeclSyntaxProtocol) throws {
+        guard let enumcaseDecl = declaration.as(EnumCaseDeclSyntax.self) else {
+            throw SRMacroError.onlyCaseinAnEnum
+        }
+        guard let element = enumcaseDecl.elements.first else { throw SRMacroError.onlyCaseinAnEnum }
+        guard let params = element.parameterClause?.parameters, !params.isEmpty else {
+            throw SRMacroError.subRouteNotFound
+        }
+        guard params.count == 1 else {
+            throw SRMacroError.declareSubRouteMustBeOnlyOne
+        }
     }
 }

@@ -30,6 +30,9 @@ package enum SRMacroError: Error, CustomStringConvertible, CustomNSError {
     case missingObservable
     case noneRoutes
     case redundantConformance
+    case onlyCaseinAnEnum
+    case subRouteNotFound
+    case declareSubRouteMustBeOnlyOne
     
     package static var errorDomain: String { "com.srouting.macro" }
     
@@ -59,6 +62,12 @@ package enum SRMacroError: Error, CustomStringConvertible, CustomNSError {
             -510
         case .redundantConformance:
             -511
+        case .onlyCaseinAnEnum:
+            -512
+        case .subRouteNotFound:
+            -513
+        case .declareSubRouteMustBeOnlyOne:
+            -514
         }
     }
     
@@ -88,6 +97,12 @@ package enum SRMacroError: Error, CustomStringConvertible, CustomNSError {
             return "Empty route declaration."
         case .redundantConformance:
             return "Redundant conformance to SRRoute."
+        case .onlyCaseinAnEnum:
+            return "Can only be attached to a case inside an enum"
+        case .subRouteNotFound:
+            return "No subroute was found in the current enum case. Did you forget to add an associated value that conforms to SRRoute"
+        case .declareSubRouteMustBeOnlyOne:
+            return "Enum cases annotated with @sSubRoute must have exactly one associated value of a type that conforms to SRRoute."
         }
     }
     

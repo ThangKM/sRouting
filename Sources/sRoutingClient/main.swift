@@ -95,9 +95,10 @@ enum HomeRoute {
 
 @sRoute
 enum SettingRoute {
+    
     case setting
     @sSubRoute
-    case detail(route: DetailRoute)
+    case detail(DetailRoute)
     
     var screen: some View { Text("Setting") }
 }
