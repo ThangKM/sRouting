@@ -10,7 +10,7 @@ import SwiftUI
 public struct SRTransition<Route>: Sendable
 where Route: SRRoute {
     
-    let transitionId: TimeIdentifier = .init()
+    let transitionId: TimeIdentifier = .now
     let type: SRTransitionKind
     let transaction: WithTransaction?
     

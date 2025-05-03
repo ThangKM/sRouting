@@ -7,12 +7,16 @@
 
 import Foundation
 
-struct TimeIdentifier: Sendable, Hashable, CustomStringConvertible, Identifiable {
+public struct TimeIdentifier: Sendable, Hashable, CustomStringConvertible, Identifiable {
 
-    let id: String
+    public let id: String
     
-    var description: String {
+    public var description: String {
         id
+    }
+    
+    public static var now: TimeIdentifier {
+        .init()
     }
     
     private static var formatter: DateFormatter {
@@ -21,15 +25,15 @@ struct TimeIdentifier: Sendable, Hashable, CustomStringConvertible, Identifiable
         return formater
     }
     
-    init() {
+    public init() {
         self.id = Self.formatter.string(from: .now)
     }
     
-    func hash(into hasher: inout Hasher) {
+    public func hash(into hasher: inout Hasher) {
         hasher.combine(id)
     }
     
-    static func == (lhs: TimeIdentifier, rhs: TimeIdentifier) -> Bool {
+    public static func == (lhs: TimeIdentifier, rhs: TimeIdentifier) -> Bool {
         lhs.id == rhs.id
     }
 }
