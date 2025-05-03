@@ -56,7 +56,7 @@ struct RouterModifierTests {
         let waiter = Waiter()
         let sut = SRRootView(context: context, coordinator: coordinator) {
             TestScreen(router: router, tests: nil)
-                .onChange(of: coordinator.emitter.dismissEmiiter) { oldValue, newValue in
+                .onChange(of: coordinator.emitter.dismissEmitter) { oldValue, newValue in
                     isEnter = true
                     waiter.fulfill()
                 }
