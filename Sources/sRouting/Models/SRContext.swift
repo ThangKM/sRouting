@@ -16,6 +16,8 @@ public final class SRContext: Sendable {
 
     private(set) var dismissAllSignal: SignalChange = false
     
+    private(set) var coordinatorRoute: CoordinatorRoute?
+    
     public var topCoordinator: SRRouteCoordinatorType? {
         coordinators.last?.coordinator
     }
@@ -122,8 +124,15 @@ extension SRContext {
     }
 }
 
-//MARK: - Internal Helpers
+//MARK: - Coordinators Handling
 extension SRContext {
+    
+    internal func openCoordinator(_ coordinatorRoute: CoordinatorRoute) {
+        assert(coordinatorRoute.triggerKind != .push, "Open a new coordinator not allowed for push trigger")
+        guard coordinatorRoute.triggerKind != .push else { return }
+        guard coordinatorRoute != self.coordinatorRoute else { return }
+        self.coordinatorRoute = coordinatorRoute
+    }
     
     internal func registerActiveCoordinator(_ coordinator: SRRouteCoordinatorType) {
         cleanCoordinates()
@@ -152,6 +161,7 @@ extension SRContext {
     }
 }
 
+//MARK: - Helpers
 private final class WeakCoordinatorReference {
     weak var coordinator: SRRouteCoordinatorType?
     

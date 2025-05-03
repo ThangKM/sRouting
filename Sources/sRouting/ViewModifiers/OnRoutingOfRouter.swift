@@ -250,7 +250,7 @@ extension RouterModifier {
     private func updateActiveState(from transition: SRTransition<Route>) {
         switch transition.type {
         case .push:
-            guard let route = transition.route else { return }
+            guard let route = transition.route else { break }
             navigationPath?.push(to: route)
         case .present:
             isActivePresent = true
@@ -298,6 +298,9 @@ extension RouterModifier {
         case .switchRoot:
             guard let route = transition.rootRoute else { break }
             switcher?.switchTo(route: route)
+        case .openCoordinator:
+            guard let coordinatorRoute = transition.coordinator else { break }
+            context?.openCoordinator(coordinatorRoute)
         case .none: break
         }
         

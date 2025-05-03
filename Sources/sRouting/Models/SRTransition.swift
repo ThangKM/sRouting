@@ -10,7 +10,7 @@ import SwiftUI
 public struct SRTransition<Route>: Sendable
 where Route: SRRoute {
     
-    let contextId: TimeIdentifier = .init()
+    let transitionId: TimeIdentifier = .init()
     let type: SRTransitionKind
     let transaction: WithTransaction?
     
@@ -22,6 +22,13 @@ where Route: SRRoute {
     private(set) var confirmationDialog: Route.ConfirmationDialogRoute?
     private(set) var popover: Route.PopoverRoute?
     private(set) var rootRoute: (any SRRoute)?
+    private(set) var coordinator: CoordinatorRoute?
+    
+    init(coordinator: CoordinatorRoute) {
+        self.coordinator = coordinator
+        transaction = nil
+        type = .openCoordinator
+    }
     
     init(switchTo route: some SRRoute, and transaction: WithTransaction? = .none) {
         self.type = .switchRoot
@@ -97,6 +104,6 @@ extension SRTransition: Equatable {
         return lhs.type == rhs.type
         && lhs.tabIndex?.intValue == rhs.tabIndex?.intValue
         && lhs.route == rhs.route
-        && lhs.contextId == rhs.contextId
+        && lhs.transitionId == rhs.transitionId
     }
 }

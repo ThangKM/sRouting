@@ -17,6 +17,13 @@ public final class SRRouter<Route> where Route: SRRoute {
     
     public init(_ route: Route.Type) { }
     
+    
+    /// Open a new coordinator
+    /// - Parameter route: the coordinator route
+    public func openCoordinator(route: some SRRoute, with action: SRTriggerType) {
+        transition = .init(coordinator: .init(route:route, triggerKind: action))
+    }
+    
     /// Switch root to route
     /// - Parameter route: Root route
     public func switchTo(route: some SRRoute) {

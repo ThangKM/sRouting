@@ -153,6 +153,26 @@ struct MainScreen: View {
     }
 }
 
+@sRoute
+enum CoordinatorsRoute {
+    case eventCoordinator
+    case notificationsCoordinator
+    
+    @MainActor @ViewBuilder
+    var screen: some View {
+        switch self {
+        case .eventCoordinator:
+            NavigationStack {
+                EmptyView()
+            }
+        case .notificationsCoordinator:
+            NavigationStack {
+                EmptyView()
+            }
+        }
+    }
+}
+
 struct BookieApp: App {
 
     @State private var appCoordinator = AppCoordinator()
@@ -164,6 +184,7 @@ struct BookieApp: App {
                 SRSwitchView(startingWith: AppRoute.startScreen)
             }
             .environment(appCoordinator)
+            .onRoutingCoordinator(CoordinatorsRoute.self, context: context)
         }
     }
 }
@@ -183,6 +204,7 @@ struct BookieApp_OtherSetup: App {
                     }
                 }
             }
+            .onRoutingCoordinator(CoordinatorsRoute.self, context: context)
         }
     }
 }
