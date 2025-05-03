@@ -129,7 +129,7 @@ struct RouterModifier<Route>: ViewModifier where Route: SRRoute {
             .onChange(of: context?.dismissAllSignal, { oldValue, newValue in
                 resetActiveState()
             })
-            .onChange(of: coordinatorEmitter?.dismissEmiiter, { oldValue, newValue in
+            .onChange(of: coordinatorEmitter?.dismissEmitter, { oldValue, newValue in
                 dismissCoordinator()
             })
             .onChange(of: router.transition, { oldValue, newValue in
