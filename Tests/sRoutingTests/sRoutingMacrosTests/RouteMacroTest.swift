@@ -102,6 +102,88 @@ final class RouteMacroTest: XCTestCase {
         """, macros:testMacros)
     }
     
+    func testNoneCaseEnumImp() async throws {
+        
+        let dianosSpec = DiagnosticSpec(message: SRMacroError.onlyCaseinAnEnum.description, line: 1, column: 1,severity: .error)
+        
+        assertMacroExpansion("""
+        @sSubRoute
+        struct HomeRoute {
+        }
+        """, expandedSource:"""
+        struct HomeRoute {
+        }
+        """,
+        diagnostics: [dianosSpec],
+        macros: testMacros)
+    }
+    
+    func testNoneCaseEnumWithSubRouteImp() async throws {
+        
+        let dianosSpec = DiagnosticSpec(message: SRMacroError.subRouteNotFound.description, line: 3, column: 5,severity: .error)
+        
+        assertMacroExpansion("""
+        @sRoute
+        enum HomeRoute {
+            @sSubRoute
+            case home 
+        }
+        """, expandedSource:"""
+        enum HomeRoute {
+            case home 
+        }
+
+        extension HomeRoute: sRouting.SRRoute {
+
+            enum Paths: String, StringRawRepresentable {
+
+            }
+
+            nonisolated var path: String {
+                switch self {
+                case .home(let route):
+                    return route.path
+                }
+            }
+        }
+        """,
+        diagnostics: [dianosSpec],
+        macros: testMacros)
+    }
+    
+    func testNoneCaseEnumWithInvalidParamsImp() async throws {
+        
+        let dianosSpec = DiagnosticSpec(message: SRMacroError.declareSubRouteMustBeOnlyOne.description, line: 3, column: 5,severity: .error)
+        
+        assertMacroExpansion("""
+        @sRoute
+        enum HomeRoute {
+            @sSubRoute
+            case home(Int, String) 
+        }
+        """, expandedSource:"""
+        enum HomeRoute {
+            case home(Int, String) 
+        }
+
+        extension HomeRoute: sRouting.SRRoute {
+
+            enum Paths: String, StringRawRepresentable {
+
+            }
+
+            nonisolated var path: String {
+                switch self {
+                case .home(let route):
+                    return route.path
+                }
+            }
+        }
+        """,
+        diagnostics: [dianosSpec],
+        macros: testMacros)
+    }
+    
     func testNoneEnumImp() async throws {
         
         let dianosSpec = DiagnosticSpec(message: SRMacroError.onlyEnum.description, line: 1, column: 1,severity: .error)
