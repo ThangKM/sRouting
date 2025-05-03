@@ -130,7 +130,7 @@ struct RouterModifier<Route>: ViewModifier where Route: SRRoute {
                 resetActiveState()
             })
             .onChange(of: coordinatorEmitter?.dismissEmiiter, { oldValue, newValue in
-                resetActiveState()
+                dismissCoordinator()
             })
             .onChange(of: router.transition, { oldValue, newValue in
                 let transaction = newValue.transaction?()
@@ -191,8 +191,8 @@ struct RouterModifier<Route>: ViewModifier where Route: SRRoute {
             .onChange(of: context?.dismissAllSignal, { oldValue, newValue in
                 resetActiveState()
             })
-            .onChange(of: coordinatorEmitter?.dismissEmiiter, { oldValue, newValue in
-                resetActiveState()
+            .onChange(of: coordinatorEmitter?.dismissEmitter, { oldValue, newValue in
+                dismissCoordinator()
             })
             .onChange(of: router.transition, { oldValue, newValue in
                 let transaction = newValue.transaction?()
@@ -237,6 +237,17 @@ extension RouterModifier {
     private func resetRouterTransiton() {
         guard scenePhase != .background || tests != nil else { return }
         router.resetTransition()
+    }
+    
+    private var hasActiveState: Bool {
+        isActivePresent || isActiveAlert || isActiveSheet || isActiveDialog || isActivePopover
+    }
+    
+    @MainActor
+    private func dismissCoordinator() {
+        resetActiveState()
+        guard hasActiveState else { return }
+        dismissAction()
     }
     
     /// Reset all active state to false
