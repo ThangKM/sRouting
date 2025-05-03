@@ -60,6 +60,48 @@ final class RouteMacroTest: XCTestCase {
         """, macros:testMacros)
     }
     
+    func testRouteMacroHasSubRouteImp() async throws {
+        assertMacroExpansion("""
+        @sRoute
+        enum HomeRoute { 
+            case message
+            case home
+            case accountManagement(String)
+            @sSubRoute
+            case eventSetting(EventRoute)
+        }
+        """, expandedSource: """
+        enum HomeRoute { 
+            case message
+            case home
+            case accountManagement(String)
+            case eventSetting(EventRoute)
+        }
+
+        extension HomeRoute: sRouting.SRRoute {
+
+            enum Paths: String, StringRawRepresentable {
+                case message = "hr_message"
+                case home = "hr_home"
+                case accountManagement = "hr_accountmanagement"
+            }
+
+            nonisolated var path: String {
+                switch self {
+                case .message:
+                    return Paths.message.rawValue
+                case .home:
+                    return Paths.home.rawValue
+                case .accountManagement:
+                    return Paths.accountManagement.rawValue
+                case .eventSetting(let route):
+                    return route.path
+                }
+            }
+        }
+        """, macros:testMacros)
+    }
+    
     func testNoneEnumImp() async throws {
         
         let dianosSpec = DiagnosticSpec(message: SRMacroError.onlyEnum.description, line: 1, column: 1,severity: .error)

@@ -12,7 +12,7 @@ import SwiftSyntaxMacros
 @main
 struct sRoutingPlugin: CompilerPlugin {
     let providingMacros: [Macro.Type] = [
-        RouteCoordinatorMacro.self, RouteObserverMacro.self, RouteMacro.self
+        RouteCoordinatorMacro.self, RouteObserverMacro.self, RouteMacro.self, SubRouteMacro.self
     ]
 }
 

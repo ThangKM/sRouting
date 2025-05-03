@@ -70,6 +70,15 @@ enum AppAlerts: SRAlertRoute {
 }
 
 @sRoute
+enum  DetailRoute {
+    case deteail
+    
+    var screen: some View {
+        Text("Hello World")
+    }
+}
+
+@sRoute
 enum HomeRoute {
 
     typealias AlertRoute = AppAlerts
@@ -87,6 +96,8 @@ enum HomeRoute {
 @sRoute
 enum SettingRoute {
     case setting
+    @sSubRoute
+    case detail(route: DetailRoute)
     
     var screen: some View { Text("Setting") }
 }
