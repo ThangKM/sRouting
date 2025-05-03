@@ -11,6 +11,7 @@ import SwiftSyntax
 import SwiftSyntaxMacros
 
 private let srrouteType = "SRRoute"
+private let subrouteMacro = "sSubRoute"
 
 package struct RouteMacro: ExtensionMacro {
     
@@ -32,22 +33,41 @@ package struct RouteMacro: ExtensionMacro {
         let prefixPath = type.trimmedDescription.filter(\.isUppercase).lowercased()
         
         var caseItems = ""
-        for caseName in arguments {
+        let pathCases = arguments.filter({ !$0.hasPrefix(subrouteMacro) })
+        for caseName in pathCases {
             caseItems += "case \(caseName) = \"\(prefixPath)_\(caseName.lowercased())\""
-            if caseName != arguments.last {
+            if caseName != pathCases.last {
                 caseItems += "\n"
             }
         }
         
         var casePaths = ""
         for caseName in arguments {
-            casePaths += "case .\(caseName): return Paths.\(caseName).rawValue"
-            if caseName != arguments.last {
-                casePaths += "\n"
+            if caseName.hasPrefix(subrouteMacro) {
+                guard let name = caseName.split(separator: "_").last else { continue }
+                casePaths += "case .\(name)(let route): return route.path"
+            } else {
+                casePaths += "case .\(caseName): return Paths.\(caseName).rawValue"
+                if caseName != arguments.last {
+                    casePaths += "\n"
+                }
             }
         }
         
-        let declCoordinator: DeclSyntax = """
+        let declExtension: DeclSyntax
+        if pathCases.isEmpty {
+            declExtension = """
+            extension \(raw: type.trimmedDescription): sRouting.SRRoute {
+            
+                nonisolated var path: String { 
+                    switch self {
+                    \(raw: casePaths)
+                    }
+                }
+            }
+            """
+        } else {
+            declExtension = """
             extension \(raw: type.trimmedDescription): sRouting.SRRoute {
             
                 enum Paths: String, StringRawRepresentable {
@@ -61,8 +81,10 @@ package struct RouteMacro: ExtensionMacro {
                 }
             }
             """
-        let extCoordinator = declCoordinator.cast(ExtensionDeclSyntax.self)
-        return [extCoordinator]
+        }
+        
+        let result = declExtension.cast(ExtensionDeclSyntax.self)
+        return [result]
     }
 }
 
@@ -75,9 +97,16 @@ extension RouteMacro {
         var caseNames: [String] = []
         for member in enumDecl.memberBlock.members {
             if let caseDecl = member.decl.as(EnumCaseDeclSyntax.self) {
-                for element in caseDecl.elements {
-                    caseNames.append(element.name.text.trimmingCharacters(in: .whitespacesAndNewlines))
+                var casename: String = ""
+                if let subRoute = caseDecl.attributes.first?.as(AttributeSyntax.self)?.attributeName.as(IdentifierTypeSyntax.self)?.name.text.trimmingCharacters(in: .whitespacesAndNewlines),
+                   subRoute == subrouteMacro {
+                    casename = "\(subrouteMacro)_"
                 }
+                
+                guard let element = caseDecl.elements.first else { continue }
+                let name = element.name.text.trimmingCharacters(in: .whitespacesAndNewlines)
+                casename += name
+                caseNames.append(casename)
             }
         }
         
@@ -98,6 +127,30 @@ extension RouteMacro {
         }
         return inheritanceClause.inheritedTypes.map {
             $0.type.trimmedDescription
+        }
+    }
+}
+
+
+//MARK: - SubRouteMacro
+package struct SubRouteMacro: PeerMacro {
+    package static func expansion(of node: SwiftSyntax.AttributeSyntax,
+                                  providingPeersOf declaration: some SwiftSyntax.DeclSyntaxProtocol,
+                                  in context: some SwiftSyntaxMacros.MacroExpansionContext) throws -> [SwiftSyntax.DeclSyntax] {
+        try validate(of: declaration)
+        return []
+    }
+    
+    package static func validate(of declaration: some SwiftSyntax.DeclSyntaxProtocol) throws {
+        guard let enumcaseDecl = declaration.as(EnumCaseDeclSyntax.self) else {
+            throw SRMacroError.onlyCaseinAnEnum
+        }
+        guard let element = enumcaseDecl.elements.first else { throw SRMacroError.onlyCaseinAnEnum }
+        guard let params = element.parameterClause?.parameters, !params.isEmpty else {
+            throw SRMacroError.subRouteNotFound
+        }
+        guard params.count == 1 else {
+            throw SRMacroError.declareSubRouteMustBeOnlyOne
         }
     }
 }

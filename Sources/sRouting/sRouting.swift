@@ -15,3 +15,7 @@ public macro sRouteObserver(_ routes: (any SRRoute.Type)...) = #externalMacro(mo
 /// Generate Paths for ``SRRoute``
 @attached(extension, conformances: SRRoute, names: named(PathsType), named(Paths), named(path), arbitrary)
 public macro sRoute() = #externalMacro(module: "sRoutingMacros", type: "RouteMacro")
+
+/// Indicates a subroute within a route.
+@attached(peer)
+public macro sSubRoute() = #externalMacro(module: "sRoutingMacros", type: "SubRouteMacro")
