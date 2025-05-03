@@ -22,6 +22,10 @@ public final class SRContext: Sendable {
         coordinators.last?.coordinator
     }
     
+    public var coordinatorCount: Int {
+        coordinators.count
+    }
+    
     public init() { }
     
     public func dismissAll() {
