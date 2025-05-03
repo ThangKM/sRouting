@@ -129,6 +129,9 @@ struct RouterModifier<Route>: ViewModifier where Route: SRRoute {
             .onChange(of: context?.dismissAllSignal, { oldValue, newValue in
                 resetActiveState()
             })
+            .onChange(of: coordinatorEmitter?.dismissEmiiter, { oldValue, newValue in
+                resetActiveState()
+            })
             .onChange(of: router.transition, { oldValue, newValue in
                 let transaction = newValue.transaction?()
                 if let transaction {
@@ -186,6 +189,9 @@ struct RouterModifier<Route>: ViewModifier where Route: SRRoute {
                     .environment(context)
             })
             .onChange(of: context?.dismissAllSignal, { oldValue, newValue in
+                resetActiveState()
+            })
+            .onChange(of: coordinatorEmitter?.dismissEmiiter, { oldValue, newValue in
                 resetActiveState()
             })
             .onChange(of: router.transition, { oldValue, newValue in
