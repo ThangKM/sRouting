@@ -239,14 +239,10 @@ extension RouterModifier {
         router.resetTransition()
     }
     
-    private var hasActiveState: Bool {
-        isActivePresent || isActiveAlert || isActiveSheet || isActiveDialog || isActivePopover
-    }
-    
     @MainActor
     private func dismissCoordinator() {
         resetActiveState()
-        guard hasActiveState else { return }
+        guard let context, context.topCoordinator?.emitter === coordinatorEmitter && context.coordinatorCount > 1 else { return }
         dismissAction()
     }
     
