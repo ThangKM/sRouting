@@ -45,3 +45,17 @@ struct PopoverScreen: View {
             .onPopoverRouting(of: router, for: .testPopover, tests: tests)
     }
 }
+
+struct TestCoordinatorView: View {
+    
+    let context: SRContext
+    let coordinator: Coordinator
+    let router: SRRouter<TestRoute>
+    
+    var body: some View {
+        SRRootView(context: context, coordinator: coordinator) {
+            TestScreen(router: router, tests: nil)
+        }
+        .onRoutingCoordinator(TestRoute.self, context: context)
+    }
+}
