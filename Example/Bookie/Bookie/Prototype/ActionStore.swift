@@ -16,7 +16,11 @@ open class ScreenStates {
     
     public var isLoading: Bool = false {
         didSet {
-            parentState?.loadingStarted()
+            if isLoading {
+                parentState?.loadingStarted()
+            } else {
+                parentState?.loadingFinished()
+            }
         }
     }
     
