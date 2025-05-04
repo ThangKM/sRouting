@@ -53,7 +53,7 @@ final class CoordinatorMacroTest: XCTestCase {
             @MainActor private(set) var activeNavigation: SRNavigationPath?
 
             @MainActor init() {
-                self.identifier = "Coordinator" + "_" + UUID().uuidString
+                self.identifier = "Coordinator" + "_" + TimeIdentifier.now.id
             }
 
             @MainActor

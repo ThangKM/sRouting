@@ -26,9 +26,6 @@ where Content: View, Coordinator: SRRouteCoordinatorType {
     
     public var body: some View {
         content()
-            .onChange(of: coordinator.emitter.dismissEmiiter, { _ , _ in
-                coordinator.rootRouter.dismiss()
-            })
             .onAppear {
                 context.registerActiveCoordinator(coordinator)
             }

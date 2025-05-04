@@ -14,7 +14,7 @@ public final class SRCoordinatorEmitter {
     
     internal var doubleTapTabItemEmmiter: SignalChange = false
     
-    private(set) var dismissEmiiter: SignalChange = false
+    private(set) var dismissEmitter: SignalChange = false
     
     public var tabSelection: Int = .zero {
         willSet {
@@ -41,7 +41,7 @@ public final class SRCoordinatorEmitter {
     
     /// Dismiss the coordinator
     internal func dismiss() {
-        dismissEmiiter.toggle()
+        dismissEmitter.toggle()
     }
     
     private func _emmitDoubleTap() {

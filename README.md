@@ -61,21 +61,25 @@ enum HomeRoute {
     case pastry
     case cake
     
+    @sSubRoute
+    case detail(DetailRoute)
+    
     @ViewBuilder @MainActor
     var screen: some View {
         switch self {
             case .pastry: PastryScreen()
             case .cake: CakeScreen()
+            case .detail(let route): route.screen
         }
     }
 }
 ```
 
-### Make your Root View
+### Setting Up Your Root View
 
-Set up a coordinator and ``SRRootView`` for your application.
+Start by configuring a coordinator and SRRootView for your application.
 
-Declaring a coordinator: 
+Declaring a Coordinator:
 
 ```swift
 @sRouteCoordinator(tabs: ["home", "setting"], stacks: "home", "setting")
@@ -83,21 +87,21 @@ Declaring a coordinator:
 final class AppCoordinator { }
 ```
 
-Declaring View of navigation destination:
+Declaring the View for Navigation Destinations:
 
 ```swift
 @sRouteObserver(HomeRoute.self, SettingRoute.self)
 struct RouteObserver { }
 ```
 
-Setup Your App:
+Configuring Your App:
 
 ```swift
 @sRoute
 enum AppRoute {
     
     case startScreen
-    case homeScreen
+    case mainTabbar
     
     @ViewBuilder @MainActor
     var screen: some View {
@@ -105,7 +109,7 @@ enum AppRoute {
         case .startScreen:
             StartScreen()
                 .transition(.scale(scale: 0.1).combined(with: .opacity))
-        case .homeScreen:
+        case .mainTabbar:
             MainScreen()
                 .transition(.opacity)
         }
@@ -115,9 +119,19 @@ enum AppRoute {
 struct MainScreen: View {
     @Environment(AppCoordinator.self) var coordinator
     var body: some View {
-        NavigationStack(path: coordinator.homePath) {
-            HomeScreen()
-                .routeObserver(RouteObserver.self)
+        @Bindable var emitter = coordinator.emitter
+        TabView(selection: $emitter.tabSelection) {
+            NavigationStack(path: coordinator.homePath) {
+                HomeScreen()
+                    .routeObserver(RouteObserver.self)
+            }
+            .tag(AppCoordinator.SRTabItem.homeItem.rawValue)
+            
+            NavigationStack(path: coordinator.settingPath) {
+                SettingScreen()
+                    .routeObserver(RouteObserver.self)
+            }
+            .tag(AppCoordinator.SRTabItem.settingItem.rawValue)
         }
     }
 }
@@ -138,9 +152,9 @@ struct BookieApp: App {
     }
 }
 ```
-### Make a Screen and working with Router
+### Creating a Screen and Working with the Router
 
-Using the `onRouting(of:)` ViewModifier to observe router transition.
+Use the `onRouting(of:)` view modifier to observe route transitions.
 
 ```swift
 @sRoute
@@ -174,36 +188,80 @@ DeepLink:
 }
 ```
 
-Present a coordinator:
+### Using Multiple Coordinators
+
+To observe and open a new coordinator from the router, use `onRoutingCoordinator(_:context:)`.
+
+Declaring Coordinator Routes:
 
 ```swift
 @sRouteCoordinator(stacks: "newStack")
-final class OtherFlowCoordinator { }
+final class AnyCoordinator { }
 
-struct OtherCoordinatorView: View {
+struct AnyCoordinatorView<Content>: View where Content: View {
 
     @Environment(SRContext.self) var context
-    @State private var coordinator: OtherFlowCoordinator = .init()
+    @State private var coordinator: AnyCoordinator = .init()
+    let content: () -> Content
     
     var body: some View {
         SRRootView(context: context, coordinator: coordinator) {
             NavigationStack(path: coordinator.newStackPath) {
                 content()
-                   .routeObserver(YourRouteObserver.self)
+                    .routeObserver(YourRouteObserver.self)
             }
         }
     }
-    ...
 }
 
-...
-...
+@sRoute
+enum CoordinatorsRoute {
+    
+    case notifications
+    case settings
+    
+    @MainActor @ViewBuilder
+    var screen: some View {
+        switch self {
+            case .notifications:
+            AnyCoordinatorView { NotificationsScreen() }
+            case .settings:
+            AnyCoordinatorView { SettingsScreen() }
+        }
+    }
+}
+```
 
-router.trigger(to: .otherFlowCoordinator, with: .present)
+Handling Coordinator Routing in the Root View:
+`Coordinators should be triggered from the root view using .onRoutingCoordinator.`
+
+```swift
+@main
+struct BookieApp: App {
+
+    @State private var appCoordinator = AppCoordinator()
+    @State private var context = SRContext()
+    
+    var body: some Scene {
+        WindowGroup {
+            SRRootView(context: context, coordinator: appCoordinator) {
+                SRSwitchView(startingWith: AppRoute.startScreen)
+            }
+            .environment(appCoordinator)
+            .onRoutingCoordinator(CoordinatorsRoute.self, context: context)
+        }
+    }
+}
+```
+### Routing Actions
+
+Present a new coordinator:
+```swift
+router.openCoordinator(route: CoordinatorsRoute.notifications, with: .present)
 ```
 Change Root:
 ```swift
-router.switchTo(route: AppRoute.homeScreen)
+router.switchTo(route: AppRoute.mainTabbar)
 ```
 Push:
 ```swift
@@ -245,7 +303,7 @@ To seclect the Tabbar item we use the `selectTabbar(at:)` function.
 router.selectTabbar(at: AppCoordinator.SRTabItem.home)
 ```
 
-sRouting also supported pop, pop to root and pop to a target function for the NavigationStack
+Pop Actions in NavigationStack
 
 ```swift
 router.pop()

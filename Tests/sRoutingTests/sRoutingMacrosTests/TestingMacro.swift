@@ -21,7 +21,8 @@ import sRoutingMacros
 let testMacros: [String: Macro.Type] = [
     "sRouteCoordinator": RouteCoordinatorMacro.self,
     "sRouteObserver": RouteObserverMacro.self,
-    "sRoute": RouteMacro.self
+    "sRoute": RouteMacro.self,
+    "sSubRoute": SubRouteMacro.self
 ]
 
 #endif

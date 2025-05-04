@@ -10,6 +10,7 @@ import sRouting
 import SwiftUI
 import Observation
 
+
 enum AppPopover: SRPopoverRoute {
     
     case testPopover
@@ -70,6 +71,15 @@ enum AppAlerts: SRAlertRoute {
 }
 
 @sRoute
+enum  DetailRoute {
+    case deteail
+    
+    var screen: some View {
+        Text("Hello World")
+    }
+}
+
+@sRoute
 enum HomeRoute {
 
     typealias AlertRoute = AppAlerts
@@ -86,7 +96,10 @@ enum HomeRoute {
 
 @sRoute
 enum SettingRoute {
+    
     case setting
+    @sSubRoute
+    case detail(DetailRoute)
     
     var screen: some View { Text("Setting") }
 }
@@ -134,12 +147,58 @@ enum AppRoute {
 struct MainScreen: View {
     @Environment(AppCoordinator.self) var coordinator
     var body: some View {
-        NavigationStack(path: coordinator.homePath) {
-            EmptyView()
-                .routeObserver(RouteObserver.self)
+        @Bindable var emitter = coordinator.emitter
+        TabView(selection: $emitter.tabSelection) {
+            NavigationStack(path: coordinator.homePath) {
+                EmptyView()
+                    .routeObserver(RouteObserver.self)
+            }
+            .tag(AppCoordinator.SRTabItem.homeItem.rawValue)
+            
+            NavigationStack(path: coordinator.homePath) {
+                EmptyView()
+                    .routeObserver(RouteObserver.self)
+            }
+            .tag(AppCoordinator.SRTabItem.settingItem.rawValue)
         }
     }
 }
+
+@sRouteCoordinator(stacks: "newStack")
+final class AnyCoordinator { }
+
+struct AnyCoordinatorView<Content>: View where Content: View {
+
+    @Environment(SRContext.self) var context
+    @State private var coordinator: AnyCoordinator = .init()
+    let content: () -> Content
+    
+    var body: some View {
+        SRRootView(context: context, coordinator: coordinator) {
+            NavigationStack(path: coordinator.newStackPath) {
+                content()
+            }
+        }
+    }
+}
+
+@sRoute
+enum CoordinatorsRoute {
+    
+    case notifications
+    case settings
+    
+    @MainActor @ViewBuilder
+    var screen: some View {
+        switch self {
+            case .notifications:
+            AnyCoordinatorView { EmptyView() }
+            case .settings:
+            AnyCoordinatorView { EmptyView() }
+        }
+    }
+}
+
 
 struct BookieApp: App {
 
@@ -152,6 +211,7 @@ struct BookieApp: App {
                 SRSwitchView(startingWith: AppRoute.startScreen)
             }
             .environment(appCoordinator)
+            .onRoutingCoordinator(CoordinatorsRoute.self, context: context)
         }
     }
 }
@@ -171,6 +231,9 @@ struct BookieApp_OtherSetup: App {
                     }
                 }
             }
+            .onRoutingCoordinator(CoordinatorsRoute.self, context: context)
         }
     }
 }
+
+

@@ -129,6 +129,9 @@ struct RouterModifier<Route>: ViewModifier where Route: SRRoute {
             .onChange(of: context?.dismissAllSignal, { oldValue, newValue in
                 resetActiveState()
             })
+            .onChange(of: coordinatorEmitter?.dismissEmitter, { oldValue, newValue in
+                dismissCoordinator()
+            })
             .onChange(of: router.transition, { oldValue, newValue in
                 let transaction = newValue.transaction?()
                 if let transaction {
@@ -188,6 +191,9 @@ struct RouterModifier<Route>: ViewModifier where Route: SRRoute {
             .onChange(of: context?.dismissAllSignal, { oldValue, newValue in
                 resetActiveState()
             })
+            .onChange(of: coordinatorEmitter?.dismissEmitter, { oldValue, newValue in
+                dismissCoordinator()
+            })
             .onChange(of: router.transition, { oldValue, newValue in
                 let transaction = newValue.transaction?()
                 if let transaction {
@@ -233,6 +239,13 @@ extension RouterModifier {
         router.resetTransition()
     }
     
+    @MainActor
+    private func dismissCoordinator() {
+        resetActiveState()
+        guard let context, context.topCoordinator?.emitter === coordinatorEmitter && context.coordinatorCount > 1 else { return }
+        dismissAction()
+    }
+    
     /// Reset all active state to false
     @MainActor
     func resetActiveState() {
@@ -250,7 +263,7 @@ extension RouterModifier {
     private func updateActiveState(from transition: SRTransition<Route>) {
         switch transition.type {
         case .push:
-            guard let route = transition.route else { return }
+            guard let route = transition.route else { break }
             navigationPath?.push(to: route)
         case .present:
             isActivePresent = true
@@ -298,6 +311,9 @@ extension RouterModifier {
         case .switchRoot:
             guard let route = transition.rootRoute else { break }
             switcher?.switchTo(route: route)
+        case .openCoordinator:
+            guard let coordinatorRoute = transition.coordinator else { break }
+            context?.openCoordinator(coordinatorRoute)
         case .none: break
         }
         
