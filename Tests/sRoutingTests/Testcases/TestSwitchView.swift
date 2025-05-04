@@ -39,6 +39,6 @@ struct SwitchViewTests {
         ViewHosting.host(view: sut)
         try await Task.sleep(for: .microseconds(100))
         router.switchTo(route: AppRoute.login)
-        try await waiter.waiting()
+        try await waiter.waiting(timeout: .seconds(1))
     }
 }
