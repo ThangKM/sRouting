@@ -21,7 +21,11 @@ struct OnRoutingCoordinator<Route>: ViewModifier where Route: SRRoute {
         content
             .onChange(of: context.coordinatorRoute, { oldValue, newValue in
                 guard let coordinatorRoute = newValue else { return }
-                openCoordinator(coordinatorRoute)
+                withAnimation {
+                    router.dismissCoordinator()
+                } completion: {
+                    openCoordinator(coordinatorRoute)
+                }
             })
             .onRouting(of: router)
             .environment(context)
