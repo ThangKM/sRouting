@@ -211,7 +211,7 @@ struct BookieApp: App {
                 SRSwitchView(startingWith: AppRoute.startScreen)
             }
             .environment(appCoordinator)
-            .onRoutingCoordinator(CoordinatorsRoute.self, context: context)
+            .onRoutingCoordinator(CoordinatorsRoute.self, emitter: appCoordinator.emitter, context: context)
         }
     }
 }
@@ -231,7 +231,7 @@ struct BookieApp_OtherSetup: App {
                     }
                 }
             }
-            .onRoutingCoordinator(CoordinatorsRoute.self, context: context)
+            .onRoutingCoordinator(CoordinatorsRoute.self, emitter: appCoordinator.emitter, context: context)
         }
     }
 }

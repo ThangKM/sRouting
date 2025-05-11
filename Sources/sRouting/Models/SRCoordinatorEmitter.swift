@@ -16,6 +16,8 @@ public final class SRCoordinatorEmitter {
     
     private(set) var dismissEmitter: SignalChange = false
     
+    private(set) var coordinatorRoute: CoordinatorRoute?
+    
     public var tabSelection: Int = .zero {
         willSet {
             if newValue == _tabSelection {
@@ -42,6 +44,13 @@ public final class SRCoordinatorEmitter {
     /// Dismiss the coordinator
     internal func dismiss() {
         dismissEmitter.toggle()
+    }
+    
+    internal func openCoordinator(_ coordinatorRoute: CoordinatorRoute) {
+        assert(coordinatorRoute.triggerKind != .push, "Open a new coordinator not allowed for push trigger")
+        guard coordinatorRoute.triggerKind != .push else { return }
+        guard coordinatorRoute != self.coordinatorRoute else { return }
+        self.coordinatorRoute = coordinatorRoute
     }
     
     private func _emmitDoubleTap() {

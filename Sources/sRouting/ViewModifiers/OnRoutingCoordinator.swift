@@ -11,15 +11,17 @@ struct OnRoutingCoordinator<Route>: ViewModifier where Route: SRRoute {
     
     @State private var  router: SRRouter<Route>
     private let context: SRContext
+    private let coordinatorEmitter: SRCoordinatorEmitter
     
-    init(_ routeType: Route.Type, context: SRContext) {
+    init(_ routeType: Route.Type, emitter: SRCoordinatorEmitter, context: SRContext) {
         self._router = .init(initialValue: .init(routeType))
         self.context = context
+        self.coordinatorEmitter = emitter
     }
     
     func body(content: Content) -> some View {
         content
-            .onChange(of: context.coordinatorRoute, { oldValue, newValue in
+            .onChange(of: coordinatorEmitter.coordinatorRoute, { oldValue, newValue in
                 guard let coordinatorRoute = newValue else { return }
                 openCoordinator(coordinatorRoute)
             })
@@ -40,8 +42,8 @@ struct OnRoutingCoordinator<Route>: ViewModifier where Route: SRRoute {
 
 extension View {
     
-    public func onRoutingCoordinator<Route>(_ routeType: Route.Type, context: SRContext)
+    public func onRoutingCoordinator<Route>(_ routeType: Route.Type, emitter: SRCoordinatorEmitter, context: SRContext)
     -> some View where Route: SRRoute {
-        modifier(OnRoutingCoordinator(routeType, context: context))
+        modifier(OnRoutingCoordinator(routeType, emitter: emitter, context: context))
     }
 }

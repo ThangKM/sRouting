@@ -313,7 +313,7 @@ extension RouterModifier {
             switcher?.switchTo(route: route)
         case .openCoordinator:
             guard let coordinatorRoute = transition.coordinator else { break }
-            context?.openCoordinator(coordinatorRoute)
+            coordinatorEmitter?.openCoordinator(coordinatorRoute)
         case .none: break
         }
         
