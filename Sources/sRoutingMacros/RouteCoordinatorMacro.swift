@@ -18,9 +18,9 @@ private let stacksParam = "stacks"
 package struct RouteCoordinatorMacro: MemberMacro {
     
     package static func expansion(of node: AttributeSyntax,
-                                 providingMembersOf declaration: some DeclGroupSyntax,
-                                 in context: some MacroExpansionContext) throws -> [DeclSyntax] {
-        
+                                  providingMembersOf declaration: some DeclGroupSyntax,
+                                  conformingTo protocols: [TypeSyntax],
+                                  in context: some MacroExpansionContext) throws -> [DeclSyntax] {
         guard let classDecl = declaration.as(ClassDeclSyntax.self), declaration.kind == SwiftSyntax.SyntaxKind.classDecl
         else { throw SRMacroError.onlyClass }
         

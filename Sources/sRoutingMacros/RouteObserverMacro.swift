@@ -15,11 +15,10 @@ private let genericContent = "Content"
 
 package struct RouteObserverMacro: MemberMacro {
     
-    
     package static func expansion(of node: AttributeSyntax,
-                                 providingMembersOf declaration: some DeclGroupSyntax,
-                                 in context: some MacroExpansionContext) throws -> [DeclSyntax] {
-        
+                                  providingMembersOf declaration: some DeclGroupSyntax,
+                                  conformingTo protocols: [TypeSyntax],
+                                  in context: some MacroExpansionContext) throws -> [DeclSyntax] {
         try _validateDeclaration(declaration)
         
         let routes = try Self._arguments(of: node)

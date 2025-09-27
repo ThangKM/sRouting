@@ -12,8 +12,6 @@ import SwiftSyntaxMacrosTestSupport
 import XCTest
 import sRouting
 
-
-
 #if canImport(sRoutingMacros) && os(macOS)
 
 import sRoutingMacros
