@@ -273,11 +273,13 @@ extension RouterModifier {
             isActiveAlert = true
         case .confirmationDialog:
             #if os(iOS)
+            if #available(iOS 26.0, *) {
+                break
+            }
             if UIDevice.current.userInterfaceIdiom == .pad {
                 break
-            } else {
-                isActiveDialog = true
             }
+            isActiveDialog = true
             #else
             isActiveDialog = true
             #endif
