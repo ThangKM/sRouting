@@ -20,4 +20,4 @@ jobs:
     - name: Build macOS
       run: swift build -v
     - name: Build iOS
-      run: xcodebuild build -scheme 'sRouting' -destination 'platform=iOS Simulator,OS=18.1,name=iPhone 16'
+      run: xcodebuild build -scheme 'sRouting' -destination 'platform=iOS Simulator,name=iPhone 17'
