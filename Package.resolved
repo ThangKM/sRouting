@@ -1,13 +1,13 @@
 {
-  "originHash" : "91101e7aebea1b2a793c5a2b3c02491ba4d79dfdb437ee58b2efd5de2e303313",
+  "originHash" : "58439febef129352119e565d13be27c1f3cf62a26f852c00e2cff432da4d6807",
   "pins" : [
     {
       "identity" : "swift-syntax",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/swiftlang/swift-syntax.git",
       "state" : {
-        "revision" : "0687f71944021d616d34d922343dcef086855920",
-        "version" : "600.0.1"
+        "revision" : "4799286537280063c85a32f09884cfbca301b1a1",
+        "version" : "602.0.0"
       }
     },
     {
@@ -15,8 +15,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/nalexn/ViewInspector",
       "state" : {
-        "revision" : "788e7879d38a839c4e348ab0762dcc0364e646a2",
-        "version" : "0.10.1"
+        "revision" : "e9a06346499a3a889165647e3f23f8a7b2609a1c",
+        "version" : "0.10.3"
       }
     }
   ],

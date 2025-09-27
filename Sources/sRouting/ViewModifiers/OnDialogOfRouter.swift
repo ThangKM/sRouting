@@ -47,27 +47,10 @@ struct DialogRouterModifier<Route>: ViewModifier where Route: SRRoute {
     
     func body(content: Content) -> some View {
         #if os(iOS)
-        if UIDevice.current.userInterfaceIdiom == .pad {
-            content
-            .confirmationDialog(dialogTitleKey,
-                                isPresented: $isActiveDialog,
-                                titleVisibility: dialogTitleVisibility,
-                                actions: {
-                dialogActions
-            }, message: {
-                dialogMessage
-            })
-            .onChange(of: router.transition, { oldValue, newValue in
-                guard newValue.type == .confirmationDialog
-                        && UIDevice.current.userInterfaceIdiom == .pad
-                        && newValue.confirmationDialog == dialogRoute else { return }
-                isActiveDialog = true
-                tests?.didChangeTransition?(self)
-            })
-            .onChange(of: isActiveDialog, { oldValue, newValue in
-                guard oldValue && !newValue else { return }
-                resetRouterTransiton()
-            })
+        if #available(iOS 26.0, *) {
+            build(content: content)
+        } else if UIDevice.current.userInterfaceIdiom == .pad {
+            build(content: content)
         } else {
             content
         }
@@ -75,6 +58,36 @@ struct DialogRouterModifier<Route>: ViewModifier where Route: SRRoute {
         content
         #endif
     }
+    
+    #if os(iOS)
+    @ViewBuilder
+    private func build(content: Content) -> some View {
+        content
+        .confirmationDialog(dialogTitleKey,
+                            isPresented: $isActiveDialog,
+                            titleVisibility: dialogTitleVisibility,
+                            actions: {
+            dialogActions
+        }, message: {
+            dialogMessage
+        })
+        .onChange(of: router.transition, { oldValue, newValue in
+            guard newValue.type == .confirmationDialog
+                    && newValue.confirmationDialog == dialogRoute else { return }
+            if #available(iOS 26.0, *) {
+                isActiveDialog = true
+                tests?.didChangeTransition?(self)
+            } else if UIDevice.current.userInterfaceIdiom == .pad {
+                isActiveDialog = true
+                tests?.didChangeTransition?(self)
+            }
+        })
+        .onChange(of: isActiveDialog, { oldValue, newValue in
+            guard oldValue && !newValue else { return }
+            resetRouterTransiton()
+        })
+    }
+    #endif
 }
  
 extension DialogRouterModifier {
