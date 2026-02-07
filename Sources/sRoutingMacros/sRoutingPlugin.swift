@@ -12,7 +12,7 @@ import SwiftSyntaxMacros
 @main
 struct sRoutingPlugin: CompilerPlugin {
     let providingMacros: [Macro.Type] = [
-        RouteCoordinatorMacro.self, RouteObserverMacro.self, RouteMacro.self, SubRouteMacro.self
+        RouteCoordinatorMacro.self, RouteObserverMacro.self, RouteMacro.self, SubRouteMacro.self, RoutePathMacro.self
     ]
 }
 
@@ -33,6 +33,7 @@ package enum SRMacroError: Error, CustomStringConvertible, CustomNSError {
     case onlyCaseinAnEnum
     case subRouteNotFound
     case declareSubRouteMustBeOnlyOne
+    case missingConformance
     
     package static var errorDomain: String { "com.srouting.macro" }
     
@@ -68,6 +69,8 @@ package enum SRMacroError: Error, CustomStringConvertible, CustomNSError {
             -513
         case .declareSubRouteMustBeOnlyOne:
             -514
+        case .missingConformance:
+            -515
         }
     }
     
@@ -103,6 +106,8 @@ package enum SRMacroError: Error, CustomStringConvertible, CustomNSError {
             return "No subroute was found in the current enum case. Did you forget to add an associated value that conforms to SRRoute"
         case .declareSubRouteMustBeOnlyOne:
             return "Enum cases annotated with @sSubRoute must have exactly one associated value of a type that conforms to SRRoute."
+        case .missingConformance:
+             return "You must manually conform to SRRoute when using @sRoutePath."
         }
     }
     
