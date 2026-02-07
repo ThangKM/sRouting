@@ -15,7 +15,19 @@ When initializing a new project or adding `sRouting` to an existing one:
     Add the `sRouting` package to your project.
     URL: `https://github.com/ThangKM/sRouting`
 
-2.  **Configure the App Entry Point**:
+2.  **Define AppCoordinator**:
+    Create a coordinator class using the `@sRouteCoordinator` macro.
+
+    ```swift
+    import sRouting
+    import Observation
+
+    @sRouteCoordinator(tabs: ["home", "settings"], stacks: "home", "settings")
+    @Observable
+    final class AppCoordinator { }
+    ```
+
+3.  **Configure the App Entry Point**:
     Modify your `@main` App struct to initialize `AppCoordinator` and `SRContext`, and wrap your root view in `SRRootView`.
 
     ```swift
@@ -38,19 +50,63 @@ When initializing a new project or adding `sRouting` to an existing one:
     }
     ```
 
-3.  **Define AppCoordinator**:
-    Create a coordinator class using the `@sRouteCoordinator` macro.
+## 2. Setting Main Tab Bar and Navigation
+
+1.  **Adding RouteObserver**:
+    Define a generic observer view for your routable views. This is necessary for handling navigation events.
 
     ```swift
+    import SwiftUI
     import sRouting
-    import Observation
-
-    @sRouteCoordinator(tabs: ["home", "settings"], stacks: "home", "settings")
-    @Observable
-    final class AppCoordinator { }
+    
+    // Register your @sRoute enums here
+    @sRouteObserver(HomeRoute.self, SettingsRoute.self)
+    struct RouteObserver { }
     ```
 
-## 2. Creating a New Screen
+2.  **Define AppRoute and Main Tab Bar**:
+    Define the high-level application routes (e.g., Start Screen, Main Tab Bar) and create the TabView. Ensure you attach the `.routeObserver` modifier to your navigation stacks.
+
+    ```swift
+    @sRoute
+    enum AppRoute {
+        case startScreen // Splash or Login
+        case mainTabbar
+
+        @ViewBuilder @MainActor
+        var screen: some View {
+            switch self {
+            case .startScreen: Color.white // Replace with your Start/Splash View
+            case .mainTabbar: MainTabbarView()
+            }
+        }
+    }
+
+    struct MainTabbarView: View {
+        @Environment(AppCoordinator.self) var coordinator
+
+        var body: some View {
+            @Bindable var emitter = coordinator.emitter
+            TabView(selection: $emitter.tabSelection) {
+                NavigationStack(path: coordinator.homePath) {
+                    Text("Home Screen") // Replace with HomeView
+                        .routeObserver(RouteObserver.self) // <--- Add this
+                }
+                .tag(AppCoordinator.SRTabItem.homeItem)
+                .tabItem { Label("Home", systemImage: "house") }
+
+                NavigationStack(path: coordinator.settingsPath) {
+                    Text("Settings Screen") // Replace with SettingsView
+                        .routeObserver(RouteObserver.self) // <--- Add this
+                }
+                .tag(AppCoordinator.SRTabItem.settingsItem)
+                .tabItem { Label("Settings", systemImage: "gear") }
+            }
+        }
+    }
+    ```
+
+## 3. Creating a New Screen
 
 When adding a new screen to the application:
 
@@ -97,7 +153,7 @@ When adding a new screen to the application:
     }
     ```
 
-## 3. Manual Route Implementation (Advanced)
+## 4. Manual Route Implementation (Advanced)
 
 If you need to use a specific Actor or cannot use the standard `@sRoute` macro, use `@sRoutePath` and manually conform to `SRRoute`.
 
