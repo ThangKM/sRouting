@@ -20,7 +20,8 @@ let testMacros: [String: Macro.Type] = [
     "sRouteCoordinator": RouteCoordinatorMacro.self,
     "sRouteObserver": RouteObserverMacro.self,
     "sRoute": RouteMacro.self,
-    "sSubRoute": SubRouteMacro.self
+    "sSubRoute": SubRouteMacro.self,
+    "sRoutePath": RoutePathMacro.self
 ]
 
 #endif

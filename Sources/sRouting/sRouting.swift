@@ -16,6 +16,12 @@ public macro sRouteObserver(_ routes: (any SRRoute.Type)...) = #externalMacro(mo
 @attached(extension, conformances: SRRoute, names: named(PathsType), named(Paths), named(path), arbitrary)
 public macro sRoute() = #externalMacro(module: "sRoutingMacros", type: "RouteMacro")
 
+/// Generate Paths for ``SRRoute`` and manually conform to ``SRRoute``.
+///
+/// This helpful when you want to define paths for ``SRRoute`` to use whith specific Actor.
+@attached(extension, names: named(PathsType), named(Paths), named(path), arbitrary)
+public macro sRoutePath() = #externalMacro(module: "sRoutingMacros", type: "RoutePathMacro")
+
 /// Indicates a subroute within a route.
 @attached(peer)
 public macro sSubRoute() = #externalMacro(module: "sRoutingMacros", type: "SubRouteMacro")
