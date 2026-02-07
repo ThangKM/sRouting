@@ -6,7 +6,7 @@ Set up the `SRRootView` and interact with macros.
 
 Create your root view using `SRRootView`.
 Declare your `SRRoute`.
-Learn about macros and ViewModifers.
+Learn about macros and ViewModifiers.
 
 ### Create a Route
 
@@ -15,6 +15,36 @@ To create a route, we must adhere to the `SRRoute` Protocol.
 ```swift
 @sRoute
 enum HomeRoute {
+
+    typealias AlertRoute = YourAlertRoute // Optional declarations
+    typealias ConfirmationDialogRoute = YourConfirmationDialogRoute // Optional declarations
+    typealias PopoverRoute = YourPopoverRoute // Optional declarations
+    
+    case pastry
+    case cake
+    
+    @sSubRoute
+    case detail(DetailRoute)
+    
+    @ViewBuilder @MainActor
+    var screen: some View {
+        switch self {
+            case .pastry: PastryScreen()
+            case .cake: CakeScreen()
+            case .detail(let route): route.screen
+        }
+    }
+}
+```
+
+### Manual SRRoute Implementation via `@sRoutePath`
+
+If you need to define paths for `SRRoute` manually, for example, to use with a specific actor (Swift Approachable concurrency), you can use the `@sRoutePath` macro.
+This macro generates the `Paths` enum and `path` property but requires you to manually conform to the `SRRoute` protocol.
+
+```swift
+@sRoutePath
+enum HomeRoute: SRRoute {
 
     typealias AlertRoute = YourAlertRoute // Optional declarations
     typealias ConfirmationDialogRoute = YourConfirmationDialogRoute // Optional declarations
@@ -259,7 +289,7 @@ Required the root view is a `SRRootView`
 ```swift
 router.dismissAll()
 ```
-To seclect the Tabbar item we use the `selectTabbar(at:)` function.
+To select the Tabbar item we use the `selectTabbar(at:)` function.
 
 ```swift
 router.selectTabbar(at: AppCoordinator.SRTabItem.home)
