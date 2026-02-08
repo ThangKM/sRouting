@@ -53,7 +53,7 @@ When initializing a new project or adding `sRouting` to an existing one:
 ## 2. Setting Main Tab Bar and Navigation
 
 1.  **Adding RouteObserver**:
-    Define a generic observer view for your routable views. This is necessary for handling navigation events.
+    Define a route observer for your navigation destinations. The `@sRouteObserver` macro requires a struct that implements `ViewModifier`. This modifier handles the navigation destinations for your routes.
 
     ```swift
     import SwiftUI
@@ -61,7 +61,7 @@ When initializing a new project or adding `sRouting` to an existing one:
     
     // Register your @sRoute enums here
     @sRouteObserver(HomeRoute.self, SettingsRoute.self)
-    struct RouteObserver { }
+    struct RouteObserver: ViewModifier { }
     ```
 
 2.  **Define AppRoute and Main Tab Bar**:
