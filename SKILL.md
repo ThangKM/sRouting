@@ -110,7 +110,7 @@ Register your route enums to handle their navigation destinations.
 
 ```swift
 @sRouteObserver(HomeRoute.self, SettingsRoute.self)
-struct RouteObserver: ViewModifier { }
+struct RouteObserver { }
 ```
 
 ### Create the TabBar View

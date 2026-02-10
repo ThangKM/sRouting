@@ -119,11 +119,11 @@ final class AppCoordinator { }
 
 Declaring the View for Navigation Destinations:
 
-The `@sRouteObserver` macro requires a struct that implements `ViewModifier`. This modifier handles the navigation destinations for your routes.
+The `@sRouteObserver` macro generates a struct that handles the navigation destinations for your routes.
 
 ```swift
 @sRouteObserver(HomeRoute.self, SettingRoute.self)
-struct RouteObserver: ViewModifier { }
+struct RouteObserver { }
 ```
 
 Configuring Your App:
