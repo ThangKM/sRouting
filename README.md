@@ -157,13 +157,13 @@ struct MainScreen: View {
                 HomeScreen()
                     .routeObserver(RouteObserver.self)
             }
-            .tag(AppCoordinator.SRTabItem.homeItem.rawValue)
+            .tag(AppCoordinator.SRTabItem.homeItem)
             
             NavigationStack(path: coordinator.settingPath) {
                 SettingScreen()
                     .routeObserver(RouteObserver.self)
             }
-            .tag(AppCoordinator.SRTabItem.settingItem.rawValue)
+            .tag(AppCoordinator.SRTabItem.settingItem)
         }
     }
 }
@@ -179,7 +179,6 @@ struct BookieApp: App {
             SRRootView(context: context, coordinator: appCoordinator) {
                 SRSwitchView(startingWith: AppRoute.startScreen)
             }
-            .environment(appCoordinator)
         }
     }
 }
@@ -279,7 +278,6 @@ struct BookieApp: App {
             SRRootView(context: context, coordinator: appCoordinator) {
                 SRSwitchView(startingWith: AppRoute.startScreen)
             }
-            .environment(appCoordinator)
             .onRoutingCoordinator(CoordinatorsRoute.self, context: context)
         }
     }

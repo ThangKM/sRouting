@@ -141,7 +141,6 @@ struct BookieApp: App {
             SRRootView(context: context, coordinator: appCoordinator) {
                 SRSwitchView(startingWith: AppRoute.startScreen)
             }
-            .environment(appCoordinator)
         }
     }
 }
@@ -241,7 +240,6 @@ struct BookieApp: App {
             SRRootView(context: context, coordinator: appCoordinator) {
                 SRSwitchView(startingWith: AppRoute.startScreen)
             }
-            .environment(appCoordinator)
             .onRoutingCoordinator(CoordinatorsRoute.self, context: context)
         }
     }
