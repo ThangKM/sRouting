@@ -123,6 +123,7 @@ struct RouteObserver { }
 final class AppCoordinator { }
 
 @sRouteCoordinator(stacks: "subcoordinator")
+@Observable
 final class OtherCoordinator { }
 
 @sRoute
@@ -165,6 +166,7 @@ struct MainScreen: View {
 }
 
 @sRouteCoordinator(stacks: "newStack")
+@Observable
 final class AnyCoordinator { }
 
 struct AnyCoordinatorView<Content>: View where Content: View {
@@ -210,7 +212,6 @@ struct BookieApp: App {
             SRRootView(context: context, coordinator: appCoordinator) {
                 SRSwitchView(startingWith: AppRoute.startScreen)
             }
-            .environment(appCoordinator)
             .onRoutingCoordinator(CoordinatorsRoute.self, context: context)
         }
     }

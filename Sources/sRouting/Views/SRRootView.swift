@@ -10,7 +10,7 @@ import Observation
 
 /// The root view of a window
 public struct SRRootView<Content, Coordinator>: View
-where Content: View, Coordinator: SRRouteCoordinatorType {
+where Content: View, Coordinator: SRRouteCoordinatorType & Observable {
     
     private let coordinator: Coordinator
     private let context: SRContext
@@ -35,5 +35,6 @@ where Content: View, Coordinator: SRRouteCoordinatorType {
             .onRouting(of: coordinator.rootRouter)
             .environment(context)
             .environment(coordinator.emitter)
+            .environment(coordinator)
     }
 }

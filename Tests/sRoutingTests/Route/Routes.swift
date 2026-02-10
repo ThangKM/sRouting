@@ -82,6 +82,7 @@ enum AppRoute {
 }
 
 @sRouteCoordinator(tabs:["home", "setting"], stacks: "testStack")
+@Observable
 final class Coordinator { }
 
 @sRouteObserver(TestRoute.self)

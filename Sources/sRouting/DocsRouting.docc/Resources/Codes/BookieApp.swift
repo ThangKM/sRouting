@@ -26,7 +26,6 @@ struct BookieApp: App {
             SRRootView(context: context, coordinator: appCoordinator) {
                 SRSwitchView(startingWith: AppRoute.startScreen)
             }
-            .environment(appCoordinator)
             .modelContainer(DatabaseProvider.shared.container)
         }
     }
