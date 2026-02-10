@@ -127,14 +127,14 @@ struct MainTabbarView: View {
                 HomeView()
                     .routeObserver(RouteObserver.self)
             }
-            .tag(AppCoordinator.SRTabItem.homeItem.rawValue)
+            .tag(AppCoordinator.SRTabItem.homeItem)
             .tabItem { Label("Home", systemImage: "house") }
 
             NavigationStack(path: coordinator.settingsPath) {
                 SettingsView()
                     .routeObserver(RouteObserver.self)
             }
-            .tag(AppCoordinator.SRTabItem.settingsItem.rawValue)
+            .tag(AppCoordinator.SRTabItem.settingsItem)
             .tabItem { Label("Settings", systemImage: "gear") }
         }
     }
