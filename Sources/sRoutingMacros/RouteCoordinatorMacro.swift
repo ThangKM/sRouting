@@ -24,6 +24,8 @@ package struct RouteCoordinatorMacro: MemberMacro {
         guard let classDecl = declaration.as(ClassDeclSyntax.self), declaration.kind == SwiftSyntax.SyntaxKind.classDecl
         else { throw SRMacroError.onlyClass }
         
+        guard Self._isObservable(classDecl) else { throw SRMacroError.missingObservable }
+        
         let className = classDecl.name.text.trimmingCharacters(in: .whitespaces)
         let arguments = try Self._arguments(of: node)
         
@@ -98,8 +100,10 @@ extension RouteCoordinatorMacro: ExtensionMacro {
         in context: some MacroExpansionContext
     ) throws -> [ExtensionDeclSyntax] {
         
-        guard declaration.kind == SwiftSyntax.SyntaxKind.classDecl
+        guard let classDecl = declaration.as(ClassDeclSyntax.self)
         else { throw SRMacroError.onlyClass }
+        
+        guard Self._isObservable(classDecl) else { throw SRMacroError.missingObservable }
 
         let arguments = try Self._arguments(of: node)
 
@@ -187,5 +191,14 @@ extension RouteCoordinatorMacro {
         guard stacks.count == Set(stacks).count else { throw SRMacroError.duplication }
         
         return (tabs,stacks)
+    }
+    
+    private static func _isObservable(_ declaration: some DeclGroupSyntax) -> Bool {
+        declaration.attributes.contains { attribute in
+            guard case let .attribute(attributeSyntax) = attribute,
+                  let identifier = attributeSyntax.attributeName.as(IdentifierTypeSyntax.self)
+            else { return false }
+            return identifier.name.text == "Observable"
+        }
     }
 }

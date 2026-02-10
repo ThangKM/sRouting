@@ -22,10 +22,12 @@ final class CoordinatorMacroTest: XCTestCase {
     func testCoordinatorMacroImp() async throws {
         assertMacroExpansion("""
         @sRouteCoordinator(tabs: ["homeItem", "settingItem"], stacks: "home", "setting")
+        @Observable
         class Coordinator { 
         
         }
         """, expandedSource: """
+        @Observable
         class Coordinator { 
 
             let identifier: String
@@ -100,9 +102,11 @@ final class CoordinatorMacroTest: XCTestCase {
         
         assertMacroExpansion("""
         @sRouteCoordinator(tabs: [], stacks: "")
+        @Observable
         class Coordinator {
         }
         """, expandedSource:"""
+        @Observable
         class Coordinator {
         }
         """,
@@ -116,9 +120,11 @@ final class CoordinatorMacroTest: XCTestCase {
         
         assertMacroExpansion("""
         @sRouteCoordinator(tabs: ["home","home"], stacks: "home")
+        @Observable
         class Coordinator {
         }
         """, expandedSource:"""
+        @Observable
         class Coordinator {
         }
         """,
@@ -132,6 +138,24 @@ final class CoordinatorMacroTest: XCTestCase {
         
         assertMacroExpansion("""
         @sRouteCoordinator(tabs: ["home", "setting"], stacks: "home", "setting", "home")
+        @Observable
+        class Coordinator {
+        }
+        """, expandedSource:"""
+        @Observable
+        class Coordinator {
+        }
+        """,
+        diagnostics: [dianosSpec, dianosSpec],
+        macros: testMacros)
+    }
+
+    func testMissingObservableImp() async throws {
+        
+        let dianosSpec = DiagnosticSpec(message: SRMacroError.missingObservable.description, line: 1, column: 1,severity: .error)
+        
+        assertMacroExpansion("""
+        @sRouteCoordinator(tabs: ["homeItem", "settingItem"], stacks: "home", "setting")
         class Coordinator {
         }
         """, expandedSource:"""
