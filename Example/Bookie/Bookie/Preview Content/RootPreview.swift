@@ -9,6 +9,7 @@ import sRouting
 import SwiftUI
 
 @sRouteCoordinator(stacks: "rootPreviewStack")
+@Observable
 final class PreviewCoordinator { }
 
 struct RootPreview<Content>: View where Content: View {
