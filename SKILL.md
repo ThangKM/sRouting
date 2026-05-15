@@ -1,15 +1,13 @@
 ---
-name: sRouting Development
-description: Expert guidance on setting up sRouting and adding new screens/routes in a SwiftUI application.
+name: srouting-development
+description: "Configures sRouting library, defines @sRoute enums, registers NavigationStack-based screens, sets up tab navigation with @sRouteCoordinator, and implements deep linking via SRContext in SwiftUI apps. Use when the user asks about sRouting setup, SwiftUI navigation with sRouting, adding new screens or routes, configuring NavigationStack routing, tab bar navigation, deep linking, push/pop transitions, or presenting sheets and alerts."
 ---
 
-# sRouting Development Skill
+# sRouting Development
 
-This skill provides step-by-step instructions for setting up the `sRouting` framework and adding new screens to a SwiftUI application.
+Defines route enums, configures coordinators, and wires NavigationStack-based navigation for SwiftUI apps using the `sRouting` framework.
 
 ## Architecture Overview
-
-The following diagram illustrates the core components of the `sRouting` framework and their interactions.
 
 ```mermaid
 graph TD
@@ -44,31 +42,32 @@ graph TD
 
 ## AI Context Guidance
 
-To quickly understand the context of an `sRouting` implementation, follow this research path:
+To understand an existing `sRouting` implementation, follow this research path:
 
-1.  **Entry Point**: Look for `@main` and `SRRootView` to find the `SRContext` and the initial `AppCoordinator`.
-2.  **Coordinator**: Examine the class annotated with `@sRouteCoordinator`. This reveals the tabs, navigation stacks, and mapping.
-3.  **Routes**: Identify `@sRoute` or `@sRoutePath` enums. These are the source of truth for screens.
-4.  **Navigation Logic**: Find `SRRouter` instances in Views and check `@sRouteObserver` for destination handling.
+1. **Entry Point**: Find `@main` and `SRRootView` — reveals the `SRContext` and root `AppCoordinator`.
+2. **Coordinator**: Inspect the `@sRouteCoordinator` class — shows tabs, navigation stacks, and mapping.
+3. **Routes**: Find `@sRoute` or `@sRoutePath` enums — these are the source of truth for screens.
+4. **Navigation Logic**: Locate `SRRouter` instances in Views and check `@sRouteObserver` for destination handling.
+
+For implementation details, see `Sources/sRouting/Models/` (SRRouter, SRContext, SRNavigationPath) and `Sources/sRoutingMacros/` (macro definitions).
 
 ---
 
 ## 1. Core Concepts & Macros
 
-`sRouting` uses several macros to reduce boilerplate and enforce best practices:
-
-- **`@sRoute`**: Automatically implements `SRRoute` protocol, generates a `Paths` enum for navigation, and provides a `path` property.
-- **`@sRoutePath`**: Similar to `@sRoute` but allows you to manually conform to `SRRoute`. Useful if you need custom logic or specific Actors.
-- **`@sSubRoute`**: Used inside a Route enum to indicate that a case represents a nested route (e.g., `case detail(DetailRoute)`).
-- **`@sRouteCoordinator`**: Generates properties for navigation paths and tab selections. It makes your class conform to `SRRouteCoordinatorType`.
-- **`@sRouteObserver`**: Generates a `ViewModifier` that handles the navigation destinations for routes.
+| Macro | Purpose |
+|-------|---------|
+| `@sRoute` | Implements `SRRoute` protocol, generates `Paths` enum and `path` property |
+| `@sRoutePath` | Like `@sRoute` but allows manual `SRRoute` conformance for custom logic |
+| `@sSubRoute` | Marks a case as a nested route (e.g., `case detail(DetailRoute)`) |
+| `@sRouteCoordinator` | Generates navigation path and tab selection properties, conforms to `SRRouteCoordinatorType` |
+| `@sRouteObserver` | Generates a `ViewModifier` that handles navigation destinations |
 
 ---
 
 ## 2. Setting Up sRouting
 
-### Step 1: Define Your Coordinator
-Create a coordinator class to manage the global navigation state.
+### Step 1: Define the Coordinator
 
 ```swift
 import sRouting
@@ -80,7 +79,6 @@ final class AppCoordinator { }
 ```
 
 ### Step 2: Configure App Entry Point
-Initialize `AppCoordinator` and `SRContext` in your main App struct.
 
 ```swift
 @main
@@ -101,12 +99,13 @@ struct MyApp: App {
 > [!IMPORTANT]
 > `SRRootView` must be the root of your navigation hierarchy to enable deep linking and global navigation actions.
 
+**Checkpoint**: Build and run — the app should launch without errors and display the initial screen from `SRSwitchView`.
+
 ---
 
 ## 3. Implementing TabBar & Navigation
 
 ### Define a Route Observer
-Register your route enums to handle their navigation destinations.
 
 ```swift
 @sRouteObserver(HomeRoute.self, SettingsRoute.self)
@@ -141,11 +140,11 @@ struct MainTabbarView: View {
 }
 ```
 
+**Checkpoint**: Build and run — tabs should appear and switching between them should work. Each tab's content view should render.
+
 ---
 
 ## 4. Navigation Actions (SRRouter)
-
-Use `SRRouter` inside your views to trigger transitions.
 
 ### Basic Navigation
 - `router.trigger(to: .detail, with: .push)`: Push a new screen.
@@ -206,3 +205,14 @@ router.openCoordinator(route: OnboardingRoute.start, with: .present)
 SRRootView(...) { ... }
 .onRoutingCoordinator(OnboardingRoute.self, context: context)
 ```
+
+---
+
+## 6. Troubleshooting
+
+| Symptom | Cause | Fix |
+|---------|-------|-----|
+| Navigation push does nothing | Missing `.routeObserver(RouteObserver.self)` on the `NavigationStack` content | Add `.routeObserver(RouteObserver.self)` to the root view inside each `NavigationStack` |
+| Deep linking fails silently | `SRRootView` is not the root of the view hierarchy | Ensure `SRRootView` wraps the entire app content in the `@main` struct |
+| Tab selection binding has no effect | Using wrong tag type | Use `AppCoordinator.SRTabItem` enum values as tags, not raw strings |
+| Sheet or alert does not appear | Route enum missing `AlertRoute` or `DialogRoute` typealias | Add the required typealias to the route enum (e.g., `typealias AlertRoute = MyAlertRoute`) |
