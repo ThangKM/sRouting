@@ -131,7 +131,7 @@ fileprivate actor ProduceStream {
     typealias Continuation = AsyncStream<Element>.Continuation
     
     private var continuations: [String:Continuation] = [:]
-    private let cancelBag = CancelBag()
+    private let cancelBag = CancelBag(duplicate: .cancelExisting)
     
     /// Events stream
     var stream: AsyncStream<Element> {

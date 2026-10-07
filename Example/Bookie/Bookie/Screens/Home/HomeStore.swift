@@ -32,7 +32,7 @@ extension HomeScreen {
         
         private weak var state: HomeState?
         private weak var router: SRRouter<HomeRoute>?
-        private let cancelBag = CancelBag()
+        private let cancelBag = CancelBag(duplicate: .cancelExisting)
         private var didObserveChanges: Bool = false
         
         private let bookService: BookService = .init()

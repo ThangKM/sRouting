@@ -43,16 +43,12 @@ open class ScreenStates {
     }
     
     nonisolated
-    public let cancelBag = CancelBag()
+    public let cancelBag = CancelBag(duplicate: .cancelExisting)
     
     public init() { }
 
     public init(states: ScreenStates) {
         self.parentState = states
-    }
-    
-    deinit {
-        cancelBag.cancelAllInTask()
     }
 }
 
