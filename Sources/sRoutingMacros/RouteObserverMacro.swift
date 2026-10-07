@@ -23,24 +23,17 @@ package struct RouteObserverMacro: MemberMacro {
         
         let routes = try Self._arguments(of: node)
         
-        var destinationObserve = ""
-        for route in routes {
-            destinationObserve += ".navigationDestination(for: \(route).self) { route in route.screen.environment(path) }\n"
-        }
-        
-        let decl: DeclSyntax = """
-        @Environment(SRNavigationPath.self)
-        private var path
+        let pathProperty = try VariableDeclSyntax("@Environment(SRNavigationPath.self)\nprivate var path")
 
-        init() { }
-        
-        @MainActor
-        func body(content: Content) -> some View {
-            content
-            \(raw: destinationObserve)
+        let initializer = try InitializerDeclSyntax("init()") {}
+
+        let bodyFunction = try FunctionDeclSyntax("@MainActor\nfunc body(content: Content) -> some View") {
+            routes.reduce(ExprSyntax("content")) { content, route in
+                ExprSyntax("\(content)\n.navigationDestination(for: \(raw: route).self) { route in route.screen.environment(path) }")
+            }
         }
-        """
-        return [decl]
+
+        return [DeclSyntax(pathProperty), DeclSyntax(initializer), DeclSyntax(bodyFunction)]
     }
 }
 
@@ -54,11 +47,8 @@ extension RouteObserverMacro: ExtensionMacro {
         in context: some MacroExpansionContext
     ) throws -> [ExtensionDeclSyntax] {
         
-        let decl: DeclSyntax = """
-            extension \(raw: type.trimmedDescription): sRouting.SRRouteObserverType {}
-            """
-        let ext = decl.cast(ExtensionDeclSyntax.self)
-        
+        let ext = try ExtensionDeclSyntax("extension \(type.trimmed): sRouting.SRRouteObserverType") {}
+
         return [ext]
     }
 }

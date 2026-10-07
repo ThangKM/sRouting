@@ -29,14 +29,18 @@ final class RouteObserverMacroTest: XCTestCase {
             @Environment(SRNavigationPath.self)
             private var path
 
-            init() { }
+            init() {
+            }
 
             @MainActor
             func body(content: Content) -> some View {
                 content
-                .navigationDestination(for: HomeRoute.self) { route in route.screen.environment(path) }
-            .navigationDestination(for: SettingRoute.self) { route in route.screen.environment(path) }
-
+                .navigationDestination(for: HomeRoute.self) { route in
+                    route.screen.environment(path)
+                }
+                .navigationDestination(for: SettingRoute.self) { route in
+                    route.screen.environment(path)
+                }
             }
 
         }
