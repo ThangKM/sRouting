@@ -32,59 +32,39 @@ package struct RouteMacro: ExtensionMacro {
         let arguments = try Self.extractEnumCases(from: enumDecl)
         let prefixPath = type.trimmedDescription.filter(\.isUppercase).lowercased()
         
-        var caseItems = ""
         let pathCases = arguments.filter({ !$0.hasPrefix(subrouteMacro) })
-        for caseName in pathCases {
-            caseItems += "case \(caseName) = \"\(prefixPath)_\(caseName.lowercased())\""
-            if caseName != pathCases.last {
-                caseItems += "\n"
-            }
-        }
-        
-        var casePaths = ""
-        for caseName in arguments {
-            if caseName.hasPrefix(subrouteMacro) {
-                guard let name = caseName.split(separator: "_").last else { continue }
-                casePaths += "case .\(name)(let route): return route.path"
-            } else {
-                casePaths += "case .\(caseName): return Paths.\(caseName).rawValue"
-                if caseName != arguments.last {
-                    casePaths += "\n"
-                }
-            }
-        }
-        
-        let declExtension: DeclSyntax
-        if pathCases.isEmpty {
-            declExtension = """
-            extension \(raw: type.trimmedDescription): sRouting.SRRoute {
-            
-                nonisolated var path: String { 
-                    switch self {
-                    \(raw: casePaths)
+
+        let pathProperty = try VariableDeclSyntax("nonisolated var path: String") {
+            try SwitchExprSyntax("switch self") {
+                for caseName in arguments {
+                    if caseName.hasPrefix(subrouteMacro) {
+                        if let name = caseName.split(separator: "_").last {
+                            SwitchCaseSyntax("case .\(raw: name)(let route):") {
+                                StmtSyntax("return route.path")
+                            }
+                        }
+                    } else {
+                        SwitchCaseSyntax("case .\(raw: caseName):") {
+                            StmtSyntax("return Paths.\(raw: caseName).rawValue")
+                        }
                     }
                 }
             }
-            """
-        } else {
-            declExtension = """
-            extension \(raw: type.trimmedDescription): sRouting.SRRoute {
-            
-                enum Paths: String, StringRawRepresentable {
-                    \(raw: caseItems)
-                }
-                
-                nonisolated var path: String { 
-                    switch self {
-                    \(raw: casePaths)
+        }
+
+        let declExtension = try ExtensionDeclSyntax("extension \(type.trimmed): sRouting.SRRoute") {
+            if !pathCases.isEmpty {
+                try EnumDeclSyntax("enum Paths: String, StringRawRepresentable") {
+                    for caseName in pathCases {
+                        DeclSyntax("case \(raw: caseName) = \(literal: "\(prefixPath)_\(caseName.lowercased())")")
                     }
                 }
+                .with(\.leadingTrivia, .newlines(2))
             }
-            """
+            pathProperty.with(\.leadingTrivia, .newlines(2))
         }
-        
-        let result = declExtension.cast(ExtensionDeclSyntax.self)
-        return [result]
+
+        return [declExtension]
     }
 }
 

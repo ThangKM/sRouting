@@ -27,8 +27,8 @@ public final class SRCoordinatorEmitter {
         }
     }
     
-    nonisolated private let tapCountStream = SRAsyncStream(defaultValue: 0)
-    nonisolated private let cancelBag = CancelBag()
+    nonisolated private let tapCountStream = StreamProducer(element: 0, withLatest: true)
+    nonisolated private let cancelBag = CancelBag(duplicate: .cancelExisting)
     nonisolated private let autoCancelTapIdentifier = "autoCancelTapIdentifier"
     
     public init() {
@@ -47,24 +47,33 @@ public final class SRCoordinatorEmitter {
     private func _emmitDoubleTap() {
         doubleTapTabItemEmmiter.toggle()
     }
-
-    deinit {
-        cancelBag.cancelAllInTask()
-    }
 }
 
 
 extension SRCoordinatorEmitter {
     
     nonisolated private func _increaseTapCount() {
-        Task(priority: .high) {
-            await tapCountStream.increase()
+        if #available(iOS 26.0, macOS 26.0, *) {
+            Task.immediate {
+                await tapCountStream.increase()
+            }
+        } else {
+            Task(priority: .high) {
+                await tapCountStream.increase()
+            }
         }
     }
     
     nonisolated private func _resetTapCount() {
-        Task(priority: .high) {
-            await tapCountStream.reset()
+        
+        if #available(iOS 26.0, macOS 26.0, *) {
+            Task.immediate {
+                await tapCountStream.reset()
+            }
+        } else {
+            Task(priority: .high) {
+                await tapCountStream.reset()
+            }
         }
     }
     

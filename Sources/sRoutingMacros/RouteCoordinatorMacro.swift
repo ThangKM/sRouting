@@ -30,62 +30,45 @@ package struct RouteCoordinatorMacro: MemberMacro {
         let arguments = try Self._arguments(of: node)
         
         var result: [DeclSyntax] = []
-        
-        let identifier: DeclSyntax = "let identifier: String"
-        result.append(identifier)
-        
-        let rootRouter: DeclSyntax = "@MainActor let rootRouter = SRRouter(AnyRoute.self)"
-        result.append(rootRouter)
-        
-        let dsaEmiiter: DeclSyntax = "@MainActor let emitter = SRCoordinatorEmitter()"
-        result.append(dsaEmiiter)
-        
-        let indexLastStack = arguments.stacks.count - 1
-        var initStacks = "["
-        for (index,stack) in arguments.stacks.enumerated() {
-            if index == indexLastStack {
-                initStacks += "SRNavStack.\(stack):SRNavigationPath(coordinator: self)"
-            } else {
-                initStacks += "SRNavStack.\(stack):SRNavigationPath(coordinator: self), "
-            }
-            
-        }
-        initStacks += "]"
 
-        let navStacks: DeclSyntax = "@MainActor private lazy var navStacks = \(raw: initStacks)"
-        result.append(navStacks)
-        
-        for stack in arguments.stacks {
-            let shortPath: DeclSyntax = """
-            @MainActor
-            var \(raw: stack)Path: SRNavigationPath {
-                navStacks[SRNavStack.\(raw:stack)]!
+        result.append(DeclSyntax(try VariableDeclSyntax("let identifier: String")))
+
+        result.append(DeclSyntax(try VariableDeclSyntax("@MainActor let rootRouter = SRRouter(AnyRoute.self)")))
+
+        result.append(DeclSyntax(try VariableDeclSyntax("@MainActor let emitter = SRCoordinatorEmitter()")))
+
+        let initStacks = DictionaryExprSyntax {
+            for stack in arguments.stacks {
+                DictionaryElementSyntax(key: ExprSyntax("SRNavStack.\(raw: stack)"),
+                                        value: ExprSyntax("SRNavigationPath(coordinator: self)"))
             }
-            """
-            result.append(shortPath)
         }
-        
-        let navigationStacks: DeclSyntax = "@MainActor var navigationStacks: [SRNavigationPath] { navStacks.map(\\.value) }"
-        result.append(navigationStacks)
-        
-        let activeNavigaiton: DeclSyntax = "@MainActor private(set) var activeNavigation: SRNavigationPath?"
-        result.append(activeNavigaiton)
-        
-        let defaultInit: DeclSyntax = """
-        @MainActor init() {
-            self.identifier = \"\(raw: className)\" + \"_\" + TimeIdentifier.now.id
+        result.append(DeclSyntax(try VariableDeclSyntax("@MainActor private lazy var navStacks = \(initStacks)")))
+
+        for stack in arguments.stacks {
+            let shortPath = try VariableDeclSyntax("@MainActor\nvar \(raw: stack)Path: SRNavigationPath") {
+                ExprSyntax("navStacks[SRNavStack.\(raw: stack)]!")
+            }
+            result.append(DeclSyntax(shortPath))
         }
-        """
-        result.append(defaultInit)
-        
-        let resgisterFunction: DeclSyntax = """
-        @MainActor
-        func registerActiveNavigation(_ navigationPath: SRNavigationPath) {
-            activeNavigation = navigationPath
+
+        let navigationStacks = try VariableDeclSyntax("@MainActor var navigationStacks: [SRNavigationPath]") {
+            ExprSyntax("navStacks.map(\\.value)")
         }
-        """
-        result.append(resgisterFunction)
-        
+        result.append(DeclSyntax(navigationStacks))
+
+        result.append(DeclSyntax(try VariableDeclSyntax("@MainActor private(set) var activeNavigation: SRNavigationPath?")))
+
+        let defaultInit = try InitializerDeclSyntax("@MainActor init()") {
+            ExprSyntax("self.identifier = \(literal: className) + \(literal: "_") + TimeIdentifier.now.id")
+        }
+        result.append(DeclSyntax(defaultInit))
+
+        let resgisterFunction = try FunctionDeclSyntax("@MainActor\nfunc registerActiveNavigation(_ navigationPath: SRNavigationPath)") {
+            ExprSyntax("activeNavigation = navigationPath")
+        }
+        result.append(DeclSyntax(resgisterFunction))
+
         return result
     }
 }
@@ -107,39 +90,25 @@ extension RouteCoordinatorMacro: ExtensionMacro {
 
         let arguments = try Self._arguments(of: node)
 
-        var caseTabItems = ""
-        if arguments.tabs.isEmpty {
-            caseTabItems = "case none"
-        } else {
-            for item in arguments.tabs {
-                caseTabItems += "case \(item)"
-                if item != arguments.tabs.last {
-                    caseTabItems += "\n"
+        let extCoordinator = try ExtensionDeclSyntax("extension \(type.trimmed): sRouting.SRRouteCoordinatorType") {
+            try EnumDeclSyntax("enum SRTabItem: Int, IntRawRepresentable") {
+                if arguments.tabs.isEmpty {
+                    DeclSyntax("case none")
+                } else {
+                    for item in arguments.tabs {
+                        DeclSyntax("case \(raw: item)")
+                    }
                 }
             }
+            .with(\.leadingTrivia, .newlines(2))
+
+            try EnumDeclSyntax("enum SRNavStack: String, Sendable") {
+                for stack in arguments.stacks {
+                    DeclSyntax("case \(raw: stack)")
+                }
+            }
+            .with(\.leadingTrivia, .newlines(2))
         }
-        
-        var caseStackItems = ""
-        for stack in arguments.stacks {
-            caseStackItems += "case \(stack)"
-            if stack != arguments.stacks.last {
-                caseStackItems += "\n"
-            }
-        }
-        
-        let declCoordinator: DeclSyntax = """
-            extension \(raw: type.trimmedDescription): sRouting.SRRouteCoordinatorType {
-                
-                enum SRTabItem: Int, IntRawRepresentable {
-                    \(raw: caseTabItems)
-                }
-            
-                enum SRNavStack: String, Sendable {
-                    \(raw: caseStackItems)
-                }
-            }
-            """
-        let extCoordinator = declCoordinator.cast(ExtensionDeclSyntax.self)
         return [extCoordinator]
     }
 }

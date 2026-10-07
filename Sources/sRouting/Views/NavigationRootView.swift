@@ -9,6 +9,7 @@ import SwiftUI
 import Observation
 
 /// Inject ``SRNavigationPath`` environment value before observing the navigation's route transitions
+
 public struct NavigationRootView<Content>: View
 where Content: View {
     
@@ -36,6 +37,7 @@ where Content: View {
 
 extension NavigationStack where Data == NavigationPath {
     
+    @MainActor
     public init<Content: View>(path: SRNavigationPath, @ViewBuilder root: @escaping () -> Content)
     where Root == NavigationRootView<Content> {
         @Bindable var bindPath = path
