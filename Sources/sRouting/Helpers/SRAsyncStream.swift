@@ -48,7 +48,6 @@ actor SRAsyncStream<Value> where Value: Sendable {
 }
 
 extension SRAsyncStream where Value == Int {
-    
     func increase() {
         currenValue += 1
         emit(currenValue)

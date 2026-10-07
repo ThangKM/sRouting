@@ -28,7 +28,7 @@ public final class SRCoordinatorEmitter {
     }
     
     nonisolated private let tapCountStream = SRAsyncStream(defaultValue: 0)
-    nonisolated private let cancelBag = CancelBag()
+    nonisolated private let cancelBag = CancelBag(duplicate: .cancelExisting)
     nonisolated private let autoCancelTapIdentifier = "autoCancelTapIdentifier"
     
     public init() {
@@ -46,10 +46,6 @@ public final class SRCoordinatorEmitter {
     
     private func _emmitDoubleTap() {
         doubleTapTabItemEmmiter.toggle()
-    }
-
-    deinit {
-        cancelBag.cancelAllInTask()
     }
 }
 
