@@ -18,10 +18,6 @@ let package = Package(
         .library(
             name: "sRouting",
             targets: ["sRouting"]),
-        .executable(
-            name: "sRoutingClient",
-            targets: ["sRoutingClient"]
-        ),
     ],
     dependencies: [
         // Dependencies declare other packages that this package depends on.
@@ -49,7 +45,11 @@ let package = Package(
     
         .testTarget(
             name: "sRoutingTests",
-            dependencies: ["sRouting","ViewInspector","sRoutingMacros",
-                           .product(name: "SwiftSyntaxMacrosTestSupport", package: "swift-syntax"),]),
+            dependencies: ["sRouting", "ViewInspector"]),
+
+        .testTarget(
+            name: "sRoutingMacrosTests",
+            dependencies: ["sRouting", "sRoutingMacros",
+                           .product(name: "SwiftSyntaxMacrosTestSupport", package: "swift-syntax")]),
     ]
 )
