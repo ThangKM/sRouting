@@ -19,7 +19,9 @@ public final class SRRouter<Route> where Route: SRRoute {
     
     
     /// Open a new coordinator
-    /// - Parameter route: the coordinator route
+    /// - Parameters:
+    ///   - route: the coordinator route
+    ///   - action: ``SRTriggerType``
     public func openCoordinator(route: some SRRoute, with action: SRTriggerType) {
         transition = .init(coordinator: .init(route:route, triggerKind: action))
     }
@@ -37,17 +39,19 @@ public final class SRRouter<Route> where Route: SRRoute {
     }
     
     /// Show popover
-    /// - Parameter dialog: ``SRPopoverRoute``
+    /// - Parameter popover: ``SRPopoverRoute``
     public func show(popover: Route.PopoverRoute) {
         transition = .init(with: popover)
     }
     
-    /// Select tabbar item at index
-    /// - Parameter index: Index of tabbar item
+    /// Select tabbar item
+    /// - Parameters:
+    ///   - tab: The tab item, e.g. `AppCoordinator.SRTabItem.home`
+    ///   - transaction: `Transaction`
     ///
     /// ### Example
     /// ```swift
-    /// router.selectTabbar(at: 0)
+    /// router.selectTabbar(at: AppCoordinator.SRTabItem.home)
     /// ```
     public func selectTabbar(at tab: any IntRawRepresentable, with transaction: WithTransaction? = .none) {
         transition = .init(selectTab: tab, and: transaction)
@@ -57,17 +61,20 @@ public final class SRRouter<Route> where Route: SRRoute {
     /// - Parameters:
     ///   - route: Type of ``SRRoute``
     ///   - action: ``SRTriggerType``
+    ///   - transaction: `Transaction`
     ///
     /// ### Example
     /// ```swift
     /// router.trigger(to: .detailScreen, with: .push)
     /// ```
     public func trigger(to route: Route, with action: SRTriggerType, and transaction: WithTransaction? = .none) {
-        transition = .init(with: route, and: .init(with: action), transaction: transaction)
+        transition = .init(with: route, and: action, transaction: transaction)
     }
     
     /// Show an alert
-    /// - Parameter alert: Alert
+    /// - Parameters:
+    ///   - alert: ``SRAlertRoute``
+    ///   - transaction: `Transaction`
     ///
     /// ### Example
     /// ```swift
@@ -116,7 +123,7 @@ public final class SRRouter<Route> where Route: SRRoute {
     
     /// Navigation pop to target action.
     /// - Parameters:
-    ///   - path: ``SRRoute.PathsType``
+    ///   - path: The route's generated `Paths` case, e.g. `HomeRoute.Paths.cake`
     ///   - transaction: `Transaction`
     public func pop(to path: some StringRawRepresentable, with transaction: WithTransaction? = .none) {
         transition = .init(popTo: path, and: transaction)
@@ -126,11 +133,11 @@ public final class SRRouter<Route> where Route: SRRoute {
     /// - Parameter windowTrans: ``SRWindowTransition``
     ///
     /// ### Example
-    /// ```swif
+    /// ```swift
     /// openWindow(windowTrans: windowTrans)
     /// ```
     public func openWindow(windowTrans: SRWindowTransition) {
-        transition = .init(with: .openWindow, windowTransition: windowTrans)
+        transition = .init(windowTransition: windowTrans)
     }
     
     /// Reset the transition to release anything the route holds.

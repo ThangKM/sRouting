@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import sRouting
 
 struct HomeScreen: View {
     
@@ -19,7 +20,7 @@ struct HomeScreen: View {
     
     var body: some View {
         BookieNavigationView(title: "My Book List",
-                             router: viewModel,
+                             router: router,
                              isBackType: false) {
             VStack {
                 Group {

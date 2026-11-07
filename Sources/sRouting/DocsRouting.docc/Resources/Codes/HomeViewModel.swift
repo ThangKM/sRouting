@@ -6,8 +6,6 @@
 //
 
 import Foundation
-import sRouting
-import Combine
 
 @Observable
 final class HomeViewModel {
@@ -26,11 +24,6 @@ final class HomeViewModel {
                         isForceUpdate isForce: Bool = false) {
         guard allBooks.isEmpty || isForce else { return }
         allBooks = books
-    }
-    
-    @MainActor
-    func pushDetail(of book: BookModel) {
-        trigger(to: .bookDetailScreen(book: book), with: .allCases.randomElement() ?? .push)
     }
 }
 

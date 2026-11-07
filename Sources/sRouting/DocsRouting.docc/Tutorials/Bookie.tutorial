@@ -78,13 +78,20 @@
         @Steps {
             
             @Step {
-                Create the `AppRoute` conforms to `Route`.
-                This route is the root route of the app.
+                Declare `AppRoute` with the `@sRoute` macro.
+                This is the root route of the app; `SRSwitchView` switches between its screens.
                 @Code(name: "AppRoute.swift", file: AppRoute.swift)
             }
             
             @Step {
-                Setup your root view in `BookieApp`.
+                Declare `HomeRoute` for the screens pushed from `HomeScreen`.
+                `@sRoute` generates the `path` and the `SRRoute` conformance.
+                @Code(name: "HomeRoute.swift", file: HomeRoute.swift)
+            }
+            
+            @Step {
+                Declare the coordinator with `@sRouteCoordinator` and the navigation destinations with `@sRouteObserver`,
+                then set up `SRRootView` in `BookieApp`.
                 @Code(name: "BookieApp.swift", file: BookieApp.swift)
             }
         }
@@ -113,24 +120,24 @@
             }
             
             @Step {
-                Create the `router`  with Route is `AppRoute` in `StartScreen`.
+                Create an `SRRouter` for `AppRoute` in `StartScreen` and observe it with `onRouting(of:)`.
                 Layout the `StartScreen` and `RandomBubbleView`.
-                Change root to home with `AppRouter` when tapping on start button.
+                Switch the root to the home screen with `switchTo(route:)` when tapping the start button.
                 @Code(name: "StartScreen.swift", file: StartScreen.swift) {
                     @Image(source: startscreen.jpeg, alt: "start screen screenshoot")
                 }
             }
     
             @Step {
-                Create the custom NavigationView named `BookieNavigationView`.
+                Create the custom navigation view named `BookieNavigationView`.
+                It observes the screen's router with `onRouting(of:)` and dismisses with `router.dismiss()`.
                 @Code(name: "BookieNavigationView.swift", file: BookieNavigationView.swift) {
                     @Image(source: bookienavigationview.png, alt: "BookieNavigationView screenshoot")
                 }
             }
             
             @Step {
-                Create a `HomeViewModel` which is inherited from `Router`.
-                HomeViewModel will handle all action on `HomeScreen`.
+                Create a `HomeViewModel` to hold the book list and the search text of `HomeScreen`.
                 @Code(name: "HomeViewModel.swift", file: HomeViewModel.swift)
             }
             
@@ -142,22 +149,22 @@
             }
             
             @Step {
-                Layout `HomeScreen` and handle actions with `HomeViewModel`
+                Layout `HomeScreen` with an `SRRouter` for `HomeRoute`.
+                `NavigationLink(route:)` pushes the book detail screen.
                 @Code(name: "HomeScreen.swift", file: HomeScreen.swift) {
                     @Image(source: homescreen.jpeg, alt: "HomeScreen screenshoot")
                 }
             }
             
             @Step {
-                Create a `BookDetailViewModel` which is inherited from `Router`.
-                HomeViewModel will handle all action on `BookDetailScreen`.
+                Create a `BookDetailViewModel` to hold the book shown in `BookDetailScreen`.
                 @Code(name: "BookDetailViewModel.swift", file: BookDetailViewModel.swift)
             }
             
             @Step {
-                Layout `BookDetailScren` and handle actions with `BookDetailViewModel`.
-                @Code(name: "BookDetailScren.swift", file: BookDetailScreen.swift) {
-                    @Image(source: bookdetailscreen.jpeg, alt: "BookDetailScren screenshoot")
+                Layout `BookDetailScreen` and handle actions with `BookDetailViewModel`.
+                @Code(name: "BookDetailScreen.swift", file: BookDetailScreen.swift) {
+                    @Image(source: bookdetailscreen.jpeg, alt: "BookDetailScreen screenshot")
                 }
             }
         }

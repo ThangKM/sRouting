@@ -2,14 +2,35 @@
 
 ## Topics
 
-### Navigation Activities
+### Creating a Router
 
-- ``selectTabbar(at:)``
-- ``trigger(to:with:)``
-- ``show(alert:)``
-- ``show(error:and:)``
+- ``init(_:)``
+
+### Presenting Screens
+
+- ``trigger(to:with:and:)``
+- ``switchTo(route:)``
+- ``openCoordinator(route:with:)``
+- ``openWindow(windowTrans:)``
+
+### Alerts, Dialogs and Popovers
+
+- ``show(alert:withTransaction:)``
+- ``show(dialog:)``
+- ``show(popover:)``
+
+### Dismissing
+
 - ``dismiss()``
 - ``dismissAll()``
-- ``show(popover:)``
-- ``show(dialog:)``
-- ``switchTo(route:)``
+- ``dismissCoordinator()``
+
+### Navigation Stack
+
+- ``pop(with:)``
+- ``popToRoot(with:)``
+- ``pop(to:with:)``
+
+### Tabs
+
+- ``selectTabbar(at:with:)``

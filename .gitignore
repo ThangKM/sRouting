@@ -4,5 +4,13 @@
 /*.xcodeproj
 xcuserdata/
 DerivedData/
-.swiftpm/
+.swiftpm/*
+!.swiftpm/xcode/
+.swiftpm/xcode/*
+!.swiftpm/xcode/xcshareddata/
+.swiftpm/xcode/xcshareddata/*
+!.swiftpm/xcode/xcshareddata/xcschemes/
+.swiftpm/xcode/xcshareddata/xcschemes/*
+# Shared scheme CI uses to run the library tests on iOS without building the macros for iOS
+!.swiftpm/xcode/xcshareddata/xcschemes/sRouting-iOSTests.xcscheme
 .docc-build
