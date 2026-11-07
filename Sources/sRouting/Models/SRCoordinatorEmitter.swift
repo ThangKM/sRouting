@@ -18,22 +18,21 @@ public final class SRCoordinatorEmitter {
     
     public var tabSelection: Int = .zero {
         willSet {
-            if newValue == _tabSelection {
-                _increaseTapCount()
-                _autoCancelTapCount()
-            } else {
-                _resetTapCount()
+            guard newValue == _tabSelection else {
+                lastReselect = nil
+                return
             }
+            _handleReselect()
         }
     }
     
-    nonisolated private let tapCountStream = StreamProducer(element: 0, withLatest: true)
-    nonisolated private let cancelBag = CancelBag(duplicate: .cancelExisting)
-    nonisolated private let autoCancelTapIdentifier = "autoCancelTapIdentifier"
+    /// Time of the last re-selection of the current tab, used to detect a double tap.
+    @ObservationIgnored
+    private var lastReselect: ContinuousClock.Instant?
     
-    public init() {
-        _observeTapCountStream()
-    }
+    private let doubleTapInterval: Duration = .milliseconds(400)
+    
+    public init() { }
     
     public func select(tag: Int) {
         tabSelection = tag
@@ -44,61 +43,13 @@ public final class SRCoordinatorEmitter {
         dismissEmitter.toggle()
     }
     
-    private func _emmitDoubleTap() {
-        doubleTapTabItemEmmiter.toggle()
-    }
-}
-
-
-extension SRCoordinatorEmitter {
-    
-    nonisolated private func _increaseTapCount() {
-        if #available(iOS 26.0, macOS 26.0, *) {
-            Task.immediate {
-                await tapCountStream.increase()
-            }
+    private func _handleReselect() {
+        let now = ContinuousClock.now
+        if let lastReselect, now - lastReselect < doubleTapInterval {
+            self.lastReselect = nil
+            doubleTapTabItemEmmiter.toggle()
         } else {
-            Task(priority: .high) {
-                await tapCountStream.increase()
-            }
+            lastReselect = now
         }
-    }
-    
-    nonisolated private func _resetTapCount() {
-        
-        if #available(iOS 26.0, macOS 26.0, *) {
-            Task.immediate {
-                await tapCountStream.reset()
-            }
-        } else {
-            Task(priority: .high) {
-                await tapCountStream.reset()
-            }
-        }
-    }
-    
-    nonisolated private func _observeTapCountStream() {
-        Task.detached {[weak self] in
-            guard let stream = await self?.tapCountStream.stream,
-            let cancelTapId = self?.autoCancelTapIdentifier
-            else { return }
-            
-            for await _ in stream.filter({ $0 == 2 }) {
-                try Task.checkCancellation()
-                await self?._emmitDoubleTap()
-                await self?.tapCountStream.reset()
-                await self?.cancelBag.cancel(forIdentifier: cancelTapId)
-            }
-        }.store(in: cancelBag)
-    }
-
-    nonisolated private func _autoCancelTapCount() {
-        Task.detached {[weak self] in
-            try await Task.sleep(for: .milliseconds(400))
-            try Task.checkCancellation()
-            await self?.tapCountStream.reset()
-            guard let cancelId = self?.autoCancelTapIdentifier else { return }
-            await self?.cancelBag.cancel(forIdentifier: cancelId)
-        }.store(in: cancelBag, withIdentifier: autoCancelTapIdentifier)
     }
 }
