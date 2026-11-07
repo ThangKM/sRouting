@@ -287,7 +287,7 @@ extension RouterModifier {
 extension View {
     
     /// Observe router transitions
-    /// - Parameter router: ``SRRouterType``
+    /// - Parameter router: ``SRRouter``
     /// - Returns: some `View`
     public func onRouting<Route: SRRoute>(of router: SRRouter<Route>) -> some View {
         self.modifier(RouterModifier(router: router))
@@ -295,7 +295,7 @@ extension View {
     
     /// Observe router transition (on test purpose)
     /// - Parameters:
-    ///   - router: ``SRRouterType``
+    ///   - router: ``SRRouter``
     ///   - tests: Unit test action
     /// - Returns: some `View`
     func onRouting<Route: SRRoute>(of router: SRRouter<Route>,

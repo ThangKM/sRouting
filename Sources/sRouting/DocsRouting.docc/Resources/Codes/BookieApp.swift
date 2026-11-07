@@ -20,13 +20,14 @@ struct BookieApp: App {
 
     @State private var appCoordinator = AppCoordinator()
     @State private var context = SRContext()
+    @State private var mockData = MockBookData()
     
     var body: some Scene {
         WindowGroup {
             SRRootView(context: context, coordinator: appCoordinator) {
                 SRSwitchView(startingWith: AppRoute.startScreen)
             }
-            .modelContainer(DatabaseProvider.shared.container)
+            .environment(mockData)
         }
     }
 }

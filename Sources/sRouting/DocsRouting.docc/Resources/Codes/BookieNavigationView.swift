@@ -18,7 +18,7 @@ struct BookieNavigationView<Content, Route>: View where Content: View, Route: SR
     let isBackType: Bool
    
     @ViewBuilder
-    let content: Content
+    let content: () -> Content
     
     var body: some View {
         ZStack {

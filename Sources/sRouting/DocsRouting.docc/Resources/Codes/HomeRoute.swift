@@ -8,12 +8,12 @@
 import SwiftUI
 import sRouting
 
-enum HomeRoute: SRRoute {
+@sRoute
+enum HomeRoute {
     
     case bookDetailScreen(book: BookModel)
     
-    var path: String { "detailScreen" }
-    
+    @ViewBuilder @MainActor
     var screen: some View {
         switch self {
         case .bookDetailScreen(let book): BookDetailScreen(book: book)

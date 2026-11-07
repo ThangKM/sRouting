@@ -1,4 +1,4 @@
-## 🏃‍♂️ Getting Started with sRouting
+# Getting Started with sRouting
 
 Set up the `SRRootView` and interact with macros.
 
@@ -73,6 +73,8 @@ Start by configuring a coordinator and SRRootView for your application.
 
 Declaring a Coordinator:
 
+The macro generates an `SRTabItem` case for each tab name and an `SRNavigationPath` property named `<stack>Path` for each stack.
+
 ```swift
 @sRouteCoordinator(tabs: ["home", "setting"], stacks: "home", "setting")
 @Observable
@@ -119,13 +121,13 @@ struct MainScreen: View {
                 HomeScreen()
                     .routeObserver(RouteObserver.self)
             }
-            .tag(AppCoordinator.SRTabItem.homeItem.rawValue)
+            .tag(AppCoordinator.SRTabItem.home.rawValue)
             
             NavigationStack(path: coordinator.settingPath) {
                 SettingScreen()
                     .routeObserver(RouteObserver.self)
             }
-            .tag(AppCoordinator.SRTabItem.settingItem.rawValue)
+            .tag(AppCoordinator.SRTabItem.setting.rawValue)
         }
     }
 }
@@ -169,17 +171,22 @@ struct HomeScreen: View {
 ```
 
 DeepLink:
+
+`SRContext` routes through the top-most coordinator, waiting between steps so each transition can finish.
+
 ```swift
 ...
 .onOpenURL { url in
     Task {
         ...
         await context.routing(.resetAll,
-                              .select(tabItem: .home),
+                              .selectTabView(AppCoordinator.SRTabItem.home),
                               .push(route: HomeRoute.cake))
     }
 }
 ```
+
+Available steps: `.resetAll`, `.dismissAll`, `.popToRoot`, `.selectTabView(_:)`, `.push(route:)`, `.sheet(_:)`, `.present(_:)` (iOS), `.window(_:)` and `.wait(_:)`.
 
 ### Using Multiple Coordinators
 
@@ -303,6 +310,84 @@ router.pop()
 router.popToRoot()
 
 router.pop(to: HomeRoute.Paths.cake)
+```
+
+Customize the animation with a `Transaction`:
+
+```swift
+router.trigger(to: .cake, with: .push) {
+    var transaction = Transaction()
+    transaction.disablesAnimations = true
+    return transaction
+}
+```
+
+Open a window (macOS, iPadOS and visionOS):
+
+```swift
+router.openWindow(windowTrans: .init(windowId: "detail"))
+router.openWindow(windowTrans: .init(value: book.id))
+```
+
+### Alerts, Confirmation Dialogs and Popovers
+
+Declare the route types and set them on your ``SRRoute`` with `typealias AlertRoute`, `ConfirmationDialogRoute` and `PopoverRoute`:
+
+```swift
+enum YourAlertRoute: SRAlertRoute {
+    case lostConnection
+
+    var titleKey: LocalizedStringKey { "Lost Connection" }
+    var message: some View { Text("Please check your connection") }
+    var actions: some View { Button("OK") { } }
+}
+
+enum YourConfirmationDialogRoute: SRConfirmationDialogRoute {
+    case deleteBook
+
+    var identifier: String { "deleteBook" }
+    var titleKey: LocalizedStringKey { "Delete this book?" }
+    var titleVisibility: Visibility { .visible }
+    var message: some View { Text("This can't be undone.") }
+    var actions: some View { Button("Delete", role: .destructive) { } }
+}
+```
+
+```swift
+router.show(alert: YourAlertRoute.lostConnection)
+router.show(dialog: YourConfirmationDialogRoute.deleteBook)
+router.show(popover: YourPopoverRoute.info)
+```
+
+On iPad and on iOS 26 or later, a confirmation dialog is anchored to a view. On iPad and macOS, so is a popover.
+Attach the anchor modifier to the view the dialog or popover should point at:
+
+```swift
+Button("Delete") {
+    router.show(dialog: .deleteBook)
+}
+.onDialogRouting(of: router, for: .deleteBook)
+
+Button("Info") {
+    router.show(popover: .info)
+}
+.onPopoverRouting(of: router, for: .info)
+```
+
+### Observing Navigation Changes
+
+```swift
+TabView(selection: $emitter.tabSelection) { ... }
+    .onTabSelectionChange { selection in ... }   // the selected tab changed
+    .onDoubleTapTabItem { selection in ... }     // the selected tab was tapped twice, e.g. scroll to top
+
+NavigationStack(path: coordinator.homePath) {
+    HomeScreen()
+        .onNaviStackChange { oldPaths, newPaths in ... } // apply inside the stack
+}
+
+SomeScreen()
+    .onDismissAllChange { ... }                  // `dismissAll()` was triggered
 ```
 
 ## 📃 License

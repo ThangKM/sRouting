@@ -13,8 +13,8 @@ struct StartScreen: View {
     @AppStorage("didTutorial")
     private var didTutorial: Bool = false
 
-    @Environment(AppRouter.self)
-    private var appRouter
+    @State
+    private var router = SRRouter(AppRoute.self)
     
     var body: some View {
         ZStack {
@@ -59,7 +59,7 @@ struct StartScreen: View {
                 Spacer()
                 
                 Button {
-                    appRouter.rootRoute = .homeScreen
+                    router.switchTo(route: AppRoute.homeScreen)
                     didTutorial = true
                 } label: {
                     Text("Start")
@@ -71,5 +71,6 @@ struct StartScreen: View {
             }
         }
         .navigationBarHidden(true)
+        .onRouting(of: router)
     }
 }
