@@ -106,8 +106,11 @@ struct RouterModifier<Route>: ViewModifier where Route: SRRoute {
     }
     
     func body(content: Content) -> some View {
-        #if os(macOS)
         content
+            .fullScreenCoverIfAvailable(isPresented: $isActivePresent) {
+                destinationView
+                    .environment(context)
+            }
             .sheet(isPresented: $isActiveSheet,
                    content: {
                 destinationView
@@ -126,68 +129,12 @@ struct RouterModifier<Route>: ViewModifier where Route: SRRoute {
             }, message: {
                 dialogMessage
             })
-            .onChange(of: context?.dismissAllSignal, { oldValue, newValue in
-                resetActiveState()
-            })
-            .onChange(of: coordinatorEmitter?.dismissEmitter, { oldValue, newValue in
-                dismissCoordinator()
-            })
-            .onChange(of: router.transition, { oldValue, newValue in
-                let transaction = newValue.transaction?()
-                if let transaction {
-                    withTransaction(transaction) {
-                        updateActiveState(from: newValue)
-                    }
-                } else {
-                    updateActiveState(from: newValue)
-                }
-            })
-            .onChange(of: isActiveAlert, { oldValue, newValue in
-                guard oldValue && !newValue else { return }
-                resetRouterTransiton()
-            })
-            .onChange(of: isActiveSheet, { oldValue, newValue in
-                guard oldValue && !newValue else { return }
-                resetRouterTransiton()
-            })
-            .onChange(of: isActiveDialog, { oldValue, newValue in
-                guard oldValue && !newValue else { return }
-                resetRouterTransiton()
-            })
-            .onAppear() {
-                resetRouterTransiton()
-            }
-        #else
-        content
-            .fullScreenCover(isPresented: $isActivePresent) {
-                destinationView
-                    .environment(context)
-            }
-            .sheet(isPresented: $isActiveSheet,
-                content: {
-                destinationView
-                    .environment(context)
-            })
-            .alert(alertTitle, isPresented: $isActiveAlert, actions: {
-                alertActions
-            }, message: {
-                alertMessage
-            })
-            .confirmationDialog(dialogTitleKey,
-                                isPresented: $isActiveDialog,
-                                titleVisibility: dialogTitleVisibility,
-                                actions: {
-                dialogActions
-            }, message: {
-                dialogMessage
-            })
-            .popover(isPresented: $isActivePopover,
-                     attachmentAnchor: popoverAnchor,
-                     arrowEdge: popoverEdge,
-                     content: {
+            .popoverIfAvailable(isPresented: $isActivePopover,
+                                attachmentAnchor: popoverAnchor,
+                                arrowEdge: popoverEdge) {
                 popoverContent
                     .environment(context)
-            })
+            }
             .onChange(of: context?.dismissAllSignal, { oldValue, newValue in
                 resetActiveState()
             })
@@ -227,7 +174,6 @@ struct RouterModifier<Route>: ViewModifier where Route: SRRoute {
             .onAppear() {
                 resetRouterTransiton()
             }
-        #endif
     }
 }
 
@@ -360,5 +306,38 @@ extension View {
     func onRouting<Route: SRRoute>(of router: SRRouter<Route>,
                                    tests: UnitTestActions<RouterModifier<Route>>?) -> some View {
         self.modifier(RouterModifier(router: router, tests: tests))
+    }
+}
+
+//MARK: - Platform specific presentations
+extension View {
+
+    /// `fullScreenCover` on platforms that support it; no-op on macOS.
+    @ViewBuilder
+    fileprivate func fullScreenCoverIfAvailable<Destination: View>(
+        isPresented: Binding<Bool>,
+        @ViewBuilder content: @escaping () -> Destination) -> some View {
+        #if os(macOS)
+        self
+        #else
+        self.fullScreenCover(isPresented: isPresented, content: content)
+        #endif
+    }
+
+    /// `popover` on platforms where the router presents it; no-op on macOS.
+    @ViewBuilder
+    fileprivate func popoverIfAvailable<Destination: View>(
+        isPresented: Binding<Bool>,
+        attachmentAnchor: PopoverAttachmentAnchor,
+        arrowEdge: Edge?,
+        @ViewBuilder content: @escaping () -> Destination) -> some View {
+        #if os(macOS)
+        self
+        #else
+        self.popover(isPresented: isPresented,
+                     attachmentAnchor: attachmentAnchor,
+                     arrowEdge: arrowEdge,
+                     content: content)
+        #endif
     }
 }
