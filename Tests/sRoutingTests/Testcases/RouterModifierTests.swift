@@ -188,7 +188,7 @@ struct RouterModifierTests {
     @Test
     func testActiveConfirmationDialog() async throws {
         #if os(iOS)
-        guard UIDevice.current.userInterfaceIdiom != .pad else { return }
+        guard !usesAnchoredDialog else { return }
         #endif
         let waiter = Waiter()
         let box = ValueBox(value: false)
@@ -207,7 +207,7 @@ struct RouterModifierTests {
     @Test
     func testResetRouterTransitionByDialog() async throws {
         #if os(iOS)
-        guard UIDevice.current.userInterfaceIdiom != .pad else { return }
+        guard !usesAnchoredDialog else { return }
         #endif
         var action: ActionBox?
         let sut = TestScreen(router: router, tests: .init(didChangeTransition: { view in
@@ -366,7 +366,7 @@ struct RouterModifierTests {
     
     @Test
     func testOnDialogRouterActiveConfirmationDialog() async throws {
-        guard UIDevice.current.userInterfaceIdiom == .pad else { return }
+        guard usesAnchoredDialog else { return }
         var isActive = false
         let sut = DialogScreen(router: router, tests: .init(didChangeTransition: { view in
             isActive = view.isActiveDialog
@@ -380,7 +380,7 @@ struct RouterModifierTests {
     
     @Test
     func testOnDialogRouterResetRouterTransitionByDialog() async throws {
-        guard UIDevice.current.userInterfaceIdiom == .pad else { return }
+        guard usesAnchoredDialog else { return }
         var action: ActionBox?
         let waiter = Waiter()
         let sut = DialogScreen(router: router, tests: .init(didChangeTransition: { view in
@@ -455,3 +455,13 @@ fileprivate final class ValueBox<T> {
         self.value = value
     }
 }
+
+#if os(iOS)
+/// Mirrors the library: confirmation dialogs are presented by `onDialogRouting` (anchored)
+/// on iPad and on iOS 26+, and by `onRouting` otherwise.
+@MainActor
+private var usesAnchoredDialog: Bool {
+    if #available(iOS 26.0, *) { return true }
+    return UIDevice.current.userInterfaceIdiom == .pad
+}
+#endif
