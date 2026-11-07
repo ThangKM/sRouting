@@ -71,7 +71,7 @@ public actor CancelBag: ObservableObject {
     }
     
     nonisolated fileprivate func append(task: AnyTask) {
-        if #available(iOS 26.0, macOS 26.0, *) {
+        if #available(iOS 26.0, macOS 26.0, visionOS 26.0, *) {
             Task.immediate {[weak self] in
                 await self?.insert(task)
                 try? await task.waitComplete()

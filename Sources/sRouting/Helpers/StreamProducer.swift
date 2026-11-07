@@ -70,7 +70,7 @@ public actor StreamProducer<Element>: StreamProducerType where Element: Sendable
     }
 
     nonisolated private func onTermination(forKey key: String) {
-        if #available(iOS 26.0, macOS 26.0, *) {
+        if #available(iOS 26.0, macOS 26.0, visionOS 26.0, *) {
             Task.immediate {
                 await removeContinuation(forKey: key)
             }
@@ -83,7 +83,7 @@ public actor StreamProducer<Element>: StreamProducerType where Element: Sendable
     
     @available(*, deprecated, renamed: "finish", message: "The Stream will be automatically finished when deallocated. No need to call it manually.")
     public nonisolated func nonIsolatedFinish() {
-        if #available(iOS 26.0, macOS 26.0, *) {
+        if #available(iOS 26.0, macOS 26.0, visionOS 26.0, *) {
             Task.immediate {
                 await finish()
             }
@@ -95,7 +95,7 @@ public actor StreamProducer<Element>: StreamProducerType where Element: Sendable
     }
     
     public nonisolated func nonIsolatedEmit(_ element: Element) {
-        if #available(iOS 26.0, macOS 26.0, *) {
+        if #available(iOS 26.0, macOS 26.0, visionOS 26.0, *) {
             Task.immediate {
                 await emit(element: element)
             }
