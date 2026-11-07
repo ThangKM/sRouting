@@ -31,7 +31,7 @@ where Route: SRRoute {
         case openCoordinator(CoordinatorRoute)
     }
 
-    let transitionId = UUID()
+    let transitionId: TimeIdentifier = .now
     let action: Action
     let transaction: WithTransaction?
 
@@ -148,12 +148,16 @@ extension SRTransition {
 }
 
 extension SRTransition: Equatable {
-    /// Every transition is unique, so the same action triggered twice is still observed as a change.
-    /// All `.none` transitions are equal.
+    /// Two transitions of the same kind, tab and route created within the same ``TimeIdentifier``
+    /// (tenth of a second) are equal on purpose: the router's `onChange` ignores the second one,
+    /// which throttles duplicate triggers such as a double tap pushing the same screen twice.
     public static func == (lhs: Self, rhs: Self) -> Bool {
-        if case .none = lhs.action, case .none = rhs.action {
+        if lhs.type == .none && rhs.type == .none {
             return true
         }
-        return lhs.transitionId == rhs.transitionId
+        return lhs.type == rhs.type
+        && lhs.tabIndex?.intValue == rhs.tabIndex?.intValue
+        && lhs.route == rhs.route
+        && lhs.transitionId == rhs.transitionId
     }
 }
