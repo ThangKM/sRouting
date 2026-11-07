@@ -55,6 +55,13 @@ struct TestInitializers {
     }
     
     @Test
+    func testIdenticalTransitionsAreDistinct() {
+        let first = SRTransition<TestRoute>(with: .pop)
+        let second = SRTransition<TestRoute>(with: .pop)
+        #expect(first != second, "Back-to-back identical transitions must both be observed")
+    }
+
+    @Test
     func testInitTransitionNoneType() throws {
         let sut = SRTransition<TestRoute>.none
         #expect(sut.alert == nil)

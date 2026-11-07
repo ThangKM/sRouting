@@ -31,7 +31,7 @@ where Route: SRRoute {
         case openCoordinator(CoordinatorRoute)
     }
 
-    let transitionId: TimeIdentifier = .now
+    let transitionId = UUID()
     let action: Action
     let transaction: WithTransaction?
 
@@ -148,17 +148,12 @@ extension SRTransition {
 }
 
 extension SRTransition: Equatable {
-    /// Conform Equatable
-    /// - Parameters:
-    ///   - lhs: left value
-    ///   - rhs: right value
+    /// Every transition is unique, so the same action triggered twice is still observed as a change.
+    /// All `.none` transitions are equal.
     public static func == (lhs: Self, rhs: Self) -> Bool {
-        if lhs.type == .none && rhs.type == .none {
+        if case .none = lhs.action, case .none = rhs.action {
             return true
         }
-        return lhs.type == rhs.type
-        && lhs.tabIndex?.intValue == rhs.tabIndex?.intValue
-        && lhs.route == rhs.route
-        && lhs.transitionId == rhs.transitionId
+        return lhs.transitionId == rhs.transitionId
     }
 }
