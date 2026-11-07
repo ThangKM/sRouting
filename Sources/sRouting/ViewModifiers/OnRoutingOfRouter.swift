@@ -207,9 +207,8 @@ extension RouterModifier {
     /// - Parameter transition: ``Transiton``
     @MainActor
     private func updateActiveState(from transition: SRTransition<Route>) {
-        switch transition.type {
-        case .push:
-            guard let route = transition.route else { break }
+        switch transition.action {
+        case .push(let route):
             navigationPath?.push(to: route)
         case .present:
             isActivePresent = true
@@ -241,8 +240,8 @@ extension RouterModifier {
             #endif
         case .dismiss:
             dismissAction()
-        case .selectTab:
-            coordinatorEmitter?.select(tag: transition.tabIndex?.intValue ?? .zero)
+        case .selectTab(let tab):
+            coordinatorEmitter?.select(tag: tab.intValue)
         case .dismissAll:
             context?.dismissAll()
         case .dismissCoordinator:
@@ -251,16 +250,13 @@ extension RouterModifier {
             navigationPath?.pop()
         case .popToRoot:
             navigationPath?.popToRoot()
-        case .popToRoute:
-            guard let path = transition.popToPath else { break }
+        case .popToRoute(let path):
             navigationPath?.pop(to: path)
-        case .openWindow:
-            openWindow(transition: transition.windowTransition)
-        case .switchRoot:
-            guard let route = transition.rootRoute else { break }
+        case .openWindow(let windowTransition):
+            openWindow(transition: windowTransition)
+        case .switchRoot(let route):
             switcher?.switchTo(route: route)
-        case .openCoordinator:
-            guard let coordinatorRoute = transition.coordinator else { break }
+        case .openCoordinator(let coordinatorRoute):
             context?.openCoordinator(coordinatorRoute)
         case .none: break
         }
@@ -269,8 +265,7 @@ extension RouterModifier {
     }
     
     @MainActor
-    private func openWindow(transition: SRWindowTransition?) {
-        guard let transition else { return }
+    private func openWindow(transition: SRWindowTransition) {
         guard tests == nil else {
             tests?.didOpenWindow?(transition)
             return

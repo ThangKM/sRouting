@@ -63,7 +63,7 @@ public final class SRRouter<Route> where Route: SRRoute {
     /// router.trigger(to: .detailScreen, with: .push)
     /// ```
     public func trigger(to route: Route, with action: SRTriggerType, and transaction: WithTransaction? = .none) {
-        transition = .init(with: route, and: .init(with: action), transaction: transaction)
+        transition = .init(with: route, and: action, transaction: transaction)
     }
     
     /// Show an alert
@@ -130,7 +130,7 @@ public final class SRRouter<Route> where Route: SRRoute {
     /// openWindow(windowTrans: windowTrans)
     /// ```
     public func openWindow(windowTrans: SRWindowTransition) {
-        transition = .init(with: .openWindow, windowTransition: windowTrans)
+        transition = .init(windowTransition: windowTrans)
     }
     
     /// Reset the transition to release anything the route holds.

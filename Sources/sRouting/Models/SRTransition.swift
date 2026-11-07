@@ -9,86 +9,141 @@ import SwiftUI
 
 public struct SRTransition<Route>: Sendable
 where Route: SRRoute {
-    
+
+    /// A transition and the payload it carries. Each case holds exactly what it needs.
+    enum Action: Sendable {
+        case none
+        case dismiss
+        case dismissAll
+        case dismissCoordinator
+        case pop
+        case popToRoot
+        case push(Route)
+        case present(Route)
+        case sheet(Route)
+        case alert(Route.AlertRoute)
+        case confirmationDialog(Route.ConfirmationDialogRoute)
+        case popover(Route.PopoverRoute)
+        case selectTab(any IntRawRepresentable)
+        case popToRoute(any StringRawRepresentable)
+        case openWindow(SRWindowTransition)
+        case switchRoot(any SRRoute)
+        case openCoordinator(CoordinatorRoute)
+    }
+
     let transitionId: TimeIdentifier = .now
-    let type: SRTransitionKind
+    let action: Action
     let transaction: WithTransaction?
-    
-    private(set) var route: Route?
-    private(set) var alert: Route.AlertRoute?
-    private(set) var tabIndex: (any IntRawRepresentable)?
-    private(set) var popToPath: (any StringRawRepresentable)?
-    private(set) var windowTransition: SRWindowTransition?
-    private(set) var confirmationDialog: Route.ConfirmationDialogRoute?
-    private(set) var popover: Route.PopoverRoute?
-    private(set) var rootRoute: (any SRRoute)?
-    private(set) var coordinator: CoordinatorRoute?
-    
-    init(coordinator: CoordinatorRoute) {
-        self.coordinator = coordinator
-        transaction = nil
-        type = .openCoordinator
-    }
-    
-    init(switchTo route: some SRRoute, and transaction: WithTransaction? = .none) {
-        self.type = .switchRoot
-        self.rootRoute = route
-        self.transaction = transaction
-    }
-    
-    init(with route: Route.PopoverRoute?, and transaction: WithTransaction? = .none) {
-        self.type = .popover
-        self.popover = route
-        self.transaction = transaction
-    }
-    
-    init(with route: Route.ConfirmationDialogRoute?, and transaction: WithTransaction? = .none) {
-        self.type = .confirmationDialog
-        self.confirmationDialog = route
+
+    init(with action: Action, and transaction: WithTransaction? = .none) {
+        self.action = action
         self.transaction = transaction
     }
 
-    init(with type: SRTransitionKind, and transaction: WithTransaction? = .none) {
-        self.type = type
-        self.transaction = transaction
+    init(coordinator: CoordinatorRoute) {
+        self.init(with: .openCoordinator(coordinator))
     }
-    
+
+    init(switchTo route: some SRRoute, and transaction: WithTransaction? = .none) {
+        self.init(with: .switchRoot(route), and: transaction)
+    }
+
+    init(with route: Route.PopoverRoute, and transaction: WithTransaction? = .none) {
+        self.init(with: .popover(route), and: transaction)
+    }
+
+    init(with route: Route.ConfirmationDialogRoute, and transaction: WithTransaction? = .none) {
+        self.init(with: .confirmationDialog(route), and: transaction)
+    }
+
     init(selectTab tab: any IntRawRepresentable, and transaction: WithTransaction? = .none) {
-        self.type = .selectTab
-        self.tabIndex = tab
-        self.transaction = transaction
+        self.init(with: .selectTab(tab), and: transaction)
     }
 
     init(with alert: Route.AlertRoute, and transaction: WithTransaction? = .none) {
-        self.type = .alert
-        self.alert = alert
-        self.transaction = transaction
+        self.init(with: .alert(alert), and: transaction)
     }
-    
-    init(with route: Route, and action: SRTransitionKind, transaction: WithTransaction? = .none) {
-        self.type = action
-        self.route = route
-        self.transaction = transaction
+
+    init(with route: Route, and trigger: SRTriggerType, transaction: WithTransaction? = .none) {
+        switch trigger {
+        case .push: self.init(with: .push(route), and: transaction)
+        case .sheet: self.init(with: .sheet(route), and: transaction)
+        #if os(iOS) || os(tvOS)
+        case .present: self.init(with: .present(route), and: transaction)
+        #endif
+        }
     }
-    
+
     init(popTo path: some StringRawRepresentable, and transaction: WithTransaction? = .none) {
-        self.type = .popToRoute
-        self.popToPath = path
-        self.transaction = transaction
+        self.init(with: .popToRoute(path), and: transaction)
     }
-    
-    init(with type: SRTransitionKind,
-                windowTransition: SRWindowTransition,
-                transaction: WithTransaction? = .none) {
-        self.type = type
-        self.windowTransition = windowTransition
-        self.transaction = transaction
+
+    init(windowTransition: SRWindowTransition, transaction: WithTransaction? = .none) {
+        self.init(with: .openWindow(windowTransition), and: transaction)
+    }
+}
+
+//MARK: - Payload accessors
+extension SRTransition {
+
+    var type: SRTransitionKind {
+        switch action {
+        case .none: .none
+        case .dismiss: .dismiss
+        case .dismissAll: .dismissAll
+        case .dismissCoordinator: .dismissCoordinator
+        case .pop: .pop
+        case .popToRoot: .popToRoot
+        case .push: .push
+        case .present: .present
+        case .sheet: .sheet
+        case .alert: .alert
+        case .confirmationDialog: .confirmationDialog
+        case .popover: .popover
+        case .selectTab: .selectTab
+        case .popToRoute: .popToRoute
+        case .openWindow: .openWindow
+        case .switchRoot: .switchRoot
+        case .openCoordinator: .openCoordinator
+        }
+    }
+
+    var route: Route? {
+        switch action {
+        case .push(let route), .present(let route), .sheet(let route): route
+        default: nil
+        }
+    }
+
+    var alert: Route.AlertRoute? {
+        guard case .alert(let alert) = action else { return nil }
+        return alert
+    }
+
+    var confirmationDialog: Route.ConfirmationDialogRoute? {
+        guard case .confirmationDialog(let dialog) = action else { return nil }
+        return dialog
+    }
+
+    var popover: Route.PopoverRoute? {
+        guard case .popover(let popover) = action else { return nil }
+        return popover
+    }
+
+    var tabIndex: (any IntRawRepresentable)? {
+        guard case .selectTab(let tab) = action else { return nil }
+        return tab
+    }
+
+    var popToPath: (any StringRawRepresentable)? {
+        guard case .popToRoute(let path) = action else { return nil }
+        return path
     }
 }
 
 extension SRTransition {
     public static var none: SRTransition {
-        SRTransition(with: SRTransitionKind.none)
+        SRTransition(with: Action.none)
     }
 }
 
